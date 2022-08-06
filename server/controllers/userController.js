@@ -4,18 +4,24 @@ import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import sendToken from "../utils/jwtToken.js";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
-
+import cloudinary from 'cloudinary'
+import bcrypt from 'bcryptjs'
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    folder: "avatars",
+    width: 150,
+    crop: "scale",
+  });
 
+  const { name, email, password } = req.body;
   const user = await User.create({
     name,
     email,
     password,
     avatar: {
-      public_id: "This is a sample id",
-      url: "profilepicUrl",
+      public_id: myCloud.public_id,
+      url: myCloud.secure_url,
     },
   });
 
@@ -31,6 +37,8 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please enter email and password", 400));
   }
 
+  console.log(bcrypt.hashSync("12345678", 10));
+
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
@@ -38,6 +46,8 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   const isPasswordMatched = await user.comparePassword(password);
+
+
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password"), 401);
@@ -134,3 +144,89 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
+
+
+// Get my details
+export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
+  // const userId = await req.user.id;
+  // const userId = "62c4882c0648ff3db722b3da";
+  // const user = await User.findById(userId);
+  const user = await User.findById(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: "Successfully fetched your details",
+    user
+  })
+
+})
+
+// Change password
+export const changePassword = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user.id;
+  const user = await User.findById(userId).select("+password");
+
+  const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHandler("Old password is incorrect"), 400);
+  }
+
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(new ErrorHandler("password does not match with confirm password"), 400);
+  }
+
+  user.password = req.body.newPassword;
+
+  await user.save();
+
+  sendToken(user, 200, res);
+})
+
+
+// Get All Users -- admin
+export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    message: "Successfully fetched all users",
+    users
+  })
+})
+
+// Get single user -- admin
+export const getUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler(`user does not exist with id: ${req.params.id}`))
+  }
+  res.status(200).json({
+    success: true,
+    message: "Successfully fetched user",
+    user
+  })
+})
+
+// Update user data 
+export const updateUser = catchAsyncErrors(async (req, res, next) => {
+  let user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler(`user does not exist with id: ${req.params.id}`))
+  }
+
+  user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    useFindandModify: false
+  })
+
+  res.status(200).json({
+    success: true,
+    message: "User details updated sucessfully",
+    user
+  })
+})
+
