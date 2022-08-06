@@ -1,0 +1,15 @@
+.slides-preview{
+    width: 100%;
+}
+
+.slides-preview:hover{
+    cursor: pointer;
+}
+
+img{
+    width: 100%; 
+}
+
+.carousel-item{
+    transition-duration: 0.1s;
+}
