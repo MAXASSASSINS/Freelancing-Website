@@ -7,6 +7,8 @@ import errorMiddleware from './middleware/error.js'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
+import cloudinary from 'cloudinary'
+import fileUpload from 'express-fileupload'
 const app = express();
 dotenv.config();
 
@@ -16,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(fileUpload());
 
 app.use(session({
     secret: process.env.SECRET,
@@ -23,7 +26,6 @@ app.use(session({
     saveUninitialized: true,
     cookie:{
         // secure: true
-
     }
 }));
 
@@ -32,19 +34,26 @@ process.on('uncaughtException', (err) => {
     console.log(`Error: ${err.message}`);
     console.log("Shutting down the server due to Uncaught Exception Error");
     process.exit(1);
-
 })
 
-// Middleware for Errors
-app.use(errorMiddleware);
+
 
 // Route Imports
 import userRoutes from './routes/user.js';
+import gigRoutes from './routes/gig.js'
+import orderRoutes from './routes/order.js'
 app.use('/', userRoutes);
+app.use('/', gigRoutes);
+app.use('/', orderRoutes);
+// Middleware for Errors
+app.use(errorMiddleware);
 
 
-
-
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret:  process.env.CLOUDINARY_API_SECERET
+})
 
 // Database Connection
 let server;
