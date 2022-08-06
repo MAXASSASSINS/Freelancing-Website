@@ -1,0 +1,359 @@
+.user-details-max-width-container {
+    padding: 0 1.5rem 1.5rem;
+    color: var(--dark-grey);
+}
+
+.user-info-wrapper {
+    text-align: center;
+}
+
+.user-info-list-icon {
+    position: absolute;
+}
+
+.user-info-list-icon>svg {
+    margin-right: 0.7rem;
+    color: var(--no-focus);
+}
+
+.user-detail.user-profile-pic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-detail.user-profile-pic>img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.user-detail-user-name {
+    margin-top: 1rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.user-detail-tagline {
+    margin: 10px 0;
+    color: var(--light-heading);
+    font-size: 0.9rem;
+}
+
+.user-info-review-container {
+    font-size: 0.9rem;
+}
+
+
+.user-detail-review-info {
+    color: var(--icons);
+}
+
+.user-detail-contact-me {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.user-detail-contact-me>button {
+    padding: 0.6rem 15%;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--green);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.user-detail-where-abouts-container {
+    border-top: 1px solid var(--dark-separator);
+    padding: 1rem 0 0;
+    font-size: 0.9rem;
+}
+
+.user-detail-where-abouts-container>ul>li {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    list-style: none;
+}
+
+.user-detail-where-abouts-container>ul>li svg {
+    margin-right: 1rem;
+    color: var(--light-heading);
+}
+
+.user-detail-where-abouts-container>ul>li span {
+    font-weight: 400;
+    color: var(--light-heading);
+}
+
+.user-detail-where-abouts-container>ul>li>p {
+    color: var(--light-grey);
+    font-weight: 700;
+}
+
+.user-detail-navigation-container {
+    border-bottom: 1px solid var(--dark-separator);
+    width: 100vw;
+    position: relative;
+    margin: 3rem -1.5rem 2rem;
+}
+
+.user-detail-navigation-container>button {
+    border-width: 0px;
+    background-color: white;
+    margin-left: 1.5rem;
+    padding: 0.5rem;
+    color: var(--icons);
+    border-bottom: 2px solid transparent;
+}
+
+.user-detail-navigation-container>button:hover {
+    cursor: pointer;
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.user-detail-description {
+    border-bottom: 1px solid var(--dark-separator);
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.user-detail-description>h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.user-detail-description>p {
+    line-height: 1.5;
+    margin-top: 1rem;
+    color: var(--icons);
+    letter-spacing: 0.5px;
+    word-spacing: 2px;
+    word-break: break-word;
+}
+
+.user-detail-language {
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--dark-separator);
+}
+
+.user-detail-language>h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.user-detail-language>ul>li {
+    list-style: none;
+    color: var(--light-grey);
+}
+
+.user-detail-language-fluency {
+    color: var(--no-focus);
+}
+
+.user-detail-skills-container {
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+}
+
+.user-detail-skills-container>h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.user-detail-skills-container>ul>li {
+    list-style: none;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--dark-separator);
+    display: inline-block;
+    margin: 0 10px 10px 0rem;
+    border-radius: 1rem;
+    color: var(--light-heading);
+}
+
+.user-detail-gig-list-container>h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.user-detail-gig-list {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+
+
+.user-detail-review-list-container {
+    padding-top: 3rem;
+}
+
+.user-detail-review-list>h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+
+.user-detail-review-heading {
+    font-size: 1.125rem;
+}
+
+.user-detail-review-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    color: var(--gold);
+    font-size: 0.9rem;
+}
+
+.user-detail-review-rating-stars>div {
+    display: none;
+}
+
+
+.user-detail-review-list>h2>svg {
+    color: var(--gold);
+}
+
+.user-detail-gig-rating,
+.user-detail-gig-review-count {
+    font-size: 0.9rem;
+}
+
+.user-detail-gig-rating {
+    color: var(--gold);
+}
+
+.user-detail-review {
+    padding: 1rem 0 2rem 2.75rem;
+    border-bottom: 1px solid var(--dark-separator);
+}
+
+.user-detail-review-customer {
+    display: flex;
+    align-items: center;
+}
+
+.user-detail-review-customer>* {
+    margin-right: 10px;
+}
+
+.user-detail-review-customer-name {
+    font-weight: 700;
+    color: var(--dark-grey);
+}
+
+.user-detail-review-customer>img {
+    width: 2rem;
+    border-radius: 50%;
+    margin-left: -2.75rem;
+    float: left
+}
+
+.user-detail-review-customer-country {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-top: -5px;
+}
+
+
+.user-detail-review-customer-country>img {
+    width: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.user-detail-review-customer-country>div {
+    color: var(--light-heading);
+}
+
+.user-detail-review-paragraph {
+    margin-top: 1rem;
+    line-height: 1.5;
+    color: var(--light-grey);
+    word-wrap: break-word;
+}
+
+.user-detail-review-publish {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--no-focus);
+    font-weight: 400;
+}
+
+.user-review-see-more{
+    margin-top: 2rem;
+    color: var(--green);
+}
+
+.user-review-see-more:hover{
+    cursor: pointer;
+}
+
+
+
+@media only screen and (min-width: 600px) {
+    .user-detail-gig-list {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .user-detail-review-rating-stars>div {
+        display: block;
+    }
+
+    .user-detail-review-rating-stars>svg {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .user-details-max-width-container {
+        display: grid;
+        grid-template-columns: 40% 60%;
+        padding: 0 2rem 1.5rem;
+    }
+    
+    .user-info-large-screen-border{
+        padding: 1.75rem;
+        border: 1px solid var(--dark-separator);
+    }
+    
+    .user-info-large-screen-border.first-div{
+        margin-bottom: 2rem;
+    }
+
+    .user-detail-navigation-container {
+        display: none;
+    }
+
+    .user-detail-skills-container{
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .user-detail-gig-reviews-div{
+        margin-left: 1.5rem;
+    }
+}
+
+@media only screen and (min-width: 1150px) {
+    .user-details-max-width-container {
+        grid-template-columns: 30% 60%;
+    }
+
+    .user-detail-gig-list {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+
+}
