@@ -1,0 +1,197 @@
+.chat-background {
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.chat-content {
+    background-color: #fefefe;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    color: var(--dark-grey);
+    display: grid;
+    grid-template-rows: 1fr 7fr 1fr;
+}
+
+.chat-content>header {
+    display: flex;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    height: 113px;
+}
+
+.chat-content>header>img {
+    width: 3rem;
+    border-radius: 50%;
+    margin-right: 1rem;
+}
+
+.chat-content >header > div > .chat-seller-name{
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.4rem;
+}
+
+.chat-content >header > div > .chat-seller-online-status{
+    color: var(--no-focus);
+    font-size: 0.9rem;
+}
+
+
+.chat-content > header > span > svg{
+    position: absolute;
+    right: 2rem;
+    top: 2.75rem;
+    font-size: 1.5rem;
+    color: var(--icons);
+}
+
+.chat-content > header > span > svg:hover{
+    cursor: pointer;
+}
+
+
+.chat-content>main {
+    border-top: 1px solid var(--no-focus);
+    display: grid;
+    height: 100%;
+    /* display: flex; */
+}
+
+.chat-content>main> form>textarea {
+    padding: 1rem 1.5rem;
+    border: none;
+    display: block;
+    width: 100%;
+}
+
+.chat-content>main>form>textarea:focus{
+    /* outline: none !important; */
+}
+
+.chat-content>main>form>input::placeholder{
+    color: var(--light-heading);
+}
+
+.chat-content > main> form>.chat-attached-files-div{
+    height: 124px;
+    padding: 1rem 1rem;
+    color: var(--light-heading);
+    margin-bottom: 1rem;
+    overflow-y: scroll;
+    border-bottom: 1px solid var(--no-focus);
+    border-top: 1px solid var(--no-focus);
+}
+
+.chat-content > main>form> .chat-attached-files-div > ul{
+}
+
+.chat-content > main> form>.chat-attached-files-div > ul > li{
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    list-style: none;
+    padding: 0.125rem 0.75rem;
+    border-radius: 5px;
+    border: 1px solid var(--dark-separator);
+    background-color: var(--separator);
+    display: inline-flex;
+    align-items: center;
+    max-width: 200px;
+    font-size: 0.9rem;
+}
+
+.chat-content > main>form> .chat-attached-files-div > ul > li >div{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: right;
+    direction: rtl;
+}
+
+.chat-content > main>form> .chat-attached-files-div > ul > li>button{
+    margin-left: 0.5rem;
+    border: none;
+
+}
+
+.chat-content > main > form>.chat-attached-files-div > .chat-attached-files-heading{
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.chat-content>footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    padding: 1.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-content > footer > div{
+    display: flex;
+}
+
+.chat-emoji,.chat-attachment{
+    font-size: 1.5rem;
+    color: var(--light-heading);
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+}
+
+.chat-emoji:hover,.chat-attachment:hover{
+    background-color: var(--off-white);
+    color: var(--green);
+    cursor: pointer;
+}
+
+.chat-emoji>*:hover, .chat-attachment>*:hover{
+    cursor: pointer;
+}
+
+.chat-content>footer>button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: var(--green);
+    color: white;
+    border-radius: 0.25rem;
+}
+
+em-emoji-picker{
+    position: absolute;
+    top: -435px;
+}
+
+@media screen and (min-width: 600px) {
+    .chat-content{
+        width: 34rem;
+        max-width: 600px;
+        height: 600px;
+        margin-top: calc(calc(100vh - 600px)/2);
+        margin-left: calc(calc(100vw - 34rem)/2);
+        border-radius: 0.25rem;
+    }
+
+    .chat-content > main{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .chat-content>main>textarea{
+        height: 400px;
+    }
+
+
+}
+
+
