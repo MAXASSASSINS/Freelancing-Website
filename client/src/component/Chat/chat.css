@@ -10,14 +10,15 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+
+
 .chat-content {
     background-color: #fefefe;
     width: 100vw;
     height: 100vh;
     position: absolute;
-    color: var(--dark-grey);
     display: grid;
-    grid-template-rows: 1fr 7fr 1fr;
+    grid-template-rows: 113px calc(100vh - 113px - 88px) 88px;
 }
 
 .chat-content>header {
@@ -59,41 +60,74 @@
 
 .chat-content>main {
     border-top: 1px solid var(--no-focus);
-    /* display: grid; */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    margin-bottom: 1rem;
+    /* justify-content: space-between; */
 }
 
-.chat-content>main>div>ul {
+.chat-content>main>div{
+    overflow: scroll;
+}
+
+.chat-content>main>div>ul,.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul{
     padding: 1rem 1.5rem;
 }
 
-.chat-content>main>div>ul>li {
+.chat-content>main>div>ul>li,.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li {
     display: flex;
     align-items: center;
     font-size: 0.9rem;
     color: var(--light-heading);
 }
 
-.chat-content>main>div>ul>li>img {
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul{
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul > li{
+    margin-bottom: 2rem;
+}
+
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul > li:last-child{
+    margin-bottom: 0;
+}
+
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>img {
     margin-right: 0.5rem;
     width: 2rem;
     border-radius: 50%;
 }
 
-.chat-content>main>div>ul>li>div>.chat-message-owner-time-div {
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>.chat-message-owner-time-div {
     margin-bottom: 0.25rem;
 }
 
-.chat-content>main>div>ul>li>div>div>.chat-message-owner {
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>div>.chat-message-owner {
     font-weight: 700;
 }
 
-.chat-content>main>div>ul>li>div>div>.chat-message-time {
-    font-size: 0.8rem;
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>div>.chat-message-time {
+    font-size: 0.75rem;
+    color: var(--heading);
+}
+
+.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>.chat-message-text{
+    line-height: 1.4;
+}
+
+.chat-content > main > .chat-suggestion-div > ul > li{
+    padding: 0.75rem;
+    border: 1px solid var(--dark-separator);
+    margin-bottom: 1rem;
+    display: inline-flex;
+    border-radius: 4px;
+    color: var(--dark-grey);
+}
+
+.chat-content > main > .chat-suggestion-div > ul > li:hover{
+    background-color: var(--dark-separator);
+    cursor: pointer;
 }
 
 .chat-content>main>form {
@@ -209,7 +243,7 @@
 
 em-emoji-picker {
     position: absolute;
-    top: 90px;
+    top: 130px;
 }
 
 @media screen and (min-width: 600px) {
@@ -221,6 +255,7 @@ em-emoji-picker {
         margin-top: calc(calc(10vh)/2);
         margin-left: calc(calc(100vw - 34rem)/2);
         border-radius: 0.25rem;
+        grid-template-rows: 113px calc(90vh - 113px - 88px) 88px;
     }
 
 
