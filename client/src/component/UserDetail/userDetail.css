@@ -4,6 +4,7 @@
 }
 
 .user-info-wrapper {
+    margin-top: 1.5rem;
     text-align: center;
 }
 
@@ -303,6 +304,10 @@
 
 
 @media only screen and (min-width: 600px) {
+
+    .user-details-max-width-container{
+        margin-top: 2rem;
+    }
     .user-detail-gig-list {
         grid-template-columns: 1fr 1fr;
     }
@@ -321,6 +326,10 @@
         display: grid;
         grid-template-columns: 40% 60%;
         padding: 0 2rem 1.5rem;
+    }
+
+    .user-info-wrapper{
+        margin-top: 0;
     }
     
     .user-info-large-screen-border{

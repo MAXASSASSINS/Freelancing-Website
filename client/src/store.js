@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { userGigsDetailsReducer, gigReducer, gigDetailReducer } from './reducers/gigReducer.js';
 import { dimBackgroundReducer } from './reducers/dimBackgroundReducer.js';
-import { gigUserReducer, userReducer } from './reducers/userReducers.js';
+import { gigUserReducer, loginUserReducer, userReducer } from './reducers/userReducers.js';
 
 const reducer = combineReducers({
     gigs: gigReducer,
@@ -12,6 +12,7 @@ const reducer = combineReducers({
     userGigs: userGigsDetailsReducer,
     gigUser: gigUserReducer,
     gigDetail: gigDetailReducer,
+    loggedUser: loginUserReducer,
 })
 
 let initialsState = {};

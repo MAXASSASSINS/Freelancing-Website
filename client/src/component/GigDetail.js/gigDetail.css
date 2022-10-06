@@ -129,6 +129,12 @@
     font-size: 0.9rem;
 }
 
+.gig-owner-details-div>button:hover{
+    cursor: pointer;
+    background-color: var(--icons);
+    color: white;
+}
+
 
 .gig-onwer-stats-description {
     padding: 1rem;
@@ -351,6 +357,10 @@
     border-radius: 5px;
 }
 
+.price-section-details>footer>button:hover{
+    background-color: var(--icons);
+}
+
 
 .price-section-contact-me-button {
     padding: 0.5rem 1.5rem;
@@ -415,8 +425,9 @@
 @media screen and (min-width : 900px) {
     .gig-detail-main-wrapper {
         display: flex;
+
         flex-direction: row;
-        padding: 0 2rem;
+        padding: 2rem;
         max-width: 1300px;
         justify-content: space-evenly;
         margin: 0 auto; 
