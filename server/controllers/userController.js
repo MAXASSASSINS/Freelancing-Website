@@ -6,6 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import cloudinary from 'cloudinary'
 import bcrypt from 'bcryptjs'
+import { log } from "console";
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
@@ -37,22 +38,21 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please enter email and password", 400));
   }
 
-  console.log(bcrypt.hashSync("12345678", 10));
-
   const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorHandler("Invalid email or password"), 401);
+    return next(new ErrorHandler("Invalid email or password", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
-
+  // const temp = await bcrypt.hash('3', 10);
+  // console.log(temp);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Invalid email or password"), 401);
+    return next(new ErrorHandler("Invalid email or password", 401));
   }
-
+  
   sendToken(user, 200, res);
 });
 
