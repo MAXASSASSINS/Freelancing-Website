@@ -1,5 +1,5 @@
 import React, { useState, useRef, useReducer, Component } from 'react'
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
@@ -191,9 +191,33 @@ export const Inbox = () => {
       setMessage("");
     }
     if (isFilePicked) {
+      // await handleSendFileSocket(selectedFiles);
       setIsFilePicked(false);
       setSelectedFiles(null)
     }
+  }
+
+
+  const handleSendFileSocket = async (files) => {
+    const sender = {
+      avatar: user.avatar,
+      name: user.name,
+      _id: user._id
+    }
+    const receiver = {
+      avatar: currentSelectedClient.avatar,
+      name: currentSelectedClient.name,
+      _id: currentSelectedClient._id
+    }
+    const fileObj = {
+      sender,
+      receiver,
+      createdAT: new Date().getTime(),
+      files
+    }
+
+
+
   }
 
   const handleSendMessage = async (message) => {
@@ -260,8 +284,12 @@ export const Inbox = () => {
 
   // console.log("component rendered");
 
+  // console.log(inboxDetails);
+
+  
   // checking for receiving message 
   useEffect(() => {
+    
     socket.on("receive_message", async (data) => {
       console.log("receive message is running");
       const { messageData, room } = data;
@@ -270,7 +298,7 @@ export const Inbox = () => {
       const clientId = senderId;
 
 
-      // console.log(user);
+      console.log(user);
 
       console.log(inboxDetails);
 
@@ -278,7 +306,7 @@ export const Inbox = () => {
         return id === clientId;
       });
 
-      console.log(clientIndex)
+      // console.log(clientIndex)
 
       let temp = [];
       temp = allClientUserLastMessage?.map((mesgs, i) => {
@@ -289,9 +317,13 @@ export const Inbox = () => {
         return mesgs;
       })
       dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: temp });
-
+      
+      if(currentSelectedClient?._id === senderId){
+        const temp2 = [...inboxMessages, messageData];
+        dispatch({ type: UPDATE_ALL_CHATS_WITH_CLIENT, payload: temp2 });
+      }
     })
-  }, [socket])
+  },[socket])
 
 
   const joinRoom = (senderId, receiverId) => {
