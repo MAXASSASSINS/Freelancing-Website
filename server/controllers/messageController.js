@@ -5,7 +5,23 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import Features from "../utils/features.js";
 import axios from 'axios'
-import { getUser } from "./userController.js";
+import cloudinary from 'cloudinary'
+import fs from "fs"
+
+import multer from "multer";
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '--' + file.originalname)
+    }
+})
+
+const upload = multer({ storage: storage }).single("file")
+
+
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
     const { from, to, message } = req.body;
 
@@ -126,7 +142,7 @@ export const getListOfAllInboxClients = catchAsyncErrors(async (req, res, next) 
     let list = await Message.find().or([{ sender: userId }, { receiver: userId }])
         .populate('sender', 'name avatar')
         .distinct('sender')
-    
+
     list = list.filter(id => {
         return id.toString() != userId.toString();
     })
@@ -150,12 +166,77 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(async (req, res, ne
         .sort({ updatedAt: -1 })
         .limit(1)
         .lean()
-        
+
     // console.log(messages);
     res.status(200).json({
         success: true,
         message: "successfully fetched all messages",
         messages,
+    })
+})
+
+export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
+
+    const file = req.file;
+    console.log(file);
+
+    const fileType = req.file.mimetype;
+    console.log(fileType);
+
+    let fileUrl;
+    if (file) {
+        let result;
+        if (fileType.includes("video")) {
+            result = await cloudinary.v2.uploader.upload(file.path, {
+                folder: "FreelanceMe",
+                resource_type: "video",
+                chunk_size: 6000000, 
+            })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+        else {
+
+            result = await cloudinary.v2.uploader.upload(file.path, {
+                folder: "FreelanceMe",
+            })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+
+        fileUrl = {
+            public_id: result.public_id,
+            url: result.secure_url,
+        }
+    }
+
+    console.log(file.path);
+    fs.unlink(file.path, err => {
+        if (err) return new ErrorHandler("error in deleting a file from uploads", 500);
+    })
+
+    res.status(200).json({
+        success: true,
+        message: "Successfully uploaded on cloudinary",
+        fileUrl,
+        fileType,
+    })
+})
+
+
+export const updateAllMessages = catchAsyncErrors(async (req, res, next) => {
+
+    const messages = await Message.find();
+    console.log(messages);
+
+    await Message.updateMany({}, {
+        messageType: "text"
+    })
+
+    res.status(200).json({
+        message: "successfully done"
     })
 })
 
