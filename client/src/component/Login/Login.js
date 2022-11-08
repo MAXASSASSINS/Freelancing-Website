@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loggedUser } from '../../actions/userAction';
 import { useNavigate } from 'react-router-dom';
 
+
 export const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const {user, loading, isAuthenticated} = useSelector(state => state.loggedUser);
+
+    const { user, loading, isAuthenticated } = useSelector(state => state.user);
 
 
     const handleLoginSubmit = async (e) => {
@@ -16,15 +18,19 @@ export const Login = () => {
         dispatch(loggedUser(loginEmail, loginPassword));
     }
 
+   
+
     useEffect(() => {
-        if(user){
+        // console.log(isAuthenticated);
+        // console.log("login is running");
+        if (isAuthenticated) {
             navigate(-1);
         }
-    }, [user, dispatch])
-    
+    }, [dispatch, isAuthenticated])
 
 
-    
+
+
 
     return (
         <>
