@@ -8,7 +8,6 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
 import cloudinary from 'cloudinary'
-import fileUpload from 'express-fileupload'
 import { Socket, Server } from 'socket.io'
 import http from 'http'
 import { runSocket } from './utils/socket.js'
@@ -22,7 +21,6 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
-app.use(fileUpload());
 
 app.use(session({
     secret: process.env.SECRET,
@@ -58,11 +56,21 @@ app.use('/', messageRoutes);
 app.use(errorMiddleware);
 
 
+// cloudinary.config({
+//     cloud_name: "dyod45bn8",
+//     api_key: process.env.CLOUDINARY_API_KEY,
+//     api_secret: process.env.CLOUDINARY_API_SECERET
+// })
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECERET
 })
+// cloudinary.config({
+//     cloud_name: "dyod45bn8",
+//     api_key: "492341495124435",
+//     api_secret: "cnq3FoHL9Vzn15x--hUvVCtMoPA" 
+// })
 
 // Database Connection
 export let server = http.createServer(app);
@@ -77,40 +85,6 @@ mongoose.connect(process.env.CONNECTION_URL, { useUnifiedTopology: true })
 
 // Calling socket to run
 runSocket(server);
-
-
-// const io = new Server(server, {
-//     cors: {
-//         origin: "http://localhost:3000",
-//         methods: ["GET", "POST"],
-//     }
-// })
-
-
-// // io.on means we are listening for an event name connection
-// io.on('connection', (socket) => {
-//     console.log(socket.id);
-//     console.log(io.engine.clientsCount);
-
-//     socket.on("join_room", (data) => {
-//         socket.join(data);
-//         // console.log(`user with id ${socket.id} joined room ${data}`);
-//     })
-
-//     socket.on("send_message", (data) => {
-
-//         socket.to(data.room).emit("receive_message", (data));
-//         // socket.to(data.room).emit("receive-message", data);
-//         // console.log(data);
-//     })
-
-//     socket.on('disconnect', () => {
-//         console.log("user disconnected", socket.id);
-//     })
-
-
-// })
-
 
 // Handling Unhandled Rejection Error
 process.on('unhandledRejection', (err) => {
