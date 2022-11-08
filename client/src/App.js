@@ -6,7 +6,7 @@ import { Footer } from './component/Footer/Footer';
 import { Header } from './component/Header/Header';
 import { Sidebar } from './component/Sidebar/Sidebar';
 import { Home } from './component/Home/Home';
-import { Routes, Route, useParams, Navigate } from 'react-router-dom'
+import { Routes, Route, useParams, Navigate, useNavigate } from 'react-router-dom'
 import { UserDetail } from './component/UserDetail/UserDetail';
 import { GigDetail } from './component/GigDetail.js/GigDetail';
 import { io } from "socket.io-client";
@@ -18,12 +18,14 @@ import { Inbox } from './component/Inbox/Inbox';
 // import { solid, regular, brands } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
 import { Test } from './component/Test/Test';
 import { CurrentlySelectedClientChat } from './component/CurrentlySelectedClientChat/CurrentlySelectedClientChat';
+import { loadUser } from './actions/userAction';
+import store from './store';
 
 
 const App = () => {
 	let { id } = useParams();
 	const dispatch = useDispatch();
-
+	const navigate = useNavigate();
 	const { user, isAuthenticated } = useSelector(state => state.loggedUser);
 
 
@@ -34,6 +36,16 @@ const App = () => {
 	height = Math.max(pageheight, height);
 
 	const { loading, error, gigs, gigsCount } = useSelector(state => state.gigs);
+
+	console.log(isAuthenticated);
+
+	useEffect(()=> {
+		// i have put .then to resolve the promise and lead us to the page where we come from this is working now
+		store.dispatch(loadUser()).then(()=> {
+			// console.log("app navigate is running");
+			navigate();
+		});
+	},[])
 	
 	return (
 		<Fragment>
