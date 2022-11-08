@@ -92,6 +92,10 @@
     display: none;
 }
 
+.inbox-icon{
+    display: inline-block;
+}
+
 .inbox-icon:hover,
 .profile-icon:hover,
 .my-list-icon:hover {
