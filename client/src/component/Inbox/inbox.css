@@ -20,7 +20,7 @@
     border-radius: 4px;
 }
 
-.inbox-search>input::placeholder{
+.inbox-search>input::placeholder {
     font-size: 0.9rem;
 }
 
@@ -35,7 +35,7 @@
     color: var(--no-focus);
 }
 
-.client-list-ul{
+.client-list-ul {
     width: 100%;
 }
 
@@ -46,35 +46,50 @@
     display: flex;
     padding: 1.5rem 1.5rem;
     border-bottom: 1px solid var(--dark-separator);
-    align-items: flex-start;
+    align-items: center;
     height: 5rem;
-    overflow: hidden;    
+    overflow: hidden;
 }
 
 .client-list-ul>li:hover {
     cursor: pointer;
 }
 
+
+
+
 .client-list-client-profile-image {
     margin-right: 0.75rem;
+    position: relative;
 }
 
-.client-list-ul>li>.client-list-client-profile-image>svg {
+.client-list-client-profile-image>.client-list-online-status {
+    position: absolute;
+    top: 36px;
+    border: 2px solid white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    left: 36px;
+    width: 0.9rem;
+    height: 0.9rem;
+}
+
+.client-list-ul>li>.client-list-client-profile-image>.client-name-alphabet-logo {
     border-radius: 50%;
     background-color: var(--no-focus);
     color: white;
-    width: 1.25rem;
-    height: 1.25rem;
-    padding: 0.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0.70rem;
 }
 
 
 .client-list-ul>li>.client-list-client-profile-image>img {
-    width: 2.25rem;
+    width: 3.125rem;
     border-radius: 50%;
 }
 
-.client-list-detail-plus-last-message{
+.client-list-detail-plus-last-message {
     overflow: hidden;
     width: 100%;
 }
@@ -100,6 +115,8 @@
     color: var(--no-focus);
     position: absolute;
     right: 1.75rem;
+    top: 1.5rem;
+
 }
 
 .inbox-message-list-default {
@@ -126,6 +143,7 @@
 }
 
 .inbox-message-list {
+    position: relative;
     display: grid;
     grid-template-rows: 73px calc(100vh - 144.2px - 60px - 73px) 60px;
 }
@@ -146,14 +164,39 @@
     cursor: pointer;
 }
 
-.inbox-message-list>div>header>h2 {
+
+
+
+.inbox-message-list>div>header>h2>.inbox-client-name {
+    display: flex;
+    align-items: center;
     font-size: 1.25rem;
     text-decoration: underline;
     color: var(--dark-grey);
 }
 
-.inbox-message-list>div>header>h2:hover {
+.inbox-message-list>div>header>h2>.inbox-client-name>svg {
+    font-size: 0.6rem;
+    color: var(--no-focus);
+    margin-right: 0.5rem;
+}
+
+.currently-selected-client-online-status {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.inbox-message-list>div>header>h2>.inbox-client-name>a:hover {
     opacity: 0.7;
+}
+
+.inbox-message-list>div>header>h2>.client-status {
+    font-size: 0.8rem;
+    color: var(--light-heading);
+    margin-top: 0.25rem;
 }
 
 .inbox-message-list>div>ul {
@@ -161,12 +204,12 @@
     overflow-y: auto;
 }
 
-.inbox-message-list>div>ul>li {
+.inbox-message-list-info {
     padding: 1rem 0;
     display: flex;
 }
 
-.inbox-message-list>div>ul>li>img {
+.inbox-message-list-user-profile-image {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
@@ -184,6 +227,7 @@
     margin-right: 1rem;
 }
 
+
 .inbox-messages-list-sender-name {
     display: inline;
     font-size: 0.9rem;
@@ -198,11 +242,24 @@
     color: var(--no-focus);
 }
 
+.inbox-messages-list-sender-details {
+    display: flex;
+}
+
 .inbox-messages-list-sender-text {
     margin-top: 0.5rem;
     font-size: 0.9rem;
     color: var(--light-heading);
     white-space: pre-line;
+    display: block;
+    width: 100%;
+    word-break: break-word;
+}
+
+.inbox-messages-list-sender-video,
+.inbox-messages-list-sender-image {
+    max-width: 15rem;
+    margin-top: 0.5rem;
 }
 
 .inbox-message-list-section-2 {
@@ -334,7 +391,7 @@
     border-radius: 0.25rem;
 }
 
-.inbox-emoji-picker > div > em-emoji-picker {
+.inbox-emoji-picker>div>em-emoji-picker {
     position: absolute;
     top: 80px;
     left: 1rem;
@@ -348,18 +405,18 @@
         grid-template-rows: 73px calc(100vh - 81px - 60px - 73px) 60px;
     }
 
-    .inbox-emoji-picker > div > em-emoji-picker {
+    .inbox-emoji-picker>div>em-emoji-picker {
         position: absolute;
         top: 140px;
     }
 
-    .inbox-main{
+    .inbox-main {
         display: grid;
         grid-template-columns: 18rem calc(100vw - 18rem);
 
     }
 
-    .inbox-clients-list{
+    .inbox-clients-list {
         border-right: 1px solid var(--dark-separator);
         overflow-y: auto;
         scroll-behavior: smooth;
@@ -367,20 +424,94 @@
         overflow-x: hidden;
     }
 
-    .inbox-message-list-default{
+    .inbox-message-list-default {
         width: calc(100vw - 18rem);
         height: calc(100vh - 81px);
     }
 
-    .inbox-message-list{
+    .inbox-message-list {}
 
-    }
-
-    .inbox-emoji-picker > div > em-emoji-picker {
+    .inbox-emoji-picker>div>em-emoji-picker {
         left: 19rem;
     }
+}
 
 
 
-    
+.file-loader {
+    width: 15rem;
+    height: 9.375rem;
+    background-color: #B2B2B2;
+    animation: spinner 2s infinite;
+    margin-top: 0.5rem;
+}
+
+
+
+.inbox-lazy-loading-user-image {
+    width: 2rem;
+    border-radius: 50%;
+}
+
+.inbox-lazy-loading-user-icon>svg {
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    background-color: var(--no-focus);
+    color: white;
+    width: 1rem;
+    height: 1rem;
+    padding: 0.5rem;
+    margin-right: 1rem;
+}
+
+
+
+@keyframes spinner {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+
+.image-loader{
+    width: 15rem;
+    height: 150px;
+    background-color: var(--no-focus);
+}
+
+.file-upload-status-outer{
+    margin-top: 0.5rem;
+    background-color: var(--separator);
+    max-width: 15rem;
+    width: 15rem;
+    height: 10px;
+    position: relative;
+    border-radius: 1rem;
+} 
+
+.file-upload-status-bar{
+    border-radius: 1rem;
+    position: absolute;
+    width: 15rem;
+    height: 10px;
+    max-width: 15rem;
+    background-color: var(--green);
+    transition: 0.3s ease-in-out;
+
+}
+
+.file-upload-status-percentage{
+    display: none;
+    position: absolute;
+    z-index: 2;
+    top: 40%;
+    left: 45%;
 }
