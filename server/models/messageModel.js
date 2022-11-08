@@ -19,6 +19,11 @@ const messageSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
+        messageType: {
+            type: String,
+            default: "text",
+            required: true,
+        }
     },
     {
         timestamps: true,
