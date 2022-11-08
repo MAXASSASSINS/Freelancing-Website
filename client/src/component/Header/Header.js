@@ -7,12 +7,12 @@ import { showDimBackground, hideDimBackground } from '../../actions/dimBackgroun
 import { getUser } from '../../actions/userAction';
 import { loggedUser } from '../../actions/userAction';
 import { Outlet, Navigate, Link } from 'react-router-dom';
-
+import { Fragment } from 'react';
 
 export const Header = () => {
 
     const dispatch = useDispatch();
-    const { user, loading, isAuthenticated } = useSelector(state => state.loggedUser);
+    const { user, loading, isAuthenticated } = useSelector(state => state.user);
 
     const [currentUser, setCurrentUser] = useState(null);
 
@@ -26,16 +26,10 @@ export const Header = () => {
 
 
     useEffect(() => {
-        setCurrentUser(user);
+        if(isAuthenticated){
+            setCurrentUser(user);
+        }
     }, [user])
-
-    const [h, seth] = useState(false);
-
-    useEffect(() => {
-        setTimeout(() => {
-            seth(true);
-        }, 3000);
-    })
 
     return (
         <header className='header'>
