@@ -6,7 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import cloudinary from 'cloudinary'
 import bcrypt from 'bcryptjs'
-import { log } from "console";
+
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
@@ -148,10 +148,10 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 
 // Get my details
 export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
-  // const userId = await req.user.id;
+  const userId = await req.user.id;
   // const userId = "62c4882c0648ff3db722b3da";
-  // const user = await User.findById(userId);
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(userId);
+  // const user = await User.findById(req.params.id);
 
   res.status(200).json({
     success: true,
