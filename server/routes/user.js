@@ -25,7 +25,7 @@ router.post("/login", loginUser);
 
 router.get("/logout", logout);
 
-router.get('/me/:id', getMyDetails);
+router.get('/me', isAuthenticated, getMyDetails);
 
 router.post("/forgotPassword", forgotPassword);
 
