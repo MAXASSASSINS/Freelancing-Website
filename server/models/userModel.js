@@ -139,6 +139,17 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 
+  lastSeen: {
+    type: Date,
+    default: Date.now,
+  },
+
+  online:{
+    required: true,
+    type: Boolean,
+    default: false,
+  },
+
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
