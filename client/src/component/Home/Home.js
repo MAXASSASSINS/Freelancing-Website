@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import './home.css'
 import '../../component/common.css'
 import { GigCard } from '../GigCard/GigCard'
@@ -7,30 +7,81 @@ import { getAllGig } from '../../actions/gigAction'
 
 import { Sidebar } from '../Sidebar/Sidebar';
 import { Header } from '../Header/Header'
-// const gig = {
-//     title: "I will create a beautiful vector landscape illustration",
-//     userName: "saba_parveen",
-//     ratings: 5.0,
-//     numOfReviews: 1,
-//     price: 1244,
-//     profilePic: "https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/6f7ea747e554c953fa392a5071def2a8-1648204854641/0c9f8abb-41b1-458a-8ea8-67560d465c85.png",
-//     images: [
-//         "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/249563036/original/f5162238e38a702283d28dfe17a1780d428492cd/create-vector-beautiful-landscape-illustration.png",
-//         "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs2/249563036/original/c0fa3c2767c4090b06a5198ca8e82443a635754a/create-vector-beautiful-landscape-illustration.png",
-//         "https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs3/249563036/original/934491d37c9a588932576c075a9667c58ab0c3d1/create-vector-beautiful-landscape-illustration.png"
-//     ]
-// }
+import { Navigate } from 'react-router-dom'
+import {io} from 'socket.io-client'
+// import { socket } from '../../App'
+import { SocketContext } from '../../context/socket/socket'
+import { updateAllGigs } from '../../actions/gigAction'
 
 export const Home = () => {
     const dispatch = useDispatch();
 
-    const { loading, error, gigs, gigsCount } = useSelector(state => state.gigs);
-    // console.log(gigs);
+    const socket = useContext(SocketContext);
+
+    let { loading, error, gigs, gigsCount } = useSelector(state => state.gigs);
+
+    const {user, isAuthenticated} = useSelector(state => state.user);
 
     useEffect(() => {
         dispatch(getAllGig());
     }, [dispatch])
 
+
+    useEffect(() => {
+		if (isAuthenticated) {
+			// console.log("app.js socket is running");
+			socket.emit("new_user", user._id.toString());
+		}
+	}, [isAuthenticated, user])
+
+	// SHOW ONLINE STATUS OF THE USER
+	useEffect(() => {
+		socket.emit("online", isAuthenticated ? user._id.toString() : null);
+		const interval = setInterval(() => {
+			socket.emit("online", isAuthenticated ? user._id.toString() : null);
+		}, [10000])
+		return (() => {
+			clearInterval(interval);
+		})
+	}, [user, isAuthenticated])
+
+
+	// Tracking the online status of the gigs listed in the home page
+    useEffect(() => {
+        socket.on("online_from_server", async (userId) => {
+            if(gigs){
+                const temp = gigs.map(gig => {
+                    if(gig.user._id.toString() === userId.toString()){
+                        return{...gig, user: {...gig.user, online: true}}
+                    }
+                    return gig;
+                })
+                dispatch(updateAllGigs(temp));
+            }
+        })
+
+        socket.on("offline_from_server", async (userId) => {
+            // console.log("offline from server with " + userId.toString());
+            if(gigs){
+                const temp = gigs.map(gig => {
+                    if(gig.user._id.toString() === userId.toString()){
+                        return {...gig, user: {...gig.user, online: false}}
+                    }
+                    return gig;
+                })
+                dispatch(updateAllGigs(temp));
+            }
+        })
+
+        return (() => {
+            socket.off("online_from_server");
+            socket.off("offline_from_server");
+        })
+    },[socket, gigs, dispatch])
+
+    useEffect(()=>{
+        console.log("gigs is changed");
+    },[gigs])
 
     return (
         <>

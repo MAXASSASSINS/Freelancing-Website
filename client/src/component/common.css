@@ -71,8 +71,10 @@ html {
     --separator: #efeff0;
     --light-heading: #62646a;
     --dark-separator: #e4e5e7;
+    --light-background: #d5d4d2;
 }
 
 ol,ul,dl{
     padding: 0;
+    margin: 0;
 }
