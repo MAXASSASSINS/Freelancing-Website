@@ -1,6 +1,7 @@
 .user-details-max-width-container {
     padding: 0 1.5rem 1.5rem;
     color: var(--dark-grey);
+    /* background-color: var(--no-focus); */
 }
 
 .user-info-wrapper {
@@ -136,36 +137,41 @@
     word-break: break-word;
 }
 
-.user-detail-language {
+.user-detail-language,
+.user-detail-education-container, 
+.user-detail-certification-container,
+.user-detail-skills-container {
     padding-bottom: 1.75rem;
     margin-bottom: 1.75rem;
     border-bottom: 1px solid var(--dark-separator);
 }
 
-.user-detail-language>h3 {
+.user-detail-language>h3,
+.user-detail-skills-container>h3,
+.user-detail-education-container>h3,
+.user-detail-certification-container>h3 {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
 }
 
-.user-detail-language>ul>li {
+.user-detail-language>ul>li, 
+.user-detail-education-container>ul>li, 
+.user-detail-certification-container>ul>li {
     list-style: none;
     color: var(--light-grey);
 }
 
-.user-detail-language-fluency {
+.user-detail-language-fluency, 
+.user-detail-certified-from,
+.user-detail-college,
+.user-detail-graduated-year {
     color: var(--no-focus);
 }
 
-.user-detail-skills-container {
-    padding-bottom: 1.75rem;
-    margin-bottom: 1.75rem;
-}
-
-.user-detail-skills-container>h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.user-detail-education-container>ul>li>div, 
+.user-detail-certification-container>ul>li>div{
+    margin-bottom: 0.75rem;
 }
 
 .user-detail-skills-container>ul>li {
@@ -177,6 +183,56 @@
     border-radius: 1rem;
     color: var(--light-heading);
 }
+
+
+.user-detail-active-gigs-container{
+    display: none;
+    width: 100%;
+    /* background-color: var(--separator); */
+    border: 1px solid var(--dark-separator);
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    /* padding: 1.5rem 1.5rem 0 ; */
+}
+
+.user-detail-active-gigs-container>div{
+    font-size: 0.9rem;
+    padding: 1.5rem 1rem;
+    padding-bottom: 1.5rem;
+    color: var(--light-heading);
+    position: relative;
+}
+
+.user-detail-active-gigs-container>div:hover{
+    color: var(--green);
+    cursor: pointer;
+}
+
+.active-gig::after,.draft-gig::after{
+    content: "";
+    background-color: transparent;
+    height: 3px;
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    width: 0;
+    left: 0;
+    transition: width .2s ease,background-color .2s ease,left .2s ease;
+}
+
+
+.selected::after{
+    background-color: var(--green);
+    width: 100%;
+}
+
+.user-detail-active-gigs-container>div.selected{
+    color: var(--dark-grey);
+}
+
+
 
 .user-detail-gig-list-container>h2 {
     font-size: 1.25rem;
@@ -191,6 +247,25 @@
     grid-template-columns: 1fr;
 }
 
+.user-detail-create-new-gig-card{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--dark-separator);
+    background-color: var(--separator);
+}
+
+.user-detail-create-new-gig-card:hover{
+    cursor: pointer;
+}
+
+.user-detail-create-new-gig-card > .add-circle-icon{
+    margin-bottom: 1rem;
+}
 
 
 .user-detail-review-list-container {
@@ -292,12 +367,12 @@
     font-weight: 400;
 }
 
-.user-review-see-more{
+.user-review-see-more {
     margin-top: 2rem;
     color: var(--green);
 }
 
-.user-review-see-more:hover{
+.user-review-see-more:hover {
     cursor: pointer;
 }
 
@@ -305,9 +380,10 @@
 
 @media only screen and (min-width: 600px) {
 
-    .user-details-max-width-container{
+    .user-details-max-width-container {
         margin-top: 2rem;
     }
+
     .user-detail-gig-list {
         grid-template-columns: 1fr 1fr;
     }
@@ -322,22 +398,23 @@
 }
 
 @media only screen and (min-width: 900px) {
+
     .user-details-max-width-container {
         display: grid;
         grid-template-columns: 40% 60%;
         padding: 0 2rem 1.5rem;
     }
 
-    .user-info-wrapper{
+    .user-info-wrapper {
         margin-top: 0;
     }
-    
-    .user-info-large-screen-border{
+
+    .user-info-large-screen-border {
         padding: 1.75rem;
         border: 1px solid var(--dark-separator);
     }
-    
-    .user-info-large-screen-border.first-div{
+
+    .user-info-large-screen-border.first-div {
         margin-bottom: 2rem;
     }
 
@@ -345,13 +422,18 @@
         display: none;
     }
 
-    .user-detail-skills-container{
+    .user-detail-certification-container{
         margin-bottom: 0;
         padding-bottom: 0;
+        border: none;
     }
 
-    .user-detail-gig-reviews-div{
+    .user-detail-gig-reviews-div {
         margin-left: 1.5rem;
+    }
+
+    .user-detail-active-gigs-container{
+        display: flex;
     }
 }
 
