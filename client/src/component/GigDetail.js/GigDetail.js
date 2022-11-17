@@ -12,6 +12,7 @@ import { MyCarousel } from '../Carousel/MyCarousel'
 import { RatingBars } from '../RatingBars/RatingBars'
 import { Chat } from '../Chat/Chat';
 import { ToastContainer, toast } from 'react-toastify';
+import CreateIcon from '@mui/icons-material/Create';
 
 export const GigDetail = () => {
   const dispatch = useDispatch();
@@ -121,7 +122,7 @@ export const GigDetail = () => {
 
 
   useEffect(() => {
-      checkUserOpenItsOwnGig();
+    checkUserOpenItsOwnGig();
   }, [user])
 
 
@@ -135,6 +136,12 @@ export const GigDetail = () => {
       }
       <div className='gig-detail-main-wrapper'>
         <section className='gig-details-section'>
+          <div>
+            <Link to={'/gig/create/new/gig'} className='user-detail-edit-gig'>
+              <div className='edit-icon'><CreateIcon></CreateIcon></div>
+              <div>Edit Gig</div>
+            </Link>
+          </div>
           <div className='gig-details-gig-overveiw'>
             <h1 className='gig-details-gig-title'>{gigDetail.title}</h1>
             <div className='gig-seller-overview'>
