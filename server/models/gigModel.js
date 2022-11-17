@@ -86,7 +86,7 @@ const gigSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    
+
     reviews: [
         {
             user: {
@@ -110,7 +110,7 @@ const gigSchema = new mongoose.Schema({
             },
             country: {
                 type: String,
-                required:true,
+                required: true,
             },
             rating: {
                 type: Number,
@@ -135,6 +135,29 @@ const gigSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: "User",
         required: true,
-    }
+    },
+    active: {
+        required: true,
+        type: Boolean,
+        default: false,
+    },
+    requirements: [
+        {
+            question: {
+                type: String,
+                required: [true, "Please enter the question"]
+            },
+            options: [
+                {
+                    type: String,
+                }
+            ],
+            answer: {
+                type: String,
+                required: [true, "Please enter the answer"]
+            }
+        }
+    ]
+
 });
 export default mongoose.model('Gig', gigSchema);
