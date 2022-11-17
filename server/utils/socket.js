@@ -80,7 +80,9 @@ export const runSocket = (server) => {
 
         socket.on("online", async (userId) => {
             if (userId) {
-                updateUserOnlineStatus(userId, socket);
+                Promise.resolve(updateUserOnlineStatus(userId, socket)).then(()=>{
+                    io.emit("online_from_server", userId);
+                });
             }
         })
 
@@ -91,7 +93,10 @@ export const runSocket = (server) => {
             const userId = currentUserId;
             // console.log("user disconnected " + userId);
             if (userId) {
-                updateUserLastSeenAndOnlineStatus(userId, socket)
+                Promise.resolve(updateUserLastSeenAndOnlineStatus(userId, socket)).then(()=>{
+                    io.emit("offline_from_server", userId);
+                    removeUser(socket.id);
+                });
             }
 
 
@@ -130,11 +135,6 @@ export const runSocket = (server) => {
             new: true,
             runValidators: true,
             useFindandModify: false
-        }).then((res) => {
-            console.log(res.online);
-            // console.log("offline from server backend");
-            socket.broadcast.emit("offline_from_server", userId);
-            removeUser(socket.id);
         })
     })
 
@@ -151,8 +151,6 @@ export const runSocket = (server) => {
             new: true,
             runValidators: true,
             useFindandModify: false
-        }).then(() => {
-            socket.broadcast.emit("online_from_server", userId);
         })
     })
 
