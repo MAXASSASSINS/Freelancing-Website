@@ -14,7 +14,6 @@ export const Header = () => {
     const dispatch = useDispatch();
     const { user, loading, isAuthenticated } = useSelector(state => state.user);
 
-    const [currentUser, setCurrentUser] = useState(null);
 
     const show = () => {
         dispatch(showDimBackground());
@@ -25,11 +24,11 @@ export const Header = () => {
     }
 
 
-    useEffect(() => {
-        if(isAuthenticated){
-            setCurrentUser(user);
-        }
-    }, [user])
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         setCurrentUser(user);
+    //     }
+    // }, [user])
 
     return (
         <header className='header'>
@@ -50,7 +49,7 @@ export const Header = () => {
                     <i className="fa-regular fa-heart my-list-icon"></i>
                     <div className='orders-icon'>Orders</div>
                     {
-                        !currentUser &&
+                        !user &&
                         <Link to='/login' >
                             <div>
                                 <i className="fa-regular fa-circle-user profile-icon"></i>
@@ -58,13 +57,17 @@ export const Header = () => {
                         </Link>
                     }
                     {
-                        currentUser &&
+                        isAuthenticated &&
                         <div>
                             {
-                                currentUser.avatar.url ?
-                                    <img src={currentUser.avatar.url} className="profile-pic" alt="user profile"></img>
+                                user.avatar.url?
+                                    <Link to={"/user/" + user._id}>
+                                        <img src={user.avatar.url} className="profile-pic" alt="user profile"></img>
+                                    </Link>
                                     :
-                                    <i className={"fa-solid profile-icon " + (currentUser ? "profile-icon-login " : " ") + "fa-" + (currentUser && currentUser.name[0].toLowerCase())}></i>
+                                    <Link to={"/user/" + user?._id}>
+                                        <i className={"fa-solid profile-icon " + (user ? "profile-icon-login " : " ") + "fa-" + (user && user.name[0].toLowerCase())}></i>
+                                    </Link>
                             }
                         </div>
                     }
