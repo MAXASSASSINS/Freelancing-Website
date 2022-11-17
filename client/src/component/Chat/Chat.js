@@ -18,7 +18,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, loading, isAuthenticated } = useSelector(state => state.loggedUser);
+  const { user, loading, isAuthenticated } = useSelector(state => state.user);
 
 
   new Picker({ data });
@@ -39,7 +39,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
 
 
   useEffect(() => {
-    if (!user) {
+    if (!isAuthenticated) {
       navigate('/login');
     }
   }, [user])
@@ -50,13 +50,13 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     // if(!isCancelled && !checkUserOpenItsOwnGig()){
     //   user && getAllMessagesBetweenTwoUser();
     // }
-    if (!isCancelled) {
+    // if (!isCancelled) {
       user && getAllMessagesBetweenTwoUser();
-    }
+    // }
 
-    return (() => {
-      isCancelled = true;
-    })
+    // return (() => {
+    //   isCancelled = true;
+    // })
   }, [user])
 
 
