@@ -12,7 +12,7 @@ class Features {
             }
         } : {};
  
-        this.query = this.query.find({ ...keyword });
+        this.query = this.query.find({ ...keyword});
         return this;
     }
 
@@ -41,9 +41,10 @@ class Features {
     }
 
     populate(){
-        this.query = this.query.populate("user", "name avatar");
+        this.query = this.query.populate("user", "name avatar online");
         return this;
     }
+
 };
 
 export default Features;
