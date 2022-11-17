@@ -22,7 +22,7 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
     const resultPerPage = 10;
     const gigsCount = await Gig.countDocuments();
 
-    const feature = new Features(Gig.find().populate("user", "name"), req.query).search().filter().pagination(resultPerPage).populate();
+    const feature = new Features(Gig.find({active: true}), req.query).search().filter().pagination(resultPerPage).populate();
     const gigs = await feature.query;
 
     res.status(200).json({
@@ -36,7 +36,7 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
 // Get gig details
 export const getGig = catchAsyncErrors(async (req, res, next) => {
 
-    const gig = await Gig.findById(req.params.id).populate("user", "name avatar numOfRatings ratings userSince country description tagline");
+    const gig = await Gig.findById(req.params.id).populate("user", "name avatar numOfRatings ratings userSince country description tagline online");
 
     if (!gig) {
         return next(new ErrorHandler("Gig not found", 404));
@@ -143,7 +143,7 @@ export const getAllReviews = catchAsyncErrors(async (req, res, next) => {
 })
 
 export const getUserGigs = catchAsyncErrors(async (req, res , next) => {
-    const userGigs = await Gig.find({user: req.params.id}).populate("user", "name avatar");
+    const userGigs = await Gig.find({user: req.params.id}).populate("user", "name avatar online");
 
     if (!userGigs) {
         return next(new ErrorHandler("User gigs not found", 404));

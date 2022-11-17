@@ -109,9 +109,9 @@ const userSchema = new mongoose.Schema({
         required: true,
       },
       yearOfGraduation: {
-        type: Date,
+        type: String,
         required: true,
-        default: Date.now(),
+        default: new Date().getFullYear,
       }
     }
   ],
@@ -127,9 +127,9 @@ const userSchema = new mongoose.Schema({
         required: true,
       },
       year: {
-        type: Date,
+        type: String,
         required: true,
-        default: Date.now(),
+        default: new Date().getFullYear,
       }
     }
   ],
@@ -137,6 +137,17 @@ const userSchema = new mongoose.Schema({
   userSince: {
     type: Date,
     default: Date.now,
+  },
+
+  lastSeen: {
+    type: Date,
+    default: Date.now,
+  },
+
+  online:{
+    required: true,
+    type: Boolean,
+    default: false,
   },
 
   resetPasswordToken: String,

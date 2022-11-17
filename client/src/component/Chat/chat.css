@@ -11,7 +11,6 @@
 }
 
 
-
 .chat-content {
     background-color: #fefefe;
     width: 100vw;
@@ -62,61 +61,74 @@
     border-top: 1px solid var(--no-focus);
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between; */
+    justify-content: space-between;
 }
 
-.chat-content>main>div{
+.chat-content>main>div {
     overflow: scroll;
 }
 
-.chat-content>main>div>ul,.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul{
+.chat-content>main>div>ul {
     padding: 1rem 1.5rem;
 }
 
-.chat-content>main>div>ul>li,.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li {
+.chat-content>main>div>ul>li {
     display: flex;
     align-items: center;
     font-size: 0.9rem;
     color: var(--light-heading);
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul{
+.chat-content>main>.chat-show-div>ul {
+    scroll-behavior: smooth;
     overflow: hidden;
     overflow-y: auto;
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul > li{
+.chat-content>main>.chat-show-div>ul>li {
     margin-bottom: 2rem;
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul > li:last-child{
+.chat-content>main>.chat-show-div>ul>li:last-child {
     margin-bottom: 0;
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>img {
+.chat-content>main>.chat-show-div>ul>li>img {
     margin-right: 0.5rem;
     width: 2rem;
     border-radius: 50%;
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>.chat-message-owner-time-div {
+.chat-content>main>.chat-show-div>ul>li>svg {
+    color: white;
+    background-color: var(--no-focus);
+    border-radius: 50%;
+    border: 2px solid var(--no-focus);
+    padding: 0.45rem;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.chat-content>main>.chat-show-div>ul>li>div>.chat-message-owner-time-div {
     margin-bottom: 0.25rem;
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>div>.chat-message-owner {
+.chat-content>main>.chat-show-div>ul>li>div>div>.chat-message-owner {
     font-weight: 700;
+    color: var(--dark-grey);
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>div>.chat-message-time {
+.chat-content>main>.chat-show-div>ul>li>div>div>.chat-message-time {
     font-size: 0.75rem;
     color: var(--heading);
 }
 
-.chat-content>main>.chat-show-div>.react-scroll-to-bottom>div>ul>li>div>.chat-message-text{
+.chat-content>main>.chat-show-div>ul>li>div>.chat-message-text {
     line-height: 1.4;
+    white-space: pre-line;
 }
 
-.chat-content > main > .chat-suggestion-div > ul > li{
+.chat-content>main>.chat-suggestion-div>ul>li {
     padding: 0.75rem;
     border: 1px solid var(--dark-separator);
     margin-bottom: 1rem;
@@ -125,7 +137,7 @@
     color: var(--dark-grey);
 }
 
-.chat-content > main > .chat-suggestion-div > ul > li:hover{
+.chat-content>main>.chat-suggestion-div>ul>li:hover {
     background-color: var(--dark-separator);
     cursor: pointer;
 }
@@ -241,9 +253,9 @@
     border-radius: 0.25rem;
 }
 
-em-emoji-picker {
+.contact-seller-emoji-picker>div>em-emoji-picker {
     position: absolute;
-    top: 130px;
+    top: 200px;
 }
 
 @media screen and (min-width: 600px) {
@@ -258,8 +270,13 @@ em-emoji-picker {
         grid-template-rows: 113px calc(90vh - 113px - 88px) 88px;
     }
 
+    .contact-seller-emoji-picker>div>em-emoji-picker {
+        position: absolute;
+        top: 130px;
+    }
+}
 
-
-
-
+.disable-hover {
+    color: red;
+    background-color: red;
 }

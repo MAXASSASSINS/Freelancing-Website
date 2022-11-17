@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './userDetail.css'
 import '../../utility/util.css'
 import { GigCard } from '../GigCard/GigCard'
@@ -11,14 +11,18 @@ import Moment from 'react-moment';
 import 'moment-timezone';
 import { RatingStars } from '../RatingStars/RatingStars'
 import { ReviewList } from '../ReviewList/ReviewList'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { windowContext } from '../../App'
 
 export const UserDetail = () => {
+	const {windowWidth, windowHeight} = useContext(windowContext);
 	const params = useParams();
 	const dispatch = useDispatch();
 
 	const [reviewCount, setReviewCount] = useState(5);
 	const [userReviewCount, setUserReviewCount] = useState(null);
 
+	const { user, isAuthenticated, loading, error } = useSelector(state => state.user);
 
 	useEffect(() => {
 		dispatch(getGigUser(params.id));
@@ -27,6 +31,8 @@ export const UserDetail = () => {
 
 	const gigUser = useSelector(state => state.gigUser);
 	const { userGigs } = useSelector(state => state.userGigs);
+
+	const [active, setActive] = useState(true);
 
 	useEffect(() => {
 		setUserReviewCount(() => {
@@ -37,10 +43,11 @@ export const UserDetail = () => {
 			return count;
 		});
 	}, [userGigs])
-	console.log(userReviewCount);
+	// console.log(userReviewCount);
 	// console.log(gigUser);
 	// console.log(userGigs);
 
+	
 
 	const getFlag = (flagName) => flags.find(flag => {
 		if (flag.name === flagName) {
@@ -89,16 +96,16 @@ export const UserDetail = () => {
 					<div className='user-detail-where-abouts-container'>
 						<ul>
 							<li>
-								<span><i class="fa-solid fa-location-dot"></i> From</span>
+								<span><i className="fa-solid fa-location-dot"></i> From</span>
 								<p>{gigUser.country}</p>
 							</li>
 							<li>
-								<span> <i class="fa-solid fa-user"></i> Member Since</span>
+								<span> <i className="fa-solid fa-user"></i> Member Since</span>
 								<p><Moment format='MMM YYYY'>{gigUser.userSince}</Moment></p>
 							</li>
 							<li>
 
-								<span> <i class="fa-solid fa-paper-plane"></i> Last Delivery</span>
+								<span> <i className="fa-solid fa-paper-plane"></i> Last Delivery</span>
 								<p>2 months</p>
 							</li>
 						</ul>
@@ -139,19 +146,90 @@ export const UserDetail = () => {
 								}
 							</ul>
 						</div>
+						<div className='user-detail-education-container'>
+							<h3>Education</h3>
+							<ul>
+								{
+									gigUser.education.map((item, index) => (
+										<li key={index}>
+											<div>
+												<span>
+													{item.degree}
+												</span>
+												&nbsp;
+												<span>-</span>
+												&nbsp;
+												<span>{item.major}</span>
+											</div>
+											<div className='user-detail-college'>
+												<span>{item.collegeName},</span>
+												&nbsp;
+												<span>{item.country},</span>
+												&nbsp;
+											</div>
+											<div className='user-detail-graduated-year'>
+												Graduated
+												&nbsp;
+												<span>{item.yearOfGraduation}</span>
+											</div>
+
+										</li>
+									))
+								}
+							</ul>
+						</div>
+						<div className='user-detail-certification-container'>
+							<h3>Certification</h3>
+							<ul>
+								{
+									gigUser.certificates.map((certificate, index) => (
+										<li key={index}>
+											<div>{certificate.name}</div>
+											<div className='user-detail-certified-from'>{certificate.certifiedFrom} &nbsp; {certificate.year}</div>
+										</li>
+									))
+								}
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div className='user-detail-gig-reviews-div'>
+				{
+					user?._id === gigUser._id &&
+					<div className='user-detail-active-gigs-container'>
+						<div className={`active-gig  + ${active ? 'selected' : ''}`} onClick={() => setActive(true)}>active gigs</div>
+						<div className={`draft-gig  + ${!active ? 'selected' : ''}`} onClick={() => setActive(false)}>drafts</div>
+					</div>
+				}
 				<div className='user-detail-gig-list-container'>
 					<h2>saba_parveen's Gigs</h2>
 					<div className='user-detail-gig-list'>
 						{
-							userGigs && userGigs.map(userGig => (
-								<GigCard gig={userGig} key={userGig._id}></GigCard>
-							))
+							active ?
+								userGigs && userGigs.map(userGig => {
+									if (userGig.active) {
+										return <GigCard gig={userGig} key={userGig._id}></GigCard>
+									}
+								})
+								:
+								userGigs && userGigs.map(userGig => {
+									if (!userGig.active) {
+										return <GigCard gig={userGig} key={userGig._id}></GigCard>
+									}
+								})
+						}
+						{
+							windowWidth > 900 &&  user?._id === gigUser._id &&
+							<div className='user-detail-create-new-gig-card'>
+								<div className='add-circle-icon'>
+									<AddCircleIcon style={{ fontSize: "50px", color: "#62646a" }}></AddCircleIcon>
+								</div>
+								<div>Create a new Gig</div>
+							</div>
 						}
 					</div>
+
 				</div>
 				<div className='user-detail-review-list-container'>
 					<div className='user-detail-review-list'>
@@ -194,7 +272,7 @@ export const UserDetail = () => {
 							))
 						}
 						{
-							(userReviewCount != null && userReviewCount >= reviewCount) && 	
+							(userReviewCount != null && userReviewCount >= reviewCount) &&
 							<div className='user-review-see-more' onClick={increaseReviewCount(reviewCount)}>
 								+ See more
 							</div>

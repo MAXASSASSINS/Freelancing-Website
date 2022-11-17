@@ -8,23 +8,25 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import session from 'express-session'
 import cloudinary from 'cloudinary'
-import fileUpload from 'express-fileupload'
+import { Socket, Server } from 'socket.io'
+import http from 'http'
+import { runSocket } from './utils/socket.js'
+
 const app = express();
 dotenv.config();
 
-app.use(bodyParser.json({limit: "5gb"}));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({ limit: "5gb" }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
-app.use(fileUpload());
 
 app.use(session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie:{
+    cookie: {
         // secure: true
     }
 }));
@@ -42,29 +44,47 @@ process.on('uncaughtException', (err) => {
 import userRoutes from './routes/user.js';
 import gigRoutes from './routes/gig.js'
 import orderRoutes from './routes/order.js'
+import messageRoutes from './routes/message.js'
+
 app.use('/', userRoutes);
 app.use('/', gigRoutes);
 app.use('/', orderRoutes);
+app.use('/', messageRoutes);
+
+
 // Middleware for Errors
 app.use(errorMiddleware);
 
 
+// cloudinary.config({
+//     cloud_name: "dyod45bn8",
+//     api_key: process.env.CLOUDINARY_API_KEY,
+//     api_secret: process.env.CLOUDINARY_API_SECERET
+// })
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret:  process.env.CLOUDINARY_API_SECERET
+    api_secret: process.env.CLOUDINARY_API_SECERET
 })
+// cloudinary.config({
+//     cloud_name: "dyod45bn8",
+//     api_key: "492341495124435",
+//     api_secret: "cnq3FoHL9Vzn15x--hUvVCtMoPA" 
+// })
 
 // Database Connection
-let server;
-mongoose.connect(process.env.CONNECTION_URL, {useUnifiedTopology: true})
-    .then(server = () => app.listen(process.env.PORT, ()=>{
+export let server = http.createServer(app);
+mongoose.connect(process.env.CONNECTION_URL, { useUnifiedTopology: true })
+    .then(server.listen(process.env.PORT, () => {
         console.log("server is running on port " + process.env.PORT);
+        return server;
     }))
     .catch(err => {
         console.log(err);
     });
 
+// Calling socket to run
+runSocket(server);
 
 // Handling Unhandled Rejection Error
 process.on('unhandledRejection', (err) => {
