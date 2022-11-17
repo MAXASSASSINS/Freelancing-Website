@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
 
 export const GigCard = ({ gig }) => {
     const handleClick = () => {
-        console.log("clicked");
+        // console.log("clicked");
     }
-
+    // console.log(gig.user)
     return (
         <div className='gig-card'>
             <div className='container-wrapper'>
@@ -17,6 +17,8 @@ export const GigCard = ({ gig }) => {
                 </Link>
                 <div className='user-details-container'>
                     <img src={gig.user.avatar.url} alt="profile" ></img>
+                    {/* <div className='client-list-online-status' style={{ backgroundColor: onlineStatusOfClients[index] ? "#1dbf73" : "#a6a5a5" }}></div> */}
+                    <div className='gig-card-online-status' style={{ backgroundColor: gig.user.online ? "#1dbf73" : "#a6a5a5" }}></div>
                     <Link to={`/user/${gig.user._id}`} onClick={handleClick}>
                         <div className='gig-user-name'>{gig.user.name}</div>
                     </Link>
