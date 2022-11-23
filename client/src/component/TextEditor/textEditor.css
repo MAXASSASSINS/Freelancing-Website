@@ -1,0 +1,43 @@
+.textEditor-main {
+  color: var(--light-heading);
+}
+.textEditor-main .textEditor-toolbar {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--dark-separator);
+  border: 1px solid var(--no-focus);
+}
+.textEditor-main .textEditor-toolbar button {
+  border: none;
+  background-color: var(--dark-separator);
+  font-weight: 600;
+}
+.textEditor-main .textEditor-toolbar button:hover {
+  color: var(--green);
+}
+.textEditor-main .textEditor-toolbar .active {
+  color: var(--green);
+}
+.textEditor-main div.DraftEditor-root {
+  border: 1px solid var(--no-focus);
+  background-color: white;
+  height: 15rem;
+  width: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  line-height: 2;
+}
+.textEditor-main div.DraftEditor-editorContainer,
+.textEditor-main div.public-DraftEditor-content {
+  height: 100%;
+  line-height: 1.5;
+}
+.textEditor-main .textEditor-footer {
+  position: relative;
+  text-align: right;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--light-heading);
+}/*# sourceMappingURL=textEditor.css.map */
