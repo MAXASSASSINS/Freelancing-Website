@@ -145,6 +145,15 @@ const gigSchema = new mongoose.Schema({
         {
             question: {
                 type: String,
+                questionType: {
+                    type: String,
+                    enum: ["free text", "multiple choice"],
+                    default: "text"
+                },
+                answerRequired: {
+                    type: Boolean,
+                    default: false
+                },
                 required: [true, "Please enter the question"]
             },
             options: [
