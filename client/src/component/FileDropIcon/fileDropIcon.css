@@ -1,4 +1,5 @@
 .file-drop {
+  background-color: white;
   border: 1px dashed var(--no-focus);
   display: flex;
   flex-direction: column;
@@ -13,7 +14,7 @@
   font-size: 3rem;
 }
 .file-drop div {
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 2;
 }
 .file-drop div input {
