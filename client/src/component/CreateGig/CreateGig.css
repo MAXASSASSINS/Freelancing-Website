@@ -426,10 +426,10 @@
 .create-gig-main .requirements .question-details-section .options {
   font-size: 0.9rem;
 }
-.create-gig-main .add-question-button {
+.create-gig-main .requirements .add-question-button {
   margin-top: 1rem;
 }
-.create-gig-main .add-question-button button {
+.create-gig-main .requirements .add-question-button button {
   background-color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
@@ -438,7 +438,7 @@
   border: 1px solid var(--link);
   transition: all 0.2s;
 }
-.create-gig-main .add-question-button button:hover {
+.create-gig-main .requirements .add-question-button button:hover {
   background-color: var(--link);
   color: white;
 }
