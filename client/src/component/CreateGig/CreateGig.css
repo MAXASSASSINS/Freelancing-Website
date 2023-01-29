@@ -1,0 +1,474 @@
+.create-gig-main {
+  min-height: calc(100vh - 81px);
+  background-color: var(--separator);
+  color: var(--light-grey);
+}
+.create-gig-main nav {
+  padding: 1rem 4rem;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  color: var(--icons);
+  border-bottom: 1px solid var(--dark-separator);
+}
+.create-gig-main nav ul {
+  display: flex;
+  align-items: center;
+}
+.create-gig-main nav ul li {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin-right: 1rem;
+}
+.create-gig-main nav ul li .nav-icon {
+  margin-right: 0.5rem;
+}
+.create-gig-main nav .step-completed {
+  color: var(--green);
+}
+.create-gig-main nav .hover {
+  cursor: pointer;
+}
+.create-gig-main nav .current-step {
+  color: var(--dark-grey);
+}
+.create-gig-main .overview {
+  margin: 4rem 18% 1rem;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  background-color: white;
+  padding: 2rem;
+  border: 1px solid var(--no-focus);
+  border-radius: 5px;
+}
+.create-gig-main .overview .left-side,
+.create-gig-main .overview .right-side {
+  color: var(--dark-grey);
+  display: grid;
+  grid-template-rows: 10rem 8rem 10rem;
+}
+.create-gig-main .overview .left-side h3,
+.create-gig-main .overview .right-side h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.create-gig-main .overview .left-side p,
+.create-gig-main .overview .right-side p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--no-focus);
+  width: 24ch;
+}
+.create-gig-main .overview .left-side .category-section,
+.create-gig-main .overview .right-side .category-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.create-gig-main .overview .left-side .keyword-section h6,
+.create-gig-main .overview .right-side .keyword-section h6 {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+.create-gig-main .overview .left-side .keyword-section p,
+.create-gig-main .overview .right-side .keyword-section p {
+  width: 45ch;
+}
+.create-gig-main .overview .left-side .keyword-section input,
+.create-gig-main .overview .right-side .keyword-section input {
+  width: 100%;
+  border: 1px solid var(--no-focus);
+  border-radius: 0;
+  padding: 0.5rem;
+  margin: 1rem 0 0.5rem;
+}
+.create-gig-main .overview .left-side .keyword-section .recommend,
+.create-gig-main .overview .right-side .keyword-section .recommend {
+  font-size: 0.8rem;
+}
+.create-gig-main .pricing {
+  margin: 4rem 18% 1rem;
+}
+.create-gig-main .pricing h2 {
+  font-size: 1.75rem;
+  margin: 2rem 0 1rem;
+  border-bottom: 1px solid var(--no-focus);
+  padding-bottom: 1rem;
+}
+.create-gig-main .pricing h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--light-grey);
+  margin-bottom: 0.75rem;
+}
+.create-gig-main .pricing .pricing-section {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.create-gig-main .pricing .pricing-section .package {
+  display: grid;
+}
+.create-gig-main .pricing .pricing-section .package h4 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--light-grey);
+  background-color: var(--dark-separator);
+  padding: 1rem;
+}
+.create-gig-main .pricing .pricing-section .package .textarea-main {
+  margin-bottom: 1rem;
+}
+.create-gig-main .pricing .pricing-section .package .select-input-main {
+  margin-bottom: 1rem;
+}
+.create-gig-main .pricing .pricing-section .package .price-details {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.create-gig-main .pricing .pricing-section .package .price-details .price-value {
+  border: 1px solid var(--no-focus);
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  padding-right: 2rem;
+}
+.create-gig-main .pricing .pricing-section .package .price-details .price-value::-moz-placeholder {
+  font-size: 0.9rem;
+}
+.create-gig-main .pricing .pricing-section .package .price-details .price-value:-ms-input-placeholder {
+  font-size: 0.9rem;
+}
+.create-gig-main .pricing .pricing-section .package .price-details .price-value::placeholder {
+  font-size: 0.9rem;
+}
+.create-gig-main .pricing .pricing-section .package .price-details span {
+  position: absolute;
+  right: 1rem;
+}
+.create-gig-main .pricing .pricing-section .package .source,
+.create-gig-main .pricing .pricing-section .package .commercial {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.create-gig-main .pricing .pricing-section .package .source input,
+.create-gig-main .pricing .pricing-section .package .commercial input {
+  width: 1rem;
+  height: 1rem;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 1px solid var(--dark-grey);
+  border-radius: 50%;
+}
+.create-gig-main .pricing .pricing-section .package .source input:checked,
+.create-gig-main .pricing .pricing-section .package .commercial input:checked {
+  background-color: var(--green);
+  border-color: var(--green);
+}
+.create-gig-main .pricing .pricing-section .package .commercial {
+  margin-bottom: 1rem;
+}
+.create-gig-main .description {
+  margin: 4rem 18% 1rem;
+}
+.create-gig-main .description h1 {
+  padding-bottom: 1rem;
+  font-size: 2rem;
+  color: var(--light-heading);
+  border-bottom: 1px solid var(--no-focus);
+  margin-bottom: 3rem;
+}
+.create-gig-main .description h3 {
+  font-size: 1rem;
+  color: var(--light-heading);
+  margin-bottom: 1.5rem;
+  text-transform: capitalize;
+}
+.create-gig-main .requirements {
+  margin: 4rem 18% 1rem;
+  background-color: white;
+  padding: 1.75rem;
+  border: 1px solid var(--dark-separator);
+  border-radius: 5px;
+}
+.create-gig-main .requirements header {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--light-grey);
+  margin-bottom: 1rem;
+  word-spacing: 2px;
+}
+.create-gig-main .requirements .requirements-message {
+  color: var(--no-focus);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.create-gig-main .requirements .your-questions {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--light-heading);
+  position: relative;
+  margin-bottom: 1rem;
+}
+.create-gig-main .requirements .your-questions hr {
+  border-color: var(--no-focus);
+  width: 100%;
+}
+.create-gig-main .requirements .your-questions strong {
+  position: absolute;
+  transform: translateX(50%);
+  line-height: 1;
+  right: 50%;
+  z-index: 1;
+  background-color: white;
+  padding: 0 2rem;
+  font-size: 0.75rem;
+}
+.create-gig-main .requirements .add-question-wrapper {
+  background-color: var(--separator);
+  border: 1px solid var(--dark-separator);
+  padding: 1.5rem;
+  color: var(--light-heading);
+}
+.create-gig-main .requirements .add-question-wrapper header {
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+.create-gig-main .requirements .add-question-wrapper header h6 {
+  font-weight: 600;
+  color: var(--light-grey);
+}
+.create-gig-main .requirements .add-question-wrapper header div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.create-gig-main .requirements .add-question-wrapper header div label {
+  color: var(--light-heading);
+}
+.create-gig-main .requirements .add-question-wrapper .question-box {
+  margin-bottom: 1rem;
+  position: relative;
+}
+.create-gig-main .requirements .add-question-wrapper .question-box .question-description-warning {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: var(--warning);
+}
+.create-gig-main .requirements .add-question-wrapper .question-form-and-options h6 {
+  font-weight: 600;
+  color: var(--light-heading);
+  margin-bottom: 1rem;
+}
+.create-gig-main .requirements .add-question-wrapper .question-form-and-options .question-type-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper {
+  margin-top: 1.25rem;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper input {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid var(--no-focus);
+  border-radius: 4px;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper input::-moz-placeholder {
+  color: var(--no-focus);
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper input:-ms-input-placeholder {
+  color: var(--no-focus);
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper input::placeholder {
+  color: var(--no-focus);
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper input:hover {
+  border-color: var(--light-heading);
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper .close-icon {
+  position: absolute;
+  right: 1rem;
+  color: var(--dark-grey);
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-wrapper .close-icon:hover {
+  cursor: pointer;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper .option .option-warning {
+  color: var(--warning);
+  font-size: 0.75rem;
+  display: none;
+  letter-spacing: 0.5px;
+  margin-top: -0.3rem;
+  margin-bottom: 1rem;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper button {
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  border: 1px solid var(--link);
+  color: var(--link);
+  margin-top: 0.5rem;
+}
+.create-gig-main .requirements .add-question-wrapper .add-options-wrapper button:hover {
+  background-color: var(--link);
+  cursor: pointer;
+  color: white;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper {
+  display: flex;
+  justify-content: right;
+  margin-top: 1.25rem;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button {
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button:hover {
+  cursor: pointer;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button.cancel-add {
+  color: red;
+  border: 1px solid var(--light-heading);
+  color: var(--light-heading);
+  margin-right: 1rem;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button.cancel-add:hover {
+  background-color: var(--light-heading);
+  color: white;
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button.add-question {
+  color: white;
+  border: none;
+  background-color: var(--green);
+}
+.create-gig-main .requirements .add-question-wrapper .add-cancel-buttons-wrapper button.add-question:hover {
+  background-color: var(--green-hover);
+}
+.create-gig-main .requirements .question-details-section {
+  border: 1px solid var(--dark-separator);
+  border-radius: 3px;
+  padding: 1.25rem;
+  box-shadow: 0px 0 3px 0px var(--dark-separator);
+  margin: 1rem 0;
+}
+.create-gig-main .requirements .question-details-section .question-type {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--icons);
+  margin-bottom: 1rem;
+}
+.create-gig-main .requirements .question-details-section .question-type .text-or-multiple-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove {
+  position: relative;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove .ellipsis-icon {
+  color: var(--icons);
+  padding: 0.2rem;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove .ellipsis-icon:hover {
+  cursor: pointer;
+  background-color: var(--separator);
+  border-radius: 50%;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove .edit-and-remove-options {
+  border: 1px solid var(--dark-separator);
+  position: absolute;
+  left: -3rem;
+  top: 1.5rem;
+  min-width: 7rem;
+  z-index: 5;
+  box-shadow: 0px 0 3px 0px var(--dark-separator);
+  background-color: white;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove .edit-and-remove-options > div {
+  padding: 0.75rem;
+  color: var(--light-heading);
+  cursor: pointer;
+}
+.create-gig-main .requirements .question-details-section .question-type .edit-and-remove .edit-and-remove-options > div:hover {
+  background-color: var(--separator);
+}
+.create-gig-main .requirements .question-details-section .question {
+  font-weight: bold;
+  color: var(--light-grey);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+.create-gig-main .requirements .question-details-section .options {
+  font-size: 0.9rem;
+}
+.create-gig-main .requirements .add-question-button {
+  margin-top: 1rem;
+}
+.create-gig-main .requirements .add-question-button button {
+  background-color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  color: var(--link);
+  font-size: 0.9rem;
+  border: 1px solid var(--link);
+  transition: all 0.2s;
+}
+.create-gig-main .requirements .add-question-button button:hover {
+  background-color: var(--link);
+  color: white;
+}
+.create-gig-main .save-and-verify {
+  text-align: right;
+  margin: 0 15%;
+  padding-bottom: 1rem;
+}
+.create-gig-main .save-and-verify button {
+  padding: 0.75rem 1rem;
+  background-color: var(--green);
+  border: none;
+  color: white;
+  border-radius: 3px;
+}
+.create-gig-main .save-and-verify button:hover {
+  cursor: pointer;
+  background-color: var(--green-hover);
+}
+.create-gig-main .back-button {
+  margin: 0 15%;
+  padding-bottom: 1rem;
+  text-align: right;
+  padding-bottom: 1rem;
+}
+.create-gig-main .back-button button {
+  color: var(--green);
+  text-transform: capitalize;
+  border: none;
+}
+.create-gig-main .back-button button:hover {
+  text-decoration: underline;
+}/*# sourceMappingURL=CreateGig.css.map */

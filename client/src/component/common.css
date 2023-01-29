@@ -60,7 +60,7 @@ html {
 
 :root {
     --dark-grey: #222831;
-    --light-grey: rgb(57, 62, 70);
+    --light-grey: #393e46;
     --green: #1dbf73;
     --light-green: #1dbf73;
     --off-white: #EEEEEE;
@@ -72,9 +72,45 @@ html {
     --light-heading: #62646a;
     --dark-separator: #e4e5e7;
     --light-background: #d5d4d2;
+    --link: #4a73e8;
+    --warning: #f74040;
+    --green-hover: #19a463;
 }
 
-ol,ul,dl{
+ol,
+ul,
+dl {
     padding: 0;
     margin: 0;
+}
+
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+select:focus,
+.btn:active,
+.btn.active {
+    outline: 0px !important;
+    /* -webkit-appearance: none; */
+    box-shadow: none !important;
+}
+
+.noSelect {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.noSelect:focus {
+    outline: none !important;
 }
