@@ -1,38 +1,45 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
+import { Editor, EditorState, RichUtils } from 'draft-js';
+import '../../../node_modules/draft-js/dist/Draft.css';
+import './test.css';
+import { AiOutlineBold, AiOutlineItalic } from 'react-icons/ai';
 
-export const Test = ({post}) => {
+export const Test = () => {
+    const [editorState, setEditorState] = React.useState(
+        () => EditorState.createEmpty(),
+    );
 
-    const [categoryColor, setCategoryColor] = useState(null);
+    const handleChange = (editorState) => {
+        setEditorState(editorState);
+    };
 
-    console.log(post.categories);
-    useEffect(() => {
-        if (post.categories === 'All') {
-            setCategoryColor('red');
-        }
-        else if (post.categories === 'Coding') {
-            setCategoryColor('green');
-        }
-    },[categoryColor])
 
-    // const handleCategoryColor = (post) => {
-    //     if (post.categories === 'All') {
-    //       setCategoryColor('#ff0000');
-    //     }
-    //     else if (post.categories === 'Coding') {
-    //       setCategoryColor('#0088ff');
-    //     }
-    //     else if (post.categories === 'Interview_Experiences') {
-    //       setCategoryColor('#00ff48');
-    //     }
-    //     else if (post.categories === 'General_Discussion') {
-    //       setCategoryColor('#ffd000');
-    //     }
-    //     else if (post.categories === 'GuidanceAndTips') {
-    //       setCategoryColor('pink');
-    //     }
-    //   }
+    const handleBoldClick = () => {
+        setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
+    };
+
+    const handleItalicClick = () => {
+        setEditorState(RichUtils.toggleInlineStyle(editorState, 'ITALIC'));
+    };
+
+
+
 
     return (
-        <h1 style={{ color: categoryColor }}>Hello Shadab</h1>
-    )
+        <div className=''>
+            <button onClick={handleBoldClick}>
+                <AiOutlineBold></AiOutlineBold>
+            </button>
+
+
+            <button onClick={handleItalicClick}>
+                <AiOutlineItalic></AiOutlineItalic>
+            </button>
+
+            <Editor
+                editorState={editorState}
+                onChange={handleChange}
+            />
+        </div>
+    );
 }
