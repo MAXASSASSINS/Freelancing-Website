@@ -1,4 +1,4 @@
-import React, { useState, useRef, useReducer, Component } from 'react'
+import React, { useState, useRef, useReducer, Component, useContext } from 'react'
 import { io, Socket } from 'socket.io-client'
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,12 +18,15 @@ import { inboxReducer } from './inboxReducer';
 import { INBOX_DETAILS_INITIAL_STATE } from './inboxReducer';
 import { FETCH_ALL_CLIENTS_DETAILS, FETCH_ALL_CLIENTS_LAST_MESSAGE, FETCH_ALL_CLIENTS_LIST, UPDATE_ALL_CLIENTS_LIST, UPDATE_CLIENT_DETAILS, UPDATE_CLIENT_LAST_MESSAGE, FETCH_ALL_CHATS_WITH_CLIENT, UPDATE_ALL_CHATS_WITH_CLIENT, FETCH_ONLINE_STATUS_OF_CLIENTS, UPDATE_ONLINE_STATUS_OF_CLIENTS } from "./inboxConstant";
 import { Loader } from '../Loader/Loader';
+import { windowContext } from '../../App';
 
-
-const socket = io.connect("http://localhost:4000");
+import { SocketContext } from '../../context/socket/socket';
 
 
 export const Inbox = () => {
+  const {windowWidth, windowHeight} = useContext(windowContext);
+
+  const socket = useContext(SocketContext);
 
   const navigate = useNavigate();
 
@@ -63,8 +66,6 @@ export const Inbox = () => {
   const [fileLoading, setFileLoading] = useState(false);
 
   const [uploadPercentage, setUploadPercentage] = useState(null);
-
-  const inboxImageRef = useRef(null);
 
   const handleEmojiClick = (emoji) => {
     setShowEmojiPicker(false);
@@ -109,7 +110,7 @@ export const Inbox = () => {
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN 
   useEffect(() => {
     // console.log(user)
-    console.log(isAuthenticated)
+    // console.log(isAuthenticated)
     if (isAuthenticated) {
       // console.log("USER useffect is running");
       socket.emit("new_user", user._id.toString());
@@ -674,25 +675,25 @@ export const Inbox = () => {
 
 
   // Handle resizing of window -: width and height
-  const [windowWidth, setWindowWidth] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(0);
+  // const [windowWidth, setWindowWidth] = useState(0);
+  // const [windowHeight, setWindowHeight] = useState(0);
 
-  let resizeWindow = () => {
-    setWindowWidth(window.innerWidth);
-    setWindowHeight(window.innerHeight);
-  };
+  // let resizeWindow = () => {
+  //   setWindowWidth(window.innerWidth);
+  //   setWindowHeight(window.innerHeight);
+  // };
 
   useEffect(() => {
     // console.log(windowWidth);
-    resizeWindow();
-    window.addEventListener("resize", resizeWindow);
+    // resizeWindow();
+    // window.addEventListener("resize", resizeWindow);
     if (windowWidth < 600)
       setShowMessageListOnDevices(false);
     else
       setShowMessageListOnDevices(true);
 
-    return () => window.removeEventListener("resize", resizeWindow);
-  }, [resizeWindow]);
+    // return () => window.removeEventListener("resize", resizeWindow);
+  }, [windowContext]);
 
 
 
@@ -731,8 +732,7 @@ export const Inbox = () => {
               >
 
                 <div className='client-list-client-profile-image'>
-                  <div className='client-list-online-status' style={{ backgroundColor: onlineStatusOfClients[index] ? "#1dbf73" : "#a6a5a5" }}>
-                  </div>
+                  <div className='client-list-online-status' style={{ backgroundColor: onlineStatusOfClients[index] ? "#1dbf73" : "#a6a5a5" }}></div>
                   {
                     detail.user.avatar.url ?
                       <img src={detail.user.avatar.url}></img>

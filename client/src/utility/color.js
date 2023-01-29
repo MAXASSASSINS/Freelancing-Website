@@ -1,0 +1,16 @@
+export const dark_grey_color = '#222831';
+export const light_grey_color = '#393e46';
+export const green_color = '#1dbf73';
+export const light_green_color = '#1dbf73';
+export const off_white_color = '#EEEEEE';
+export const no_focus_color = '#a6a5a5';
+export const icons_color = '#74767e';
+export const gold_color = '#ffbe5b';
+export const border_color = '#F1EEE9';
+export const separator_color = '#efeff0';
+export const light_heading_color = '#62646a';
+export const dark_separator_color = '#e4e5e7';
+export const light_background_color = '#d5d4d2';
+export const link_color = '#4a73e8';
+export const warning_color = '#f74040';
+export const green_hover = '#19a463';

@@ -25,6 +25,7 @@ import { CreateGig } from './component/CreateGig/CreateGig';
 
 import { SocketContext } from './context/socket/socket';
 import { socket } from './context/socket/socket';
+import './utility/color.js'
 
 export const windowContext = createContext();
 
