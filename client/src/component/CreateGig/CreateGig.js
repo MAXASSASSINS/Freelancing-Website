@@ -381,7 +381,7 @@ export const CreateGig = () => {
               }
             </div>
             <div className={`${6 <= maxStep && "hover"}`}>
-              Gallery
+              Publish
             </div>
           </li>
         </ul>
