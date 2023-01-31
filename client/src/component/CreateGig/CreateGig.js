@@ -64,6 +64,9 @@ export const CreateGig = () => {
 
   const hideEditRemoveOptionRefs = useRef([]);
 
+  // const [sellerShowcaseVideo, setSellerShowcaseVideo] = useState("");
+  // const [sellerShowcaseImages, setSellerShowcaseImages] = useState([]);
+  // const [sellerShowcaseDocuments, setSellerShowcaseDocuments] = useState([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -110,7 +113,7 @@ export const CreateGig = () => {
       return [];
     }
   }
-  
+
   const handleSaveAndContinue = () => {
     if (currentStep < 7) {
       for (let i = 1; i < 7; i++) {
@@ -287,7 +290,7 @@ export const CreateGig = () => {
         break;
       }
     }
-    if (check){
+    if (check) {
       dispatch({ type: 'HIDE_ALL_EDIT_QUESTION' });
     }
   }
@@ -618,45 +621,51 @@ export const CreateGig = () => {
         }
       </div>
 
-      <div style={{ display: currentStep === 5 ? "" : "none" }}>
+      <div className='gallery' style={{ display: currentStep === 5 ? "" : "none" }}>
         <h3>Showcase Your Services In A Gig Gallery</h3>
-        <p>Encourage buyers to choose your Gig by featuring a variety of your work.</p>
+        <p className='heading-para'>Encourage buyers to choose your Gig by featuring a variety of your work.</p>
 
-        <div>
-          <h4>Video(one only)</h4>
-          <p>Capture buyers' attention with a video that showcases your service.</p>
-          <p>Please choose a video shorter than 75 seconds and smaller than 50MB</p>
-          <input type="file" accept='video/*'></input>
-          <FileDropIcon type=""></FileDropIcon>
-        </div>
-        <div>
-          <h4>Images(up to 3)</h4>
-          <p>Get noticed by the right buyers with visual examples of your services.</p>
-          {
-            [1, 2, 3].map((num, index) => {
-              return (
-
-                <FileDropIcon type="image"></FileDropIcon>
-              )
-            })
-          }
-        </div>
-        <div>
-          <h4>Documents (up to 2)</h4>
-          <p>Show some of the best work you created in a document (PDFs only).</p>
-          {
-            [1, 2].map((num, index) => {
-              return (
-                <FileDropIcon></FileDropIcon>
-              )
-            })
-          }
+        <div className='gallery-file-formats-wrapper'>
+          <section className='video'>
+            <h4 className='gallery-heading'>Video (one only)</h4>
+            <p className='gallery-heading-para'>Capture buyers' attention with a video that showcases your service.</p>
+            <p className='size-limit-warning'>Please choose a video shorter than 75 seconds and smaller than 50MB</p>
+            <div className='custom-file-input-wrapper'>
+              <FileDropIcon fileAcceptType="video/*" type="video"></FileDropIcon>
+            </div>
+          </section>
+          <section>
+            <h4 className='gallery-heading'>Images(up to 3)</h4>
+            <p className='gallery-heading-para'>Get noticed by the right buyers with visual examples of your services.</p>
+            <div className='custom-file-input-wrapper'>
+              {
+                [1, 2, 3].map((num, index) => {
+                  return (
+                    <FileDropIcon type="image" fileAcceptType="image/*" />
+                  )
+                })
+              }
+            </div>
+          </section>
+          <section>
+            <h4 className='gallery-heading'>Documents (up to 2)</h4>
+            <p className='gallery-heading-para'>Show some of the best work you created in a document (PDFs only).</p>
+            <div className='custom-file-input-wrapper'>
+              {
+                [1, 2].map((num, index) => {
+                  return (
+                    <FileDropIcon fileAcceptType=".pdf"/>
+                  )
+                })
+              }
+            </div>
+          </section>
         </div>
       </div>
 
       <div style={{ display: currentStep === 6 ? "" : "none" }}>
         <h3>Congratulations!</h3>
-        <p>You’re almost done with your first Gig.</p>
+        <p>You're almost done with your first Gig.</p>
         <p>Before you start selling on FreelanceMe, there is one last thing we need you to do:
           The security of your account is important to us. Therefore, we require all our sellers to verify their phone number before we can publish their first Gig.</p>
       </div>
