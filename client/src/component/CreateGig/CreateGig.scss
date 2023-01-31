@@ -342,7 +342,7 @@
         margin-top: 1.25rem;
 
         .option {
-          
+
           .option-wrapper {
             position: relative;
             width: 100%;
@@ -519,7 +519,7 @@
 
     .add-question-button {
       margin-top: 1rem;
-  
+
       button {
         background-color: white;
         padding: 0.75rem 1.5rem;
@@ -529,17 +529,74 @@
         border: 1px solid var(--link);
         transition: all 0.2s;
       }
-  
+
       button:hover {
         background-color: var(--link);
         color: white;
       }
-  
+
     }
 
   }
 
-  
+  .gallery {
+    @include create-gig-default-margin();
+
+    h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 2rem 0 1rem;
+    }
+
+    .gallery-file-formats-wrapper {
+      display: flex;
+      flex-direction: column;
+
+      section {
+        border-bottom: 1px solid var(--no-focus);
+        padding: 2rem 0;
+      }
+
+      .gallery-heading-para {
+        font-size: 1rem;
+        word-spacing: 0.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .gallery-heading {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .gallery-heading-para {
+        font-size: 0.9rem;
+        color: var(--icons);
+        margin: 0.25rem 0;
+      }
+
+      .custom-file-input-wrapper{
+        margin: 2rem 0 0;
+        display: flex;
+        gap: 1rem;
+      }
+
+
+
+      .video {
+        .size-limit-warning {
+          font-size: 0.75rem;
+          color: var(--icons);
+          margin-top: 0.5rem;
+        }
+      }
+
+    }
+
+
+
+
+
+  }
 
 
 

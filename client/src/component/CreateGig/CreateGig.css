@@ -442,6 +442,46 @@
   background-color: var(--link);
   color: white;
 }
+.create-gig-main .gallery {
+  margin: 4rem 18% 1rem;
+}
+.create-gig-main .gallery h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper section {
+  border-bottom: 1px solid var(--no-focus);
+  padding: 2rem 0;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper .gallery-heading-para {
+  font-size: 1rem;
+  word-spacing: 0.25rem;
+  margin-bottom: 2rem;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper .gallery-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper .gallery-heading-para {
+  font-size: 0.9rem;
+  color: var(--icons);
+  margin: 0.25rem 0;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper .custom-file-input-wrapper {
+  margin: 2rem 0 0;
+  display: flex;
+  gap: 1rem;
+}
+.create-gig-main .gallery .gallery-file-formats-wrapper .video .size-limit-warning {
+  font-size: 0.75rem;
+  color: var(--icons);
+  margin-top: 0.5rem;
+}
 .create-gig-main .save-and-verify {
   text-align: right;
   margin: 0 15%;
