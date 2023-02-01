@@ -482,6 +482,13 @@
   color: var(--icons);
   margin-top: 0.5rem;
 }
+.create-gig-main .gallery .gallery-file-formats-wrapper .gallery-input-error {
+  color: var(--warning);
+  position: relative;
+  font-size: 0.9rem;
+  top: 1.5rem;
+  word-spacing: 0.125rem;
+}
 .create-gig-main .save-and-verify {
   text-align: right;
   margin: 0 15%;

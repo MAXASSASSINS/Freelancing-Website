@@ -580,8 +580,6 @@
         gap: 1rem;
       }
 
-
-
       .video {
         .size-limit-warning {
           font-size: 0.75rem;
@@ -590,6 +588,13 @@
         }
       }
 
+      .gallery-input-error{
+        color: var(--warning);
+        position: relative;
+        font-size: 0.9rem;
+        top: 1.5rem;
+        word-spacing: 0.125rem;
+      }
     }
 
 
