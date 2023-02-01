@@ -64,9 +64,14 @@ export const CreateGig = () => {
 
   const hideEditRemoveOptionRefs = useRef([]);
 
-  // const [sellerShowcaseVideo, setSellerShowcaseVideo] = useState("");
-  // const [sellerShowcaseImages, setSellerShowcaseImages] = useState([]);
-  // const [sellerShowcaseDocuments, setSellerShowcaseDocuments] = useState([]);
+  const [sellerShowcaseVideo, setSellerShowcaseVideo] = useState("");
+  const [sellerShowcaseImages, setSellerShowcaseImages] = useState([null, null, null]);
+  const [sellerShowcaseDocuments, setSellerShowcaseDocuments] = useState([null, null]);
+
+  const [sellerShowcaseVideoError, setSellerShowcaseVideoError] = useState("");
+  const [sellerShowcaseImagesError, setSellerShowcaseImagesError] = useState("");
+  const [sellerShowcaseDocumentsError, setSellerShowcaseDocumentsError] = useState("");
+
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -294,6 +299,53 @@ export const CreateGig = () => {
       dispatch({ type: 'HIDE_ALL_EDIT_QUESTION' });
     }
   }
+
+  const getSellerShowcaseVideo = (val) => {
+    setSellerShowcaseVideoError('');
+    setSellerShowcaseVideo(val);
+  }
+
+  const getSellerShowcaseImages = (val, index) => {
+    setSellerShowcaseImagesError('');
+    const newSellerShowcaseImages = sellerShowcaseImages.map((item, i) => {
+      if (i === index) {
+        return val;
+      }
+      else {
+        return item;
+      }
+    })
+    setSellerShowcaseImages(newSellerShowcaseImages);
+    console.log(newSellerShowcaseImages);
+  }
+
+  const getSellerShowcaseDocuments = (val, index) => {
+    setSellerShowcaseDocumentsError('');
+    const newSellerShowcaseDocuments = sellerShowcaseDocuments.map((item, i) => {
+      if (i === index) {
+        return val;
+      }
+      else {
+        return item;
+      }
+    })
+    setSellerShowcaseDocuments(newSellerShowcaseDocuments);
+    console.log(newSellerShowcaseDocuments);
+  }
+
+  const getSellerShowcaseVideoError = (val) => {
+    setSellerShowcaseVideoError(val);
+  }
+
+  const getSellerShowcaseImagesError = (val) => {
+    setSellerShowcaseImagesError(val);
+  }
+
+  const getSellerShowcaseDocumentsError = (val) => {
+    setSellerShowcaseDocumentsError(val);
+  }
+
+  
 
 
 
@@ -631,8 +683,19 @@ export const CreateGig = () => {
             <p className='gallery-heading-para'>Capture buyers' attention with a video that showcases your service.</p>
             <p className='size-limit-warning'>Please choose a video shorter than 75 seconds and smaller than 50MB</p>
             <div className='custom-file-input-wrapper'>
-              <FileDropIcon fileAcceptType="video/*" type="video"></FileDropIcon>
+              <FileDropIcon
+                fileAcceptType="video/*"
+                type="video"
+                getSelectedFile={getSellerShowcaseVideo}
+                maxFileSize={50 * 1024 * 1024}
+                getError={getSellerShowcaseVideoError}
+                maxDuration={75}
+              />
             </div>
+            {
+              sellerShowcaseVideoError &&
+              <p className='gallery-input-error'>{sellerShowcaseVideoError}</p>
+            }
           </section>
           <section>
             <h4 className='gallery-heading'>Images(up to 3)</h4>
@@ -641,11 +704,23 @@ export const CreateGig = () => {
               {
                 [1, 2, 3].map((num, index) => {
                   return (
-                    <FileDropIcon type="image" fileAcceptType="image/*" />
+                    <FileDropIcon
+                      type="image"
+                      fileAcceptType="image/*"
+                      getSelectedFile={getSellerShowcaseImages}
+                      index={index}
+                      maxFileSize={5 * 1024 * 1024}
+                      getError={getSellerShowcaseImagesError}
+
+                    />
                   )
                 })
               }
             </div>
+            {
+              sellerShowcaseImagesError &&
+              <p className='gallery-input-error'>{sellerShowcaseImagesError}</p>
+            }
           </section>
           <section>
             <h4 className='gallery-heading'>Documents (up to 2)</h4>
@@ -654,11 +729,22 @@ export const CreateGig = () => {
               {
                 [1, 2].map((num, index) => {
                   return (
-                    <FileDropIcon fileAcceptType=".pdf"/>
+                    <FileDropIcon
+                      fileAcceptType=".pdf"
+                      type="document"
+                      getSelectedFile={getSellerShowcaseDocuments}
+                      index={index}
+                      maxFileSize={2 * 1024 * 1024}
+                      getError={getSellerShowcaseDocumentsError}
+                    />
                   )
                 })
               }
             </div>
+            {
+              sellerShowcaseDocumentsError &&
+              <p className='gallery-input-error'>{sellerShowcaseDocumentsError}</p>
+            }
           </section>
         </div>
       </div>
