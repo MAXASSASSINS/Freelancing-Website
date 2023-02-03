@@ -61,6 +61,12 @@
   color: var(--no-focus);
   width: 24ch;
 }
+.create-gig-main .overview .left-side .gig-title-input-warning,
+.create-gig-main .overview .right-side .gig-title-input-warning {
+  color: var(--warning);
+  font-size: 0.9rem;
+  margin-top: -1rem;
+}
 .create-gig-main .overview .left-side .category-section,
 .create-gig-main .overview .right-side .category-section {
   display: flex;
