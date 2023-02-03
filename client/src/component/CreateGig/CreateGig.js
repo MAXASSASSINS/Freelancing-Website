@@ -26,15 +26,19 @@ import { AiOutlineEllipsis } from 'react-icons/ai'
 import SelectInput2 from '../SelectInput/SelectInput2'
 import { IoClose } from 'react-icons/io5'
 import { AddorUpdateQuestion } from './AddorUpdateQuestion'
+import { MULTIPLE_CHOICE } from './createGigConstants'
 
 export const CreateGig = () => {
   const navigate = useNavigate();
   const { windowWidth, windowHeight } = useContext(windowContext);
   const { user, isAuthenticated, loading, error } = useSelector(state => state.user);
 
-  const [currentStep, setCurrentStep] = useState(5);
+  const [currentStep, setCurrentStep] = useState(1);
   const [stepCompleted, setStepCompleted] = useState([false, false, false, false, false, false]);
   const [maxStep, setMaxStep] = useState(6);
+
+  const [gigTitleInput, setGigTitleInput] = useState("");
+  const [enalbeGigTitleInputWarning, setEnalbeGigTitleInputWarning] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState('Select a category');
   const [selectedSubCategory, setSelectedSubCategory] = useState('Select a sub-category');
@@ -99,6 +103,16 @@ export const CreateGig = () => {
   sourceFileRefs.current = packagesData.map((item, index) => sourceFileRefs.current[index] || createRef());
   commercialUseRefs.current = packagesData.map((item, index) => commercialUseRefs.current[index] || createRef());
 
+  const getGigTitleInput = (val) => {
+    if(val.trim().length < 15){
+      setEnalbeGigTitleInputWarning(true);
+    }
+    else{
+      setEnalbeGigTitleInputWarning(false);
+    }
+    setGigTitleInput(val);
+  }
+
 
   const getSelectedCategory = (val) => {
     setSelectedCategory(val);
@@ -152,7 +166,7 @@ export const CreateGig = () => {
       error = true;
       setWarningEnabled(true);
     }
-    if (questionType === "Multiple Choice") {
+    if (questionType === MULTIPLE_CHOICE) {
       options.forEach((item, index) => {
         if (item.toString().trim().length === 0) {
           error = true;
@@ -160,7 +174,6 @@ export const CreateGig = () => {
         }
       })
     }
-
     return error;
   }
 
@@ -185,7 +198,7 @@ export const CreateGig = () => {
     if (error) return;
 
     const payload = {
-      question: questionTitle,
+      question: questionTitle.trim(),
       type: questionType,
       requiredStatus: questionRequiredInput,
       multipleOptionSelectionStatus: enableMultipleOptionsInput,
@@ -346,7 +359,7 @@ export const CreateGig = () => {
     setSellerShowcaseDocumentsError(val);
   }
 
-  
+
 
 
 
@@ -462,16 +475,18 @@ export const CreateGig = () => {
           <div>
             <TextArea
               maxLength={100}
-              minLength={7}
+              minLength={0}
               placeholder="I will do something I'm really good at"
               defaultText="I will "
               fontSize="18px"
-              warning='15 characters minimum'
-            // warning='Create a title with 15 characters minimum. Title can contain letters and numbers only. Your title should have at least 4 words'
+              getText={getGigTitleInput}
             />
-            {/* <textarea placeholder="i will do something I'm really good at" maxLength={80}></textarea> */}
-            {/* <div>0/80 max</div> */}
-            {/* <div>15 characters minimum</div> */}
+            {
+              enalbeGigTitleInputWarning &&
+              <div className='gig-title-input-warning'>
+                15 characters minimum
+              </div>
+            }
           </div>
           <div className='category-section'>
             <SelectInput2
@@ -658,7 +673,7 @@ export const CreateGig = () => {
                   </div>
 
                   {
-                    question.type === 'Multiple Choice' &&
+                    question.type === MULTIPLE_CHOICE &&
                     <div className='options'>
                       {getQuestionOptions(question.options)}
                     </div>

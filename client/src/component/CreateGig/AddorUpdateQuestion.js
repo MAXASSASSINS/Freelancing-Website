@@ -3,6 +3,7 @@ import { TextArea } from '../TextArea/TextArea'
 import SelectInput2 from '../SelectInput/SelectInput2'
 import { CheckInput } from '../CheckInput/CheckInput'
 import { IoClose } from 'react-icons/io5'
+import { MULTIPLE_CHOICE } from './createGigConstants'
 
 
 
@@ -36,7 +37,7 @@ export const AddorUpdateQuestion = ({ getQuestionTitle, questionTitle,
         />
         <div
           className='question-description-warning'
-          style={{ display: (questionTitle.length < 2 && warningEnabled) ? "block" : "none" }}
+          style={{ display: (questionTitle.trim().length < 2 && warningEnabled) ? "block" : "none" }}
         >
           Description should be at least 2 characters long
         </div>
@@ -55,7 +56,7 @@ export const AddorUpdateQuestion = ({ getQuestionTitle, questionTitle,
           </div>
 
           {
-            questionType === 'Multiple Choice' &&
+            questionType === MULTIPLE_CHOICE &&
             <div className=''>
               <CheckInput
                 label='Enable to choose more than 1 option'
@@ -68,7 +69,7 @@ export const AddorUpdateQuestion = ({ getQuestionTitle, questionTitle,
       </div>
 
       {
-        questionType === 'Multiple Choice' &&
+        questionType === MULTIPLE_CHOICE &&
         <div className='add-options-wrapper'>
           {
             options.map((option, index) => (

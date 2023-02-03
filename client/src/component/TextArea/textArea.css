@@ -16,7 +16,7 @@
 .textarea-main .textarea-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   font-size: 0.75rem;
   word-spacing: 3px;
   margin-top: 0.25rem;
