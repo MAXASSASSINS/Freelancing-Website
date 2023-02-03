@@ -10,8 +10,8 @@ export const TextArea = forwardRef(({ maxLength, minLength, style, placeholder,
 
     const handleChange = (e) => {
         setCurrentTextLength(e.target.value.trim().length);
-        setText(e.target.value.trim());
-        getText(e.target.value.trim());
+        setText(e.target.value);
+        getText(e.target.value);
     }
 
 
@@ -24,18 +24,17 @@ export const TextArea = forwardRef(({ maxLength, minLength, style, placeholder,
                 autoCorrect='off'
                 autoComplete='off'
                 autoCapitalize='off'
-                defaultValue={defaultText}
                 onChange={handleChange}
                 style={style}
                 ref={reference}
+                value={text}
             >
             </textarea>
             <div className='textarea-footer'>
-                <div className='warning'>
+                {/* <div className='warning'>
                     {warning}
-                </div>
+                </div> */}
                 <div className='textarea-label'>
-
                     {currentTextLength} / {maxLength} max
                 </div>
             </div>
