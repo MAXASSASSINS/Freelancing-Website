@@ -33,7 +33,7 @@ export const CreateGig = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
   const { user, isAuthenticated, loading, error } = useSelector(state => state.user);
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(6);
   const [stepCompleted, setStepCompleted] = useState([false, false, false, false, false, false]);
   const [maxStep, setMaxStep] = useState(6);
 
@@ -104,10 +104,10 @@ export const CreateGig = () => {
   commercialUseRefs.current = packagesData.map((item, index) => commercialUseRefs.current[index] || createRef());
 
   const getGigTitleInput = (val) => {
-    if(val.trim().length < 15){
+    if (val.trim().length < 15) {
       setEnalbeGigTitleInputWarning(true);
     }
-    else{
+    else {
       setEnalbeGigTitleInputWarning(false);
     }
     setGigTitleInput(val);
@@ -765,17 +765,21 @@ export const CreateGig = () => {
         </div>
       </div>
 
-      <div style={{ display: currentStep === 6 ? "" : "none" }}>
-        <h3>Congratulations!</h3>
-        <p>You're almost done with your first Gig.</p>
-        <p>Before you start selling on FreelanceMe, there is one last thing we need you to do:
-          The security of your account is important to us. Therefore, we require all our sellers to verify their phone number before we can publish their first Gig.</p>
+      <div className='publish' style={{ display: currentStep === 6 ? "" : "none" }}>
+        <div className='publish-image-wrapper'>
+        </div>
+        <div className='publish-text-wrapper'>
+          <h3>Congratulations!</h3>
+          <p className='main-para'>You're almost done with your first Gig.</p>
+          <p>Before you start selling on FreelanceMe, there is one last thing we need you to do:
+            The security of your account is important to us. Therefore, we require all our sellers to verify their phone number before we can publish their first Gig.</p>
+        </div>
       </div>
 
       <div className='save-and-verify'>
         {
           currentStep === 6 ?
-            <button>Verify Now Button</button>
+            <button>Verify Now</button>
             :
             <button onClick={handleSaveAndContinue}>Save & Continue</button>
         }
