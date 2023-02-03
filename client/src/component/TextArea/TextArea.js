@@ -9,10 +9,9 @@ export const TextArea = forwardRef(({ maxLength, minLength, style, placeholder,
     const [text, setText] = useState(defaultText ? defaultText : "");
 
     const handleChange = (e) => {
-        setCurrentTextLength(e.target.value.length);
-        setText(e.target.value);
-        // console.log(getText);
-        getText(e.target.value);
+        setCurrentTextLength(e.target.value.trim().length);
+        setText(e.target.value.trim());
+        getText(e.target.value.trim());
     }
 
 
