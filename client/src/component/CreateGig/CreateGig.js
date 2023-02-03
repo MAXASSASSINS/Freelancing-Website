@@ -147,13 +147,14 @@ export const CreateGig = () => {
 
   const checkForAnyEmptyFieldsForQuestion = () => {
     let error = false;
-    if (questionTitle.toString().length < 2) {
+    console.log(questionTitle);
+    if (questionTitle.toString().trim().length < 2) {
       error = true;
       setWarningEnabled(true);
     }
     if (questionType === "Multiple Choice") {
       options.forEach((item, index) => {
-        if (item.toString() === "") {
+        if (item.toString().trim().length === 0) {
           error = true;
           setWarningEnabled(true);
         }
