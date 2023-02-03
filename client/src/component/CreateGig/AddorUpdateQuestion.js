@@ -89,7 +89,7 @@ export const AddorUpdateQuestion = ({ getQuestionTitle, questionTitle,
                 </div>
                 <div
                   className='option-warning'
-                  style={{ display: (options[index].length == 0 && warningEnabled) ? "block" : "none" }}
+                  style={{ display: (options[index].trim().length == 0 && warningEnabled) ? "block" : "none" }}
                 >
                   Description should be at least 1 character long
                 </div>
