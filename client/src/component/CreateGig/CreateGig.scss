@@ -78,6 +78,12 @@
         width: 24ch;
       }
 
+      .gig-title-input-warning{
+        color: var(--warning);
+        font-size: 0.9rem;
+        margin-top: -1rem;
+      }
+
       .category-section {
         display: flex;
         justify-content: space-between;
