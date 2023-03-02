@@ -1,6 +1,7 @@
 import express from 'express'
 import { authorisedRoles, isAuthenticated } from '../middleware/auth.js';
 import { addMessage, getAllMessagesBetweenTwoUsers, getAllMessagesForCurrentUser, getLastMessageBetweenTwoUser, getListOfAllInboxClients, sendFileUpload, updateAllMessages } from '../controllers/messageController.js';
+import { sendSMS } from '../utils/twilio.js';
 const router = express.Router();
 
 import multer from "multer";
@@ -27,11 +28,13 @@ router.post('/send/files', isAuthenticated, upload, sendFileUpload);
 
 router.post('/add/file',isAuthenticated, upload, (req, res)=>{
     console.log(req.file);
-
+    
     res.send("file uploaded successfully");
 });
 
 router.get('/update/all/messages', updateAllMessages);
+
+router.post('/send/SMS',  sendSMS);
 
 export default router;
 
