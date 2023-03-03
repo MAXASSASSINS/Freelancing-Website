@@ -29,7 +29,7 @@ a:hover {
     color: inherit;
 }
 
-p{
+p {
     margin: 0;
 }
 
@@ -114,3 +114,10 @@ select:focus,
 .noSelect:focus {
     outline: none !important;
 }
+button:not(:disabled),
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled) {
+    cursor: initial;
+}
+
