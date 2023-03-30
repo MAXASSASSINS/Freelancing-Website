@@ -3,8 +3,9 @@ import './gigCard.css'
 import { MyCarousel } from '../Carousel/MyCarousel'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-
+import { IoMdImages } from 'react-icons/io'
 export const GigCard = ({ gig }) => {
+    console.log(gig.pricing)
     const handleClick = () => {
         // console.log("clicked");
     }
@@ -40,7 +41,7 @@ export const GigCard = ({ gig }) => {
                     <Link to={`/gig/details/${gig._id}`}>
                         <div className='price-container'>
                             <div className='starting-at'>STARTING AT</div>
-                            <div>₹{gig.pricing[0].packagePrice.toLocaleString('en-IN')}</div>
+                            <div>₹{gig.pricing.length === 0 ? "100" : gig.pricing[0].packagePrice.toLocaleString('en-IN')}</div>
                         </div>
                     </Link>
                 </div>
