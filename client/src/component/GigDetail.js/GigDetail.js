@@ -3,7 +3,7 @@ import './gigDetail.css'
 import { GigCard } from '../GigCard/GigCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { getGigDetail, getUserGigs } from '../../actions/gigAction'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { flags } from '../../data/country-flags'
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -13,10 +13,23 @@ import { RatingBars } from '../RatingBars/RatingBars'
 import { Chat } from '../Chat/Chat';
 import { ToastContainer, toast } from 'react-toastify';
 import CreateIcon from '@mui/icons-material/Create';
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
+import { TextEditor } from '../TextEditor/TextEditor'
 
 export const GigDetail = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
+
+  const [editorState, setEditorState] = useState(
+    () => EditorState.createEmpty(),
+  );
+
+  const styleMap = {
+    HIGHLIGHT: {
+      backgroundColor: 'yellow',
+    }
+  }
 
   let [gigReviews, setGigReviews] = useState(null);
   const [reviewCount, setReviewCount] = useState(5);
@@ -36,6 +49,15 @@ export const GigDetail = () => {
     // console.log(gigDetail);
     setGigReviews(gigDetail && gigDetail.reviews);
     setPricePackageInfo(gigDetail && gigDetail.pricing[0])
+
+    // setting editor state
+    const description = gigDetail && gigDetail.description;
+    // console.log(description);
+    if (!description) return;
+    let contentState = convertFromRaw(JSON.parse(description));
+    let editorState = EditorState.createWithContent(contentState);
+    setEditorState(editorState);
+
   }, [gigDetail])
 
   const getFlag = (flagName) => flags.find(flag => {
@@ -137,7 +159,15 @@ export const GigDetail = () => {
       <div className='gig-detail-main-wrapper'>
         <section className='gig-details-section'>
           <div>
-            <Link to={'/gig/create/new/gig'} className='user-detail-edit-gig'>
+            <Link
+              to={
+                {
+                  pathname: "/gig/create/new/gig",
+                  search: `?id=${gigDetail._id}`
+                }
+              }
+              className='user-detail-edit-gig'
+            >
               <div className='edit-icon'><CreateIcon></CreateIcon></div>
               <div>Edit Gig</div>
             </Link>
@@ -219,7 +249,21 @@ export const GigDetail = () => {
             <header>
               <h2>About This Gig</h2>
             </header>
-            <div className='gig-details-description-wrapper' dangerouslySetInnerHTML={{ __html: gigDetail.description }}>
+            {/* <div className='gig-details-description-wrapper' dangerouslySetInnerHTML={{ __html: gigDetail.description }}>
+            </div> */}
+            <div className='gig-details-description-wrapper'>
+              <Editor
+                editorState={editorState}
+                readOnly={true}
+                customStyleMap={styleMap}
+                toolbarHidden={true}
+                customStyleFn={() => {
+                  return {
+                    lineHeight: 1.5,
+                    fontSize: '1rem',
+                  }
+                }}
+              />
             </div>
           </div>
           <div id='gig-owner-details-id' className='gig-owner-details-div'>
