@@ -26,6 +26,8 @@ import { CreateGig } from './component/CreateGig/CreateGig';
 import { SocketContext } from './context/socket/socket';
 import { socket } from './context/socket/socket';
 import './utility/color.js'
+import { CloudinaryContext, Image } from 'cloudinary-react';
+
 
 export const windowContext = createContext();
 
@@ -81,28 +83,30 @@ const App = () => {
 
 		<>
 			<windowContext.Provider value={{ windowWidth, windowHeight }}>
-				<SocketContext.Provider value={socket}>
-					<Header></Header>
-					<ToastContainer />
-					<Routes>
-						<Route exact path='/get/client/seller/chat:id' element={<CurrentlySelectedClientChat />}></Route>
-						<Route exact path='/get/all/messages/for/current/user' element={<Inbox />}></Route>
-						<Route exact path='/' element={<Home />} />
-						<Route exact path='/login' element={<Login />} />
-						{/* {
+				<CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
+					<SocketContext.Provider value={socket}>
+						<Header></Header>
+						<ToastContainer />
+						<Routes>
+							<Route exact path='/get/client/seller/chat:id' element={<CurrentlySelectedClientChat />}></Route>
+							<Route exact path='/get/all/messages/for/current/user' element={<Inbox />}></Route>
+							<Route exact path='/' element={<Home />} />
+							<Route exact path='/login' element={<Login />} />
+							{/* {
 					gigs && gigs.map(gig => (
 						<Sidebar gig={gig} key={gig._id} />
 					))
 				} */}
-						{/* <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div> */}
+							{/* <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div> */}
 
-						<Route exact path='/user/:id' element={<UserDetail />} />
-						<Route exact path='/gig/details/:id' element={<GigDetail />} />
-						<Route path='*' element={<NotFoundPage />} />
-						<Route exact path='/gig/create/new/gig' element={<CreateGig />}></Route>
-					</Routes>
-					{/* <Footer /> */}
-				</SocketContext.Provider>
+							<Route exact path='/user/:id' element={<UserDetail />} />
+							<Route exact path='/gig/details/:id' element={<GigDetail />} />
+							<Route path='*' element={<NotFoundPage />} />
+							<Route exact path='/gig/create/new/gig' element={<CreateGig />}></Route>
+						</Routes>
+						{/* <Footer /> */}
+					</SocketContext.Provider>
+				</CloudinaryContext>
 			</windowContext.Provider>
 		</>
 	);
