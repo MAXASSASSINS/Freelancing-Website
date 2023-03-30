@@ -5,7 +5,7 @@ import { GigCard } from '../GigCard/GigCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserGigs } from '../../actions/gigAction'
 import { getGigUser } from '../../actions/userAction'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { flags } from '../../data/country-flags'
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -15,7 +15,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { windowContext } from '../../App'
 
 export const UserDetail = () => {
-	const {windowWidth, windowHeight} = useContext(windowContext);
+	const navigate = useNavigate();
+	const { windowWidth, windowHeight } = useContext(windowContext);
 	const params = useParams();
 	const dispatch = useDispatch();
 
@@ -47,7 +48,7 @@ export const UserDetail = () => {
 	// console.log(gigUser);
 	// console.log(userGigs);
 
-	
+
 
 	const getFlag = (flagName) => flags.find(flag => {
 		if (flag.name === flagName) {
@@ -220,8 +221,8 @@ export const UserDetail = () => {
 								})
 						}
 						{
-							windowWidth > 900 &&  user?._id === gigUser._id &&
-							<div className='user-detail-create-new-gig-card'>
+							windowWidth > 900 && user?._id === gigUser._id &&
+							<div onClick={() => navigate({ pathname: "/gig/create/new/gig", search: "?id=null" })} className='user-detail-create-new-gig-card'>
 								<div className='add-circle-icon'>
 									<AddCircleIcon style={{ fontSize: "50px", color: "#62646a" }}></AddCircleIcon>
 								</div>
