@@ -46,11 +46,12 @@ export const getUserGigs = (id) => async (dispatch) => {
 }
 
 export const getGigDetail = (id) => async (dispatch) => {
+    // console.log(id);
     try {
         dispatch({ type: GIG_DETAIL_REQUEST });
 
         const { data } = await axios.get(`/gig/details/${id}`);
-        // const data = await fetchedData.json();
+
 
         dispatch({
             type: GIG_DETAIL_SUCCESS,
