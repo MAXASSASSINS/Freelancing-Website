@@ -56,21 +56,13 @@ app.use('/', messageRoutes);
 app.use(errorMiddleware);
 
 
-// cloudinary.config({
-//     cloud_name: "dyod45bn8",
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECERET
-// })
+// Cloudinary Config
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECERET
 })
-// cloudinary.config({
-//     cloud_name: "dyod45bn8",
-//     api_key: "492341495124435",
-//     api_secret: "cnq3FoHL9Vzn15x--hUvVCtMoPA" 
-// })
+
 
 // Database Connection
 export let server = http.createServer(app);
