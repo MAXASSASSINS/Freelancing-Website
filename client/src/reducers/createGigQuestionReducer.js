@@ -7,7 +7,8 @@ import {
     UPDATE_SHOW_EDIT_QUESTION,
     ADD_NEW_QUESTION,
     REMOVE_QUESTION,
-    HIDE_ALL_EDIT_QUESTION
+    HIDE_ALL_EDIT_QUESTION,
+    RESET_ALL,
 } from "../constants/createGigQuestionConstants";
 
 // export const QUESTION_DETAILS_INITIAL_STATE = [{
@@ -62,9 +63,9 @@ export const createGigQuestionReducer = (state, action) => {
             const {questionIndex, type, multipleOptionSelectionStatus, question, options, requiredStatus} = action.payload;
 
             const updatedQuestion = {
+                question,
                 type,
                 multipleOptionSelectionStatus,
-                question,
                 options,
                 requiredStatus,
                 showEditQuestion: false,
@@ -126,6 +127,11 @@ export const createGigQuestionReducer = (state, action) => {
             })
             return newState;
         }
+
+        case RESET_ALL: {
+            return QUESTION_DETAILS_INITIAL_STATE;
+        }
+
 
 
 
