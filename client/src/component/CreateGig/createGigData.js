@@ -210,6 +210,7 @@ export const revisionsData = [
 ]
 
 export const questionTypeData = [
+    'Free Text',
     'Multiple Choice',
 ]
 
