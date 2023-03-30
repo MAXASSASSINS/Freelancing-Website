@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import './checkInput.css'
 import {GoCheck} from 'react-icons/go'
 import '../../utility/color'
 
-export const CheckInput = ({ label, labelColor, reference, defaultValue = false, getInputCheckedVal }) => {
+export const CheckInput = forwardRef(({ label, labelColor, reference, defaultValue = false, getInputCheckedVal }, ref) => {
 
     const [isChecked, setIsChecked] = useState(defaultValue);
 
@@ -14,6 +14,13 @@ export const CheckInput = ({ label, labelColor, reference, defaultValue = false,
         getInputCheckedVal && getInputCheckedVal(e.target.checked);
     }
 
+    useImperativeHandle(ref, () => ({
+        currValue: isChecked,
+        setIsCheckedComingFromParent: (val) => {
+            setIsChecked(val);
+        }
+    }), [isChecked]);
+
     // console.log(isChecked);
 
     return (
@@ -21,7 +28,6 @@ export const CheckInput = ({ label, labelColor, reference, defaultValue = false,
             <input
                 type="checkbox"
                 onChange={handleChange}
-                ref={reference}
                 value={isChecked}
                 defaultChecked={defaultValue}
             />
@@ -39,4 +45,4 @@ export const CheckInput = ({ label, labelColor, reference, defaultValue = false,
             </div>
         </label>
     )
-}
+})
