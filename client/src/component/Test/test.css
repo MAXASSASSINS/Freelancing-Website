@@ -1,12 +1,1 @@
-div.DraftEditor-root {
-  border: 1px solid var(--no-focus);
-  background-color: white;
-  height: 15rem;
-  width: 100%;
-  overflow-y: auto;
-}
-
-div.DraftEditor-editorContainer,
-div.public-DraftEditor-content {
-  height: 100%;
-}/*# sourceMappingURL=test.css.map */
+/*# sourceMappingURL=test.css.map */
