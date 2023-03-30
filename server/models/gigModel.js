@@ -2,16 +2,20 @@ import mongoose from "mongoose";
 const gigSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: [true, "Please enter you gig title"],
+        // required: [true, "Please enter you gig title"],
     },
     category: {
         type: String,
-        required: [true, "Please enter you gig category"],
+        // required: [true, "Please enter you gig category"],
+    },
+    subCategory: {
+        type: String,
+        // required: [true, "Please enter you gig sub category"],
     },
     searchTags: [
         {
             type: String,
-            required: [true, "Please enter at least 1 tag"],
+            // required: [true, "Please enter at least 1 tag"],
         },
     ],
     pricing: [
@@ -25,7 +29,7 @@ const gigSchema = new mongoose.Schema({
                 required: [true, "Please enter the description of your package"]
             },
             packageDeliveryTime: {
-                type: Number,
+                type: String,
                 required: [true, "Please enter the delivery time of your package"],
                 default: 1
             },
@@ -49,12 +53,11 @@ const gigSchema = new mongoose.Schema({
                 required: [true, "Please enter the price of your package"],
                 default: 0
             }
-
         }
     ],
     description: {
         type: String,
-        required: [true, "Please enter the description of your gig"]
+        // required: [true, "Please enter the description of your gig"]
     },
     images: [
         {
@@ -70,7 +73,9 @@ const gigSchema = new mongoose.Schema({
     ],
     video: {
         videoPublicId: String,
-        videoUrl: String
+        videoUrl: String,
+        videoName: String,
+        mimeType: String,
     },
     ratings: {
         type: Number,
@@ -134,7 +139,7 @@ const gigSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.ObjectId,
         ref: "User",
-        required: true,
+        // required: true,
     },
     active: {
         required: true,
@@ -143,18 +148,22 @@ const gigSchema = new mongoose.Schema({
     },
     requirements: [
         {
-            question: {
+            questionTitle: {
                 type: String,
-                questionType: {
-                    type: String,
-                    enum: ["free text", "multiple choice"],
-                    default: "text"
-                },
-                answerRequired: {
-                    type: Boolean,
-                    default: false
-                },
                 required: [true, "Please enter the question"]
+            },
+            questionType: {
+                type: String,
+                enum: ["Free Text", "Multiple Choice"],
+                default: "Free Text"
+            },
+            answerRequired: {
+                type: Boolean,
+                default: false
+            },
+            multipleOptionSelect: {
+                type: Boolean,
+                default: false
             },
             options: [
                 {
@@ -163,7 +172,6 @@ const gigSchema = new mongoose.Schema({
             ],
             answer: {
                 type: String,
-                required: [true, "Please enter the answer"]
             }
         }
     ]
