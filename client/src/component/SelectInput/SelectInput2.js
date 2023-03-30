@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, forwardRef, useState} from 'react'
+import React, { useImperativeHandle, forwardRef, useState } from 'react'
 import './selectInput.css'
 
 const SelectInput2 = ({ data, defaultOption, style, getChoosenOption }, ref) => {
@@ -6,10 +6,13 @@ const SelectInput2 = ({ data, defaultOption, style, getChoosenOption }, ref) => 
     const [choosedOption, setChoosedOption] = useState(defaultOption);
 
     useImperativeHandle(ref, () => ({
-        currValue: choosedOption
-    }),[choosedOption]);
+        currValue: choosedOption,
+        setChoosedOptionComingFromParent: (option) => {
+            setChoosedOption(option);
+        }
+    }), [choosedOption]);
 
-    
+
 
     const handleChange = (e) => {
         setChoosedOption(e.target.value);
@@ -20,13 +23,15 @@ const SelectInput2 = ({ data, defaultOption, style, getChoosenOption }, ref) => 
 
     return (
         <div className='select-input-main'>
-            <select style={style} value={choosedOption} onChange={handleChange} ref={ref}>
+            <select style={style} value={choosedOption} onChange={handleChange} >
                 <option value={defaultOption}>{defaultOption}</option>
                 {
-                    data.map((item, index) => {
-                        return (
-                            <option key={index + item} value={item}>{item}</option>
-                        )
+                    data?.map((item, index) => {
+                        if (defaultOption !== item) {
+                            return (
+                                <option key={index + item} value={item}>{item}</option>
+                            )
+                        }
                     })
                 }
             </select>
