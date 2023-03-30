@@ -1,28 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { AiOutlineVideoCamera } from 'react-icons/ai'
 import { VscFilePdf } from 'react-icons/vsc'
 import { RiImage2Line } from 'react-icons/ri'
-import { TbCircleCheck } from 'react-icons/tb'
-import { CiCircleCheck } from 'react-icons/ci'
-// import { RxCheckCircled } from 'react-icons/rx'
 import { BsTrash } from 'react-icons/bs'
 import { IoCheckmarkCircleOutline } from 'react-icons/io5'
 import './fileDropIcon.css'
 
-export const FileDropIcon = ({ type, fileAcceptType, getSelectedFile, index, maxFileSize, getError, maxDuration }) => {
+export const FileDropIcon = forwardRef(({ type, fileAcceptType, getSelectedFile, index, maxFileSize, getError, maxDuration }, ref) => {
 
   const [selectedFile, setSelectedFile] = useState('');
-  const [preveiwImage, setPreviewImage] = useState('');
+  const [previewUrl, setPreviewUrL] = useState('');
 
-  useEffect(() => {
-    if (selectedFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-      }
-      reader.readAsDataURL(selectedFile);
+
+  const preveiwImageHandler = (file) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrL(reader.result);
     }
-  }, [selectedFile])
+    reader.readAsDataURL(file);
+  }
+
+
+  useImperativeHandle(ref, () => ({
+    setFileComingFromParent(file) {
+      if (file) setSelectedFile(file);
+      if (file?.imgUrl) {
+        setPreviewUrL(file.imgUrl);
+      }
+      if (file?.videoUrl) {
+        setPreviewUrL(file.videoUrl);
+      }
+
+    }
+  }), [selectedFile]);
 
 
   const changeHandler = (event) => {
@@ -45,16 +56,18 @@ export const FileDropIcon = ({ type, fileAcceptType, getSelectedFile, index, max
       }
       video.src = URL.createObjectURL(event.target.files[0]);
     }
-    else{
+    else {
       setSelectedFile(event.target.files[0]);
       getSelectedFile(event.target.files[0], index);
+      preveiwImageHandler(event.target.files[0]);
     }
 
   };
 
   const handleRemoveSelectedFile = () => {
     setSelectedFile('');
-    getSelectedFile('', index);
+    getSelectedFile(null, index);
+    setPreviewUrL('');
   }
 
   const getFileName = (fileName) => {
@@ -64,6 +77,7 @@ export const FileDropIcon = ({ type, fileAcceptType, getSelectedFile, index, max
     return fileName;
   }
 
+
   return (
 
     <>
@@ -72,13 +86,15 @@ export const FileDropIcon = ({ type, fileAcceptType, getSelectedFile, index, max
           <div className='selected-file-wrapper file-drop'>
             {
               type === "image" ?
-                <img src={preveiwImage} style={{ height: "10rem" }}></img>
+                <img src={previewUrl}></img>
                 :
                 <div className='tick-mark-icon'>
                   <IoCheckmarkCircleOutline className='check-mark-icon' />
                   <div className='selected-file-name'>
-                    {getFileName(selectedFile.name)}
-                    {/* {selectedFile.name} */}
+                    {/* {getFileName(selectedFile.name)} */}
+                    {
+                      selectedFile.videoName ? selectedFile.videoName.toString() + '.' + selectedFile.mimeType.toString() : selectedFile.name 
+                    }
                   </div>
                 </div>
             }
@@ -126,4 +142,4 @@ export const FileDropIcon = ({ type, fileAcceptType, getSelectedFile, index, max
       }
     </>
   )
-}
+})
