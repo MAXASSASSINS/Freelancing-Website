@@ -304,7 +304,6 @@ export const Inbox = () => {
     }
     const config = {
       header: { "Content-Type": "multipart/form-data" },
-
     }
 
     const formData = new FormData();
@@ -317,7 +316,7 @@ export const Inbox = () => {
     formData.append("fileUpload", files[0].selectedFile);
     setFileLoading(true);
     await axios.post("/send/files", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+      config,
       onUploadProgress: (data) => {
         // console.log(data.loaded, data.total);
         console.log(Math.round(data.loaded / data.total * 100));
@@ -942,7 +941,7 @@ export const Inbox = () => {
                                 <label htmlFor="chat-inbox-input-file">
                                   <i className="fa-solid fa-paperclip"></i>
                                 </label>
-                                <input onChange={handleSelectionOfFiles} id='chat-inbox-input-file' multiple={true} type="file" hidden={true}></input>
+                                <input onChange={handleSelectionOfFiles} id='chat-inbox-input-file' multiple={true} type="file" accept='image/*,video/*' hidden={true}></input>
                               </div>
                             </div>
                             <button onClick={handleSubmissionOfInboxForms} style={{ "opacity": (message.length > 0 || isFilePicked) ? "1" : "0.4" }}>
