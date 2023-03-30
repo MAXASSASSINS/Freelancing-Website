@@ -32,7 +32,7 @@
   color: red;
 }
 .textEditor-main .public-DraftEditor-content {
-  color: rebeccapurple;
+  color: var(--light-heading);
 }
 .textEditor-main .textEditor-footer {
   position: relative;
