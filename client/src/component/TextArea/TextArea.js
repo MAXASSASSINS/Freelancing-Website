@@ -3,17 +3,27 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'rea
 import './textArea.css'
 
 export const TextArea = forwardRef(({ maxLength, minLength, style, placeholder, 
-    defaultText, warning, reference, getText } , ref) => {
+    defaultText, warning, reference, getText} , ref) => {
 
+        
     const [currentTextLength, setCurrentTextLength] = useState(defaultText ? defaultText.length : 0);
     const [text, setText] = useState(defaultText ? defaultText : "");
-
+    
     const handleChange = (e) => {
         setCurrentTextLength(e.target.value.trim().length);
         setText(e.target.value);
-        getText(e.target.value);
+        getText && getText(e.target.value);
     }
 
+    useImperativeHandle(ref, () => ({
+        currValue: text,
+        setTextComingFromParent: (txt) => {
+            setText(txt);
+            setCurrentTextLength(txt.length);
+        }
+    }), [text])
+
+    
 
     return (
         <div className='textarea-main'  >
@@ -26,14 +36,13 @@ export const TextArea = forwardRef(({ maxLength, minLength, style, placeholder,
                 autoCapitalize='off'
                 onChange={handleChange}
                 style={style}
-                ref={reference}
                 value={text}
             >
             </textarea>
             <div className='textarea-footer'>
-                {/* <div className='warning'>
+                <div className='warning'>
                     {warning}
-                </div> */}
+                </div>
                 <div className='textarea-label'>
                     {currentTextLength} / {maxLength} max
                 </div>
