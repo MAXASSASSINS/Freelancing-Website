@@ -41,11 +41,15 @@ export const CreateGig = () => {
   const dispatch = useDispatch();
   let [searchParams, setSearchParams] = useSearchParams();
   let gigId = searchParams.get('id');
+  if(!gigId) navigate('/404');
 
 
   const { windowWidth, windowHeight } = useContext(windowContext);
   const { user, isAuthenticated, loading, error } = useSelector(state => state.user);
+
+
   const { gigDetail } = useSelector(state => state.gigDetail);
+
 
   const [currentStep, setCurrentStep] = useState(1);
   const [stepCompleted, setStepCompleted] = useState([false, false, false, false, false, false]);
@@ -141,9 +145,10 @@ export const CreateGig = () => {
 
   sellerShowcaseImagesRefs.current = [1, 2, 3].map((item, index) => sellerShowcaseImagesRefs.current[index] || createRef());
   // sellerShowcaseDocumentsRefs.current = [1, 2].map((item, index) => sellerShowcaseDocumentsRefs.current[index] || createRef());
-
+ 
 
   // redirecting to login page if user is not authenticated
+ 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -153,16 +158,16 @@ export const CreateGig = () => {
 
   // fetching gig details if user is editing a gig
   useEffect(() => {
-    // console.log(gigId);
-    if (gigId) {
+    if(gigId != 'null'){
+      console.log("gig id is not null")
       dispatch(getGigDetail(gigId));
     }
-  }, [dispatch, gigId, isAuthenticated])
+  }, [searchParams.get('id')])
 
 
   // populating the respective fields with the gig details fetched from server
   useEffect(() => {
-    if (gigDetail) {
+    if (gigDetail && gigId != 'null') {
       console.log(gigDetail);
       const { title, category, subCategory, images, video, documents, description, pricing, requirements, searchTags, active } = gigDetail;
 
@@ -218,6 +223,7 @@ export const CreateGig = () => {
 
       // step 6
       setVerifiedStatusOfSeller(active);
+      setShowGigPublishFinalModal(active)
 
       return () => {
         questionDispatch({ type: RESET_ALL });
@@ -274,7 +280,7 @@ export const CreateGig = () => {
   }
 
   const handleSaveAndContinue = async () => {
-    if (checkForWarnings()) return;
+    if (checkForWarnings()) return true;
     await handleSendData();
 
     if (currentStep < 7) {
@@ -834,9 +840,16 @@ export const CreateGig = () => {
 
 
   const handleClickOnNavigationSaveAndPreview = async () => {
-    await handleSaveAndContinue();
-    const id = searchParams.get('id');
-    navigate(`/gig/details/${id}`);
+    if(currentStep === 6){
+      navigate(`/gig/details/${gigId}`);
+      return;
+    }
+    const temp = await handleSaveAndContinue();
+    if(temp) return;
+    setTimeout(() => {
+      
+    }, 2000);
+    navigate(`/gig/details/${gigId}`);
   }
 
 
@@ -1363,7 +1376,14 @@ export const CreateGig = () => {
       <div className='publish' style={{ display: currentStep === 6 ? "" : "none" }}>
         <div className='publish-wrapper'>
           {
-            !showGigPublishFinalModal ?
+            showGigPublishFinalModal && verifiedStatusOfSeller ?
+              <>
+                <div className='gig-publish-final-modal'>
+                  <h3>Almost there...</h3>
+                  <p>Let's publish your Gig and get <br /> some buyers rolling in.</p>
+                </div>
+              </>
+              :
               <>
                 <div className='publish-image-wrapper'>
                 </div>
@@ -1371,16 +1391,11 @@ export const CreateGig = () => {
                   <h3>Congratulations!</h3>
                   <p className='main-para'>You're almost done with your first Gig.</p>
                   <p>Before you start selling on FreelanceMe, there is one last thing we need you to do:
-                    The security of your account is important to us. Therefore, we require all our sellers to verify their phone number before we can publish their first Gig.</p>
+                    The security of your account is important to us. Therefore, we require all our sellers to verify their phone number before we can publish their Gig.</p>
                 </div>
               </>
-              :
-              <>
-                <div className='gig-publish-final-modal'>
-                  <h3>Almost there...</h3>
-                  <p>Let's publish your Gig and get <br /> some buyers rolling in.</p>
-                </div>
-              </>
+
+
           }
 
           {
