@@ -54,15 +54,16 @@ const checkForErrors = (body, currentStep) => {
 // Create gig
 export const createGig = catchAsyncErrors(async (req, res, next) => {
     req.body.user = req.user.id;
-
     const { data } = req.body;
-    const error = checkForErrors(data, 1);
+    
+    const newData = { ...data, user: req.user.id };
+    const error = checkForErrors(newData, 1);
 
     if (error) {
         return next(new ErrorHandler(error, 400));
     }
 
-    const gig = await Gig.create(data);
+    const gig = await Gig.create(newData);
 
 
     res.status(201).json({
