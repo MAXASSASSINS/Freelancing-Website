@@ -47,6 +47,7 @@ export const TextEditor = forwardRef(({ maxLength, hideToolbar, hideFooter, read
             return { contentState, desc };
         },
         setDescriptionComingFromParent(description) {
+            if(!description) return;
             let contentState = convertFromRaw(JSON.parse(description));
             let editorState = EditorState.createWithContent(contentState);
             setLength(editorState.getCurrentContent().getPlainText().length);
