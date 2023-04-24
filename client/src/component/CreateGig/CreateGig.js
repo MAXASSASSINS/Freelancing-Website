@@ -36,6 +36,9 @@ import { AiFillExclamationCircle } from 'react-icons/ai';
 import { getGigDetail } from '../../actions/gigAction'
 import { RESET_ALL } from '../../constants/createGigQuestionConstants'
 import { uploadToCloudinary } from '../../utility/cloudinary'
+
+
+
 export const CreateGig = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -571,7 +574,7 @@ export const CreateGig = () => {
     const payload = {
       questionIndex: index
     }
-    dispatch({ type: 'REMOVE_QUESTION', payload: payload });
+    questionDispatch({ type: 'REMOVE_QUESTION', payload: payload });
   }
 
   const handleEditQuestion = (index) => {
