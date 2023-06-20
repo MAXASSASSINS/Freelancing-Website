@@ -374,6 +374,7 @@
 
 .price-section-details>footer>button:hover{
     background-color: var(--icons);
+    cursor: pointer;
 }
 
 
@@ -395,6 +396,7 @@
 .price-section-contact-me-button>button:hover{
     background-color: var(--icons);
     color: white;
+    cursor: pointer;
 
 }
 
