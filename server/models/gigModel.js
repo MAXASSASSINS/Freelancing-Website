@@ -170,9 +170,6 @@ const gigSchema = new mongoose.Schema({
                     type: String,
                 }
             ],
-            answer: {
-                type: String,
-            }
         }
     ]
 
