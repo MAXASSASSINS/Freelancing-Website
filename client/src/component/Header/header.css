@@ -52,6 +52,7 @@
     align-items: center;
     justify-content: flex-end;
     flex-grow: 1;
+
 }
 
 .navigation-icons > *{
@@ -92,9 +93,9 @@
     display: none;
 }
 
-.inbox-icon{
+/* .inbox-icon{
     display: inline-block;
-}
+} */
 
 .inbox-icon:hover,
 .profile-icon:hover,
@@ -167,7 +168,8 @@
         margin: 0;
     }
 
-    .profile-pic{
+    .profile-pic,
+    .profile-icon{
         display: inline;
     }
 }
