@@ -4,8 +4,11 @@ import { MyCarousel } from '../Carousel/MyCarousel'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { IoMdImages } from 'react-icons/io'
+import { Avatar } from '../Avatar/Avatar'
+
+
 export const GigCard = ({ gig }) => {
-    console.log(gig.pricing)
+    // console.log(gig.pricing)
     const handleClick = () => {
         // console.log("clicked");
     }
@@ -17,9 +20,15 @@ export const GigCard = ({ gig }) => {
                     <MyCarousel gig={gig}></MyCarousel>
                 </Link>
                 <div className='user-details-container'>
-                    <img src={gig.user.avatar.url} alt="profile" ></img>
+                    <Avatar
+                        avatarUrl={gig.user.avatar.url}
+                        alt='user avatar'
+                        width='2rem'
+                        userName={gig.user.name}
+                     />
+                    {/* <img src={gig.user.avatar.url} alt="profile" ></img> */}
                     {/* <div className='client-list-online-status' style={{ backgroundColor: onlineStatusOfClients[index] ? "#1dbf73" : "#a6a5a5" }}></div> */}
-                    <div className='gig-card-online-status' style={{ backgroundColor: gig.user.online ? "#1dbf73" : "#a6a5a5" }}></div>
+                    {/* <div className='gig-card-online-status' style={{ backgroundColor: gig.user.online ? "#1dbf73" : "#a6a5a5" }}></div> */}
                     <Link to={`/user/${gig.user._id}`} onClick={handleClick}>
                         <div className='gig-user-name'>{gig.user.name}</div>
                     </Link>
