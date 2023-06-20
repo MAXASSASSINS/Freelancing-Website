@@ -1,6 +1,6 @@
 import express from 'express'
 import { authorisedRoles, isAuthenticated } from '../middleware/auth.js';
-import { addMessage, getAllMessagesBetweenTwoUsers, getAllMessagesForCurrentUser, getLastMessageBetweenTwoUser, getListOfAllInboxClients, sendFileUpload, updateAllMessages } from '../controllers/messageController.js';
+import { addMessage, deleteAllMessages, getAllMessagesBetweenTwoUsers, getAllMessagesForCurrentUser, getLastMessageBetweenTwoUser, getListOfAllInboxClients, sendFileUpload, updateAllMessages } from '../controllers/messageController.js';
 import { sendSMS, verifyNumber, verifyCode } from '../utils/twilio.js';
 import { uploadMultipleFiles, uploadSingleFile } from '../utils/multer.js';
 
@@ -14,6 +14,7 @@ router.get('/list/of/all/inbox/clients/for/current/user', isAuthenticated, getLi
 router.post('/get/last/message/between/two/user', isAuthenticated, getLastMessageBetweenTwoUser);
 router.post('/send/files', isAuthenticated, uploadSingleFile, sendFileUpload);
 
+router.delete('/delete/messages', deleteAllMessages);
 
 router.post('/add/file',isAuthenticated, uploadSingleFile, (req, res)=>{
     console.log(req.file);
