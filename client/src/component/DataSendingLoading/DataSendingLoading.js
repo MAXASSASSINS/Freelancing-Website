@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './DataSendingLoading.css'
 import { BsCheckCircle } from 'react-icons/bs'
 
-export const DataSendingLoading = ({ finishedLoading, show }) => {
+export const DataSendingLoading = ({ finishedLoading, show, loadingText }) => {
 
   // const [finishedLoading, setFinishedLoading] = useState(false)
   // console.log(finishedLoading);
@@ -11,8 +11,8 @@ export const DataSendingLoading = ({ finishedLoading, show }) => {
       {
         !finishedLoading ?
           <div>
-            <p className='saving-your-gig'>Saving your gig...</p>
-            <span class="data-sending-loader"></span>
+            <p className='saving-your-gig'>{loadingText}</p>
+            <span className="data-sending-loader"></span>
           </div>
           :
           <div className='finished-loading-wrapper'>
