@@ -5,9 +5,42 @@ const messageSchema = new mongoose.Schema(
         message: {
             text: {
                 type: String,
-                required: true,
             },
         },
+        files: [
+            {
+                publicId: {
+                    type: String,
+                    required: true,
+                },
+                url: {
+                    type: String,
+                    required: true,
+                },
+                name: {
+                    type: String,
+                    required: true,
+                },
+                type: {
+                    type: String,
+                    required: true,
+                },
+                size: {
+                    type: Number,
+                    required: true,
+                },
+                blurhash: {
+                    type: String,
+                    required: true,
+                },
+                height: {
+                    type: Number,
+                },
+                width: {
+                    type: Number,
+                },
+            }
+        ],
         users: Array,
         sender: {
             type: mongoose.Schema.Types.ObjectId,
@@ -19,10 +52,18 @@ const messageSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
-        messageType: {
-            type: String,
-            default: "text",
-            required: true,
+        // messageType: {
+        //     type: String,
+        //     default: "text",
+        //     required: true,
+        // },
+        order: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order',
+        },
+        markAsRead: {
+            type: Boolean,
+            default: false,
         }
     },
     {
