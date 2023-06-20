@@ -36,6 +36,7 @@ import { AiFillExclamationCircle } from 'react-icons/ai';
 import { getGigDetail } from '../../actions/gigAction'
 import { RESET_ALL } from '../../constants/createGigQuestionConstants'
 import { uploadToCloudinary } from '../../utility/cloudinary'
+import { FREE_TEXT } from '../../constants/globalConstants'
 
 
 
@@ -87,7 +88,7 @@ export const CreateGig = () => {
 
   const [questionsDetails, questionDispatch] = useReducer(createGigQuestionReducer, QUESTION_DETAILS_INITIAL_STATE);
   const [showQuestions, setShowQuestions] = useState(true);
-  const [questionType, setQuestionType] = useState('Free Text');
+  const [questionType, setQuestionType] = useState(FREE_TEXT);
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionRequiredInput, setQuestionRequiredInput] = useState(false);
   const [enableMultipleOptionsInput, setEnableMultipleOptionsInput] = useState(false);
@@ -538,7 +539,7 @@ export const CreateGig = () => {
 
   const commonForEditAddCancelQuestion = () => {
     setOptions(["", ""]);
-    setQuestionType('Free Text');
+    setQuestionType(FREE_TEXT);
     setWarningEnabled(false);
     setQuestionTitle('');
     setShowEditQuestion(false);
