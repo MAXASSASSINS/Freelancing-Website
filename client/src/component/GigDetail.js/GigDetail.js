@@ -35,6 +35,7 @@ export const GigDetail = () => {
   const [reviewCount, setReviewCount] = useState(5);
   let [arr, setArr] = useState([0, 0, 0, 0, 0]);
   const [pricePackageInfo, setPricePackageInfo] = useState(null);
+  const [currentlySelectedPackageNumber, setCurrentlySelectedPackageNumber] = useState(0);
   const [showChatBox, setShowChatBox] = useState(false);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export const GigDetail = () => {
   }, [dispatch, params.id])
 
   const { gigDetail } = useSelector(state => state.gigDetail);
-  const { user, loading, isAuthenticated } = useSelector(state => state.loggedUser);
+  const { user, loading, isAuthenticated } = useSelector(state => state.user);
 
 
   useEffect(() => {
@@ -123,6 +124,7 @@ export const GigDetail = () => {
       const parent = e.target.parentElement;
       const children = parent.children;
       var index = Array.prototype.indexOf.call(children, e.target);
+      setCurrentlySelectedPackageNumber(index);
       for (let i = 0; i < children.length; i++) {
         children[i].classList.remove('price-package-selected');
       }
@@ -147,6 +149,17 @@ export const GigDetail = () => {
     checkUserOpenItsOwnGig();
   }, [user])
 
+  const handleContinueBuyClick = () => {
+
+    if (!isAuthenticated){
+      navigate('/login');
+      return;
+    }
+    if (checkUserOpenItsOwnGig())
+      return toast.error('You can not buy your own gig');
+    // console.log('You can not buy your own gig')
+    navigate(`/gig/place/order/${gigDetail._id}/${currentlySelectedPackageNumber}`);
+  }
 
   return (
 
@@ -159,18 +172,21 @@ export const GigDetail = () => {
       <div className='gig-detail-main-wrapper'>
         <section className='gig-details-section'>
           <div>
-            <Link
-              to={
-                {
-                  pathname: "/gig/create/new/gig",
-                  search: `?id=${gigDetail._id}`
+            {
+              checkUserOpenItsOwnGig() && 
+              <Link
+                to={
+                  {
+                    pathname: "/gig/create/new/gig",
+                    search: `?id=${gigDetail._id}`
+                  }
                 }
-              }
-              className='user-detail-edit-gig'
-            >
-              <div className='edit-icon'><CreateIcon></CreateIcon></div>
-              <div>Edit Gig</div>
-            </Link>
+                className='user-detail-edit-gig'
+              >
+                <div className='edit-icon'><CreateIcon></CreateIcon></div>
+                <div>Edit Gig</div>
+              </Link>
+            }
           </div>
           <div className='gig-details-gig-overveiw'>
             <h1 className='gig-details-gig-title'>{gigDetail.title}</h1>
@@ -237,7 +253,7 @@ export const GigDetail = () => {
                   </ul>
                 </div>
                 <footer>
-                  <button>Continue (₹{pricePackageInfo.packagePrice})</button>
+                  <button onClick={handleContinueBuyClick}>Continue (₹{pricePackageInfo.packagePrice})</button>
                 </footer>
               </div>
             }
@@ -434,7 +450,7 @@ export const GigDetail = () => {
                 </ul>
               </div>
               <footer>
-                <button>Continue (₹{pricePackageInfo.packagePrice})</button>
+                <button onClick={handleContinueBuyClick} >Continue (₹{pricePackageInfo.packagePrice})</button>
               </footer>
             </div>
           }
