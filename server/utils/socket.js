@@ -1,174 +1,169 @@
-
-import { Socket, Server } from 'socket.io'
+import { Socket, Server } from "socket.io";
 import Message from "../models/messageModel.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import User from "../models/userModel.js"
+import User from "../models/userModel.js";
+import ErrorHandler from "../utils/errorHandler.js";
 
 export const runSocket = (server) => {
+  const io = new Server(server, {
+    // pingTimeout: 60000,
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
 
-    const io = new Server(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"],
-        }
-    })
+  let onlineUserList = new Map();
+  let currentUserId = "";
 
-    let onlineUserList = new Map();
-    let currentUserId = "";
+  io.on("connection", (socket) => {
+    // console.log(socket.id);
 
+    socket.on("new_user", (userId) => {
+      addNewUser(userId, socket.id);
+    });
 
+    socket.on("join_room", (data) => {
+      socket.join(data);
+    });
 
+    socket.on("send_message", async (data) => {
+      const { message, sender, receiver, messageType } = data;
+      const receiverSocketIds = onlineUserList.get(receiver._id.toString());
+      const senderSocketIds = onlineUserList.get(sender._id.toString());
 
-    io.on('connection', (socket) => {
-        // console.log(onlineUserList);
+      receiverSocketIds?.forEach((receiverSocketId) => {
+        io.to(receiverSocketId).emit("receive_message", data);
+      });
 
-        socket.on("new_user", (userId) => {
-            // console.log("new user connected with id: " + userId);
-            addNewUser(userId, socket.id);
-            updateUserOnlineStatus(userId, socket);
-            currentUserId = userId;
-        })
+      senderSocketIds?.forEach((senderSocketId) => {
+        io.to(senderSocketId).emit("receive_message_self", data);
+      });
+    });
 
-        // console.log(socket.id);
-        // console.log(io.engine.clientsCount);
+    socket.on("typing_started", (data) => {
+      const receiverSocketIds = onlineUserList.get(data.receiverId);
 
-        socket.on("join_room", (data) => {
-            socket.join(data);
-            // console.log(`user with id ${socket.id} joined room ${data}`);
-        })
+      receiverSocketIds?.forEach((receiverSocketId) => {
+        socket.to(receiverSocketId).emit("typing_started_from_server", data);
+      });
+    });
+    socket.on("typing_stopped", (data) => {
+      const receiverSocketIds = onlineUserList.get(data.receiverId);
 
-        socket.on("send_message", async (data) => {
-            // console.log(data);
-            const { message, sender, receiver, messageType } = data;
+      receiverSocketIds?.forEach((receiverSocketId) => {
+        socket.to(receiverSocketId).emit("typing_stopped_from_server", data);
+      });
+    });
 
-            if (sender._id.toString() === receiver._id.toString()) {
-                return;
-            }
+    socket.on("is_online", (clientId) => {
+      const online = onlineUserList.has(clientId);
+      const newData = {
+        id: clientId,
+        online,
+      };
+      socket.emit("is_online_from_server", newData);
+    });
 
-            await Message.create({
-                message,
-                users: [sender._id, receiver._id],
-                sender,
-                receiver,
-                messageType,
-            });
+    socket.on("online", async (userId) => {
+      if (userId) {
+        io.emit("online_from_server", userId);
+      }
+    });
 
-            const receiverSocketId = onlineUserList.get(receiver._id.toString());
-            io.to(receiverSocketId).emit("receive_message", (data));
+    socket.on("get_online_status_of_all_clients", async (list) => {
+      if (list.length == 0) return;
+      const onlineStatusList = [];
+      for (let clientId of list) {
+        const online = onlineUserList.has(clientId.toString());
+        onlineStatusList.push({
+          id: clientId,
+          online,
+        });
+      }
 
-            console.log("i am backend send_message");
-        })
+      // console.log(onlineStatusList);
+      socket.emit("online_status_of_all_clients_from_server", onlineStatusList);
+    });
 
-        socket.on("typing_started", (data) => {
-            socket.to(onlineUserList.get(data.receiverId)).emit("typing_started_from_server", data);
-        })
-        socket.on("typing_stopped", (data) => {
-            socket.to(onlineUserList.get(data.receiverId)).emit("typing_stopped_from_server", data);
-        })
+    socket.on("disconnect", () => {
+      console.log("disconnect", socket.id);
+      const userId = getUserBySocketId(socket.id);
+      removeUser(socket.id, userId);
 
-        socket.on("is_online", (clientId) => {
-            // console.log(clientId);
-            const online = onlineUserList.has(clientId);
-            // console.log(online);
-            const newData = {
-                id: clientId,
-                online,
-            }
-            socket.emit("is_online_from_server", newData);
-        })
+      if (!onlineUserList.has(userId)) {
+        Promise.resolve(updateUserLastSeen(userId, socket)).then(() => {
+          io.emit("offline_from_server", userId);
+        });
+      }
+    });
+  });
 
-
-        socket.on("online", async (userId) => {
-            if (userId) {
-                Promise.resolve(updateUserOnlineStatus(userId, socket)).then(()=>{
-                    io.emit("online_from_server", userId);
-                });
-            }
-        })
-
-        socket.on('disconnect', () => {
-            // console.log(currentUserId);
-            console.log(socket.id);
-            // const userId = getUserBySocketId(socket.id);
-            const userId = currentUserId;
-            // console.log("user disconnected " + userId);
-            if (userId) {
-                Promise.resolve(updateUserLastSeenAndOnlineStatus(userId, socket)).then(()=>{
-                    io.emit("offline_from_server", userId);
-                    removeUser(socket.id);
-                });
-            }
-
-
-        })
-    })
-
-    const addNewUser = (userId, socketId) => {
-        if (!onlineUserList.has[userId]) {
-            onlineUserList.set(userId, socketId);
-        }
+  const addNewUser = (userId, socketId) => {
+    if (!onlineUserList.has(userId)) {
+      const set = new Set();
+      set.add(socketId);
+      onlineUserList.set(userId, set);
+    } else {
+      const set = onlineUserList.get(userId);
+      set.add(socketId);
+      onlineUserList.set(userId, set);
     }
+  };
 
-    const removeUser = async (socketId) => {
-        const userId = getUserBySocketId(socketId);
-        onlineUserList.delete(userId);
+  const removeUser = async (socketId, userId) => {
+    const set = onlineUserList.get(userId);
+    console.log(set);
+    if (!set) return;
+    set.delete(socketId);
+    if (set.size === 0) {
+      onlineUserList.delete(userId);
+    } else {
+      onlineUserList.set(userId, set);
     }
+  };
 
-    const getUserBySocketId = (socketId) => {
-        // console.log(onlineUserList)
-        // console.log(socketId + " outstide");
-        for (let [key, value] of onlineUserList.entries()) {
-            if (value === socketId)
-                return key;
-        }
+  const getUserBySocketId = (socketId) => {
+    // console.log(onlineUserList)
+    // console.log(socketId + " outstide");
+    for (let [key, value] of onlineUserList.entries()) {
+      if (value.has(socketId)) {
+        return key;
+      }
     }
+  };
 
-
-    const updateUserLastSeenAndOnlineStatus = catchAsyncErrors(async (userId, socket, next) => {
-
-        let user = await User.findById(userId);
-        // console.log(user.online);
-        if (!user) {
-            return next(new ErrorHandler(`user does not exist with id: ${userId}`))
+  const updateUserLastSeen = async (userId, socket, next) => {
+    try {
+      let user = await User.findById(userId);
+      // console.log(user.online);
+      if (!user) {
+        return new ErrorHandler("User not found", 404);
+      }
+      await User.findByIdAndUpdate(
+        userId,
+        { lastSeen: Date.now() },
+        {
+          new: true,
+          runValidators: true,
+          useFindandModify: false,
         }
-        await User.findByIdAndUpdate(userId, { lastSeen: Date.now(), online: false }, {
-            new: true,
-            runValidators: true,
-            useFindandModify: false
-        })
-    })
-
-    const updateUserOnlineStatus = catchAsyncErrors(async (userId, socket, next) => {
-        let user = await User.findById(userId);
-
-        if (!user) {
-            return next(new ErrorHandler(`user does not exist with id: ${userId}`))
-        }
-
-        if (user.online === true) return;
-
-        await User.findByIdAndUpdate(userId, { online: true }, {
-            new: true,
-            runValidators: true,
-            useFindandModify: false
-        })
-    })
-
-
-    const joinRoom = async (senderId, receiverId) => {
-        const r = await createRoom(senderId, receiverId);
-        socket.join(r);
+      );
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const createRoom = async (senderId, receiverId) => {
-        if (senderId.toString() > receiverId.toString()) {
-            return senderId.toString() + "|" + receiverId.toString();
-        }
-        else {
-            return receiverId.toString() + "|" + senderId.toString();
-        }
+  const joinRoom = async (senderId, receiverId) => {
+    const r = await createRoom(senderId, receiverId);
+    socket.join(r);
+  };
+
+  const createRoom = async (senderId, receiverId) => {
+    if (senderId.toString() > receiverId.toString()) {
+      return senderId.toString() + "|" + receiverId.toString();
+    } else {
+      return receiverId.toString() + "|" + senderId.toString();
     }
-
-}
-
-
+  };
+};
