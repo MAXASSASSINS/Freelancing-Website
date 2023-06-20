@@ -23,21 +23,32 @@ const upload = multer({ storage: storage }).single("file")
 
 
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
-    const { from, to, message } = req.body;
+    const { from, to, message, files } = req.body;
+    // console.log(req.body);
+    // return;
 
-    await Message.create({
+    if(message?.length == 0 && files?.length === 0){
+        return next(new ErrorHandler("Please enter a message or upload a file", 400));
+    }
+
+    if(from.toString() === to.toString()){
+        return next(new ErrorHandler("You can't send message to yourself", 400));
+    }
+    
+    const newMessage = await Message.create({
         message: {
             text: message
         },
         users: [from, to],
         sender: from,
         receiver: to,
+        files,
     });
 
     res.status(201).json({
         success: true,
         message: "Successfully added your message",
-        message,
+        newMessage,
     })
 })
 
@@ -139,15 +150,30 @@ export const getAllMessagesForCurrentUser = catchAsyncErrors(async (req, res, ne
 export const getListOfAllInboxClients = catchAsyncErrors(async (req, res, next) => {
     // const userId = "62c1cb91cba98afc7f33f9a4";
     const userId = req.user._id;
+    // console.log("get list of all inbox clients", userId.toString());
     let list = await Message.find().or([{ sender: userId }, { receiver: userId }])
-        .populate('sender', 'name avatar')
-        .distinct('sender')
+        .select('sender receiver')
 
+
+    let set = new Set();
+    list.forEach(message => {
+        set.add(message.sender.toString());
+        set.add(message.receiver.toString());
+    })
+
+    list = [...set];
+    
+    
     list = list.filter(id => {
         return id.toString() != userId.toString();
     })
 
+    // console.log(list);
+
     const length = list.length;
+    // console.log(length);
+
+
 
     res.status(200).json({
         success: true,
@@ -162,7 +188,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(async (req, res, ne
     const { from, to } = req.body;
 
     const messages = await Message.find().or([{ sender: from, receiver: to }, { sender: to, receiver: from }])
-        .select('message createdAt')
+        .select('message files createdAt')
         .sort({ updatedAt: -1 })
         .limit(1)
         .lean()
@@ -178,10 +204,10 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(async (req, res, ne
 export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
 
     const file = req.file;
-    console.log(file);
+    // console.log(file);
 
     const fileType = req.file.mimetype;
-    console.log(fileType);
+    // console.log(fileType);
 
     let fileUrl;
     if (file) {
@@ -190,7 +216,7 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
             result = await cloudinary.v2.uploader.upload(file.path, {
                 folder: "FreelanceMe",
                 resource_type: "video",
-                chunk_size: 6000000, 
+                chunk_size: 6000000,
             })
                 .catch(err => {
                     console.log(err);
@@ -239,5 +265,17 @@ export const updateAllMessages = catchAsyncErrors(async (req, res, next) => {
         message: "successfully done"
     })
 })
+
+export const deleteAllMessages = catchAsyncErrors(async (req, res, next) => {
+    
+        await Message.deleteMany({});
+    
+        res.status(200).json({
+            message: "successfully deleted"
+        })
+    }
+)
+
+
 
 
