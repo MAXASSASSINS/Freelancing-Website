@@ -1,78 +1,78 @@
-.site-sidebar{
-    color: var(--dark-grey);
-    position: fixed;
-    z-index: 10001;
-    width: 272px;
-    height: 100%;
-    left: -272px;
-    background-color: #fff;
-    top: 0;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+.site-sidebar {
+  color: var(--dark-grey);
+  position: fixed;
+  z-index: 10001;
+  width: 272px;
+  height: 100%;
+  left: -272px;
+  background-color: #fff;
+  top: 0;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
 }
 
-.menu-shown.site-sidebar{
-    transform: translateX(272px);
+.menu-shown.site-sidebar {
+  transform: translateX(272px);
 }
 
-.sidebar-title{
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    margin-bottom: 2rem;
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin-bottom: 2rem;
 }
 
-.sidebar-profile-icon{
-    font-size: 2.5rem;
-    color: var(--no-focus);
+.sidebar-profile-icon {
+  font-size: 2.5rem;
+  color: var(--no-focus);
 }
 
-.sidebar-profile-pic{
-    width: 2.5rem;
-    border-radius: 50%;
+.sidebar-profile-pic {
+  width: 2.5rem;
+  border-radius: 50%;
 }
 
-.user-name{
-    margin-left: 1rem;
-    font-weight: 700;
+.user-name {
+  margin-left: 1rem;
+  font-weight: 700;
 }
 
-.user-avatar{
-    width: 4rem;
+.user-avatar {
+  width: 4rem;
 }
 
-.sidebar-menu{
-    margin: 1rem 0;
-    line-height: 1.5;
+.sidebar-menu {
+  margin: 1rem 0;
+  line-height: 1.5;
 }
 
-.sidebar-menu-item{
-    display: block;
-    text-decoration: none;
-    margin: 1rem 0;
-    font-size: 1rem;
-    color: var(--no-focus);
+.sidebar-menu-item {
+  display: block;
+  text-decoration: none;
+  margin: 1rem 0;
+  font-size: 1rem;
+  color: var(--no-focus);
 }
 
-.sidebar-menu-item:hover{
-    cursor: pointer;
+.sidebar-menu-item:hover {
+  cursor: pointer;
 }
 
 .sidebar-overlay {
-    opacity: 0;
-    position: fixed; 
-    z-index: 10000; 
-    left: 0;
-    top: 0;
-    width: 100vw; 
-    height: 100vh; 
-    transition: all 0.2s ease;
-    overflow: hidden; 
-    visibility: hidden;
-    background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.menu-shown.sidebar-overlay{ 
-    visibility: visible;
-    opacity: 1;
+.menu-shown.sidebar-overlay {
+  visibility: visible;
+  opacity: 1;
 }

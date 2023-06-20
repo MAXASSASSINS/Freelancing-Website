@@ -2,10 +2,10 @@
   display: flex;
   align-items: center;
 }
-.check-input-main input[type=checkbox] {
+.check-input-main input[type="checkbox"] {
   clip: rect(0 0 0 0);
   -webkit-clip-path: inset(50%);
-          clip-path: inset(50%);
+  clip-path: inset(50%);
   height: 1px;
   overflow: hidden;
   position: absolute;
@@ -27,4 +27,4 @@
   justify-content: center;
   align-items: center;
   transition: 0.15s ease-in-out;
-}/*# sourceMappingURL=checkInput.css.map */
+} /*# sourceMappingURL=checkInput.css.map */

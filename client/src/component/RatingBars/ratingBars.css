@@ -1,25 +1,24 @@
-.rating-bars{
-    display: flex;
-    align-items: center;
+.rating-bars {
+  display: flex;
+  align-items: center;
 }
 
-.bars-outer{
-    position: relative;
-    width: 10rem;
-    height: 0.5rem;
-    border-radius: 5px;
-    background-color: #ccc;
+.bars-outer {
+  position: relative;
+  width: 10rem;
+  height: 0.5rem;
+  border-radius: 5px;
+  background-color: #ccc;
 }
 
-.bars-inner{
-    border-radius: 5px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    white-space: nowrap;
-    background-color: var(--gold);
-    z-index: 2;
-    overflow: hidden;
+.bars-inner {
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  white-space: nowrap;
+  background-color: var(--gold);
+  z-index: 2;
+  overflow: hidden;
 }
-

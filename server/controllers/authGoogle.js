@@ -43,4 +43,3 @@ export const googleCallback = async function (req, res) {
   }
   res.redirect("/");
 };
-

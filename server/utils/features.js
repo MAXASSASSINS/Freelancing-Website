@@ -1,50 +1,51 @@
 class Features {
-    constructor(query, queryStr) {
-        this.query = query;
-        this.queryStr = queryStr;
-    }
+  constructor(query, queryStr) {
+    this.query = query;
+    this.queryStr = queryStr;
+  }
 
-    search() {
-        const keyword = this.queryStr.keyword ? {
-            searchTags: {
-                $regex: this.queryStr.keyword,
-                $options: "i",
-            }
-        } : {};
- 
-        this.query = this.query.find({ ...keyword});
-        return this;
-    }
+  search() {
+    const keyword = this.queryStr.keyword
+      ? {
+          searchTags: {
+            $regex: this.queryStr.keyword,
+            $options: "i",
+          },
+        }
+      : {};
 
-    filter() {
-        const queryCopy = { ...this.queryStr };
+    this.query = this.query.find({ ...keyword });
+    return this;
+  }
 
-        // removing some fields for category
-        const removeFileds = ["keyword", "page", "limit"];
-        removeFileds.forEach(key => delete queryCopy[key]);
+  filter() {
+    const queryCopy = { ...this.queryStr };
 
-        // fiter for price and rating
-        let queryStr = JSON.stringify(queryCopy);
-        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+    // removing some fields for category
+    const removeFileds = ["keyword", "page", "limit"];
+    removeFileds.forEach((key) => delete queryCopy[key]);
 
-        this.query = this.query.find(JSON.parse(queryStr));
-        return this;
-    }
+    // fiter for price and rating
+    let queryStr = JSON.stringify(queryCopy);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
 
-    pagination(resultPerPage) {
-        const currentPage = Number(this.queryStr.page) || 1;
+    this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+  }
 
-        const skip = resultPerPage * (currentPage - 1);
+  pagination(resultPerPage) {
+    const currentPage = Number(this.queryStr.page) || 1;
 
-        this.query = this.query.limit(resultPerPage).skip(skip);
-        return this;
-    }
+    const skip = resultPerPage * (currentPage - 1);
 
-    populate(){
-        this.query = this.query.populate("user", "name avatar online");
-        return this;
-    }
+    this.query = this.query.limit(resultPerPage).skip(skip);
+    return this;
+  }
 
-};
+  populate() {
+    this.query = this.query.populate("user", "name avatar online");
+    return this;
+  }
+}
 
 export default Features;

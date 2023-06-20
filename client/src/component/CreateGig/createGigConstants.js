@@ -1,1 +1,1 @@
-export const MULTIPLE_CHOICE = 'Multiple Choice';
+export const MULTIPLE_CHOICE = "Multiple Choice";

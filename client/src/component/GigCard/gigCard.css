@@ -1,134 +1,131 @@
 .gig-card {
-    /* padding: 0.8rem ; */
-    color: var(--dark-grey);
+  /* padding: 0.8rem ; */
+  color: var(--dark-grey);
 }
 
 .gig-card:hover h2 {
-    color: var(--light-green);
-    cursor: pointer;
+  color: var(--light-green);
+  cursor: pointer;
 }
 
 .container-wrapper {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
 }
 
 .gig-showcase-image {
-    width: 100%;
-    aspect-ratio: 3/2;
+  width: 100%;
+  aspect-ratio: 3/2;
 }
 
 .user-details-container {
-    margin-top: 1rem;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    position: relative;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  position: relative;
 }
 
-.gig-card-online-status{
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background-color: var(--green);
-    /* margin-right: 0.5rem; */
-    position: absolute;
-    left: 1.5rem;
-    top: 0.5rem;
-    border: 1px solid white;
-    /* display: none; */
-
+.gig-card-online-status {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--green);
+  /* margin-right: 0.5rem; */
+  position: absolute;
+  left: 1.5rem;
+  top: 0.5rem;
+  border: 1px solid white;
+  /* display: none; */
 }
 
-.user-details-container>img {
-    width: 1.5rem;
-    border-radius: 50%;
+.user-details-container > img {
+  width: 1.5rem;
+  border-radius: 50%;
 }
-
-
 
 .gig-user-name {
-    margin-left: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .gig-user-name:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .gig-title {
-    font-size: 1rem;
-    padding: 0.5rem;
-    line-height: 1.6;
-    letter-spacing: 0.25px;
-    height: 4rem;
-    overflow: hidden;
-    transition: all 0.15s ease;
+  font-size: 1rem;
+  padding: 0.5rem;
+  line-height: 1.6;
+  letter-spacing: 0.25px;
+  height: 4rem;
+  overflow: hidden;
+  transition: all 0.15s ease;
 }
 
 .ratings-container {
-    padding: 0.5rem;
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
 }
 
-.ratings-container>svg {
-    color: var(--gold);
+.ratings-container > svg {
+  color: var(--gold);
 }
 
-.ratings-container>span {
-    margin-left: 0.2rem;
+.ratings-container > span {
+  margin-left: 0.2rem;
 }
 
 .ratings {
-    color: var(--gold);
+  color: var(--gold);
 }
 
 .no-of-reviews {
-    color: var(--no-focus);
+  color: var(--no-focus);
 }
 
 .action-price-container {
-    border-top: 1px solid #efeff0;
-    padding: 0.25rem 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
+  border-top: 1px solid #efeff0;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
 
-.add-to-list-container>svg {
-    color: var(--no-focus);
+.add-to-list-container > svg {
+  color: var(--no-focus);
 }
 
 .add-to-list-container .bars {
-    margin-right: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .add-to-list-container:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .price-container {
-    text-align: right;
+  text-align: right;
 }
 
-.price-container:hover{
-    cursor: pointer;
+.price-container:hover {
+  cursor: pointer;
 }
 
 .starting-at {
-    color: var(--icons);
-    font-size: 10px;
-    text-transform: uppercase;
-    padding: 2px 0;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    margin-bottom: 5px;
+  color: var(--icons);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 2px 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
 }

@@ -44,11 +44,11 @@ const userSchema = new mongoose.Schema({
 
   numOfRatings: {
     type: Number,
-    default: 0
+    default: 0,
   },
   numOfReviews: {
     type: Number,
-    default: 0
+    default: 0,
   },
 
   country: {
@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema({
     {
       type: String,
       required: true,
-    }
+    },
   ],
 
   skills: [
@@ -85,9 +85,9 @@ const userSchema = new mongoose.Schema({
       level: {
         type: String,
         required: true,
-        default: "beginner"
+        default: "beginner",
       },
-    }
+    },
   ],
 
   education: [
@@ -112,8 +112,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: new Date().getFullYear,
-      }
-    }
+      },
+    },
   ],
 
   certificates: [
@@ -130,8 +130,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: new Date().getFullYear,
-      }
-    }
+      },
+    },
   ],
 
   userSince: {
@@ -144,7 +144,7 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 
-  online:{
+  online: {
     required: true,
     type: Boolean,
     default: false,

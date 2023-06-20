@@ -1,14 +1,11 @@
-import Order from '../models/orderModel.js'
-import Gig from "../models/gigModel.js"
+import Order from "../models/orderModel.js";
+import Gig from "../models/gigModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import { stripe } from '../utils/stripe.js';
-import { randomString } from '../utils/utilities.js';
+import { stripe } from "../utils/stripe.js";
+import { randomString } from "../utils/utilities.js";
 
-
-
-
-// Create new order 
+// Create new order
 export const newOrder = catchAsyncErrors(async (req, res, next) => {
   const { gigId, packageNumber } = req.body;
   // if(!gigId){
@@ -25,30 +22,29 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Gig not found with this Id", 404));
   }
 
-  let rString = randomString(13, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  let rString = randomString(13, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
   const price = gig.pricing[packageNumber].packagePrice;
   const totalAmount = Number(price).toFixed(2);
 
-  let duration = gig.pricing[packageNumber].packageDeliveryTime.toString().split(" ");
+  let duration = gig.pricing[packageNumber].packageDeliveryTime
+    .toString()
+    .split(" ");
   duration = Number(duration[0]);
 
   let deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + duration);
 
-
-  const options = gig.requirements.map(requirement => {
+  const options = gig.requirements.map((requirement) => {
     if (requirement.questionType == "Free Text") {
       return;
     }
-    return (
-      requirement.options.map(option => {
-        return {
-          title: option,
-        }
-      })
-    )
-  })
+    return requirement.options.map((option) => {
+      return {
+        title: option,
+      };
+    });
+  });
 
   const requirements = gig.requirements.map((requirement, index) => {
     return {
@@ -57,8 +53,8 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
       answerRequired: requirement.answerRequired,
       multipleOptionSelect: requirement.multipleOptionSelect,
       options: options[index],
-    }
-  })
+    };
+  });
 
   const packageDetails = {
     packageTitle: gig.pricing[packageNumber].packageTitle,
@@ -68,15 +64,14 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     sourceFile: gig.pricing[packageNumber].sourceFile,
     commercialUse: gig.pricing[packageNumber].commercialUse,
     packagePrice: gig.pricing[packageNumber].packagePrice,
-  }
+  };
 
   const image = {
     imgPublicId: gig.images[0].imgPublicId,
     imgUrl: gig.images[0].imgUrl,
-  }
+  };
 
   // res.send(requirements);
-
 
   const order = await Order.create({
     orderId: rString,
@@ -90,14 +85,14 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     packageDetails,
     image,
     gigTitle: gig.title,
-  })
+  });
 
   res.status(201).json({
     success: true,
     message: "Sucessfully created your order",
     order,
-  })
-})
+  });
+});
 
 // Update Order
 export const updateOrder = catchAsyncErrors(async (req, res, next) => {
@@ -114,46 +109,48 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
       questionType: requirement.questionType,
       answerRequired: requirement.answerRequired,
       multipleOptionSelect: requirement.multipleOptionSelect,
-    }
+    };
 
     if (requirement.questionType == "Free Text") {
       temp.answerText = answers[index].answer;
       temp.files = answers[index].files;
-    }
-    else {
+    } else {
       temp.options = answers[index].answer.map((option, idx) => {
         return {
           title: requirement.options[idx].title,
           selected: option,
-        }
-      })
+        };
+      });
     }
 
     return temp;
+  });
 
-  })
-
-  order = await Order.findByIdAndUpdate(req.params.id, {
-    requirements,
-  }, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  })
-
+  order = await Order.findByIdAndUpdate(
+    req.params.id,
+    {
+      requirements,
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
 
   res.status(200).json({
     success: true,
     message: "Sucessfully update your order",
     order,
-  })
-})
+  });
+});
 
-
-
-// Get single order 
+// Get single order
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
-  const order = await Order.findById(req.params.id).populate("seller buyer", "name email");
+  const order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email"
+  );
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
@@ -163,10 +160,10 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Sucessfully found your order",
     order,
-  })
-})
+  });
+});
 
-// Get logged in user orders 
+// Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log("hello");
   const orders = await Order.find({ user: req.user._id });
@@ -176,28 +173,27 @@ export const myOrders = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Sucessfully found your orders",
     orders,
-  })
-})
+  });
+});
 
-
-// Get all orders -- Admin 
+// Get all orders -- Admin
 export const getAllOrders = catchAsyncErrors(async (req, res, next) => {
   const orders = await Order.find();
 
   let totalAmount = 0;
-  orders.forEach(order => {
+  orders.forEach((order) => {
     totalAmount += order.amount;
-  })
+  });
 
   res.status(200).json({
     success: true,
     message: "Sucessfully fetched all orders",
     totalAmount,
     orders,
-  })
-})
+  });
+});
 
-// Update order status -- Admin 
+// Update order status -- Admin
 export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
@@ -217,8 +213,8 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Sucessfully fetched all orders",
     order,
-  })
-})
+  });
+});
 
 // process payment
 export const packagePayment = catchAsyncErrors(async (req, res, next) => {
@@ -233,7 +229,7 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
 
   const price = gig.pricing[packageNumber].packagePrice;
 
-  const serviceFee = Number(price) * 0.21.toFixed(2);
+  const serviceFee = Number(price) * (0.21).toFixed(2);
 
   const totalAmount = Number(price + serviceFee).toFixed(2);
 
@@ -241,12 +237,12 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalAmount * 100,
-      currency: 'inr',
+      currency: "inr",
       description: gig.title,
       payment_method: id,
       receipt_email: req.user.email,
       confirm: true,
-    })
+    });
 
     console.log(paymentIntent);
 
@@ -255,20 +251,20 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
       success: true,
       clientSecret: paymentIntent.client_secret,
       paymentIntent,
-    })
-  }
-  catch (error) {
+    });
+  } catch (error) {
     res.status(400).json({
       message: "Payment Intent not created",
       success: false,
-      error: { message: error.message }
-    })
+      error: { message: error.message },
+    });
   }
+});
 
-})
-
-export const getStripePublishableKey = catchAsyncErrors(async (req, res, next) => {
-  res.status(200).json({
-    stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
-  })
-})
+export const getStripePublishableKey = catchAsyncErrors(
+  async (req, res, next) => {
+    res.status(200).json({
+      stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    });
+  }
+);

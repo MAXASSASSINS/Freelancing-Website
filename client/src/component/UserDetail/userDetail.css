@@ -1,455 +1,441 @@
 .user-details-max-width-container {
-    padding: 0 1.5rem 1.5rem;
-    color: var(--dark-grey);
-    /* background-color: var(--no-focus); */
+  padding: 0 1.5rem 1.5rem;
+  color: var(--dark-grey);
+  /* background-color: var(--no-focus); */
 }
 
 .user-info-wrapper {
-    margin-top: 1.5rem;
-    text-align: center;
+  margin-top: 1.5rem;
+  text-align: center;
 }
 
 .user-info-list-icon {
-    position: absolute;
+  position: absolute;
 }
 
-.user-info-list-icon>svg {
-    margin-right: 0.7rem;
-    color: var(--no-focus);
+.user-info-list-icon > svg {
+  margin-right: 0.7rem;
+  color: var(--no-focus);
 }
 
 .user-detail.user-profile-pic {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.user-detail.user-profile-pic>img {
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
+.user-detail.user-profile-pic > img {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
 }
 
 .user-detail-user-name {
-    margin-top: 1rem;
-    font-size: 1.4rem;
-    font-weight: 700;
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
 }
 
 .user-detail-tagline {
-    margin: 10px 0;
-    color: var(--light-heading);
-    font-size: 0.9rem;
+  margin: 10px 0;
+  color: var(--light-heading);
+  font-size: 0.9rem;
 }
 
 .user-info-review-container {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
-
 .user-detail-review-info {
-    color: var(--icons);
+  color: var(--icons);
 }
 
 .user-detail-contact-me {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
 }
 
-.user-detail-contact-me>button {
-    padding: 0.6rem 15%;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--green);
-    color: white;
-    font-size: 0.9rem;
+.user-detail-contact-me > button {
+  padding: 0.6rem 15%;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--green);
+  color: white;
+  font-size: 0.9rem;
 }
 
 .user-detail-where-abouts-container {
-    border-top: 1px solid var(--dark-separator);
-    padding: 1rem 0 0;
-    font-size: 0.9rem;
+  border-top: 1px solid var(--dark-separator);
+  padding: 1rem 0 0;
+  font-size: 0.9rem;
 }
 
-.user-detail-where-abouts-container>ul>li {
-    display: flex;
-    justify-content: space-between;
-    margin: 1rem 0;
-    list-style: none;
+.user-detail-where-abouts-container > ul > li {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+  list-style: none;
 }
 
-.user-detail-where-abouts-container>ul>li svg {
-    margin-right: 1rem;
-    color: var(--light-heading);
+.user-detail-where-abouts-container > ul > li svg {
+  margin-right: 1rem;
+  color: var(--light-heading);
 }
 
-.user-detail-where-abouts-container>ul>li span {
-    font-weight: 400;
-    color: var(--light-heading);
+.user-detail-where-abouts-container > ul > li span {
+  font-weight: 400;
+  color: var(--light-heading);
 }
 
-.user-detail-where-abouts-container>ul>li>p {
-    color: var(--light-grey);
-    font-weight: 700;
+.user-detail-where-abouts-container > ul > li > p {
+  color: var(--light-grey);
+  font-weight: 700;
 }
 
 .user-detail-navigation-container {
-    border-bottom: 1px solid var(--dark-separator);
-    width: 100vw;
-    position: relative;
-    margin: 3rem -1.5rem 2rem;
+  border-bottom: 1px solid var(--dark-separator);
+  width: 100vw;
+  position: relative;
+  margin: 3rem -1.5rem 2rem;
 }
 
-.user-detail-navigation-container>button {
-    border-width: 0px;
-    background-color: white;
-    margin-left: 1.5rem;
-    padding: 0.5rem;
-    color: var(--icons);
-    border-bottom: 2px solid transparent;
+.user-detail-navigation-container > button {
+  border-width: 0px;
+  background-color: white;
+  margin-left: 1.5rem;
+  padding: 0.5rem;
+  color: var(--icons);
+  border-bottom: 2px solid transparent;
 }
 
-.user-detail-navigation-container>button:hover {
-    cursor: pointer;
-    color: var(--green);
-    border-color: var(--green);
+.user-detail-navigation-container > button:hover {
+  cursor: pointer;
+  color: var(--green);
+  border-color: var(--green);
 }
 
 .user-detail-description {
-    border-bottom: 1px solid var(--dark-separator);
-    padding-bottom: 1.75rem;
-    margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--dark-separator);
+  padding-bottom: 1.75rem;
+  margin-bottom: 1.75rem;
 }
 
-.user-detail-description>h3 {
-    font-size: 1rem;
-    font-weight: 600;
+.user-detail-description > h3 {
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.user-detail-description>p {
-    line-height: 1.5;
-    margin-top: 1rem;
-    color: var(--icons);
-    letter-spacing: 0.5px;
-    word-spacing: 2px;
-    word-break: break-word;
+.user-detail-description > p {
+  line-height: 1.5;
+  margin-top: 1rem;
+  color: var(--icons);
+  letter-spacing: 0.5px;
+  word-spacing: 2px;
+  word-break: break-word;
 }
 
 .user-detail-language,
-.user-detail-education-container, 
+.user-detail-education-container,
 .user-detail-certification-container,
 .user-detail-skills-container {
-    padding-bottom: 1.75rem;
-    margin-bottom: 1.75rem;
-    border-bottom: 1px solid var(--dark-separator);
+  padding-bottom: 1.75rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--dark-separator);
 }
 
-.user-detail-language>h3,
-.user-detail-skills-container>h3,
-.user-detail-education-container>h3,
-.user-detail-certification-container>h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.user-detail-language > h3,
+.user-detail-skills-container > h3,
+.user-detail-education-container > h3,
+.user-detail-certification-container > h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
-.user-detail-language>ul>li, 
-.user-detail-education-container>ul>li, 
-.user-detail-certification-container>ul>li {
-    list-style: none;
-    color: var(--light-grey);
+.user-detail-language > ul > li,
+.user-detail-education-container > ul > li,
+.user-detail-certification-container > ul > li {
+  list-style: none;
+  color: var(--light-grey);
 }
 
-.user-detail-language-fluency, 
+.user-detail-language-fluency,
 .user-detail-certified-from,
 .user-detail-college,
 .user-detail-graduated-year {
-    color: var(--no-focus);
+  color: var(--no-focus);
 }
 
-.user-detail-education-container>ul>li>div, 
-.user-detail-certification-container>ul>li>div{
-    margin-bottom: 0.75rem;
+.user-detail-education-container > ul > li > div,
+.user-detail-certification-container > ul > li > div {
+  margin-bottom: 0.75rem;
 }
 
-.user-detail-skills-container>ul>li {
-    list-style: none;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--dark-separator);
-    display: inline-block;
-    margin: 0 10px 10px 0rem;
-    border-radius: 1rem;
-    color: var(--light-heading);
+.user-detail-skills-container > ul > li {
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--dark-separator);
+  display: inline-block;
+  margin: 0 10px 10px 0rem;
+  border-radius: 1rem;
+  color: var(--light-heading);
 }
 
-
-.user-detail-active-gigs-container{
-    display: none;
-    width: 100%;
-    /* background-color: var(--separator); */
-    border: 1px solid var(--dark-separator);
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-    margin-bottom: 2rem;
-    /* padding: 1.5rem 1.5rem 0 ; */
+.user-detail-active-gigs-container {
+  display: none;
+  width: 100%;
+  /* background-color: var(--separator); */
+  border: 1px solid var(--dark-separator);
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  /* padding: 1.5rem 1.5rem 0 ; */
 }
 
-.user-detail-active-gigs-container>div{
-    font-size: 0.9rem;
-    padding: 1.5rem 1rem;
-    padding-bottom: 1.5rem;
-    color: var(--light-heading);
-    position: relative;
+.user-detail-active-gigs-container > div {
+  font-size: 0.9rem;
+  padding: 1.5rem 1rem;
+  padding-bottom: 1.5rem;
+  color: var(--light-heading);
+  position: relative;
 }
 
-.user-detail-active-gigs-container>div:hover{
-    color: var(--green);
-    cursor: pointer;
+.user-detail-active-gigs-container > div:hover {
+  color: var(--green);
+  cursor: pointer;
 }
 
-.active-gig::after,.draft-gig::after{
-    content: "";
-    background-color: transparent;
-    height: 3px;
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
-    width: 0;
-    left: 0;
-    transition: width .2s ease,background-color .2s ease,left .2s ease;
+.active-gig::after,
+.draft-gig::after {
+  content: "";
+  background-color: transparent;
+  height: 3px;
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  width: 0;
+  left: 0;
+  transition: width 0.2s ease, background-color 0.2s ease, left 0.2s ease;
 }
 
-
-.selected::after{
-    background-color: var(--green);
-    width: 100%;
+.selected::after {
+  background-color: var(--green);
+  width: 100%;
 }
 
-.user-detail-active-gigs-container>div.selected{
-    color: var(--dark-grey);
+.user-detail-active-gigs-container > div.selected {
+  color: var(--dark-grey);
 }
 
-
-
-.user-detail-gig-list-container>h2 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
+.user-detail-gig-list-container > h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .user-detail-gig-list {
-    margin-top: 2rem;
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1fr;
-    grid-auto-rows: 1fr;
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 1fr;
 }
 
-.user-detail-create-new-gig-card{
-    background-color: white;
-    width: 100%;
-    min-height: 355px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--dark-separator);
-    background-color: var(--separator);
+.user-detail-create-new-gig-card {
+  background-color: white;
+  width: 100%;
+  min-height: 355px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dark-separator);
+  background-color: var(--separator);
 }
 
-.user-detail-create-new-gig-card:hover{
-    cursor: pointer;
+.user-detail-create-new-gig-card:hover {
+  cursor: pointer;
 }
 
-.user-detail-create-new-gig-card > .add-circle-icon{
-    margin-bottom: 1rem;
+.user-detail-create-new-gig-card > .add-circle-icon {
+  margin-bottom: 1rem;
 }
-
 
 .user-detail-review-list-container {
-    padding-top: 3rem;
+  padding-top: 3rem;
 }
 
-.user-detail-review-list>h2 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
+.user-detail-review-list > h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
 }
-
 
 .user-detail-review-heading {
-    font-size: 1.125rem;
+  font-size: 1.125rem;
 }
 
 .user-detail-review-rating-stars {
-    display: inline-flex;
-    align-items: center;
-    color: var(--gold);
-    font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--gold);
+  font-size: 0.9rem;
 }
 
-.user-detail-review-rating-stars>div {
-    display: none;
+.user-detail-review-rating-stars > div {
+  display: none;
 }
 
-
-.user-detail-review-list>h2>svg {
-    color: var(--gold);
+.user-detail-review-list > h2 > svg {
+  color: var(--gold);
 }
 
 .user-detail-gig-rating,
 .user-detail-gig-review-count {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .user-detail-gig-rating {
-    color: var(--gold);
+  color: var(--gold);
 }
 
 .user-detail-review {
-    padding: 1rem 0 2rem 2.75rem;
-    border-bottom: 1px solid var(--dark-separator);
+  padding: 1rem 0 2rem 2.75rem;
+  border-bottom: 1px solid var(--dark-separator);
 }
 
 .user-detail-review-customer {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
-.user-detail-review-customer>* {
-    margin-right: 10px;
+.user-detail-review-customer > * {
+  margin-right: 10px;
 }
 
 .user-detail-review-customer-name {
-    font-weight: 700;
-    color: var(--dark-grey);
+  font-weight: 700;
+  color: var(--dark-grey);
 }
 
-.user-detail-review-customer>img {
-    width: 2rem;
-    border-radius: 50%;
-    margin-left: -2.75rem;
-    float: left
+.user-detail-review-customer > img {
+  width: 2rem;
+  border-radius: 50%;
+  margin-left: -2.75rem;
+  float: left;
 }
 
 .user-detail-review-customer-country {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    margin-top: -5px;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-top: -5px;
 }
 
-
-.user-detail-review-customer-country>img {
-    width: 1.5rem;
-    margin-right: 0.5rem;
+.user-detail-review-customer-country > img {
+  width: 1.5rem;
+  margin-right: 0.5rem;
 }
 
-.user-detail-review-customer-country>div {
-    color: var(--light-heading);
+.user-detail-review-customer-country > div {
+  color: var(--light-heading);
 }
 
 .user-detail-review-paragraph {
-    margin-top: 1rem;
-    line-height: 1.5;
-    color: var(--light-grey);
-    word-wrap: break-word;
+  margin-top: 1rem;
+  line-height: 1.5;
+  color: var(--light-grey);
+  word-wrap: break-word;
 }
 
 .user-detail-review-publish {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: var(--no-focus);
-    font-weight: 400;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--no-focus);
+  font-weight: 400;
 }
 
 .user-review-see-more {
-    margin-top: 2rem;
-    color: var(--green);
+  margin-top: 2rem;
+  color: var(--green);
 }
 
 .user-review-see-more:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-
-
 @media only screen and (min-width: 600px) {
+  .user-details-max-width-container {
+    margin-top: 2rem;
+  }
 
-    .user-details-max-width-container {
-        margin-top: 2rem;
-    }
+  .user-detail-gig-list {
+    grid-template-columns: 1fr 1fr;
+  }
 
-    .user-detail-gig-list {
-        grid-template-columns: 1fr 1fr;
-    }
+  .user-detail-review-rating-stars > div {
+    display: block;
+  }
 
-    .user-detail-review-rating-stars>div {
-        display: block;
-    }
-
-    .user-detail-review-rating-stars>svg {
-        display: none;
-    }
+  .user-detail-review-rating-stars > svg {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 900px) {
+  .user-details-max-width-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    padding: 0 2rem 1.5rem;
+  }
 
-    .user-details-max-width-container {
-        display: grid;
-        grid-template-columns: 40% 60%;
-        padding: 0 2rem 1.5rem;
-    }
+  .user-info-wrapper {
+    margin-top: 0;
+  }
 
-    .user-info-wrapper {
-        margin-top: 0;
-    }
+  .user-info-large-screen-border {
+    padding: 1.75rem;
+    border: 1px solid var(--dark-separator);
+  }
 
-    .user-info-large-screen-border {
-        padding: 1.75rem;
-        border: 1px solid var(--dark-separator);
-    }
+  .user-info-large-screen-border.first-div {
+    margin-bottom: 2rem;
+  }
 
-    .user-info-large-screen-border.first-div {
-        margin-bottom: 2rem;
-    }
+  .user-detail-navigation-container {
+    display: none;
+  }
 
-    .user-detail-navigation-container {
-        display: none;
-    }
+  .user-detail-certification-container {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: none;
+  }
 
-    .user-detail-certification-container{
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border: none;
-    }
+  .user-detail-gig-reviews-div {
+    margin-left: 1.5rem;
+  }
 
-    .user-detail-gig-reviews-div {
-        margin-left: 1.5rem;
-    }
+  .user-detail-active-gigs-container {
+    display: flex;
+  }
 
-    .user-detail-active-gigs-container{
-        display: flex;
-    }
-
-    .user-detail-create-new-gig-card{
-        /* height: 360px; */
-    }
+  .user-detail-create-new-gig-card {
+    /* height: 360px; */
+  }
 }
 
 @media only screen and (min-width: 1150px) {
-    .user-details-max-width-container {
-        grid-template-columns: 30% 60%;
-    }
+  .user-details-max-width-container {
+    grid-template-columns: 30% 60%;
+  }
 
-    .user-detail-gig-list {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-
-
+  .user-detail-gig-list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }

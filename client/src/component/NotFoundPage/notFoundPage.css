@@ -1,11 +1,10 @@
-.not-found-body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-
+.not-found-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
 
-.not-found-message{
+.not-found-message {
 }

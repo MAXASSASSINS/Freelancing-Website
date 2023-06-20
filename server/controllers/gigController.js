@@ -1,304 +1,308 @@
-import Gig from "../models/gigModel.js"
-import User from "../models/userModel.js"
+import Gig from "../models/gigModel.js";
+import User from "../models/userModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import Features from "../utils/features.js";
 import cloudinary from "cloudinary";
 import multer from "multer";
 
-
-
 const checkForErrors = (body, currentStep) => {
-    let error = "";
-    const { title, category, subCategory, searchTags, description } = body;
-    switch (currentStep) {
-        case 1:
-            if (!title || title.trim().length < 15) {
-                error = "Please enter your gig title";
-                return error;
-            }
-            if (!category || category === "Select a category") {
-                error = "Please enter your gig category";
-                return error;
-            }
-            if (!subCategory || subCategory === "Select a sub-category") {
-                error = "Please enter your gig sub category";
-                return error;
-            }
+  let error = "";
+  const { title, category, subCategory, searchTags, description } = body;
+  switch (currentStep) {
+    case 1:
+      if (!title || title.trim().length < 15) {
+        error = "Please enter your gig title";
+        return error;
+      }
+      if (!category || category === "Select a category") {
+        error = "Please enter your gig category";
+        return error;
+      }
+      if (!subCategory || subCategory === "Select a sub-category") {
+        error = "Please enter your gig sub category";
+        return error;
+      }
 
-            if (!searchTags || searchTags.length < 1) {
-                error = "Please enter at least 1 tag";
-                return error;
-            }
-            break;
-        case 3:
-            const { contentState, desc } = body;
-            if (!desc) {
-                error = "Please enter your gig description";
-                return error;
-            }
-            if (desc.trim().length < 15) {
-                error = "Description should be more than 15 characters";
-                return error;
-            }
-            if (desc.trim().length > 1200) {
-                error = "Description should be less than 1200 characters";
-                return error;
-            }
+      if (!searchTags || searchTags.length < 1) {
+        error = "Please enter at least 1 tag";
+        return error;
+      }
+      break;
+    case 3:
+      const { contentState, desc } = body;
+      if (!desc) {
+        error = "Please enter your gig description";
+        return error;
+      }
+      if (desc.trim().length < 15) {
+        error = "Description should be more than 15 characters";
+        return error;
+      }
+      if (desc.trim().length > 1200) {
+        error = "Description should be less than 1200 characters";
+        return error;
+      }
 
-            break;
-    }
-}
-
+      break;
+  }
+};
 
 // Create gig
 export const createGig = catchAsyncErrors(async (req, res, next) => {
-    req.body.user = req.user.id;
-    const { data } = req.body;
-    
-    const newData = { ...data, user: req.user.id };
-    const error = checkForErrors(newData, 1);
+  req.body.user = req.user.id;
+  const { data } = req.body;
 
-    if (error) {
-        return next(new ErrorHandler(error, 400));
-    }
+  const newData = { ...data, user: req.user.id };
+  const error = checkForErrors(newData, 1);
 
-    const gig = await Gig.create(newData);
+  if (error) {
+    return next(new ErrorHandler(error, 400));
+  }
 
+  const gig = await Gig.create(newData);
 
-    res.status(201).json({
-        success: true,
-        message: "sucessfully created your gig",
-        gig,
-        gigId: gig._id
-    })
-})
-
+  res.status(201).json({
+    success: true,
+    message: "sucessfully created your gig",
+    gig,
+    gigId: gig._id,
+  });
+});
 
 // Get all gigs
 export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
-    const resultPerPage = 10;
-    const gigsCount = await Gig.countDocuments();
+  const resultPerPage = 10;
+  const gigsCount = await Gig.countDocuments();
 
-    const feature = new Features(Gig.find({ active: true }), req.query).search().filter().pagination(resultPerPage).populate();
-    const gigs = await feature.query;
+  const feature = new Features(Gig.find({ active: true }), req.query)
+    .search()
+    .filter()
+    .pagination(resultPerPage)
+    .populate();
+  const gigs = await feature.query;
 
-    res.status(200).json({
-        success: true,
-        message: "successfully fetched all gigs from database",
-        gigsCount,
-        gigs
-    })
-})
+  res.status(200).json({
+    success: true,
+    message: "successfully fetched all gigs from database",
+    gigsCount,
+    gigs,
+  });
+});
 
 // Get gig details
 export const getGig = catchAsyncErrors(async (req, res, next) => {
-    // console.log("id---->", req.params.id);
-    const gig = await Gig.findById(req.params.id).populate("user", "name avatar numOfRatings ratings userSince country description tagline online");
+  // console.log("id---->", req.params.id);
+  const gig = await Gig.findById(req.params.id).populate(
+    "user",
+    "name avatar numOfRatings ratings userSince country description tagline online"
+  );
 
-    if (!gig) {
-        return next(new ErrorHandler("Gig not found", 404));
-    }
+  if (!gig) {
+    return next(new ErrorHandler("Gig not found", 404));
+  }
 
-    res.status(200).json({
-        success: true,
-        message: "Gig found sucessfully",
-        gig
-    })
-})
+  res.status(200).json({
+    success: true,
+    message: "Gig found sucessfully",
+    gig,
+  });
+});
 
 // Update gig
 export const updateGig = catchAsyncErrors(async (req, res, next) => {
-    const { data, step } = req.body;
-    console.log(step, data)
+  const { data, step } = req.body;
+  console.log(step, data);
 
-    const error = checkForErrors(data, step);
+  const error = checkForErrors(data, step);
 
-    if (error) {
-        return next(new ErrorHandler(error, 400));
-    }
+  if (error) {
+    return next(new ErrorHandler(error, 400));
+  }
 
-    let gig = await Gig.findById(req.params.id);
+  let gig = await Gig.findById(req.params.id);
 
-    if (!gig) {
-        return next(new ErrorHandler("Gig not found", 404));
-    }
+  if (!gig) {
+    return next(new ErrorHandler("Gig not found", 404));
+  }
 
-    if (step === 2) {
-        gig = await Gig.findByIdAndUpdate(req.params.id,
-            { $set: { pricing: data } },
-            {
-                new: true,
-                runValidators: true,
-                useFindandModify: false,
-            }
-        )
-    }
-    else if (step === 3) {
-        gig = await Gig.findByIdAndUpdate(req.params.id,
-            { $set: { description: data.contentState } }, {
-            new: true,
-            runValidators: true,
-            useFindandModify: false
-        })
-    }
-    else {
-        gig = await Gig.findByIdAndUpdate(req.params.id, data, {
-            new: true,
-            runValidators: true,
-            useFindandModify: false
-        })
-    }
+  if (step === 2) {
+    gig = await Gig.findByIdAndUpdate(
+      req.params.id,
+      { $set: { pricing: data } },
+      {
+        new: true,
+        runValidators: true,
+        useFindandModify: false,
+      }
+    );
+  } else if (step === 3) {
+    gig = await Gig.findByIdAndUpdate(
+      req.params.id,
+      { $set: { description: data.contentState } },
+      {
+        new: true,
+        runValidators: true,
+        useFindandModify: false,
+      }
+    );
+  } else {
+    gig = await Gig.findByIdAndUpdate(req.params.id, data, {
+      new: true,
+      runValidators: true,
+      useFindandModify: false,
+    });
+  }
 
-
-    res.status(200).json({
-        success: true,
-        message: "Gig updated sucessfully",
-        gig
-    })
-})
-
+  res.status(200).json({
+    success: true,
+    message: "Gig updated sucessfully",
+    gig,
+  });
+});
 
 const fileUpload = catchAsyncErrors(async (req, res, next) => {
+  const files = req.files;
+  // console.log(files);
 
-    const files = req.files;
-    // console.log(files);
+  let fileUrls = [];
+  const p = await Promise.all(
+    files.map(async (file, index) => {
+      if (!file) return;
 
-    let fileUrls = [];
-    const p = await Promise.all(files.map(async (file, index) => {
-        if (!file) return;
+      const fileType = file.mimetype;
+      let fileUrl;
 
-        const fileType = file.mimetype;
-        let fileUrl;
+      if (fileType.includes("application/json")) {
+        fileUrls.push(null);
+        return;
+      } else if (fileType.includes("video")) {
+        cloudinary.v2.uploader
+          .upload(file.path, {
+            folder: "FreelanceMe",
+            resource_type: "video",
+            chunk_size: 6000000,
+          })
+          .then((result) => {
+            fileUrl = {
+              public_id: result.public_id,
+              url: result.secure_url,
+            };
+            fileUrls.push(fileUrl);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        cloudinary.v2.uploader
+          .upload(file.path, {
+            folder: "FreelanceMe",
+          })
+          .then((result) => {
+            console.log(result);
+            fileUrl = {
+              public_id: result.public_id,
+              url: result.secure_url,
+            };
+            fileUrls.push(fileUrl);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    })
+  );
 
-        if (fileType.includes("application/json")) {
-            fileUrls.push(null);
-            return;
-        }
-        else if (fileType.includes("video")) {
-            cloudinary.v2.uploader.upload(file.path, {
-                folder: "FreelanceMe",
-                resource_type: "video",
-                chunk_size: 6000000,
-            })
-                .then(result => {
-                    fileUrl = {
-                        public_id: result.public_id,
-                        url: result.secure_url,
-                    }
-                    fileUrls.push(fileUrl);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-        }
-        else {
-            cloudinary.v2.uploader.upload(file.path, {
-                folder: "FreelanceMe",
-            })
-                .then(result => {
-                    console.log(result)
-                    fileUrl = {
-                        public_id: result.public_id,
-                        url: result.secure_url,
-                    }
-                    fileUrls.push(fileUrl);
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-        }
-    }))
+  console.log("p", p);
 
-    console.log('p', p);
-
-    return fileUrls;
-
-})
-
+  return fileUrls;
+});
 
 // Delete gig
 export const deleteGig = catchAsyncErrors(async (req, res, next) => {
+  const gig = await Gig.findById(req.params.id);
 
-    const gig = await Gig.findById(req.params.id);
+  if (!gig) {
+    return next(new ErrorHandler("Gig not found", 404));
+  }
 
-    if (!gig) {
-        return next(new ErrorHandler("Gig not found", 404));
-    }
+  await gig.remove();
 
-    await gig.remove();
-
-    res.status(200).json({
-        success: true,
-        message: "Gig deleted sucessfully"
-    })
-})
-
+  res.status(200).json({
+    success: true,
+    message: "Gig deleted sucessfully",
+  });
+});
 
 // Create gig review
 export const createGigReview = catchAsyncErrors(async (req, res, next) => {
-    const { rating, comment, gigId } = req.body;
-    console.log(req.user.country);
-    const review = {
-        user: req.user._id,
-        name: req.user.name,
-        avatar: req.user.avatar,
-        country: req.user.country,
-        rating: Number(rating),
-        comment,
-    };
+  const { rating, comment, gigId } = req.body;
+  console.log(req.user.country);
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    avatar: req.user.avatar,
+    country: req.user.country,
+    rating: Number(rating),
+    comment,
+  };
 
-    const gig = await Gig.findById(gigId);
-    const gigUser = await User.findById(gig.user._id);
+  const gig = await Gig.findById(gigId);
+  const gigUser = await User.findById(gig.user._id);
 
-    gig.reviews.push(review);
-    gig.numOfReviews = gig.reviews.length;
-    gig.numOfRatings += 1;
-    gigUser.numOfRatings += 1;
-    gigUser.numOfReviews += 1;
+  gig.reviews.push(review);
+  gig.numOfReviews = gig.reviews.length;
+  gig.numOfRatings += 1;
+  gigUser.numOfRatings += 1;
+  gigUser.numOfReviews += 1;
 
-    const newRatingsGig = (gig.ratings * (gig.numOfRatings - 1) + review.rating) / gig.numOfRatings;
+  const newRatingsGig =
+    (gig.ratings * (gig.numOfRatings - 1) + review.rating) / gig.numOfRatings;
 
-    const newRatingsUser = (gigUser.ratings * (gigUser.numOfRatings - 1) + review.rating) / gigUser.numOfRatings;
+  const newRatingsUser =
+    (gigUser.ratings * (gigUser.numOfRatings - 1) + review.rating) /
+    gigUser.numOfRatings;
 
-    gig.ratings = newRatingsGig;
-    gigUser.ratings = newRatingsUser;
+  gig.ratings = newRatingsGig;
+  gigUser.ratings = newRatingsUser;
 
-    await gig.save({ validateBeforeSave: false })
-    await gigUser.save({ validateBeforeSave: false });
+  await gig.save({ validateBeforeSave: false });
+  await gigUser.save({ validateBeforeSave: false });
 
-    res.status(200).json({
-        success: true,
-        message: "Sucessfully added the review",
-        review
-    })
-})
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully added the review",
+    review,
+  });
+});
 
 export const getAllReviews = catchAsyncErrors(async (req, res, next) => {
-    const gigId = req.query.id;
+  const gigId = req.query.id;
 
-    const gig = await Gig.findById(gigId);
-    if (!gig) {
-        return next(new ErrorHandler("Product not found", 404));
-    }
+  const gig = await Gig.findById(gigId);
+  if (!gig) {
+    return next(new ErrorHandler("Product not found", 404));
+  }
 
-    res.status(200).json({
-        success: true,
-        reviews: gig.reviews,
-    });
-})
+  res.status(200).json({
+    success: true,
+    reviews: gig.reviews,
+  });
+});
 
 export const getUserGigs = catchAsyncErrors(async (req, res, next) => {
-    const userGigs = await Gig.find({ user: req.params.id }).populate("user", "name avatar online");
+  const userGigs = await Gig.find({ user: req.params.id }).populate(
+    "user",
+    "name avatar online"
+  );
 
-    if (!userGigs) {
-        return next(new ErrorHandler("User gigs not found", 404));
-    }
+  if (!userGigs) {
+    return next(new ErrorHandler("User gigs not found", 404));
+  }
 
-    res.status(200).json({
-        success: true,
-        message: "User gigs found sucessfully",
-        userGigs
-    })
-})
-
+  res.status(200).json({
+    success: true,
+    message: "User gigs found sucessfully",
+    userGigs,
+  });
+});

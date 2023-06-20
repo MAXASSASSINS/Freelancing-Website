@@ -1,17 +1,17 @@
-.global-footer{
-    text-align: center;
-    padding: 0 4rem;
-    color: var(--dark-grey);
+.global-footer {
+  text-align: center;
+  padding: 0 4rem;
+  color: var(--dark-grey);
 }
 
-.socials{
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 1rem;
+.socials {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 1rem;
 }
 
-.socials svg{
-    font-size: 1.5rem;
-    color: var(--green);
+.socials svg {
+  font-size: 1.5rem;
+  color: var(--green);
 }

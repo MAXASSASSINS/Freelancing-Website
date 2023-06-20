@@ -4,8 +4,8 @@ import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import sendToken from "../utils/jwtToken.js";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
-import cloudinary from 'cloudinary'
-import bcrypt from 'bcryptjs'
+import cloudinary from "cloudinary";
+import bcrypt from "bcryptjs";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -52,7 +52,7 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
-  
+
   sendToken(user, 200, res);
 });
 
@@ -145,7 +145,6 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-
 // Get my details
 export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
   const userId = await req.user.id;
@@ -156,10 +155,9 @@ export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Successfully fetched your details",
-    user
-  })
-
-})
+    user,
+  });
+});
 
 // Change password
 export const changePassword = catchAsyncErrors(async (req, res, next) => {
@@ -173,7 +171,10 @@ export const changePassword = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (req.body.newPassword !== req.body.confirmPassword) {
-    return next(new ErrorHandler("password does not match with confirm password"), 400);
+    return next(
+      new ErrorHandler("password does not match with confirm password"),
+      400
+    );
   }
 
   user.password = req.body.newPassword;
@@ -181,8 +182,7 @@ export const changePassword = catchAsyncErrors(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 200, res);
-})
-
+});
 
 // Get All Users -- admin
 export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
@@ -191,42 +191,45 @@ export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Successfully fetched all users",
-    users
-  })
-})
+    users,
+  });
+});
 
 // Get single user -- admin
 export const getUser = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
   if (!user) {
-    return next(new ErrorHandler(`user does not exist with id: ${req.params.id}`))
+    return next(
+      new ErrorHandler(`user does not exist with id: ${req.params.id}`)
+    );
   }
   res.status(200).json({
     success: true,
     message: "Successfully fetched user",
-    user
-  })
-})
+    user,
+  });
+});
 
-// Update user data 
+// Update user data
 export const updateUser = catchAsyncErrors(async (req, res, next) => {
   let user = await User.findById(req.params.id);
 
   if (!user) {
-    return next(new ErrorHandler(`user does not exist with id: ${req.params.id}`))
+    return next(
+      new ErrorHandler(`user does not exist with id: ${req.params.id}`)
+    );
   }
 
   user = await User.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
-    useFindandModify: false
-  })
+    useFindandModify: false,
+  });
 
   res.status(200).json({
     success: true,
     message: "User details updated sucessfully",
-    user
-  })
-})
-
+    user,
+  });
+});
