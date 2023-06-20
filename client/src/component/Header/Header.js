@@ -60,9 +60,9 @@ export const Header = () => {
                         isAuthenticated &&
                         <div>
                             {
-                                user.avatar.url?
+                                user.avatar.url ?
                                     <Link to={"/user/" + user._id}>
-                                        <img src={user.avatar.url} className="profile-pic" alt="user profile"></img>
+                                        <img style={{maxWidth: "2rem"}} src={user.avatar.url} className="profile-pic" alt="user profile"></img>
                                     </Link>
                                     :
                                     <Link to={"/user/" + user?._id}>
