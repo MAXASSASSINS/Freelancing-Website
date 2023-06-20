@@ -14,20 +14,22 @@ import { Login } from './component/Login/Login';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Inbox } from './component/Inbox/Inbox';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { solid, regular, brands } from '@fortawesome/fontawesome-svg-core/import.macro' // <-- import styles to be used
 import { Test } from './component/Test/Test';
 import { CurrentlySelectedClientChat } from './component/CurrentlySelectedClientChat/CurrentlySelectedClientChat';
 import { loadUser } from './actions/userAction';
 import store from './store';
 import { NotFoundPage } from './component/NotFoundPage/NotFoundPage';
 import { CreateGig } from './component/CreateGig/CreateGig';
+import { PlaceOrder } from './component/PlaceOrder/PlaceOrder';
+import { SubmitRequirements } from './component/SubmitRequirements/SubmitRequirements';
 
-import { SocketContext } from './context/socket/socket';
-import { socket } from './context/socket/socket';
+import { SocketContext, socket } from './context/socket/socket';
+
 import './utility/color.js'
 import { CloudinaryContext, Image } from 'cloudinary-react';
+import { Tooltip } from './component/Tooltip/Tooltip';
 
+import 'react-tooltip/dist/react-tooltip.css'
 
 export const windowContext = createContext();
 
@@ -58,6 +60,7 @@ const App = () => {
 	}, [])
 
 
+	
 
 
 
@@ -85,6 +88,11 @@ const App = () => {
 			<windowContext.Provider value={{ windowWidth, windowHeight }}>
 				<CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
 					<SocketContext.Provider value={socket}>
+						<Tooltip 
+							id='my-tooltip'
+							place='bottom'
+						/>
+
 						<Header></Header>
 						<ToastContainer />
 						<Routes>
@@ -103,6 +111,9 @@ const App = () => {
 							<Route exact path='/gig/details/:id' element={<GigDetail />} />
 							<Route path='*' element={<NotFoundPage />} />
 							<Route exact path='/gig/create/new/gig' element={<CreateGig />}></Route>
+							<Route exact path='/gig/place/order/:id/:packageNumber' element={<PlaceOrder />}></Route>
+							<Route exact path='/test' element={<Test />}></Route>
+							<Route exact path='/gig/place/order/submit/requirements/:id/:packageNumber/:orderId' element={<SubmitRequirements />}></Route>
 						</Routes>
 						{/* <Footer /> */}
 					</SocketContext.Provider>
