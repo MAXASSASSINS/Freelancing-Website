@@ -215,21 +215,21 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   // console.log(file);
 
   const fileType = req.file.mimetype;
-  // console.log(fileType);
 
   let fileUrl;
   if (file) {
     let result;
     if (fileType.includes("video")) {
-      result = await cloudinary.v2.uploader
-        .upload(file.path, {
+      result = await cloudinary.v2.uploader.upload_large(file.path, {
           folder: "FreelanceMe",
           resource_type: "video",
           chunk_size: 6000000,
+        }, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(result);
         })
-        .catch((err) => {
-          console.log(err);
-        });
     } else {
       result = await cloudinary.v2.uploader
         .upload(file.path, {
@@ -240,13 +240,14 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
         });
     }
 
-    fileUrl = {
-      public_id: result.public_id,
-      url: result.secure_url,
-    };
+    // fileUrl = {
+    //   public_id: result.public_id,
+    //   url: result.secure_url,
+    // };
+    // console.log(result);
   }
 
-  console.log(file.path);
+  // console.log(file.path);
   fs.unlink(file.path, (err) => {
     if (err)
       return new ErrorHandler("error in deleting a file from uploads", 500);
