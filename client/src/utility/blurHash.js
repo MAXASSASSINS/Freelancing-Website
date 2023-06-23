@@ -26,6 +26,9 @@ export const encodeImageToBlurhash = async (imageUrl) => {
 
 export const generateBlurHash = async (item, cloudinaryURL) => {
   let blob = item;
+  if (!(item.type.includes("image") || item.type.includes("video"))) {
+    return;
+  }
   if (item.type.includes("video")) {
     blob = await getThumbnailOfVideo(cloudinaryURL);
   }
