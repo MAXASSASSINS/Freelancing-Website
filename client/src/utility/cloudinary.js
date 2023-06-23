@@ -1,6 +1,9 @@
 import axios from "axios";
 import { generateBlurHash } from "./blurHash";
 
+const cloudName = "dyod45bn8";
+const unsignedUploadPreset = "syxrot1t";
+
 export const uploadToCloudinary = async (arr) => {
   const urls = [];
 
@@ -9,10 +12,9 @@ export const uploadToCloudinary = async (arr) => {
       urls.push(item);
       continue;
     }
-    const cloudName = "dyod45bn8";
     const formData = new FormData();
     formData.append("file", item);
-    formData.append("upload_preset", "syxrot1t");
+    formData.append("upload_preset", unsignedUploadPreset);
     formData.append("cloud_name", cloudName);
     const data = await axios.post(
       `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
@@ -46,26 +48,20 @@ export const uploadToCloudinary = async (arr) => {
 };
 
 const uploadToCloudinarySingle = async (item, maxSize) => {
-  const cloudName = "dyod45bn8";
   const formData = new FormData();
   formData.append("file", item);
-  formData.append("upload_preset", "syxrot1t");
+  formData.append("upload_preset", unsignedUploadPreset);
   formData.append("cloud_name", cloudName);
 
   if (maxSize && item.size > maxSize) {
-    return Promise.reject("File size is too big");
+    return Promise.reject("Max file size allowed is 5GB.");
   }
 
+  console.log(item);
+
   try {
-    const data = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      formData,
-      {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      }
-    );
+    const data = await processFile(item);
+    console.log(data);
 
     // creating blur hash
     const blurhash = await generateBlurHash(item, data.data.secure_url);
@@ -79,7 +75,7 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
     const obj = {
       publicId: data.data.public_id,
       url: data.data.secure_url,
-      name: data.data.original_filename,
+      name: item.name,
       type:
         data.data.resource_type.toString() + "/" + data.data.format.toString(),
       size: data.data.bytes,
@@ -88,8 +84,6 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
       width: data.data.width,
     };
 
-    console.log(obj);
-
     return obj;
   } catch (error) {
     return Promise.reject(error);
@@ -97,6 +91,8 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
 };
 
 export const uploadToCloudinaryV2 = async (arr, maxSize) => {
+
+
   const requests = arr.map((item) => {
     return uploadToCloudinarySingle(item, maxSize);
   });
@@ -109,3 +105,64 @@ export const uploadToCloudinaryV2 = async (arr, maxSize) => {
     return Promise.reject(error);
   }
 };
+
+let XUniqueUploadId = +new Date();
+
+let POST_URL =
+  "https://api.cloudinary.com/v1_1/" + "dyod45bn8" + "/auto/upload";
+
+const delay = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
+
+const processFile = async (file) => {
+  let size = file.size;
+  let sliceSize = 6000000;
+  let start = 0;
+  let numberOfSlices = Math.ceil(size / sliceSize);
+
+  let data;
+
+  for (let i = 0; i < numberOfSlices; i++) {
+    try {
+      let end = start + sliceSize;
+      if (end > size) {
+        end = size;
+      }
+      let s = file.slice(start, end);
+      await delay(3);
+      data = await send(s, start, end - 1, size);
+      start += sliceSize;
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error);
+    }
+  }
+  return data;
+};
+
+const send = async (piece, start, end, size) => {
+  console.log("start ", start);
+  console.log("end", end);
+
+  const formData = new FormData();
+  console.log(XUniqueUploadId);
+
+  formData.append("file", piece);
+  formData.append("cloud_name", "dyod45bn8");
+  formData.append("upload_preset", "syxrot1t");
+  formData.append("folder", "FreelanceMe");
+
+  const headers = {
+    "Content-Range": `bytes ${start}-${end}/${size}`,
+    "X-Unique-Upload-Id": XUniqueUploadId,
+  };
+
+  try {
+    const res = await axios.post(POST_URL, formData, { headers });
+    console.log(res.data);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
+  }
+};
+
