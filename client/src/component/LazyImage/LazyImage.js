@@ -12,16 +12,16 @@ export const LazyImage = ({ file, maxWidth }) => {
   };
 
   return (
-    <div className="relative max-w-[10rem] lg:max-w-[15rem]">
+    <div className="relative max-w-[10rem] lg:max-w-[15rem] flex justify-center items-center">
       <img
         data-src={url}
-        className=" absolute"
+        className="absolute rounded"
         src={""}
         alt={name}
         onLoad={handleOnLoad}
       />
       <Blurhash
-        className="relative z-20 top-0 left-0"
+        className="relative z-20 top-0 left-0 rounded"
         hash={blurhash ? blurhash : defaultBlurhash}
         width={maxWidth}
         height={Math.min(height, (height / width) * maxWidth)}
