@@ -76,12 +76,11 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
       publicId: data.data.public_id,
       url: data.data.secure_url,
       name: item.name,
-      type:
-        data.data.resource_type.toString() + "/" + data.data.format.toString(),
+      type: item.type,
       size: data.data.bytes,
-      blurhash: blurhash,
-      height: data.data.height,
-      width: data.data.width,
+      blurhash: blurhash,     
+      height: data.data.height ? data.data.height : 0,
+      width: data.data.width ? data.data.width: 0,
     };
 
     return obj;
