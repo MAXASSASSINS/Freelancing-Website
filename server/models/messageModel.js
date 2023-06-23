@@ -31,7 +31,6 @@ const messageSchema = new mongoose.Schema(
         },
         blurhash: {
           type: String,
-          required: true,
         },
         height: {
           type: Number,
