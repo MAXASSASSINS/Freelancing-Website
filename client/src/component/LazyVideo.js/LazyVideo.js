@@ -14,22 +14,20 @@ export const LazyVideo = ({ file, maxWidth }) => {
   };
 
   return (
-    <div className="relative max-w-[10rem] lg:max-w-[15rem]">
+    <div className="relative max-w-[10rem] lg:max-w-[15rem] flex justify-center items-center">
       <video
-        // poster={getPosterForVideo(item.message.text)}
         data-poster={getPosterForVideo(file.url)}
         poster=""
-        className="w-full absolute"
+        className="w-full absolute rounded"
         src={file.url}
         alt=""
         controls
         preload="none"
       ></video>
       <Blurhash
-        className="relative z-20 top-0 left-0"
+        className="relative z-20 top-0 left-0 rounded"
         hash={blurhash ? blurhash : defaultBlurhash}
         width={maxWidth}
-        // height={() => { return (height / width) * maxWidth }}
         height={Math.min(height, (height / width) * maxWidth)}
         resolutionX={32}
         resolutionY={32}
