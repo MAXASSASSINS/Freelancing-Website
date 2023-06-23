@@ -262,11 +262,11 @@
   /* align-items: center; */
 }
 
-.inbox-messages-list-sender-file > a {
+.inbox-messages-list-sender-file > p {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
+  align-items: center;
 }
 
 .inbox-messages-list-sender-file-info {
@@ -278,7 +278,7 @@
   font-size: 0.8rem;
   background-color: var(--separator);
   padding: 0.5rem;
-  border-radius: 1px;
+
 }
 
 .inbox-messages-list-sender-file-info > div {
