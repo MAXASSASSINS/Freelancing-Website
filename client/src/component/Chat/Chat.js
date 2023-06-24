@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { io } from "socket.io-client";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
@@ -11,11 +11,23 @@ import "moment-timezone";
 import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { SocketContext } from "../../context/socket/socket";
+import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
+import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
+import { LazyImage } from "../LazyImage/LazyImage";
+import { LazyVideo } from "../LazyVideo.js/LazyVideo";
+import { windowContext } from "../../App";
+import { HiDownload } from "react-icons/hi";
+import { getFileSize } from "../../utility/util";
+import { IoDocumentOutline } from "react-icons/io5";
+import { downloadFile } from "../../utility/util";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
-  const socket = io.connect("http://localhost:4000");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const socket = useContext(SocketContext);
+  const { windowWidth, windowHeight } = useContext(windowContext);
 
   const { user, loading, isAuthenticated } = useSelector((state) => state.user);
 
@@ -26,6 +38,8 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [allMessages, setAllMessages] = useState(null);
+  const [fileLoading, setFileLoading] = useState(false);
+  const [online, setOnline] = useState(false);
 
   // All References
   const chatTextAreaRef = useRef(null);
@@ -37,21 +51,15 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
+    } else {
+      socket.emit("new_user", user._id.toString());
+      socket.emit("is_online", gigDetail.user._id.toString());
+      console.log("new user emitted");
     }
   }, [user]);
 
   useEffect(() => {
-    let isCancelled = false;
-    // if(!isCancelled && !checkUserOpenItsOwnGig()){
-    //   user && getAllMessagesBetweenTwoUser();
-    // }
-    // if (!isCancelled) {
     user && getAllMessagesBetweenTwoUser();
-    // }
-
-    // return (() => {
-    //   isCancelled = true;
-    // })
   }, [user]);
 
   useEffect(() => {
@@ -64,6 +72,85 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       suggestionRef3.current.style.display = "inline-flex";
     }
   }, [message]);
+
+  // MESSAGE SCROLL DOWN TO BOTTOM EFFECT
+  useEffect(() => {
+    scrollToBottomDivRef.current?.scrollIntoView();
+    const timeout = setTimeout(() => {
+      scrollToBottomDivRef.current?.scrollIntoView();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [allMessages?.length]);
+
+  // LAZY LOADING THE IMAGES AND VIDEOS
+  useEffect(() => {
+    const images = document.querySelectorAll("img[data-src]");
+    const videoImages = document.querySelectorAll("video[data-poster]");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (entry.target.attributes.getNamedItem("poster")) {
+            entry.target.attributes.getNamedItem("poster").value =
+              entry.target.attributes.getNamedItem("data-poster").value;
+          } else {
+            entry.target.attributes.getNamedItem("src").value =
+              entry.target.attributes.getNamedItem("data-src").value;
+          }
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        root: document.getElementById("inbox-message-ul-id"),
+        rootMargin: "300px",
+      }
+    );
+
+    images.forEach((image) => {
+      observer.observe(image);
+    });
+
+    videoImages.forEach((image) => {
+      observer.observe(image);
+    });
+  }, [fileLoading, allMessages]);
+
+  // CHECKING FOR ONLINE STATUS OF GIG SELLER
+  useEffect(() => {
+    socket.on("is_online_from_server", (data) => {
+      const onlineClientId = data.id.toString();
+
+      if (onlineClientId === gigDetail.user._id.toString()) {
+        setOnline(data.online);
+      }
+    });
+
+    return () => {
+      socket.off("is_online_from_server");
+      // setCurrentSelectedClientOnline(false);
+    };
+  }, [socket, online]);
+
+  useEffect(() => {
+    socket.on("online_from_server", async (userId) => {
+      if (userId === gigDetail.user._id.toString()) {
+        setOnline(true);
+      }
+    });
+    socket.on("offline_from_server", async (userId) => {
+      if (userId === gigDetail.user._id.toString()) {
+        setOnline(false);
+      }
+    });
+    return () => {
+      socket.off("online_from_server");
+      socket.off("offline_from_server");
+    };
+  }, [socket]);
 
   const handleEmojiPickerHideOrShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
@@ -122,50 +209,166 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     setSelectedFiles(arr);
   };
 
-  const sendChat = (e) => {
+  const sendChat = async (e) => {
     e.preventDefault();
-    if (message.length > 0) {
-      handleSendMessage(message);
+    setFileLoading(true);
+
+    let files = [];
+    try {
+      // upload files to cloudinary
+      files = await sendFileClientCloudinary(selectedFiles);
+      console.log(files);
+
+      // add message to database
+      const res = await addMessageToDatabase(message, files);
+      console.log(res);
+
+      // send message to socket
+      await handleSendMessageSocket(message, files);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setFileLoading(false);
+    }
+  };
+
+  // client side uploading to cloudinary
+  const sendFileClientCloudinary = async (files) => {
+    console.log(files);
+
+    if (isFilePicked) {
+      const arr = files.map((file) => {
+        return file.selectedFile;
+      });
+
+      try {
+        const res = await uploadToCloudinaryV2(arr, 5 * 1024 * 1024 * 1024);
+        return res;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      } finally {
+        setIsFilePicked(false);
+        setSelectedFiles(null);
+      }
+    }
+    return [];
+  };
+
+  // add message to database
+  const addMessageToDatabase = async (messageData, files = []) => {
+    try {
+      const messageData = {
+        message,
+        from: user._id,
+        to: gigDetail.user._id,
+        files,
+      };
+
+      const { data } = await axios.post("/add/message", messageData);
+      // console.log(data);
+      return data;
+    } catch (error) {
+      throw error;
+    } finally {
       setMessage("");
     }
-    if (isFilePicked) {
-      setIsFilePicked(false);
-      setSelectedFiles(null);
-    }
   };
 
-  const handleSendMessage = async (message) => {
-    const dataToPost = {
-      from: user._id,
-      to: gigDetail.user._id,
-      message,
+  const handleSendMessageSocket = async (message, files) => {
+    const sender = {
+      avatar: user.avatar,
+      name: user.name,
+      _id: user._id,
     };
-    const url = "/add/message";
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const receiver = {
+      avatar: gigDetail.user.avatar,
+      name: gigDetail.user.name,
+      _id: gigDetail.user._id,
     };
-    const { data } = await axios.post(url, dataToPost, config);
-    // console.log(data);
-    await getAllMessagesBetweenTwoUser();
-    handleSendMessageSocket(message);
-  };
 
-  const handleSendMessageSocket = async (message) => {
+    if (receiver._id !== gigDetail.user._id) return;
+
     const messageData = {
-      room: "12345",
-      author: user.name,
-      message: message,
+      message: {
+        text: message,
+      },
+      sender,
+      receiver,
+      createdAt: new Date().getTime(),
+      files,
     };
-
+    const clientId = gigDetail.user._id.toString();
     await socket.emit("send_message", messageData);
   };
 
+  // useEffect(() => {
+  //   socket.on("receive_message", (data) => {
+  //     alert(data.message);
+  //   });
+
+  //   return () => {
+  //     socket.off("receive_message");
+  //   }
+  // }, [socket, allMessages, fileLoading]);
+
+  // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      alert(data.message);
+    socket.on("receive_message", async (data) => {
+      console.log("receive message is running");
+      const messageData = data;
+      setAllMessages((prev) => [...prev, messageData]);
     });
+
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [socket, allMessages, fileLoading]);
+
+  // CHECKING FOR RECEIVING MESSAGES SELF
+  useEffect(() => {
+    socket.on("receive_message_self", async (data) => {
+      console.log("receive message is running");
+      const messageData = data;
+      setAllMessages((prev) => [...prev, messageData]);
+    });
+
+    return () => {
+      socket.off("receive_message_self");
+    };
+  }, [socket, allMessages, fileLoading]);
+
+  // SHOW TYPING STATUS
+  useEffect(() => {
+    const data = {
+      senderId: isAuthenticated ? user._id.toString() : null,
+      receiverId: gigDetail.user._id.toString(),
+    };
+    socket.emit("typing_started", data);
+    const timeout = setTimeout(() => {
+      // console.log("typing_stopped");
+      socket.emit("typing_stopped", data);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [message]);
+
+  useEffect(() => {
+    socket.on("typing_started_from_server", (data) => {
+      if (gigDetail.user._id.toString() === data.senderId.toString()) {
+        setTyping(true);
+      }
+    });
+    socket.on("typing_stopped_from_server", (data) => {
+      setTyping(false);
+    });
+
+    return () => {
+      socket.off("typing_started_from_server");
+      socket.off("typing_stopped_from_server");
+    };
   }, [socket]);
 
   const getAllMessagesBetweenTwoUser = async () => {
@@ -239,13 +442,20 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       style={{ display: showChatBox ? "block" : "none" }}
     >
       <div className="chat-content">
+        <DataSendingLoading
+          show={fileLoading}
+          finishedLoading={!fileLoading}
+          loadingText={"Sending message..."}
+        />
         <header>
           <img src={gigDetail.user.avatar.url}></img>
           <div>
             <div className="chat-seller-name">
               Message {gigDetail.user.name}
             </div>
-            <div className="chat-seller-online-status">Away</div>
+            <div className="chat-seller-online-status" style={{color: online ? '#1dbf73' : ''}}>
+              {online ? "Online" : "Away"}
+            </div>
           </div>
           <span onClick={() => setShowChatBox(false)}>
             <i className="fa-solid fa-xmark"></i>
@@ -307,6 +517,73 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                         </div>
                         <div className="chat-message-text">
                           {message.message.text}
+                        </div>
+                        <div className="chat-messages-list-sender-files">
+                          {message.files?.map((file, index) => (
+                            <div
+                              key={index}
+                              className="chat-messages-list-sender-file"
+                            >
+                              <p>
+                                {file.type.includes("video") ? (
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    <LazyVideo
+                                      file={file}
+                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                                    />
+                                  </a>
+                                ) : file.type.includes("image") ? (
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    <LazyImage
+                                      file={file}
+                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                                    />
+                                  </a>
+                                ) : file.type.includes("audio") ? (
+                                  <audio
+                                    className="chat-messages-list-sender-file-audio"
+                                    preload="none"
+                                    controls
+                                    src={file.url}
+                                  />
+                                ) : (
+                                  <div className="chat-messages-list-sender-file-document">
+                                    <div>
+                                      <IoDocumentOutline />
+                                    </div>
+                                  </div>
+                                )}
+                              </p>
+                              <div
+                                onClick={() =>
+                                  downloadFile(file.url, file.name)
+                                }
+                                className="chat-messages-list-sender-file-info"
+                              >
+                                <div
+                                  data-tooltip-id="my-tooltip"
+                                  data-tooltip-content={file.name}
+                                  data-tooltip-place="bottom"
+                                >
+                                  <HiDownload />
+                                  <div className="chat-messages-list-sender-file-name">
+                                    {file.name}
+                                  </div>
+                                </div>
+                                <p>
+                                  ({getFileSize(file.size ? file.size : 0)})
+                                </p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </li>
