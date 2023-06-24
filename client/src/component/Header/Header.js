@@ -9,11 +9,12 @@ import {
 } from "../../actions/dimBackgroundAction";
 import { getUser } from "../../actions/userAction";
 import { loggedUser } from "../../actions/userAction";
-import { Outlet, Navigate, Link } from "react-router-dom";
+import { Outlet, Navigate, Link, useNavigate } from "react-router-dom";
 import { Fragment } from "react";
 
 export const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user, loading, isAuthenticated } = useSelector((state) => state.user);
 
   const show = () => {
@@ -34,7 +35,7 @@ export const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="title-wrapper">
-          <h1 className="heading">FreelanceMe</h1>
+          <h1 className="heading" onClick={() => navigate('/')}>FreelanceMe</h1>
         </div>
 
         <form className="form">
