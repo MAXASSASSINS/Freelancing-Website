@@ -354,7 +354,7 @@
   color: var(--no-focus);
 }
 
-.inbox-message-list-section-2 > form > .chat-attached-files-div {
+.inbox-message-list-section-2 > form > .inbox-attached-files-div {
   max-height: 124px;
   padding: 1rem 1rem;
   color: var(--light-heading);
@@ -364,10 +364,10 @@
   border-radius: 4px;
 }
 
-.inbox-message-list-section-2 > form > .chat-attached-files-div > ul {
+.inbox-message-list-section-2 > form > .inbox-attached-files-div > ul {
 }
 
-.inbox-message-list-section-2 > form > .chat-attached-files-div > ul > li {
+.inbox-message-list-section-2 > form > .inbox-attached-files-div > ul > li {
   margin-top: 0.5rem;
   margin-right: 0.5rem;
   list-style: none;
@@ -383,7 +383,7 @@
 
 .inbox-message-list-section-2
   > form
-  > .chat-attached-files-div
+  > .inbox-attached-files-div
   > ul
   > li
   > div {
@@ -396,7 +396,7 @@
 
 .inbox-message-list-section-2
   > form
-  > .chat-attached-files-div
+  > .inbox-attached-files-div
   > ul
   > li
   > button {
@@ -406,8 +406,8 @@
 
 .inbox-message-list-section-2
   > form
-  > .chat-attached-files-div
-  > .chat-attached-files-heading {
+  > .inbox-attached-files-div
+  > .inbox-attached-files-heading {
   font-size: 10px;
   font-weight: 600;
 }
