@@ -298,19 +298,31 @@
 }
 
 .inbox-messages-list-sender-video,
-.inbox-messages-list-sender-image {
+.inbox-messages-list-sender-image,
+.inbox-messages-list-sender-file-audio,
+.inbox-messages-list-sender-file-document {
   max-width: 15rem;
   margin-top: 0.5rem;
 }
 
+.inbox-messages-list-sender-file-document{
+  background-color: var(--separator);
+  width: 10rem;
+  height: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  border-radius: 0.25rem;
+}
+
+
+
+/* ************************************************* */
+
 .inbox-message-list-section-2 {
   padding: 1rem;
   border-top: 1px solid var(--dark-separator);
-}
-
-/* ****************** */
-
-.inbox-message-list-section-2 {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -495,6 +507,14 @@
     gap: 2rem;
     align-items: flex-end;
     justify-content: space-around;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .inbox-messages-list-sender-file-document{
+    width: 15rem;
+    height: 10rem;
+    font-size: 4.5rem;
   }
 }
 
