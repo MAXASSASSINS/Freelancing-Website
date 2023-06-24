@@ -56,6 +56,7 @@
 }
 
 .chat-content > main {
+  position: relative;
   border-top: 1px solid var(--no-focus);
   display: flex;
   flex-direction: column;
@@ -72,9 +73,11 @@
 
 .chat-content > main > div > ul > li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  /* align-items: center; */
   font-size: 0.9rem;
   color: var(--light-heading);
+  gap: 0.25rem;
 }
 
 .chat-content > main > .chat-show-div > ul {
@@ -141,6 +144,72 @@
   color: var(--heading);
 }
 
+.chat-messages-list-sender-files {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  margin-top: 1rem;
+  gap: 2rem;
+  align-items: flex-end;
+  justify-content: space-around;
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+
+.chat-messages-list-sender-file > p {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-messages-list-sender-file-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  background-color: var(--separator);
+  padding: 0.5rem;
+
+}
+
+.chat-messages-list-sender-file-info > div {
+  display: flex;
+  gap: 0 0.5rem;
+}
+
+.chat-messages-list-sender-file-info > div:hover {
+  cursor: pointer;
+  color: var(--green);
+}
+
+.chat-messages-list-sender-file-name {
+  max-width: 17ch;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.chat-messages-list-sender-video,
+.chat-messages-list-sender-image,
+.chat-messages-list-sender-file-audio,
+.chat-messages-list-sender-file-document {
+  max-width: 15rem;
+  margin-top: 0.5rem;
+}
+
+.chat-messages-list-sender-file-document{
+  background-color: var(--separator);
+  width: 10rem;
+  height: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  border-radius: 0.25rem;
+}
+
+
 .chat-content > main > .chat-show-div > ul > li > div > .chat-message-text {
   line-height: 1.4;
   white-space: pre-line;
@@ -188,7 +257,6 @@
 .chat-content > main > form > .chat-attached-files-div {
   max-height: 124px;
   padding: 1rem 1rem;
-  padding-bottom: 0;
   color: var(--light-heading);
   margin-bottom: 1rem;
   overflow-y: scroll;
