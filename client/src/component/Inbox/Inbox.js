@@ -48,6 +48,7 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { Avatar } from "../Avatar/Avatar";
 import Cookies from "js-cookie";
+import { IoDocumentOutline } from "react-icons/io5";
 
 export const Inbox = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
@@ -288,7 +289,8 @@ export const Inbox = () => {
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-
+      console.log(files);
+      // return;
       // add message to database
       const res = await addMessageToDatabase(message, files);
       console.log(res);
@@ -314,7 +316,7 @@ export const Inbox = () => {
       });
 
       try {
-        const res = await uploadToCloudinaryV2(arr);
+        const res = await uploadToCloudinaryV2(arr, 5 * 1024 * 1024 * 1024);
         return res;
       } catch (error) {
         console.log(error);
@@ -475,7 +477,7 @@ export const Inbox = () => {
     };
   }, [socket, listOfAllClients]);
 
-  console.log(onlineStatusOfClients);
+  // console.log(onlineStatusOfClients);
 
   useEffect(() => {
     socket.on("online_from_server", async (userId) => {
@@ -559,7 +561,7 @@ export const Inbox = () => {
       if (onlineClientId === currentSelectedClient._id.toString()) {
         // console.log("is online received " + data.online);
         setCurrentSelectedClientOnline(data.online);
-        console.log(listOfAllClients);
+        // console.log(listOfAllClients);
       }
       const temp = listOfAllClients?.map((id, idx) => {
         if (id === onlineClientId) {
@@ -567,7 +569,7 @@ export const Inbox = () => {
         }
         return onlineStatusOfClients[idx];
       });
-      console.log("is online from server", temp, data.online);
+      // console.log("is online from server", temp, data.online);
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -616,7 +618,7 @@ export const Inbox = () => {
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
-    console.log("receive message self is running");
+    // console.log("receive message self is running");
     socket.on("receive_message_self", async (data) => {
       // console.log("receive message is running");
       const messageData = data;
@@ -987,23 +989,48 @@ export const Inbox = () => {
                                 key={index}
                                 className="inbox-messages-list-sender-file"
                               >
-                                <a
-                                  href={file.url}
-                                  target="_blank"
-                                  rel="noopener"
-                                >
+                                <p>
                                   {file.type.includes("video") ? (
-                                    <LazyVideo
-                                      file={file}
-                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                                    <a
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener"
+                                    >
+                                      <LazyVideo
+                                        file={file}
+                                        maxWidth={
+                                          windowWidth > 1024 ? 240 : 160
+                                        }
+                                      />
+                                    </a>
+                                  ) : file.type.includes("image") ? (
+                                    <a
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener"
+                                    >
+                                      <LazyImage
+                                        file={file}
+                                        maxWidth={
+                                          windowWidth > 1024 ? 240 : 160
+                                        }
+                                      />
+                                    </a>
+                                  ) : file.type.includes("audio") ? (
+                                    <audio
+                                      className="inbox-messages-list-sender-file-audio"
+                                      preload="none"
+                                      controls
+                                      src={file.url}
                                     />
                                   ) : (
-                                    <LazyImage
-                                      file={file}
-                                      maxWidth={windowWidth > 1024 ? 240 : 160}
-                                    />
+                                    <div className="inbox-messages-list-sender-file-document">
+                                      <div>
+                                        <IoDocumentOutline />
+                                      </div>
+                                    </div>
                                   )}
-                                </a>
+                                </p>
                                 <div
                                   onClick={() =>
                                     downloadFile(file.url, file.name)
@@ -1013,7 +1040,7 @@ export const Inbox = () => {
                                   <div
                                     data-tooltip-id="my-tooltip"
                                     data-tooltip-content={file.name}
-                                    data-data-tooltip-place="left"
+                                    data-tooltip-place="bottom"
                                   >
                                     <HiDownload />
                                     <div className="inbox-messages-list-sender-file-name">
@@ -1057,27 +1084,6 @@ export const Inbox = () => {
                               </Moment>
                             </p>
                           </div>
-                          {/* <div className='file-loader'></div> */}
-
-                          {/* <div className="file-upload-status-outer"> */}
-                          {/* <div className='file-upload-status-percentage'>
-                                {uploadPercentage}%
-                              </div> */}
-
-                          {/* <div
-                              className="file-upload-status-bar"
-                              style={{
-                                width: uploadPercentage
-                                  ? uploadPercentage * 2
-                                  : 0,
-                              }}
-                            ></div> */}
-
-                          {/* <DataSendingLoading
-                              finishedLoading={!fileLoading}
-                              show={fileLoading}
-                            /> */}
-                          {/* </div> */}
                         </div>
                       </div>
                     )}
@@ -1136,7 +1142,7 @@ export const Inbox = () => {
                     <div>
                       <div
                         onClick={handleEmojiPickerHideOrShow}
-                        className="inbox-emoji inbox-emoji-picker "
+                        className="inbox-emoji inbox-emoji-picker"
                       >
                         <div>
                           <BsEmojiSmile />
@@ -1152,7 +1158,12 @@ export const Inbox = () => {
                           />
                         )}
                       </div>
-                      <div className="inbox-attachment">
+                      <div
+                        className="inbox-attachment"
+                        data-tooltip-content="Max 5GB"
+                        data-tooltip-place="top"
+                        data-tooltip-id="my-tooltip"
+                      >
                         <label htmlFor="chat-inbox-input-file">
                           <i className="fa-solid fa-paperclip"></i>
                         </label>
@@ -1161,7 +1172,7 @@ export const Inbox = () => {
                           id="chat-inbox-input-file"
                           multiple={true}
                           type="file"
-                          accept="image/*,video/*"
+                          // accept="image/*,video/*"
                           hidden={true}
                         ></input>
                       </div>
