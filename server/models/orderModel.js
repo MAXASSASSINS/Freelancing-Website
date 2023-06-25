@@ -32,7 +32,8 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default: "Incomplete",
+    enum: ["Pending", "In Progress", "Completed", "Cancelled"],
+    default: "Pending",
   },
   deliveryDate: Date,
   createdAt: {
@@ -163,7 +164,7 @@ const orderSchema = new mongoose.Schema({
   },
   gigTitle: {
     type: String,
-    required: [true, "Please enter the title of your gig"],
+    required: [true, "Please provide the title of your gig"],
   },
 });
 
