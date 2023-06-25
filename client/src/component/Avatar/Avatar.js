@@ -1,6 +1,7 @@
 import React from "react";
 
-export const Avatar = ({ avatarUrl, userName, onlineStatus, width, alt, onlineStatusWidth }) => {
+export const Avatar = ({ avatarUrl, userName, onlineStatus, width, alt, onlineStatusWidth, fontSize="1.125rem" }) => {
+
   return (
     <div style={{ width: width, height: width }} className="relative">
       {onlineStatus !== undefined && (
@@ -17,7 +18,7 @@ export const Avatar = ({ avatarUrl, userName, onlineStatus, width, alt, onlineSt
         <img src={avatarUrl} alt={alt} className="w-full h-full rounded-full" />
       ) : (
         <div className="w-full bg-no_focus h-full rounded-full flex items-center justify-center">
-          <p className="text-off_white font-medium text-lg">
+          <p className="text-off_white font-medium" style={{fontSize: fontSize}}>
             {userName[0].toUpperCase()}
           </p>
         </div>
