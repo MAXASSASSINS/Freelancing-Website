@@ -11,6 +11,7 @@ import { getUser } from "../../actions/userAction";
 import { loggedUser } from "../../actions/userAction";
 import { Outlet, Navigate, Link, useNavigate } from "react-router-dom";
 import { Fragment } from "react";
+import { Avatar } from "../Avatar/Avatar";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -24,12 +25,6 @@ export const Header = () => {
   const hide = () => {
     dispatch(hideDimBackground());
   };
-
-  // useEffect(() => {
-  //     if (isAuthenticated) {
-  //         setCurrentUser(user);
-  //     }
-  // }, [user])
 
   return (
     <header className="header">
@@ -64,27 +59,16 @@ export const Header = () => {
           )}
           {isAuthenticated && (
             <div>
-              {user.avatar.url ? (
-                <Link to={"/user/" + user._id}>
-                  <img
-                    style={{ maxWidth: "2rem" }}
-                    src={user.avatar.url}
-                    className="profile-pic"
-                    alt="user profile"
-                  ></img>
-                </Link>
-              ) : (
-                <Link to={"/user/" + user?._id}>
-                  <i
-                    className={
-                      "fa-solid profile-icon " +
-                      (user ? "profile-icon-login " : " ") +
-                      "fa-" +
-                      (user && user.name[0].toLowerCase())
-                    }
-                  ></i>
-                </Link>
-              )}
+              <Link to={"/user/" + user._id}>
+                <Avatar 
+                  avatarUrl={user.avatar.url}
+                  userName={user.name}
+                  onlineStatus={true}
+                  width="2rem"
+                  alt="user profile"
+                  onlineStatusWidth={"0.8rem"}
+                />
+              </Link>
             </div>
           )}
         </div>
