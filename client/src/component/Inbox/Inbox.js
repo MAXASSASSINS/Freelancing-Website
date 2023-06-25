@@ -790,6 +790,7 @@ export const Inbox = () => {
                     onlineStatus={onlineStatusOfClients[index]}
                     avatarUrl={detail.user.avatar.url}
                     width="2.75rem"
+                    onlineStatusWidth="1rem"
                   />
                 </div>
                 <div className="client-list-detail-plus-last-message">
