@@ -101,11 +101,6 @@ export const PlaceOrder = () => {
               <div className="px-4 py-3 flex items-center justify-between">
                 <div className="flex gap-1">
                   <div>Service Fee </div>
-                  {/* <Tooltip
-                                        id='serviceFee'
-                                        place='top'
-                                        content='This helps us to operate our platform and offer 24/7 customer support for your orders.'
-                                    /> */}
                   <AiFillQuestionCircle
                     id="serviceFee"
                     className="text-no_focus no-select"
