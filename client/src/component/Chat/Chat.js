@@ -303,16 +303,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     await socket.emit("send_message", messageData);
   };
 
-  // useEffect(() => {
-  //   socket.on("receive_message", (data) => {
-  //     alert(data.message);
-  //   });
-
-  //   return () => {
-  //     socket.off("receive_message");
-  //   }
-  // }, [socket, allMessages, fileLoading]);
-
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
@@ -392,19 +382,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     scrollToBottomDivRef.current?.scrollIntoView();
   };
 
-  const getAllMessagesForSingleUser = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const { data } = await axios.get(
-      "/get/all/messages/for/current/user",
-      config
-    );
-    console.log(data);
-  };
-
   const handleChatSuggestion = (e) => {
     // console.log(message.length);
     const suggestion = e.target.textContent;
@@ -429,6 +406,14 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     checkUserOpenItsOwnGig();
   }, [user]);
 
+  useEffect(() => {
+    if(allMessages?.length === 0 && message?.length === 0){
+      suggestionRef1.current.style.display = "";
+      suggestionRef2.current.style.display = "";
+      suggestionRef3.current.style.display = "";
+    }
+  },[message]);
+
   // console.log(selectedFiles);
   // console.log(allMessages);
 
@@ -436,6 +421,8 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
+
+  console.log(allMessages);
 
   return (
     <div
@@ -466,7 +453,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
           </span>
         </header>
         <main>
-          {!allMessages || checkUserOpenItsOwnGig() ? (
+          {!allMessages?.length || checkUserOpenItsOwnGig() ? (
             <div className="chat-suggestion-div">
               <ul>
                 <li
