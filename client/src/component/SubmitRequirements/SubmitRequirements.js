@@ -268,22 +268,16 @@ export const SubmitRequirements = () => {
                       )}
                     </div>
                     {question.multipleOptionSelect && (
-                      <div>
-                        <Tooltip
-                          content="Multiple options can be selected"
-                          id={`multipleOption${index}`}
-                          place="top"
-                        />
+                      <div
+                        data-tooltip-content="Multiple options can be selected"
+                        data-tooltip-place="bottom"
+                        data-tooltip-id="my-tooltip"
+                      >
                         <AiFillInfoCircle
-                          id={`multipleOption${index}`}
                           className="text-no_focus"
                         />
                       </div>
                     )}
-                    {/* {
-                      !question.answerRequired &&
-                      <div>(optional)</div>
-                    } */}
                   </div>
                   {question.questionType === FREE_TEXT ? (
                     <div className="mt-4 rounded-none">
@@ -293,15 +287,10 @@ export const SubmitRequirements = () => {
                         ref={answersRef.current[index]}
                       />
                       <div className="">
-                        <div className="text-sm">
-                          <Tooltip
-                            content="Attach files. 5GB max."
-                            id={`attachFile${index}`}
-                            place="right"
-                          />
-                        </div>
                         <label
-                          id={`attachFile${index}`}
+                          data-tooltip-content="Attach files. 5GB max."
+                          data-tooltip-place="right"
+                          data-tooltip-id='my-tooltip'
                           className="bg-separator text-sm font-bold border inline-flex items-center py-1 px-2 gap-1 hover:cursor-pointer hover:text-dark_grey hover:bg-dark_separator"
                         >
                           <input
@@ -420,7 +409,7 @@ export const SubmitRequirements = () => {
                     </div>
                     <div>
                       <span>Price</span>
-                      <span>{Number(orderDetail.amount).toFixed(2)}</span>
+                      <span>₹{Number(orderDetail.amount).toFixed(2)}</span>
                     </div>
                   </div>
                 )}
