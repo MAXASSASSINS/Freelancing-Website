@@ -407,12 +407,12 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   }, [user]);
 
   useEffect(() => {
-    if(allMessages?.length === 0 && message?.length === 0){
+    if (allMessages?.length === 0 && message?.length === 0) {
       suggestionRef1.current.style.display = "";
       suggestionRef2.current.style.display = "";
       suggestionRef3.current.style.display = "";
     }
-  },[message]);
+  }, [message]);
 
   // console.log(selectedFiles);
   // console.log(allMessages);
