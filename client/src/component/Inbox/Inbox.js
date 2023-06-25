@@ -1096,8 +1096,8 @@ export const Inbox = () => {
                     onSubmit={(e) => e.preventDefault()}
                   >
                     {isFilePicked && (
-                      <div className="chat-attached-files-div">
-                        <div className="chat-attached-files-heading">
+                      <div className="inbox-attached-files-div">
+                        <div className="inbox-attached-files-heading">
                           ATTACHED FILES (
                           {selectedFiles &&
                             selectedFiles.length !== 0 &&
