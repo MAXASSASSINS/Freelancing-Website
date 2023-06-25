@@ -1,13 +1,15 @@
 import React from "react";
 
-export const Avatar = ({ avatarUrl, userName, onlineStatus, width, alt }) => {
+export const Avatar = ({ avatarUrl, userName, onlineStatus, width, alt, onlineStatusWidth }) => {
   return (
-    <div style={{ width: width, height: width }}>
+    <div style={{ width: width, height: width }} className="relative">
       {onlineStatus !== undefined && (
         <div
-          className="absolute rounded-full border-2 border-white w-4 h-4 bottom-0 -right-0.5"
+          className="absolute rounded-full border-2 border-white bottom-0 -right-0.5"
           style={{
             backgroundColor: onlineStatus ? "#1dbf73" : "#a6a5a5",
+            width: onlineStatusWidth,
+            height: onlineStatusWidth,
           }}
         />
       )}
