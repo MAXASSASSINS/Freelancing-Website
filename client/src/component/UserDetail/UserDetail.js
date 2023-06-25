@@ -13,6 +13,7 @@ import { RatingStars } from "../RatingStars/RatingStars";
 import { ReviewList } from "../ReviewList/ReviewList";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { windowContext } from "../../App";
+import { Avatar } from "../Avatar/Avatar";
 
 export const UserDetail = () => {
   const navigate = useNavigate();
@@ -76,7 +77,13 @@ export const UserDetail = () => {
                 <i className="fa-solid fa-heart"></i>
               </div>
               <div className="user-detail user-profile-pic">
-                <img src={gigUser.avatar.url} alt="gig profile"></img>
+                <Avatar
+                  avatarUrl={gigUser.avatar.url}
+                  userName={gigUser.name}
+                  width={"8rem"}
+                  alt={"gig profile"}
+                  fontSize="3rem"
+                />
               </div>
               <div>
                 <h1 className="user-detail-user-name">{gigUser.name}</h1>
