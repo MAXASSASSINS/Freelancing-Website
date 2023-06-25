@@ -21,6 +21,7 @@ import {
   convertFromRaw,
 } from "draft-js";
 import { TextEditor } from "../TextEditor/TextEditor";
+import { Avatar } from "../Avatar/Avatar";
 
 export const GigDetail = () => {
   const dispatch = useDispatch();
@@ -205,19 +206,23 @@ export const GigDetail = () => {
             <div className="gig-details-gig-overveiw">
               <h1 className="gig-details-gig-title">{gigDetail.title}</h1>
               <div className="gig-seller-overview">
-                <img src={gigDetail.user.avatar.url} alt="user profile"></img>
+                <Avatar
+                  avatarUrl={gigDetail.user.avatar.url}
+                  userName={gigDetail.user.name}
+                  width="1.875rem"
+                  alt={gigDetail.user.name}
+                  fontSize="1rem"
+                />
+
                 <a href="#gig-owner-details-id">
                   <div className="gig-seller-overview-seller-name">
                     {gigDetail.user.name}
                   </div>
                 </a>
-                &nbsp; &nbsp;
                 <a href="#review-container">
                   <RatingStars rating={gigDetail.ratings}></RatingStars>
                 </a>
-                &nbsp; &nbsp;
                 <div>{gigDetail.ratings.toFixed(1)}</div>
-                &nbsp; &nbsp;
                 <div>({gigDetail.numOfRatings})</div>
               </div>
             </div>
