@@ -40,6 +40,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const [allMessages, setAllMessages] = useState(null);
   const [fileLoading, setFileLoading] = useState(false);
   const [online, setOnline] = useState(false);
+  const [typing, setTyping] = useState(false);
 
   // All References
   const chatTextAreaRef = useRef(null);
@@ -453,8 +454,11 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
             <div className="chat-seller-name">
               Message {gigDetail.user.name}
             </div>
-            <div className="chat-seller-online-status" style={{color: online ? '#1dbf73' : ''}}>
-              {online ? "Online" : "Away"}
+            <div
+              className="chat-seller-online-status"
+              style={{ color: online ? "#1dbf73" : "" }}
+            >
+              {typing ? "typing..." : online ? "online" : "away"}
             </div>
           </div>
           <span onClick={() => setShowChatBox(false)}>
