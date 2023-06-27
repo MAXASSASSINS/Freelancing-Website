@@ -49,7 +49,7 @@ export const Header = () => {
             <i className="fa-regular fa-envelope inbox-icon"></i>
           </Link>
           <i className="fa-regular fa-heart my-list-icon"></i>
-          <div className="orders-icon">Orders</div>
+          <div className="orders-icon" onClick={() => navigate('/orders')}>Orders</div>
           {!user && (
             <Link to="/login">
               <div>
