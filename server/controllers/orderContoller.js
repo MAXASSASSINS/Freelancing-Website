@@ -166,8 +166,8 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log("hello");
-  const orders = await Order.find({ user: req.user._id });
-  // console.log(orders);
+  const orders = await Order.find({ user: req.user._id }).populate('gig', 'title images').populate('seller buyer', 'name avatar');
+  console.log(orders);
 
   res.status(200).json({
     success: true,
@@ -268,3 +268,12 @@ export const getStripePublishableKey = catchAsyncErrors(
     });
   }
 );
+
+export const deleteAllOrders = catchAsyncErrors(async (req, res, next) => {
+  await Order.deleteMany();
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully deleted all orders",
+  });
+});
