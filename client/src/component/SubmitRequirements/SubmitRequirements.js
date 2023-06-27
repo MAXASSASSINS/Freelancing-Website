@@ -426,9 +426,9 @@ export const SubmitRequirements = () => {
             </p>
           </div>
 
-          <div className="order-5 flex justify-end gap-4 col-start-2 col-span-5 mt-8 md:col-start-6">
+          <div className="order-5 flex items-center justify-end gap-4 col-start-2 col-span-5 mt-8 md:col-start-6">
             <button
-              className="capitalize text-icons py-4 col-span-2 rounded hover:cursor-pointer min-[450px]:col-start-3"
+              className="capitalize text-icons col-span-2 rounded hover:cursor-pointer hover:text-light_grey min-[450px]:col-start-3"
               onClick={() => navigate("/")}
             >
               Remind me later
