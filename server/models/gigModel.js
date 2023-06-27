@@ -75,6 +75,10 @@ const gigSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide image url"],
       },
+      blurHash: {
+        type: String,
+        required: [true, "Please provide blur hash"],
+      },
     },
   ],
   video: {
@@ -82,6 +86,7 @@ const gigSchema = new mongoose.Schema({
     videoUrl: String,
     videoName: String,
     mimeType: String,
+    blurHash: String,
   },
   ratings: {
     type: Number,
