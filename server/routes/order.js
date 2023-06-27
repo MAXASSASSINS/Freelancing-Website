@@ -8,6 +8,7 @@ import {
   packagePayment,
   updateOrderStatus,
   updateOrder,
+  deleteAllOrders,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -32,6 +33,8 @@ router.put(
 
 router.put("/order/update/:id", isAuthenticated, updateOrder);
 
+router.delete("/orders/delete", deleteAllOrders);
+
 router.post("/package/payment", isAuthenticated, packagePayment);
 
 router.get(
@@ -39,4 +42,5 @@ router.get(
   isAuthenticated,
   getStripePublishableKey
 );
+
 export default router;
