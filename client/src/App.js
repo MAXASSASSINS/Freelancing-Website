@@ -42,6 +42,7 @@ import { CloudinaryContext, Image } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
 
 import "react-tooltip/dist/react-tooltip.css";
+import { Orders } from "./component/Orders/Orders";
 
 export const windowContext = createContext();
 
@@ -127,9 +128,10 @@ const App = () => {
               <Route exact path="/test" element={<Test />}></Route>
               <Route
                 exact
-                path="/gig/place/order/submit/requirements/:id/:packageNumber/:orderId"
+                path="/gig/place/order/submit/requirements/:orderId"
                 element={<SubmitRequirements />}
               ></Route>
+              <Route exact path="/orders" element={<Orders />} />
             </Routes>
             {/* <Footer /> */}
           </SocketContext.Provider>
