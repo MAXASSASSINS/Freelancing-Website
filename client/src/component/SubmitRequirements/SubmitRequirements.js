@@ -28,10 +28,12 @@ import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { FREE_TEXT } from "../../constants/globalConstants";
 import { fetchData } from "../../utility/fetchData";
+import { useNavigate } from "react-router-dom";
 
 export const SubmitRequirements = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const navigate = useNavigate();
 
   const answersRef = useRef([]);
   const [answers, setAnswers] = useState([]);
@@ -42,19 +44,13 @@ export const SubmitRequirements = () => {
   const [fileSizeErrors, setFileSizeErrors] = useState([]);
 
   useEffect(() => {
-    dispatch(getGigDetail(params.id));
-  }, [dispatch, params.id]);
-
-  useEffect(() => {
     dispatch(getOrderDetail(params.orderId));
   }, [dispatch, params.orderId]);
 
-  const { gigDetail, loading } = useSelector((state) => state.gigDetail);
   const { orderDetail, loading: orderLoading } = useSelector(
     (state) => state.orderDetail
   );
 
-  const packageNumber = params.packageNumber;
   const packageDetail = orderDetail?.packageDetails;
 
   if (orderDetail) {
@@ -221,7 +217,7 @@ export const SubmitRequirements = () => {
     setFileSizeErrors(newFileSizeErrors);
   }, [answers]);
 
-  return loading || orderLoading ? (
+  return orderLoading ? (
     <div>Loading...</div>
   ) : (
     <div className="relative">
@@ -273,9 +269,7 @@ export const SubmitRequirements = () => {
                         data-tooltip-place="bottom"
                         data-tooltip-id="my-tooltip"
                       >
-                        <AiFillInfoCircle
-                          className="text-no_focus"
-                        />
+                        <AiFillInfoCircle className="text-no_focus" />
                       </div>
                     )}
                   </div>
@@ -290,7 +284,7 @@ export const SubmitRequirements = () => {
                         <label
                           data-tooltip-content="Attach files. 5GB max."
                           data-tooltip-place="right"
-                          data-tooltip-id='my-tooltip'
+                          data-tooltip-id="my-tooltip"
                           className="bg-separator text-sm font-bold border inline-flex items-center py-1 px-2 gap-1 hover:cursor-pointer hover:text-dark_grey hover:bg-dark_separator"
                         >
                           <input
@@ -393,8 +387,8 @@ export const SubmitRequirements = () => {
                   <div className="flex flex-col gap-3 py-4 [&>*]:flex [&>*]:justify-between">
                     <div>
                       <span>Status</span>
-                      <span className="bg-orange-400 py-1 px-2 text-white uppercase text-[10px] rounded-[3px]">
-                        Incomplete
+                      <span className="py-1 px-2 bg-yellow-500 text-white uppercase text-[10px] rounded-[3px]">
+                        {orderDetail.status}
                       </span>
                     </div>
                     <div>
@@ -432,17 +426,26 @@ export const SubmitRequirements = () => {
             </p>
           </div>
 
-          <button
-            disabled={!approval}
-            onClick={handleStartOrder}
-            className={`p-4 text-white text-center rounded  mt-8 order-5 col-start-4 col-span-3  min-[450px]:col-span-2 min-[450px]:col-start-5 md:col-span-3 md:col-start-8 lg:col-start-6 lg:col-span-2 bg-green font-semibold ${
-              approval
-                ? "hover:cursor-pointer hover:bg-green_hover"
-                : "opacity-50"
-            }`}
-          >
-            Start Order
-          </button>
+          <div className="order-5 flex justify-end gap-4 col-start-2 col-span-5 mt-8 md:col-start-6">
+            <button
+              className="capitalize text-icons py-4 col-span-2 rounded hover:cursor-pointer min-[450px]:col-start-3"
+              onClick={() => navigate("/")}
+            >
+              Remind me later
+            </button>
+
+            <button
+              disabled={!approval}
+              onClick={handleStartOrder}
+              className={`p-4 text-white text-center rounded bg-green font-semibold ${
+                approval
+                  ? "hover:cursor-pointer hover:bg-green_hover"
+                  : "opacity-50"
+              }`}
+            >
+              Start Order
+            </button>
+          </div>
         </div>
       </div>
     </div>
