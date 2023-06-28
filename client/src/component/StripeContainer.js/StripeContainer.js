@@ -127,7 +127,10 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
       setParentLoadingStatus(false);
 
       // redirect to submit requirements page
-      navigate(`/gig/place/order/submit/requirements/${orderId}`);
+      
+      navigate(`/gig/place/order/submit/requirements/${orderId}`, {
+        replace: true,
+      });
     } catch (error) {
       console.log(error.response.data.error.message);
       setParentLoadingStatus(false);
