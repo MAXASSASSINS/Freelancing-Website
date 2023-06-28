@@ -95,6 +95,10 @@ const orderSchema = new mongoose.Schema({
       ],
     },
   ],
+  requirementsSubmitted: {
+    type: Boolean,
+    default: false,
+  },
   packageDetails: {
     packageTitle: {
       type: String,
