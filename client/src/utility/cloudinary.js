@@ -78,9 +78,9 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
       name: item.name,
       type: item.type,
       size: data.data.bytes,
-      blurhash: blurhash,     
+      blurhash: blurhash,
       height: data.data.height ? data.data.height : 0,
-      width: data.data.width ? data.data.width: 0,
+      width: data.data.width ? data.data.width : 0,
     };
 
     return obj;
@@ -90,8 +90,6 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
 };
 
 export const uploadToCloudinaryV2 = async (arr, maxSize) => {
-
-
   const requests = arr.map((item) => {
     return uploadToCloudinarySingle(item, maxSize);
   });
@@ -164,4 +162,3 @@ const send = async (piece, start, end, size) => {
     return Promise.reject(error);
   }
 };
-
