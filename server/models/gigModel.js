@@ -31,7 +31,7 @@ const gigSchema = new mongoose.Schema({
       packageDeliveryTime: {
         type: String,
         required: [true, "Please enter the delivery time of your package"],
-        default: 1,
+        default: "1 day",
       },
       revisions: {
         type: Number,
