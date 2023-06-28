@@ -258,7 +258,7 @@ export const GigDetail = () => {
                   <div className="delivery-revision-div">
                     <div className="package-delivery">
                       <i className="fa-regular fa-clock"></i>
-                      <p>{pricePackageInfo.packageDeliveryTime} days</p>
+                      <p>{pricePackageInfo.packageDeliveryTime}</p>
                     </div>
                     <div className="package-revisions">
                       <i className="fa-solid fa-repeat"></i>
@@ -525,7 +525,7 @@ export const GigDetail = () => {
                 <div className="delivery-revision-div">
                   <div className="package-delivery">
                     <i className="fa-regular fa-clock"></i>
-                    <p>{pricePackageInfo.packageDeliveryTime} days</p>
+                    <p>{pricePackageInfo.packageDeliveryTime}</p>
                   </div>
                   <div className="package-revisions">
                     <i className="fa-solid fa-repeat"></i>
