@@ -181,7 +181,7 @@ export const SubmitRequirements = () => {
     });
 
     try {
-      const { data } = await axios.put(`/order/update/${params.orderId}`, {
+      const { data } = await axios.put(`/order/update/requirements/${params.orderId}`, {
         requirements: payload,
       });
       console.log(data);
@@ -224,6 +224,7 @@ export const SubmitRequirements = () => {
       <DataSendingLoading
         show={showDataSendingLoading}
         finishedLoading={!showDataSendingLoading}
+        loadingText={"Submitting your answers"}
       />
       <div className="px-8 md:px-20 xl:px-48 py-8 text-dark_grey">
         <div className="items-start grid grid-cols-6 md:grid-cols-10 gap-4">
@@ -437,7 +438,7 @@ export const SubmitRequirements = () => {
             <button
               disabled={!approval}
               onClick={handleStartOrder}
-              className={`p-4 text-white text-center rounded bg-green font-semibold ${
+              className={`p-4 text-white text-center rounded bg-green font-medium ${
                 approval
                   ? "hover:cursor-pointer hover:bg-green_hover"
                   : "opacity-50"
