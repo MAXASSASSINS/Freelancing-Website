@@ -95,55 +95,65 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
 });
 
 // Update Order
-export const updateOrder = catchAsyncErrors(async (req, res, next) => {
-  const { requirements: answers } = req.body;
-  let order = await Order.findById(req.params.id);
+export const updateOrder = catchAsyncErrors(async (req, res, next) => {});
 
-  if (!order) {
-    return next(new ErrorHandler("Order not found with this Id", 404));
+// update order requirements
+export const updateOrderRequirements = catchAsyncErrors(
+  async (req, res, next) => {
+    const { requirements: answers } = req.body;
+    let order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return next(new ErrorHandler("Order not found with this Id", 404));
+    }
+
+    if(order.requirementsSubmitted){
+      return next(new ErrorHandler("Requirements already submitted", 400));
+    }
+
+    const requirements = order.requirements.map((requirement, index) => {
+      const temp = {
+        questionTitle: requirement.questionTitle,
+        questionType: requirement.questionType,
+        answerRequired: requirement.answerRequired,
+        multipleOptionSelect: requirement.multipleOptionSelect,
+      };
+
+      if (requirement.questionType == "Free Text") {
+        temp.answerText = answers[index].answer;
+        temp.files = answers[index].files;
+      } else {
+        temp.options = answers[index].answer.map((option, idx) => {
+          return {
+            title: requirement.options[idx].title,
+            selected: option,
+          };
+        });
+      }
+
+      return temp;
+    });
+
+    order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        requirements,
+        requirementsSubmitted: true,
+      },
+      {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Sucessfully update your order requirements",
+      order,
+    });
   }
-
-  const requirements = order.requirements.map((requirement, index) => {
-    const temp = {
-      questionTitle: requirement.questionTitle,
-      questionType: requirement.questionType,
-      answerRequired: requirement.answerRequired,
-      multipleOptionSelect: requirement.multipleOptionSelect,
-    };
-
-    if (requirement.questionType == "Free Text") {
-      temp.answerText = answers[index].answer;
-      temp.files = answers[index].files;
-    } else {
-      temp.options = answers[index].answer.map((option, idx) => {
-        return {
-          title: requirement.options[idx].title,
-          selected: option,
-        };
-      });
-    }
-
-    return temp;
-  });
-
-  order = await Order.findByIdAndUpdate(
-    req.params.id,
-    {
-      requirements,
-    },
-    {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    }
-  );
-
-  res.status(200).json({
-    success: true,
-    message: "Sucessfully update your order",
-    order,
-  });
-});
+);
 
 // Get single order
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
@@ -166,7 +176,9 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log("hello");
-  const orders = await Order.find({ user: req.user._id }).populate('gig', 'title images').populate('seller buyer', 'name avatar');
+  const orders = await Order.find({ user: req.user._id })
+    .populate("gig", "title images")
+    .populate("seller buyer", "name avatar");
   console.log(orders);
 
   res.status(200).json({
