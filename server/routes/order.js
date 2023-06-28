@@ -9,6 +9,7 @@ import {
   updateOrderStatus,
   updateOrder,
   deleteAllOrders,
+  updateOrderRequirements,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -32,6 +33,7 @@ router.put(
 );
 
 router.put("/order/update/:id", isAuthenticated, updateOrder);
+router.put("/order/update/requirements/:id", isAuthenticated, updateOrderRequirements);
 
 router.delete("/orders/delete", deleteAllOrders);
 
