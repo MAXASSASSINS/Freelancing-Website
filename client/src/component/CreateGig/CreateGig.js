@@ -917,13 +917,17 @@ export const CreateGig = () => {
 
   const handleClickOnNavigationSaveAndPreview = async () => {
     if (currentStep === 6) {
-      navigate(`/gig/details/${gigId}`);
+      navigate(`/gig/details/${gigId}`, {
+        replace: true,
+      });
       return;
     }
     const temp = await handleSaveAndContinue();
     if (temp) return;
     setTimeout(() => {}, 2000);
-    navigate(`/gig/details/${gigId}`);
+    navigate(`/gig/details/${gigId}`, {
+      replace: true,
+    });
   };
 
   return (
