@@ -139,6 +139,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       {
         requirements,
         requirementsSubmitted: true,
+        status: "In Progress"
       },
       {
         new: true,
