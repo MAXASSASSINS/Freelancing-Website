@@ -43,6 +43,7 @@ import { Tooltip } from "./component/Tooltip/Tooltip";
 
 import "react-tooltip/dist/react-tooltip.css";
 import { Orders } from "./component/Orders/Orders";
+import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 
 export const windowContext = createContext();
 
@@ -132,6 +133,7 @@ const App = () => {
                 element={<SubmitRequirements />}
               ></Route>
               <Route exact path="/orders" element={<Orders />} />
+              <Route exact path="/orders/:id" element={<OrderDetail />} />
             </Routes>
             {/* <Footer /> */}
           </SocketContext.Provider>
