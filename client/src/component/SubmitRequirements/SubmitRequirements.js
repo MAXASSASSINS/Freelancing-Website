@@ -198,6 +198,7 @@ export const SubmitRequirements = () => {
     );
     setAnswerRequiredError(false);
     setShowDataSendingLoading(false);
+    navigate(`/orders/${params.orderId}`, { replace: true });
   };
 
   // after any change in files check for errors
