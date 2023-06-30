@@ -44,8 +44,8 @@ export const FileDropIcon = forwardRef(
           if (file?.url) {
             setPreviewUrL(file.url);
           }
-          if (file?.videoUrl) {
-            setPreviewUrL(file.videoUrl);
+          if (file?.url) {
+            setPreviewUrL(file.url);
           }
         },
       }),
