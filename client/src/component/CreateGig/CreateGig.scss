@@ -837,6 +837,8 @@
             height: 2rem;
             padding: 0.5rem 1rem;
             width: 6rem;
+            border: 1px solid var(--no-focus);
+            outline: none;
           }
 
           .invalid-code-message {
@@ -847,6 +849,11 @@
             position: absolute;
             top: 8.5rem;
             display: none;
+          }
+
+          .input:active{
+            outline: none;
+            border-color: var(--dark-grey);
           }
 
           button {

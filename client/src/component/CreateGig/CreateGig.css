@@ -84,27 +84,14 @@
   color: var(--no-focus);
   width: 24ch;
 }
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .left-side
-  .gig-title-input-warning,
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .right-side
-  .gig-title-input-warning {
+.create-gig-main .overview .overview-wrapper .left-side .gig-title-input-warning,
+.create-gig-main .overview .overview-wrapper .right-side .gig-title-input-warning {
   color: var(--warning);
   font-size: 0.9rem;
   margin-top: -1rem;
 }
 .create-gig-main .overview .overview-wrapper .left-side .category-section > div,
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .right-side
-  .category-section
-  > div {
+.create-gig-main .overview .overview-wrapper .right-side .category-section > div {
   display: flex;
   justify-content: space-between;
   gap: 2rem;
@@ -126,44 +113,19 @@
   width: 45ch;
 }
 .create-gig-main .overview .overview-wrapper .left-side .keyword-section input,
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .right-side
-  .keyword-section
-  input {
+.create-gig-main .overview .overview-wrapper .right-side .keyword-section input {
   width: 100%;
   border: 1px solid var(--no-focus);
   border-radius: 0;
   padding: 0.5rem;
   margin: 1rem 0 0.5rem;
 }
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .left-side
-  .keyword-section
-  .recommend,
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .right-side
-  .keyword-section
-  .recommend {
+.create-gig-main .overview .overview-wrapper .left-side .keyword-section .recommend,
+.create-gig-main .overview .overview-wrapper .right-side .keyword-section .recommend {
   font-size: 0.8rem;
 }
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .left-side
-  .keyword-section
-  .tag-list-warning,
-.create-gig-main
-  .overview
-  .overview-wrapper
-  .right-side
-  .keyword-section
-  .tag-list-warning {
+.create-gig-main .overview .overview-wrapper .left-side .keyword-section .tag-list-warning,
+.create-gig-main .overview .overview-wrapper .right-side .keyword-section .tag-list-warning {
   color: var(--warning);
   font-size: 0.8rem;
 }
@@ -201,227 +163,99 @@
   background-color: var(--dark-separator);
   padding: 1rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .textarea-main {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .textarea-main {
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .select-input-main {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .select-input-main {
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .price-details {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .price-details
-  .price-value {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value {
   border: 1px solid var(--no-focus);
   width: 100%;
   padding: 0.5rem 0.75rem;
   padding-right: 2rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .price-details
-  .price-value::-moz-placeholder {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value::-moz-placeholder {
   font-size: 0.9rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .price-details
-  .price-value::placeholder {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value::placeholder {
   font-size: 0.9rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .price-details
-  span {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details span {
   position: absolute;
   right: 4rem;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .source,
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .commercial {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .source
-  input,
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .commercial
-  input {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .source input,
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial input {
   width: 1rem;
   height: 1rem;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   border: 1px solid var(--dark-grey);
   border-radius: 50%;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .source
-  input:checked,
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .commercial
-  input:checked {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .source input:checked,
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial input:checked {
   background-color: var(--green);
   border-color: var(--green);
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .commercial {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial {
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-name {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-name {
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-name
-  .package-name-required-icon {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-name .package-name-required-icon {
   position: absolute;
   right: 0.5rem;
   top: 0.7rem;
   color: var(--no-focus);
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-description {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-description {
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-description
-  .package-description-required-icon {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-description .package-description-required-icon {
   position: absolute;
   right: 0.5rem;
   top: 0.7rem;
   color: var(--no-focus);
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-price {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-price {
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-price
-  .package-price-required-icon {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-price .package-price-required-icon {
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
   color: var(--no-focus);
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-delivery-time {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-delivery-time {
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-delivery-time
-  .package-delivery-time-required-icon {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-delivery-time .package-delivery-time-required-icon {
   position: absolute;
   right: 1rem;
   top: 0.5rem;
   color: var(--no-focus);
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-revisions-required {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-revisions-required {
   position: relative;
 }
-.create-gig-main
-  .pricing
-  .pricing-wrapper
-  .pricing-section
-  .package
-  .package-revisions-required
-  .package-revisions-required-icon {
+.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-revisions-required .package-revisions-required-icon {
   position: absolute;
   right: 1rem;
   top: 0.5rem;
@@ -514,110 +348,54 @@
   padding: 1.5rem;
   color: var(--light-heading);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  header {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper header {
   font-weight: 400;
   display: flex;
   justify-content: space-between;
   font-size: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  header
-  h6 {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper header h6 {
   font-weight: 600;
   color: var(--light-grey);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  header
-  div {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper header div {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  header
-  div
-  label {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper header div label {
   color: var(--light-heading);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .question-box {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .question-box {
   margin-bottom: 1rem;
   position: relative;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .question-box
-  .question-description-warning {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .question-box .question-description-warning {
   position: absolute;
   bottom: 0;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
   color: var(--warning);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .question-form-and-options
-  h6 {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .question-form-and-options h6 {
   font-weight: 600;
   color: var(--light-heading);
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .question-form-and-options
-  .question-type-wrapper {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .question-form-and-options .question-type-wrapper {
   display: flex;
   justify-content: space-between;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper {
   margin-top: 1.25rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper {
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  input {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper input {
   display: block;
   width: 100%;
   margin: 0.5rem 0;
@@ -625,65 +403,24 @@
   border: 1px solid var(--no-focus);
   border-radius: 4px;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  input::-moz-placeholder {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper input::-moz-placeholder {
   color: var(--no-focus);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  input::placeholder {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper input::placeholder {
   color: var(--no-focus);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  input:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper input:hover {
   border-color: var(--light-heading);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  .close-icon {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper .close-icon {
   position: absolute;
   right: 1rem;
   color: var(--dark-grey);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-wrapper
-  .close-icon:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-wrapper .close-icon:hover {
   cursor: pointer;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  .option
-  .option-warning {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper .option .option-warning {
   color: var(--warning);
   font-size: 0.75rem;
   display: none;
@@ -691,91 +428,47 @@
   margin-top: -0.3rem;
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  button {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper button {
   padding: 0.75rem 2rem;
   border-radius: 4px;
   border: 1px solid var(--link);
   color: var(--link);
   margin-top: 0.5rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-options-wrapper
-  button:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-options-wrapper button:hover {
   background-color: var(--link);
   cursor: pointer;
   color: white;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper {
   display: flex;
   justify-content: right;
   margin-top: 1.25rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button {
   padding: 0.75rem 2rem;
   border-radius: 4px;
   transition: all 0.2s;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button:hover {
   cursor: pointer;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button.cancel-add {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.cancel-add {
   color: red;
   border: 1px solid var(--light-heading);
   color: var(--light-heading);
   margin-right: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button.cancel-add:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.cancel-add:hover {
   background-color: var(--light-heading);
   color: white;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button.add-question {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.add-question {
   color: white;
   border: none;
   background-color: var(--green);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-wrapper
-  .add-cancel-buttons-wrapper
-  button.add-question:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.add-question:hover {
   background-color: var(--green-hover);
 }
 .create-gig-main .requirements .requirements-wrapper .question-details-section {
@@ -785,64 +478,32 @@
   box-shadow: 0px 0 3px 0px var(--dark-separator);
   margin: 1rem 0;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type {
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: var(--icons);
   margin-bottom: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .text-or-multiple-choice {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .text-or-multiple-choice {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove {
   position: relative;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove
-  .ellipsis-icon {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove .ellipsis-icon {
   color: var(--icons);
   padding: 0.2rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove
-  .ellipsis-icon:hover {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove .ellipsis-icon:hover {
   cursor: pointer;
   background-color: var(--separator);
   border-radius: 50%;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove
-  .edit-and-remove-options {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove .edit-and-remove-options {
   border: 1px solid var(--dark-separator);
   position: absolute;
   left: -3rem;
@@ -852,53 +513,27 @@
   box-shadow: 0px 0 3px 0px var(--dark-separator);
   background-color: white;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove
-  .edit-and-remove-options
-  > div {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove .edit-and-remove-options > div {
   padding: 0.75rem;
   color: var(--light-heading);
   cursor: pointer;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question-type
-  .edit-and-remove
-  .edit-and-remove-options
-  > div:hover {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question-type .edit-and-remove .edit-and-remove-options > div:hover {
   background-color: var(--separator);
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .question {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .question {
   font-weight: bold;
   color: var(--light-grey);
   font-size: 0.9rem;
   margin-bottom: 0.75rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .question-details-section
-  .options {
+.create-gig-main .requirements .requirements-wrapper .question-details-section .options {
   font-size: 0.9rem;
 }
 .create-gig-main .requirements .requirements-wrapper .add-question-button {
   margin-top: 1rem;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-button
-  button {
+.create-gig-main .requirements .requirements-wrapper .add-question-button button {
   background-color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
@@ -907,11 +542,7 @@
   border: 1px solid var(--link);
   transition: all 0.2s;
 }
-.create-gig-main
-  .requirements
-  .requirements-wrapper
-  .add-question-button
-  button:hover {
+.create-gig-main .requirements .requirements-wrapper .add-question-button button:hover {
   background-color: var(--link);
   color: white;
 }
@@ -937,64 +568,35 @@
   display: flex;
   flex-direction: column;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  section {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper section {
   border-bottom: 1px solid var(--no-focus);
   padding: 2rem 0;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .gallery-heading-para {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .gallery-heading-para {
   font-size: 1rem;
   word-spacing: 0.25rem;
   margin-bottom: 2rem;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .gallery-heading {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .gallery-heading {
   font-size: 1.25rem;
   font-weight: 700;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .gallery-heading-para {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .gallery-heading-para {
   font-size: 0.9rem;
   color: var(--icons);
   margin: 0.25rem 0;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .custom-file-input-wrapper {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .custom-file-input-wrapper {
   margin: 2rem 0 0;
   display: flex;
   gap: 1rem;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .video
-  .size-limit-warning {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .video .size-limit-warning {
   font-size: 0.75rem;
   color: var(--icons);
   margin-top: 0.5rem;
 }
-.create-gig-main
-  .gallery
-  .gallery-wrapper
-  .gallery-file-formats-wrapper
-  .gallery-input-error {
+.create-gig-main .gallery .gallery-wrapper .gallery-file-formats-wrapper .gallery-input-error {
   color: var(--warning);
   position: relative;
   font-size: 0.9rem;
@@ -1059,11 +661,7 @@
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.4);
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verify-phone-number-modal {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-phone-number-modal {
   border-radius: 5px;
   position: relative;
   background-color: #fefefe;
@@ -1072,70 +670,41 @@
   padding: 2.5rem;
   border: 1px solid #888;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .close-icon {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .close-icon {
   position: absolute;
   right: 1rem;
   top: 1rem;
   color: var(--icons);
   font-size: 1.5rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .close-icon:hover {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .close-icon:hover {
   cursor: pointer;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  h5 {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper h5 {
   margin: 1.5rem 0 1rem;
   font-weight: 700;
   font-size: 1.375rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verfication-code-sent-notification {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verfication-code-sent-notification {
   font-size: 0.9rem;
   color: var(--icons);
   margin-bottom: 1.5rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-recipent-number {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-recipent-number {
   color: var(--light-heading);
   display: flex;
   gap: 0.25rem;
   justify-content: center;
   font-weight: 700;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper {
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 1rem;
   position: relative;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  .enter-verification-code-message {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .enter-verification-code-message {
   text-align: center;
   font-size: 1.5rem;
   margin-top: 1rem;
@@ -1143,22 +712,14 @@
   line-height: 1.3;
   color: var(--light-grey);
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  input {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper input {
   height: 2rem;
   padding: 0.5rem 1rem;
   width: 6rem;
+  border: 1px solid var(--no-focus);
+  outline: none;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  .invalid-code-message {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .invalid-code-message {
   color: var(--warning);
   font-size: 0.9rem;
   margin-top: -0.5rem;
@@ -1167,12 +728,11 @@
   top: 8.5rem;
   display: none;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  button {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .input:active {
+  outline: none;
+  border-color: var(--dark-grey);
+}
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper button {
   margin-top: 3rem;
   padding: 0.75rem 2rem;
   border: none;
@@ -1182,29 +742,15 @@
   font-weight: 700;
   transition: all 0.2s;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  .active {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .active {
   background-color: var(--green);
   color: white;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-wrapper
-  .active:hover {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .active:hover {
   cursor: pointer;
   background-color: var(--green-hover);
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-not-receive-message {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-not-receive-message {
   font-size: 0.8rem;
   color: var(--icons);
   margin-top: 1rem;
@@ -1213,92 +759,45 @@
   margin-top: 1rem;
   word-spacing: 1px;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-not-receive-message
-  span {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-not-receive-message span {
   color: var(--link);
   cursor: pointer;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verification-code-not-receive-message
-  span:hover {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-not-receive-message span:hover {
   text-decoration: underline;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .thanks-para {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .thanks-para {
   color: var(--light-heading);
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
   width: 40ch;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
   margin-bottom: 4rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input {
   position: relative;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  h6 {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input h6 {
   font-size: 0.9rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  input {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input input {
   padding: 0.4rem 0.5rem;
   border: 1px solid var(--no-focus);
   border-radius: 3px;
   font-size: 0.9rem;
   width: 100%;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  input:focus {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input input:focus {
   outline: none;
   border: 1px solid var(--dark-grey);
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  .country-code-wrapper {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input .country-code-wrapper {
   background-color: white;
   border: 1px solid var(--no-focus);
   border-top: none;
@@ -1306,36 +805,16 @@
   width: 100%;
   z-index: 5;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  .country-code-wrapper
-  .country-code {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input .country-code-wrapper .country-code {
   padding: 0.4rem;
   list-style: none;
   display: block;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  .country-code-wrapper
-  .country-code:hover {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input .country-code-wrapper .country-code:hover {
   cursor: pointer;
   background-color: var(--dark-separator);
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  .dial-code {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input .dial-code {
   position: absolute;
   color: var(--no-focus);
   font-size: 0.9rem;
@@ -1343,61 +822,31 @@
   left: 0.5rem;
   z-index: 1;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .modal-input
-  input[type="tel"] {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .modal-input input[type=tel] {
   padding-left: 4rem;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .modal-inputs-wrapper
-  .wrong-phone-number-warning {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .modal-inputs-wrapper .wrong-phone-number-warning {
   color: var(--warning);
   font-size: 0.9rem;
   margin-top: -2rem;
   line-height: 1.3;
   display: none;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verify-buttons {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-buttons {
   display: flex;
   justify-content: right;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verify-buttons
-  button {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-buttons button {
   padding: 0.6rem 2.8rem;
   background-color: var(--dark-separator);
   border: none;
   color: var(--no-focus);
   border-radius: 3px;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verify-buttons
-  button:hover {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-buttons button:hover {
   cursor: pointer;
 }
-.create-gig-main
-  .publish
-  .publish-wrapper
-  .verify-phone-number-modal-wrapper
-  .verify-buttons
-  .button-active {
+.create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-buttons .button-active {
   background-color: var(--green);
   color: white;
   transition: all 0.3s;
@@ -1431,4 +880,4 @@
 }
 .create-gig-main .back-button button:hover {
   text-decoration: underline;
-} /*# sourceMappingURL=CreateGig.css.map */
+}/*# sourceMappingURL=CreateGig.css.map */
