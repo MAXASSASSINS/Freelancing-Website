@@ -48,6 +48,14 @@ export const uploadToCloudinary = async (arr) => {
 };
 
 const uploadToCloudinarySingle = async (item, maxSize) => {
+
+  // if item is already uploaded
+  console.log(item);
+  if(item.url) {
+    console.log("already uploaded");
+    return item;
+  }
+
   const formData = new FormData();
   formData.append("file", item);
   formData.append("upload_preset", unsignedUploadPreset);
@@ -56,8 +64,6 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
   if (maxSize && item.size > maxSize) {
     return Promise.reject("Max file size allowed is 5GB.");
   }
-
-  console.log(item);
 
   try {
     const data = await processFile(item);
