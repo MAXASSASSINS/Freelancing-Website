@@ -41,8 +41,8 @@ export const FileDropIcon = forwardRef(
       () => ({
         setFileComingFromParent(file) {
           if (file) setSelectedFile(file);
-          if (file?.imgUrl) {
-            setPreviewUrL(file.imgUrl);
+          if (file?.url) {
+            setPreviewUrL(file.url);
           }
           if (file?.videoUrl) {
             setPreviewUrL(file.videoUrl);

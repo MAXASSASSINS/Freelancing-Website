@@ -38,7 +38,7 @@ export const MyCarousel = ({ gig }) => {
                 <Carousel.Item key={image._id}>
                   <img
                     className="carousel-img"
-                    src={image.imgUrl}
+                    src={image.url}
                     alt={gig.title}
                   ></img>
                 </Carousel.Item>
