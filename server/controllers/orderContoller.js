@@ -4,6 +4,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import { stripe } from "../utils/stripe.js";
 import { randomString } from "../utils/utilities.js";
+import sendEmail from "../utils/sendEmail.js";
 
 // Create new order
 export const newOrder = catchAsyncErrors(async (req, res, next) => {
@@ -101,15 +102,20 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {});
 export const updateOrderRequirements = catchAsyncErrors(
   async (req, res, next) => {
     const { requirements: answers } = req.body;
-    let order = await Order.findById(req.params.id);
+    let order = await Order.findById(req.params.id).populate("seller", "email");
+
+    const sellerEmail = order.seller.email;
+
+    // console.log(order);
 
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
     }
 
-    if(order.requirementsSubmitted){
-      return next(new ErrorHandler("Requirements already submitted", 400));
-    }
+
+    // if (order.requirementsSubmitted) {
+    //   return next(new ErrorHandler("Requirements already submitted", 400));
+    // }
 
     const requirements = order.requirements.map((requirement, index) => {
       const temp = {
@@ -139,7 +145,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       {
         requirements,
         requirementsSubmitted: true,
-        status: "In Progress"
+        status: "In Progress",
       },
       {
         new: true,
@@ -147,6 +153,16 @@ export const updateOrderRequirements = catchAsyncErrors(
         useFindAndModify: false,
       }
     );
+
+
+    // send email to seller
+    const options = {
+      to: sellerEmail,
+      subject: "New Order",
+      message: `You have a new order with order id ${order.orderId}`,
+    };
+    console.log(options);
+    await sendEmail(options);
 
     res.status(200).json({
       success: true,
