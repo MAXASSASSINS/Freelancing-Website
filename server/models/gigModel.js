@@ -67,26 +67,26 @@ const gigSchema = new mongoose.Schema({
   },
   images: [
     {
-      imgPublicId: {
+      publicId: {
         type: String,
         required: [true, "Please provide public id for your image"],
       },
-      imgUrl: {
+      url: {
         type: String,
         required: [true, "Please provide image url"],
       },
-      blurHash: {
+      blurhash: {
         type: String,
         required: [true, "Please provide blur hash"],
       },
     },
   ],
   video: {
-    videoPublicId: String,
-    videoUrl: String,
-    videoName: String,
-    mimeType: String,
-    blurHash: String,
+    publicId: String,
+    url: String,
+    name: String,
+    type: String,
+    blurhash: String,
   },
   ratings: {
     type: Number,
