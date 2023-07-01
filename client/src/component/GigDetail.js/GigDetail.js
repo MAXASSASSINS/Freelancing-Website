@@ -328,9 +328,16 @@ export const GigDetail = () => {
               <header>
                 <h2>About The Seller</h2>
               </header>
-              <div className="gig-owner-profile-info">
-                <img src={gigDetail.user.avatar.url}></img>
-                <div>
+              <div className="gig-owner-profile-info-wrapper">
+                  <Avatar 
+                    avatarUrl={gigDetail.user.avatar.url}
+                    userName={gigDetail.user.name}
+                    width="3rem"
+                    alt={gigDetail.user.name}
+                    fontSize="1.5rem"
+                  />
+                {/* <img src={gigDetail.user.avatar.url}></img> */}
+                <div className="gig-owner-profile-info">
                   <Link to={`/user/${gigDetail.user._id}`}>
                     <div className="gig-owner-name">{gigDetail.user.name}</div>
                   </Link>
