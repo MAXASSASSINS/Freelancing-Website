@@ -82,11 +82,21 @@ const gigSchema = new mongoose.Schema({
     },
   ],
   video: {
-    publicId: String,
-    url: String,
-    name: String,
-    type: String,
-    blurhash: String,
+    publicId: {
+      type: String,
+    },
+    url: {
+      type: String,
+    },
+    blurhash: {
+      type: String,
+    },
+    name: {
+      type: String,
+    },
+    type: {
+      type: String,
+    },
   },
   ratings: {
     type: Number,
