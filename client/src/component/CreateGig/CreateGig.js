@@ -50,7 +50,10 @@ import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { getGigDetail } from "../../actions/gigAction";
 import { RESET_ALL } from "../../constants/createGigQuestionConstants";
-import { uploadToCloudinary } from "../../utility/cloudinary";
+import {
+  uploadToCloudinary,
+  uploadToCloudinaryV2,
+} from "../../utility/cloudinary";
 import { FREE_TEXT } from "../../constants/globalConstants";
 
 export const CreateGig = () => {
@@ -241,6 +244,8 @@ export const CreateGig = () => {
         active,
       } = gigDetail;
 
+      console.log(gigDetail.video);
+
       // step 1
       gigTitleInputRef.current.setTextComingFromParent(title);
       selectedCategoryRef.current.setChoosedOptionComingFromParent(category);
@@ -321,9 +326,9 @@ export const CreateGig = () => {
     };
   }, []);
 
-  useEffect(() => {
-    setSelectedSubCategory("Select a sub-category");
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   setSelectedSubCategory("Select a sub-category");
+  // }, [selectedCategory]);
 
   useEffect(() => {
     setCategoryWarning("");
@@ -340,6 +345,7 @@ export const CreateGig = () => {
 
   const getSelectedCategory = (val) => {
     setSelectedCategory(val);
+    setSelectedSubCategory("Select a sub-category");
   };
 
   const getSelectedSubCategory = (val) => {
@@ -358,42 +364,49 @@ export const CreateGig = () => {
 
   const handleSaveAndContinue = async () => {
     if (checkForWarnings()) return true;
-    await handleSendData();
 
-    if (currentStep < 7) {
-      for (let i = 1; i < 7; i++) {
-        if (i === currentStep) {
-          stepCompleted[i] = true;
+    try {
+      await handleSendData();
+      if (currentStep < 7) {
+        for (let i = 1; i < 7; i++) {
+          if (i === currentStep) {
+            stepCompleted[i] = true;
+          }
         }
+        if (maxStep < currentStep + 1) {
+          setMaxStep(currentStep + 1);
+        }
+        setCurrentStep(currentStep + 1);
       }
-      if (maxStep < currentStep + 1) {
-        setMaxStep(currentStep + 1);
-      }
-      setCurrentStep(currentStep + 1);
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const handleSendData = async () => {
-    setShowDataSendingLoadingScreen(true);
-    const data = await collectRequiredData();
-    // console.log(data);
-
-    if (searchParams.get("id") === "null") {
-      const res = await axios.post("/gig/create", data);
-      if (res.status === 201) {
-        setSearchParams({ ...searchParams, id: res.data.gigId });
+    // console.log("running");
+    try {
+      setShowDataSendingLoadingScreen(true);
+      const data = await collectRequiredData();
+      if (searchParams.get("id") === "null") {
+        const res = await axios.post("/gig/create", data);
+        if (res.status === 201) {
+          setSearchParams({ ...searchParams, id: res.data.gigId });
+          console.log(res.data);
+        }
+      } else {
+        const res = await axios.put(
+          `/gig/update/${searchParams.get("id")}`,
+          data
+        );
+        console.log(res.data);
       }
-      console.log(res.data);
-    } else {
-      console.log(data);
-      const res = await axios.put(
-        `/gig/update/${searchParams.get("id")}`,
-        data
-      );
-
-      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+      throw err;
+    } finally {
+      setShowDataSendingLoadingScreen(false);
     }
-    setShowDataSendingLoadingScreen(false);
   };
 
   const checkForWarnings = () => {
@@ -558,12 +571,11 @@ export const CreateGig = () => {
           }
         });
 
-        const videos = [];
-        if (sellerShowcaseVideo) videos.push(sellerShowcaseVideo);
+        // console.log("images", images);
 
-        const res1 = await uploadToCloudinary(images);
-        const res2 = await uploadToCloudinary(videos);
-        console.log(res2);
+        const res1 = await uploadToCloudinaryV2(images);
+        const res2 = await uploadToCloudinaryV2(sellerShowcaseVideo ? [sellerShowcaseVideo] : []);
+        // console.log(res2);
 
         const media = {
           images: res1,
@@ -1068,6 +1080,7 @@ export const CreateGig = () => {
         <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
+          loadingText={"Saving Gig"}
         />
         <div className="overview-wrapper">
           <div className="left-side">
@@ -1162,6 +1175,7 @@ export const CreateGig = () => {
         <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
+          loadingText={"Saving Gig"}
         />
         <div className="pricing-wrapper">
           <h2>Scope & Pricing</h2>
@@ -1287,6 +1301,7 @@ export const CreateGig = () => {
         <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
+          loadingText={"Saving Gig"}
         />
         <div className="description-wrapper">
           <h1>Description</h1>
@@ -1307,6 +1322,7 @@ export const CreateGig = () => {
         <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
+          loadingText={"Saving Gig"}
         />
         <div className="requirements-wrapper">
           <header>
@@ -1443,6 +1459,7 @@ export const CreateGig = () => {
         <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
+          loadingText={"Saving Gig"}
         />
 
         <div className="gallery-wrapper">
