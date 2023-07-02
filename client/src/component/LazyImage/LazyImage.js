@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Blurhash } from "react-blurhash";
 
-export const LazyImage = ({ file, maxWidth }) => {
+export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = 16/10 }) => {
   const { width, height, name, type, url, size, blurhash } = file;
   const defaultBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj";
 
+  // console.log(file);
   const [loaded, setLoaded] = useState(false);
 
   const handleOnLoad = () => {
@@ -12,19 +13,23 @@ export const LazyImage = ({ file, maxWidth }) => {
   };
 
   return (
-    <div className="relative max-w-[10rem] lg:max-w-[15rem] flex justify-center items-center">
+    <div className="relative">
       <img
         data-src={url}
-        className="absolute rounded"
-        src={""}
+        className="w-full"
+        style={{ aspectRatio: aspectRatio }}
+        // src={url}
+        src={lazyLoad ? "" : url}
         alt={name}
         onLoad={handleOnLoad}
       />
       <Blurhash
-        className="relative z-20 top-0 left-0 rounded"
+        className="absolute z-20 top-0 left-0"
         hash={blurhash ? blurhash : defaultBlurhash}
-        width={maxWidth}
-        height={Math.min(height, (height / width) * maxWidth)}
+        // width={maxWidth}
+        width="100%"
+        height="100%"
+        // height={Math.min(height, (height / width) * maxWidth)}
         resolutionX={32}
         resolutionY={32}
         punch={1}
