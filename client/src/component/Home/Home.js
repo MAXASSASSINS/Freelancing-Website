@@ -81,10 +81,43 @@ export const Home = () => {
     console.log("gigs is changed");
   }, [gigs]);
 
+  // LAZY LOADING THE IMAGES AND VIDEOS
+  useEffect(() => {
+    const images = document.querySelectorAll("img[data-src]");
+    const videoImages = document.querySelectorAll("video[data-poster]");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (entry.target.attributes.getNamedItem("poster")) {
+            entry.target.attributes.getNamedItem("poster").value =
+              entry.target.attributes.getNamedItem("data-poster").value;
+          } else {
+            entry.target.attributes.getNamedItem("src").value =
+              entry.target.attributes.getNamedItem("data-src").value;
+          }
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        rootMargin: "300px",
+      }
+    );
+
+    images.forEach((image) => {
+      observer.observe(image);
+    });
+
+    videoImages.forEach((image) => {
+      observer.observe(image);
+    });
+  }, [gigs]);
+
   return (
     <>
       <div className="all-gigs-container">
-        {gigs && gigs.map((gig) => <GigCard gig={gig} key={gig._id} />)}
+        {gigs && gigs.map((gig) => <GigCard lazyLoad={true} gig={gig} key={gig._id} />)}
       </div>
     </>
   );
