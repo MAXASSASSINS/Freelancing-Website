@@ -3,8 +3,12 @@ import React, { useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import "./myCarousel.css";
 import { IoMdImages } from "react-icons/io";
+import { LazyImage } from "../LazyImage/LazyImage";
+import { getPosterForVideo } from "../../utility/util";
+import { Blurhash } from "react-blurhash";
+import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 
-export const MyCarousel = ({ gig }) => {
+export const MyCarousel = ({ gig, lazyLoad }) => {
   const [arrows, setArrows] = useState(false);
 
   const showArrows = () => {
@@ -36,13 +40,23 @@ export const MyCarousel = ({ gig }) => {
             (image) =>
               image && (
                 <Carousel.Item key={image._id}>
-                  <img
-                    className="carousel-img"
-                    src={image.url}
-                    alt={gig.title}
-                  ></img>
+                  <LazyImage
+                    file={image}
+                    lazyLoad={lazyLoad}
+                    aspectRatio={16 / 10}
+                  />
                 </Carousel.Item>
               )
+          )}
+
+          {gig.video && (
+            <Carousel.Item key={gig.video._id}>
+              <LazyVideo
+                file={gig.video}
+                lazyLoad={lazyLoad}
+                aspectRatio={16 / 10}
+              />
+            </Carousel.Item>
           )}
         </Carousel>
       )}
