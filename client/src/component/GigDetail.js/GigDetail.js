@@ -227,7 +227,7 @@ export const GigDetail = () => {
               </div>
             </div>
             <div className="gig-details-carousel">
-              <MyCarousel gig={gigDetail}></MyCarousel>
+              <MyCarousel lazyLoad={false} gig={gigDetail}></MyCarousel>
             </div>
             <section className="price-section small-screen">
               <nav className="price-navigation">
@@ -329,13 +329,13 @@ export const GigDetail = () => {
                 <h2>About The Seller</h2>
               </header>
               <div className="gig-owner-profile-info-wrapper">
-                  <Avatar 
-                    avatarUrl={gigDetail.user.avatar.url}
-                    userName={gigDetail.user.name}
-                    width="3rem"
-                    alt={gigDetail.user.name}
-                    fontSize="1.5rem"
-                  />
+                <Avatar
+                  avatarUrl={gigDetail.user.avatar.url}
+                  userName={gigDetail.user.name}
+                  width="3rem"
+                  alt={gigDetail.user.name}
+                  fontSize="1.5rem"
+                />
                 {/* <img src={gigDetail.user.avatar.url}></img> */}
                 <div className="gig-owner-profile-info">
                   <Link to={`/user/${gigDetail.user._id}`}>
