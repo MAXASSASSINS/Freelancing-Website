@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./gigCard.css";
 import { MyCarousel } from "../Carousel/MyCarousel";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { IoMdImages } from "react-icons/io";
 import { Avatar } from "../Avatar/Avatar";
 
-export const GigCard = ({ gig }) => {
+export const GigCard = ({ gig, lazyLoad }) => {
   // console.log(gig.pricing)
   const handleClick = () => {
     // console.log("clicked");
@@ -16,7 +16,7 @@ export const GigCard = ({ gig }) => {
     <div className="gig-card">
       <div className="container-wrapper">
         <Link to={`/user/${gig.user._id}`}>
-          <MyCarousel gig={gig}></MyCarousel>
+          <MyCarousel lazyLoad={lazyLoad} gig={gig}></MyCarousel>
         </Link>
         <div className="user-details-container">
           <Avatar
