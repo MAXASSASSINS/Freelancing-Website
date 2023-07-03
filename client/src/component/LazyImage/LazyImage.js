@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Blurhash } from "react-blurhash";
 
-export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = 16/10 }) => {
+export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "auto" }) => {
   const { width, height, name, type, url, size, blurhash } = file;
   const defaultBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj";
 
