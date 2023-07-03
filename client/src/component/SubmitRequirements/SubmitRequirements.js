@@ -351,7 +351,7 @@ export const SubmitRequirements = () => {
           </div>
           {orderDetail && (
             <div className="border-1 border-dark_separator order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
-              <img src={orderDetail.image.url}></img>
+              <img className="aspect-[16/10]" src={orderDetail.image.url}></img>
               <div className="p-3">
                 <div className="border-b-1 border-b-dark_separator">
                   <h5 className="font-bold">{orderDetail.gigTitle}</h5>
