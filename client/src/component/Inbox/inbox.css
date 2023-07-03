@@ -263,16 +263,20 @@
 }
 
 .inbox-messages-list-sender-file > p {
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* justify-content: center; */
-  /* align-items: center; */
-  max-width: 12rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 10rem;
+  max-height: 12rem;
+  min-height: 5rem;
+  min-width: 5rem;
+  overflow: hidden;
   /* margin: auto; */
 }
 
 .inbox-messages-list-sender-file-info {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: 0.5rem;
   cursor: pointer;
@@ -280,12 +284,12 @@
   font-size: 0.8rem;
   background-color: var(--separator);
   padding: 0.5rem;
-
 }
 
 .inbox-messages-list-sender-file-info > div {
   display: flex;
-  gap: 0 0.5rem;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .inbox-messages-list-sender-file-info > div:hover {
@@ -299,15 +303,18 @@
   overflow: hidden;
 }
 
+.inbox-messages-list-sender-file-size {
+  text-align: right;
+}
+
 .inbox-messages-list-sender-video,
 .inbox-messages-list-sender-image,
 .inbox-messages-list-sender-file-audio,
 .inbox-messages-list-sender-file-document {
-  max-width: 12rem;
-  margin-top: 0.5rem;
+  max-width: 10rem;
 }
 
-.inbox-messages-list-sender-file-document{
+.inbox-messages-list-sender-file-document {
   background-color: var(--separator);
   width: 10rem;
   height: 6rem;
@@ -317,8 +324,6 @@
   font-size: 3rem;
   border-radius: 0.25rem;
 }
-
-
 
 /* ************************************************* */
 
@@ -475,6 +480,10 @@
 }
 
 @media screen and (min-width: 600px) {
+  .inbox-messages-list-sender-file-info > div {
+    gap: 0.5rem;
+  }
+
   .inbox-message-list {
     grid-template-rows: 73px calc(100vh - 81px - 60px - 73px) 60px;
   }
@@ -504,6 +513,29 @@
 }
 
 @media screen and (min-width: 900px) {
+  .inbox-messages-list-sender-file-info {
+    flex-direction: row;
+  }
+
+  .inbox-messages-list-sender-file > p {
+    max-width: 12rem;
+    max-height: 18rem;
+  }
+
+  .inbox-messages-list-sender-video,
+  .inbox-messages-list-sender-image,
+  .inbox-messages-list-sender-file-audio,
+  .inbox-messages-list-sender-file-document {
+    max-width: 12rem;
+    margin-top: 0.5rem;
+  }
+
+  .inbox-messages-list-sender-file-document {
+    width: 12rem;
+    height: 10rem;
+    font-size: 4.5rem;
+  }
+
   .inbox-messages-list-sender-files {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem;
@@ -513,18 +545,15 @@
 }
 
 @media screen and (min-width: 1024px) {
-  .inbox-messages-list-sender-file > p{
-    max-width: 13rem;
-  }
-  .inbox-messages-list-sender-file-document{
-    width: 13rem;
+  
+  .inbox-messages-list-sender-file-document {
+    width: 12rem;
     height: 10rem;
     font-size: 4.5rem;
   }
 }
 
 @media screen and (min-width: 1180px) {
-  
   .inbox-messages-list-sender-files {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
