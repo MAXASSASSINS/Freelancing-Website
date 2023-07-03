@@ -91,6 +91,19 @@ const orderSchema = new mongoose.Schema({
             type: String,
             required: true,
           },
+          size: {
+            type: Number,
+            required: true,
+          },
+          blurhash: {
+            type: String,
+          },
+          height: {
+            type: Number,
+          },
+          width: {
+            type: Number,
+          },
         },
       ],
     },
