@@ -1048,7 +1048,7 @@ export const Inbox = () => {
                                       {file.name}
                                     </div>
                                   </div>
-                                  <p>
+                                  <p className="inbox-messages-list-sender-file-size">
                                     ({getFileSize(file.size ? file.size : 0)})
                                   </p>
                                 </div>
