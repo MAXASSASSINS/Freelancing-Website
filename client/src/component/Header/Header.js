@@ -30,7 +30,9 @@ export const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="title-wrapper">
-          <h1 className="heading" onClick={() => navigate('/')}>FreelanceMe</h1>
+          <h1 className="heading" onClick={() => navigate("/")}>
+            FreelanceMe
+          </h1>
         </div>
 
         <form className="form">
@@ -49,18 +51,19 @@ export const Header = () => {
             <i className="fa-regular fa-envelope inbox-icon"></i>
           </Link>
           <i className="fa-regular fa-heart my-list-icon"></i>
-          <div className="orders-icon" onClick={() => navigate('/orders')}>Orders</div>
-          {!user && (
+          <div className="orders-icon" onClick={() => navigate("/orders")}>
+            Orders
+          </div>
+          {!isAuthenticated ? (
             <Link to="/login">
               <div>
                 <i className="fa-regular fa-circle-user profile-icon"></i>
               </div>
             </Link>
-          )}
-          {isAuthenticated && (
-            <div>
+          ) : (
+            <div className="profile-icon">
               <Link to={"/user/" + user._id}>
-                <Avatar 
+                <Avatar
                   avatarUrl={user.avatar.url}
                   userName={user.name}
                   onlineStatus={true}
