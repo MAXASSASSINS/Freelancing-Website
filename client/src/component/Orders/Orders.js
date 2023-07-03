@@ -65,7 +65,7 @@ export const Orders = () => {
                     className="flex flex-col gap-4 p-4 border border-dark_separator rounded-[4px] mb-6 bg-white shadow-sm md:flex-row md:items-center lg:gap-8"
                   >
                     <img
-                      src={order.gig.images[0].imgUrl}
+                      src={order.gig.images[0].url}
                       alt="gig"
                       className="h-40 md:h-12 md:w-20"
                     />
