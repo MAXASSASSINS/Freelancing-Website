@@ -158,12 +158,17 @@
 .chat-messages-list-sender-file > p {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-end;
+  max-width: 12rem;
+  max-height: 12rem;
+  min-height: 5rem;
+  min-width: 5rem;
+  overflow: hidden;
 }
 
 .chat-messages-list-sender-file-info {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   gap: 0.5rem;
   cursor: pointer;
@@ -171,12 +176,13 @@
   font-size: 0.8rem;
   background-color: var(--separator);
   padding: 0.5rem;
-
 }
 
 .chat-messages-list-sender-file-info > div {
   display: flex;
-  gap: 0 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .chat-messages-list-sender-file-info > div:hover {
@@ -185,22 +191,25 @@
 }
 
 .chat-messages-list-sender-file-name {
-  max-width: 17ch;
+  max-width: 18ch;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.chat-messages-list-sender-file-size {
+  text-align: right;
 }
 
 .chat-messages-list-sender-video,
 .chat-messages-list-sender-image,
 .chat-messages-list-sender-file-audio,
 .chat-messages-list-sender-file-document {
-  max-width: 15rem;
-  margin-top: 0.5rem;
+  max-width: 12rem;
 }
 
-.chat-messages-list-sender-file-document{
+.chat-messages-list-sender-file-document {
   background-color: var(--separator);
-  width: 10rem;
+  width: 12rem;
   height: 6rem;
   display: flex;
   justify-content: center;
@@ -208,7 +217,6 @@
   font-size: 3rem;
   border-radius: 0.25rem;
 }
-
 
 .chat-content > main > .chat-show-div > ul > li > div > .chat-message-text {
   line-height: 1.4;
