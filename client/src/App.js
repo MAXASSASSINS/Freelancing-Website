@@ -90,7 +90,10 @@ const App = () => {
         <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
           <SocketContext.Provider value={socket}>
             <Tooltip id="my-tooltip" place="bottom" />
-
+            {
+              windowWidth < 900 &&
+              <Sidebar></Sidebar>
+            }
             <Header></Header>
             <ToastContainer />
             <Routes>
