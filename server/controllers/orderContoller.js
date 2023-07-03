@@ -68,8 +68,8 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
   };
 
   const image = {
-    imgPublicId: gig.images[0].imgPublicId,
-    imgUrl: gig.images[0].imgUrl,
+    publicId: gig.images[0].publicId,
+    url: gig.images[0].url,
   };
 
   // res.send(requirements);

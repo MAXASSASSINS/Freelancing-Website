@@ -54,7 +54,7 @@ export const PlaceOrder = () => {
               <div className="flex gap-4 pb-4 border-b border-no_focus items-center">
                 <div>
                   <img
-                    src={gigDetail.images[0].imgUrl}
+                    src={gigDetail.images[0].url}
                     alt="gig showcase"
                     className="max-w-[120px] aspect-[16/10]  rounded-[4px]"
                   />

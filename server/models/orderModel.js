@@ -157,11 +157,11 @@ const orderSchema = new mongoose.Schema({
     paymentDate: Date,
   },
   image: {
-    imgPublicId: {
+    publicId: {
       type: String,
       required: [true, "Please provide public id for your image"],
     },
-    imgUrl: {
+    url: {
       type: String,
       required: [true, "Please provide image url"],
     },
