@@ -112,6 +112,10 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  requirementsSubmittedAt: {
+    type: Date,
+    default: Date.now,
+  },
   packageDetails: {
     packageTitle: {
       type: String,
