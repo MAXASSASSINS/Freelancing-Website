@@ -11,8 +11,12 @@ import {
   LOAD_USER_FAIL,
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
+  LOGOUT_USER_REQUEST,
+  LOGOUT_USER_SUCCESS,
+  LOGOUT_USER_FAIL,
 } from "../constants/userConstants";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const getUser = (id) => async (dispatch) => {
   try {
@@ -110,6 +114,24 @@ export const loadUser = () => async (dispatch) => {
       type: LOAD_USER_FAIL,
       payload: error.response.data,
       // payload: "failed user login",
+    });
+  }
+};
+
+export const logoutUser = () => async (dispatch) => {
+  try {
+    dispatch({ type: LOGOUT_USER_REQUEST });
+
+    const { data } = await axios.get("/logout");
+
+    dispatch({
+      type: LOGOUT_USER_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: LOGOUT_USER_FAIL,
+      payload: error.response.data.message,
     });
   }
 };
