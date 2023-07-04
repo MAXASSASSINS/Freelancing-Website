@@ -131,7 +131,7 @@ export const logoutUser = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: LOGOUT_USER_FAIL,
-      payload: error.response.data.message,
+      payload: error.response.data,
     });
   }
 };
