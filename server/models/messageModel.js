@@ -56,7 +56,7 @@ const messageSchema = new mongoose.Schema(
     //     default: "text",
     //     required: true,
     // },
-    order: {
+    orderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
     },
