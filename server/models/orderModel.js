@@ -35,7 +35,6 @@ const orderSchema = new mongoose.Schema({
     enum: ["Pending", "In Progress", "Completed", "Cancelled"],
     default: "Pending",
   },
-  deliveryDate: Date,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -186,6 +185,101 @@ const orderSchema = new mongoose.Schema({
   gigTitle: {
     type: String,
     required: [true, "Please provide the title of your gig"],
+  },
+  deliveries: [
+    {
+      message: {
+        type: String,
+      },
+      files: [
+        {
+          publicId: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+          },
+          type: {
+            type: String,
+            required: true,
+          },
+          size: {
+            type: Number,
+            required: true,
+          },
+          blurhash: {
+            type: String,
+          },
+          height: {
+            type: Number,
+          },
+          width: {
+            type: Number,
+          },
+        },
+      ],
+      deliveredAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+  revisions: [
+    {
+      message: {
+        type: String,
+      },
+      files: [
+        {
+          publicId: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+          },
+          type: {
+            type: String,
+            required: true,
+          },
+          size: {
+            type: Number,
+            required: true,
+          },
+          blurhash: {
+            type: String,
+          },
+          height: {
+            type: Number,
+          },
+          width: {
+            type: Number,
+          },
+        },
+      ],
+      requestedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+
+  ],
+  completedAt: {
+    type: Date,
+  },
+  cancelledAt: {
+    type: Date,
   },
 });
 
