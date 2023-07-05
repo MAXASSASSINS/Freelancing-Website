@@ -284,3 +284,17 @@ export const deleteAllMessages = catchAsyncErrors(async (req, res, next) => {
     message: "successfully deleted",
   });
 });
+
+export const getAllOrderMessages = catchAsyncErrors(async (req, res, next) => {
+  const orderId = req.params.id;
+
+  const messages = await Message.find({ orderId })
+    .populate("sender", "name avatar")
+    .populate("receiver", "name avatar")
+    .sort({ updatedAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    messages,
+  });
+});

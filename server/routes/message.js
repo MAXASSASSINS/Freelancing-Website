@@ -5,6 +5,7 @@ import {
   deleteAllMessages,
   getAllMessagesBetweenTwoUsers,
   getAllMessagesForCurrentUser,
+  getAllOrderMessages,
   getLastMessageBetweenTwoUser,
   getListOfAllInboxClients,
   sendFileUpload,
@@ -52,5 +53,7 @@ router.post("/send/SMS", sendSMS);
 router.post("/verify/number", verifyNumber);
 router.post("/verify/by/call", verifyNumber);
 router.post("/verify/code", verifyCode);
+
+router.get("/message/order/:id", isAuthenticated, getAllOrderMessages);
 
 export default router;
