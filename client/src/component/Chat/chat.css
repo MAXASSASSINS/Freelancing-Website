@@ -187,7 +187,7 @@
 
 .chat-messages-list-sender-file-info > div:hover {
   cursor: pointer;
-  color: var(--green);
+  color: var(--primary);
 }
 
 .chat-messages-list-sender-file-name {
@@ -335,7 +335,7 @@
 .chat-emoji:hover,
 .chat-attachment:hover {
   background-color: var(--off-white);
-  color: var(--green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -347,7 +347,7 @@
 .chat-content > footer > button {
   padding: 0.5rem 1rem;
   border: none;
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
   border-radius: 0.25rem;
 }

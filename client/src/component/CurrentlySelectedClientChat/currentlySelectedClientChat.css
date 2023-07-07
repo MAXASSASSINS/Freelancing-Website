@@ -219,7 +219,7 @@
 .chat-emoji:hover,
 .chat-attachment:hover {
   background-color: var(--off-white);
-  color: var(--green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -231,7 +231,7 @@
 .inbox-message-list-section-3 > footer > button {
   padding: 0.5rem 1rem;
   border: none;
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
   border-radius: 0.25rem;
 }

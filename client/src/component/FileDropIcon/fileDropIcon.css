@@ -63,6 +63,6 @@
 }
 .selected-file-wrapper .check-mark-icon {
   font-size: 3.5rem;
-  color: var(--green);
+  color: var(--primary);
   margin-bottom: 1rem;
 }/*# sourceMappingURL=FileDropicon.css.map */

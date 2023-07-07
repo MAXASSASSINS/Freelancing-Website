@@ -97,7 +97,7 @@
 .inbox-icon:hover,
 .profile-icon:hover,
 .my-list-icon:hover {
-  color: var(--green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -116,8 +116,8 @@
 
 .profile-icon-login:hover {
   color: white;
-  border-color: var(--green);
-  background-color: var(--green);
+  border-color: var(--primary);
+  background-color: var(--primary);
 }
 
 .orders-icon {
@@ -128,7 +128,7 @@
 
 .orders-icon:hover {
   cursor: pointer;
-  color: var(--green);
+  color: var(--primary);
 }
 
 @media screen and (min-width: 600px) {

@@ -122,7 +122,7 @@ export const Orders = () => {
                       </div>
 
                       <div
-                        className="border border-light_green  p-2 text-center rounded text-light_green hover:cursor-pointer md:border-none md:mr-4"
+                        className="border border-primary p-2 text-center rounded text-primary hover:cursor-pointer md:border-none md:mr-4"
                         onClick={() => handleViewClick(order)}
                       >
                         View

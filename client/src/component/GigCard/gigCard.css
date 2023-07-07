@@ -4,7 +4,7 @@
 }
 
 .gig-card:hover h2 {
-  color: var(--light-green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -32,7 +32,7 @@
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
-  background-color: var(--green);
+  background-color: var(--primary);
   /* margin-right: 0.5rem; */
   position: absolute;
   left: 1.5rem;

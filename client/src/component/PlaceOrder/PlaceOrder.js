@@ -69,7 +69,7 @@ export const PlaceOrder = () => {
                 <div className="mt-4">
                   <ul className="flex flex-col gap-2">
                     <li className="grid grid-cols-[30px_auto] items-center">
-                      <FiCheck className="text-green font-bold text-xl" />
+                      <FiCheck className="text-primary font-bold text-xl" />
                       <span>
                         {packageDetail.revisions}{" "}
                         {packageDetail.revisions === 1
@@ -79,7 +79,7 @@ export const PlaceOrder = () => {
                     </li>
                     <li className="grid grid-cols-[30px_auto] items-center">
                       {packageDetail.commercialUse ? (
-                        <FiCheck className="text-green font-bold text-xl" />
+                        <FiCheck className="text-primary font-bold text-xl" />
                       ) : (
                         <IoClose className="text-error font-bold text-xl" />
                       )}
@@ -87,7 +87,7 @@ export const PlaceOrder = () => {
                     </li>
                     <li className="grid grid-cols-[30px_auto] items-center">
                       {packageDetail.sourceFile ? (
-                        <FiCheck className="text-green font-bold text-xl" />
+                        <FiCheck className="text-primary font-bold text-xl" />
                       ) : (
                         <IoClose className="text-error text-xl" />
                       )}

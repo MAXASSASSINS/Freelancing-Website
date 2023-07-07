@@ -230,7 +230,7 @@ export const SubmitRequirements = () => {
       <div className="px-8 md:px-20 xl:px-48 py-8 text-dark_grey">
         <div className="items-start grid grid-cols-6 md:grid-cols-10 gap-4">
           <div className="order-1 col-span-6 bg-green_background_color flex gap-2 items-center p-2 md:col-span-10">
-            <div className="text-4xl sm:text-6xl md:text-7xl text-green">
+            <div className="text-4xl sm:text-6xl md:text-7xl text-primary">
               <HiOutlineCheckCircle />
             </div>
             <div>
@@ -358,7 +358,7 @@ export const SubmitRequirements = () => {
                   <div className="mt-3">
                     <ul className="flex flex-col gap-1 mb-3">
                       <li className="grid grid-cols-[30px_auto] items-center">
-                        <FiCheck className="text-green font-bold text-xl" />
+                        <FiCheck className="text-primary font-bold text-xl" />
                         <span>
                           {packageDetail.revisions}{" "}
                           {packageDetail.revisions === 1
@@ -368,7 +368,7 @@ export const SubmitRequirements = () => {
                       </li>
                       <li className="grid grid-cols-[30px_auto] items-center">
                         {packageDetail.commercialUse ? (
-                          <FiCheck className="text-green font-bold text-xl" />
+                          <FiCheck className="text-primary font-bold text-xl" />
                         ) : (
                           <IoClose className="text-error font-bold text-xl" />
                         )}
@@ -376,7 +376,7 @@ export const SubmitRequirements = () => {
                       </li>
                       <li className="grid grid-cols-[30px_auto] items-center">
                         {packageDetail.sourceFile ? (
-                          <FiCheck className="text-green font-bold text-xl" />
+                          <FiCheck className="text-primary font-bold text-xl" />
                         ) : (
                           <IoClose className="text-error text-xl" />
                         )}
@@ -439,7 +439,7 @@ export const SubmitRequirements = () => {
             <button
               disabled={!approval}
               onClick={handleStartOrder}
-              className={`p-4 text-white text-center rounded bg-green font-medium ${
+              className={`p-4 text-white text-center rounded bg-primary font-medium ${
                 approval
                   ? "hover:cursor-pointer hover:bg-green_hover"
                   : "opacity-50"

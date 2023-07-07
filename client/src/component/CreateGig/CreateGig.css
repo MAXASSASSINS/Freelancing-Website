@@ -44,7 +44,7 @@
   color: var(--no-focus);
 }
 .create-gig-main nav .step-completed {
-  color: var(--green);
+  color: var(--primary);
 }
 .create-gig-main nav .hover {
   cursor: pointer;
@@ -210,8 +210,8 @@
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .source input:checked,
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial input:checked {
-  background-color: var(--green);
-  border-color: var(--green);
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial {
   margin-bottom: 1rem;
@@ -466,10 +466,10 @@
 .create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.add-question {
   color: white;
   border: none;
-  background-color: var(--green);
+  background-color: var(--primary);
 }
 .create-gig-main .requirements .requirements-wrapper .add-question-wrapper .add-cancel-buttons-wrapper button.add-question:hover {
-  background-color: var(--green-hover);
+  background-color: var(--primary-hover);
 }
 .create-gig-main .requirements .requirements-wrapper .question-details-section {
   border: 1px solid var(--dark-separator);
@@ -640,7 +640,7 @@
 }
 .create-gig-main .publish .publish-wrapper .gig-publish-final-modal h3 {
   font-size: 2.5rem;
-  color: var(--green);
+  color: var(--primary);
 }
 .create-gig-main .publish .publish-wrapper .gig-publish-final-modal p {
   font-size: 1.25rem;
@@ -743,12 +743,12 @@
   transition: all 0.2s;
 }
 .create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .active {
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
 }
 .create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-wrapper .active:hover {
   cursor: pointer;
-  background-color: var(--green-hover);
+  background-color: var(--primary-hover);
 }
 .create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verification-code-not-receive-message {
   font-size: 0.8rem;
@@ -847,7 +847,7 @@
   cursor: pointer;
 }
 .create-gig-main .publish .publish-wrapper .verify-phone-number-modal-wrapper .verify-buttons .button-active {
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
   transition: all 0.3s;
 }
@@ -858,14 +858,14 @@
 }
 .create-gig-main .save-and-verify button {
   padding: 0.75rem 1rem;
-  background-color: var(--green);
+  background-color: var(--primary);
   border: none;
   color: white;
   border-radius: 3px;
 }
 .create-gig-main .save-and-verify button:hover {
   cursor: pointer;
-  background-color: var(--green-hover);
+  background-color: var(--primary-hover);
 }
 .create-gig-main .back-button {
   margin: 0 18%;
@@ -874,7 +874,7 @@
   padding-bottom: 1rem;
 }
 .create-gig-main .back-button button {
-  color: var(--green);
+  color: var(--primary);
   text-transform: capitalize;
   border: none;
 }

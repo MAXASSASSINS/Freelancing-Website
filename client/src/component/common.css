@@ -60,8 +60,8 @@ html {
 :root {
   --dark-grey: #222831;
   --light-grey: #393e46;
-  --green: #1dbf73;
-  --light-green: #1dbf73;
+  --primary: #1dbf73;
+  --primary: #1dbf73;
   --off-white: #eeeeee;
   --no-focus: #a6a5a5;
   --icons: #74767e;
@@ -73,7 +73,7 @@ html {
   --light-background: #d5d4d2;
   --link: #4a73e8;
   --warning: #f74040;
-  --green-hover: #19a463;
+  --primary-hover: #19a463;
 }
 
 ol,

@@ -294,7 +294,7 @@
 
 .inbox-messages-list-sender-file-info > div:hover {
   cursor: pointer;
-  color: var(--green);
+  color: var(--primary);
 }
 
 .inbox-messages-list-sender-file-name {
@@ -456,7 +456,7 @@
 .inbox-emoji:hover,
 .inbox-attachment:hover {
   background-color: var(--off-white);
-  color: var(--green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -468,7 +468,7 @@
 .inbox-message-list-section-3 > footer > button {
   padding: 0.5rem 1rem;
   border: none;
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
   border-radius: 0.25rem;
 }
@@ -627,7 +627,7 @@
   width: 15rem;
   height: 10px;
   max-width: 15rem;
-  background-color: var(--green);
+  background-color: var(--primary);
   transition: 0.3s ease-in-out;
 }
 

@@ -61,7 +61,7 @@
   padding: 0.6rem 15%;
   border: none;
   border-radius: 4px;
-  background-color: var(--green);
+  background-color: var(--primary);
   color: white;
   font-size: 0.9rem;
 }
@@ -112,8 +112,8 @@
 
 .user-detail-navigation-container > button:hover {
   cursor: pointer;
-  color: var(--green);
-  border-color: var(--green);
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 .user-detail-description {
@@ -204,7 +204,7 @@
 }
 
 .user-detail-active-gigs-container > div:hover {
-  color: var(--green);
+  color: var(--primary);
   cursor: pointer;
 }
 
@@ -222,7 +222,7 @@
 }
 
 .selected::after {
-  background-color: var(--green);
+  background-color: var(--primary);
   width: 100%;
 }
 
@@ -362,7 +362,7 @@
 
 .user-review-see-more {
   margin-top: 2rem;
-  color: var(--green);
+  color: var(--primary);
 }
 
 .user-review-see-more:hover {

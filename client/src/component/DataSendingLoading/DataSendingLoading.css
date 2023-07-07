@@ -34,7 +34,7 @@
   animation: rotation 1s linear infinite;
 }
 .data-sending-loading-overlay .finished-loading-wrapper span {
-  color: var(--green);
+  color: var(--primary);
 }
 @keyframes rotation {
   0% {

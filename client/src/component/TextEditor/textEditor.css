@@ -14,7 +14,7 @@
   font-weight: 600;
 }
 .textEditor-main .textEditor-toolbar button:hover {
-  color: var(--green);
+  color: var(--primary);
 }
 .textEditor-main .DraftEditor-root {
   border: 1px solid var(--no-focus);
