@@ -86,6 +86,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     packageDetails,
     image,
     gigTitle: gig.title,
+    deliveryDate: Date.now() + duration * 24 * 60 * 60 * 1000,
   });
 
   res.status(201).json({
@@ -147,6 +148,7 @@ export const updateOrderRequirements = catchAsyncErrors(
         requirementsSubmitted: true,
         requirementsSubmittedAt: Date.now(),
         status: "In Progress",
+        deliveryDate: Date.now() + order.duration * 24 * 60 * 60 * 1000,
       },
       {
         new: true,
