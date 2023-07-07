@@ -275,6 +275,10 @@ const orderSchema = new mongoose.Schema({
     },
 
   ],
+  deliveryDate: {
+    type: Date,
+    default: Date.now,
+  },
   completedAt: {
     type: Date,
   },
