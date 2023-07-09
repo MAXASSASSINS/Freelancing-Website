@@ -399,14 +399,14 @@ export const Activities = ({ orderDetail }) => {
                             onClick={() => downloadFile(file.url, file.name)}
                             className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem]"
                           >
-                            <div
-                              data-tooltip-id="my-tooltip"
-                              data-tooltip-content={file.name}
-                              data-tooltip-place="bottom"
-                              className="flex justify-between items-center hover:cursor-pointer hover:text-primary"
-                            >
+                            <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
                               <HiDownload />
-                              <div className="max-w-[12ch] whitespace-nowrap overflow-hidden">
+                              <div
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content={file.name}
+                                data-tooltip-place="bottom"
+                                className="max-w-[12ch] whitespace-nowrap overflow-hidden"
+                              >
                                 {file.name}
                               </div>
                             </div>
