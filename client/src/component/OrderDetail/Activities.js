@@ -405,7 +405,7 @@ export const Activities = ({ orderDetail }) => {
                                 data-tooltip-id="my-tooltip"
                                 data-tooltip-content={file.name}
                                 data-tooltip-place="bottom"
-                                className="max-w-[12ch] whitespace-nowrap overflow-hidden"
+                                className="max-w-[12ch] sm:max-w-[15ch] whitespace-nowrap overflow-hidden"
                               >
                                 {file.name}
                               </div>
