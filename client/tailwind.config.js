@@ -24,7 +24,7 @@ module.exports = {
         link: "#4a73e8",
         warning: "#f74040",
         error: "#f74040",
-        green_hover: "#19a463",
+        primary_hover: "#19a463",
         warning_background_color: "#ffeded",
         green_background_color: "#d5f6d7",
       },
