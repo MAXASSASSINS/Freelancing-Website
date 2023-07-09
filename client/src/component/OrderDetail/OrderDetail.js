@@ -7,6 +7,10 @@ import { colors, green_color } from "../../utility/color";
 import { windowContext } from "../../App";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { FiCheck } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
+import { AiFillQuestionCircle } from "react-icons/ai";
+import { OrderDetailSideModal } from "./OrderDetailSideModal";
 
 export const OrderDetail = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
@@ -16,7 +20,6 @@ export const OrderDetail = () => {
 
   useEffect(() => {
     getOrderDetail();
-    getOrderMessages();
   }, []);
 
   const getOrderDetail = async () => {
@@ -28,16 +31,6 @@ export const OrderDetail = () => {
       console.log(error);
     }
   };
-
-  const getOrderMessages = async () => {
-    try {
-      const {data} = await axios.get(`/message/order/${params.id}`);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -74,11 +67,11 @@ export const OrderDetail = () => {
   };
 
   return (
-    <div className="bg-separator text-sm">
-      <div className="p-6 sm:p-12 md:py-16">
+    <div className="bg-separator  min-[1450px]:flex justify-center">
+      <div className="p-6 sm:p-12 md:p-16 xl:p-20 min-[1450px]:max-w-[1400px]">
         <header className="mb-8">
           <nav>
-            <ul className="uppercase flex gap-6 border-b-2 border-b-dark_separator mb-4 text-no_focus tracking-wide sm:text-base sm:gap-8">
+            <ul className="text-sm uppercase flex gap-6 border-b-2 border-b-dark_separator mb-4 text-no_focus tracking-wide sm:text-base sm:gap-8">
               {tabsList.map((tab) => (
                 <li
                   key={tab.id}
@@ -92,12 +85,21 @@ export const OrderDetail = () => {
             </ul>
           </nav>
         </header>
-        <main className="bg-white shadow-md rounded">
-          {activeTab === 0 && <Activities />}
-          {activeTab === 1 && <Details />}
-          {activeTab === 2 && <Requirements />}
-          {activeTab === 3 && <Delivery />}
-        </main>
+
+        {orderDetail._id && (
+          <main className="rounded md:flex justify-between items-start gap-8 lg:gap-16">
+            <div className="flex-grow">
+              {activeTab === 0 && <Activities orderDetail={orderDetail} />}
+              {activeTab === 1 && <Details orderDetail={orderDetail} />}
+              {activeTab === 2 && <Requirements orderDetail={orderDetail} />}
+              {activeTab === 3 && <Delivery orderDetail={orderDetail} />}
+            </div>
+
+            <div>
+              <OrderDetailSideModal orderDetail={orderDetail} />
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );
