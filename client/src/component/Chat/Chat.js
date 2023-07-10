@@ -21,6 +21,7 @@ import { HiDownload } from "react-icons/hi";
 import { getFileSize } from "../../utility/util";
 import { IoDocumentOutline } from "react-icons/io5";
 import { downloadFile } from "../../utility/util";
+import { BsEmojiSmile } from "react-icons/bs";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const suggestionRef2 = useRef(null);
   const suggestionRef3 = useRef(null);
   const scrollToBottomDivRef = useRef(null);
+  const emojiPickerOpenerIconRef = useRef(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -422,7 +424,19 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     setMessage(message + emoji.native);
   };
 
-  console.log(allMessages);
+  // console.log(allMessages);
+
+  window.onclick = (event) => {
+    if (
+      event.target !== document.querySelector("em-emoji-picker") &&
+      !emojiPickerOpenerIconRef.current.contains(event.target)
+    ) {
+      console.log("clicked chat");
+      setShowEmojiPicker(false);
+    }
+  };
+
+  console.log(showEmojiPicker);
 
   return (
     <div
@@ -626,14 +640,18 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         <footer>
           <div>
             <div className="chat-emoji contact-seller-emoji-picker">
-              <div onClick={handleEmojiPickerHideOrShow}>
-                <i className="fa-regular fa-face-smile"></i>
+              <div
+                ref={emojiPickerOpenerIconRef}
+                onClick={handleEmojiPickerHideOrShow}
+              >
+                <div>
+                  <BsEmojiSmile />
+                </div>
               </div>
               {showEmojiPicker && (
                 <Picker
-                  onClickOutside={() => setShowEmojiPicker(false)}
                   onEmojiSelect={handleEmojiClick}
-                  perLine={8}
+                  perLine={windowWidth > 768 ? 8 : 7}
                   skinTonePosition="none"
                   previewPosition="none"
                   maxFrequentRows={2}
