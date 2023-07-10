@@ -473,11 +473,12 @@
   border-radius: 0.25rem;
 }
 
-.inbox-emoji-picker > em-emoji-picker {
+.inbox-emoji-picker-wrapper{
   position: absolute;
-  top: 80px;
-  left: 1rem;
+  bottom: 8rem;
 }
+
+
 
 @media screen and (min-width: 600px) {
   .inbox-messages-list-sender-file-info > div {
