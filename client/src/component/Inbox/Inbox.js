@@ -105,6 +105,7 @@ export const Inbox = () => {
   const [room, setRoom] = useState("");
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerOpenerIconRef = useRef(null);
 
   const [fileLoading, setFileLoading] = useState(false);
 
@@ -754,6 +755,16 @@ export const Inbox = () => {
     return name;
   };
 
+  // closing emoji picker when clicked outside
+  window.onclick = (event) => {
+    if (
+      event.target !== document.querySelector("em-emoji-picker") &&
+      !emojiPickerOpenerIconRef.current.contains(event.target)
+    ) {
+      setShowEmojiPicker(false);
+    }
+  };
+
   return (
     <div className="inbox-main">
       <div
@@ -1142,17 +1153,19 @@ export const Inbox = () => {
                   <footer>
                     <div>
                       <div
+                        ref={emojiPickerOpenerIconRef}
                         onClick={handleEmojiPickerHideOrShow}
                         className="inbox-emoji inbox-emoji-picker"
                       >
                         <div>
                           <BsEmojiSmile />
                         </div>
+                      </div>
+                      <div className="inbox-emoji-picker-wrapper">
                         {showEmojiPicker && (
                           <Picker
-                            // onClickOutside={() => { setShowEmojiPicker(false); }}
                             onEmojiSelect={handleEmojiClick}
-                            perLine={8}
+                            perLine={windowWidth > 768 ? 8 : 7}
                             skinTonePosition="none"
                             previewPosition="none"
                             maxFrequentRows={2}
