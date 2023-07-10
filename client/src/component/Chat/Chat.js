@@ -583,7 +583,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                                     {file.name}
                                   </div>
                                 </div>
-                                <p className="inbox-messages-list-sender-file-size">
+                                <p className="chat-messages-list-sender-file-size">
                                   ({getFileSize(file.size ? file.size : 0)})
                                 </p>
                               </div>
