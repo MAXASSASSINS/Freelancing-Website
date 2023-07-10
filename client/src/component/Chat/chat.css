@@ -145,21 +145,21 @@
 }
 
 .chat-messages-list-sender-files {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
-  align-items: flex-end;
-  justify-content: space-around;
-  /* justify-content: center; */
-  /* align-items: center; */
+  margin-top: 1rem;
+}
+
+.chat-messages-list-sender-file{
+  max-width: 10rem;
 }
 
 .chat-messages-list-sender-file > p {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  max-width: 12rem;
+  max-width: 10rem;
   max-height: 12rem;
   min-height: 5rem;
   min-width: 5rem;
@@ -191,7 +191,7 @@
 }
 
 .chat-messages-list-sender-file-name {
-  max-width: 18ch;
+  max-width: 15ch;
   white-space: nowrap;
   overflow: hidden;
 }
