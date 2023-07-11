@@ -84,6 +84,17 @@ const App = () => {
     return () => window.removeEventListener("resize", resizeWindow);
   }, [resizeWindow]);
 
+  // SHOW ONLINE STATUS OF THE USER
+  useEffect(() => {
+    socket.emit("online", isAuthenticated ? user._id.toString() : null);
+    const interval = setInterval(() => {
+      socket.emit("online", isAuthenticated ? user._id.toString() : null);
+    }, [10000]);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [user, isAuthenticated]);
+
   return (
     <>
       <windowContext.Provider value={{ windowWidth, windowHeight }}>
