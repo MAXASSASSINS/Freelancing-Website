@@ -34,15 +34,15 @@ export const Home = () => {
   }, [isAuthenticated, user]);
 
   // SHOW ONLINE STATUS OF THE USER
-  useEffect(() => {
-    socket.emit("online", isAuthenticated ? user._id.toString() : null);
-    const interval = setInterval(() => {
-      socket.emit("online", isAuthenticated ? user._id.toString() : null);
-    }, [10000]);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [user, isAuthenticated]);
+  // useEffect(() => {
+  //   socket.emit("online", isAuthenticated ? user._id.toString() : null);
+  //   const interval = setInterval(() => {
+  //     socket.emit("online", isAuthenticated ? user._id.toString() : null);
+  //   }, [10000]);
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [user, isAuthenticated]);
 
   // Tracking the online status of the gigs listed in the home page
   useEffect(() => {

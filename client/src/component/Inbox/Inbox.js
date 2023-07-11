@@ -116,18 +116,18 @@ export const Inbox = () => {
     setMessage(message + emoji.native);
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      socket.emit("online", user._id.toString());
-      const interval = setInterval(() => {
-        console.log("online");
-        socket.emit("online", user._id.toString());
-      }, [100000]);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     socket.emit("online", user._id.toString());
+  //     const interval = setInterval(() => {
+  //       console.log("online");
+  //       socket.emit("online", user._id.toString());
+  //     }, [100000]);
+  //     return () => {
+  //       clearInterval(interval);
+  //     };
+  //   }
+  // }, []);
 
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN
   useEffect(() => {
