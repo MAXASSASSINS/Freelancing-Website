@@ -16,7 +16,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please select a package", 400));
   }
 
-  console.log(gigId, packageNumber);
+  // console.log(gigId, packageNumber);
   const gig = await Gig.findById(gigId);
 
   if (!gig) {
@@ -164,7 +164,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       subject: "New Order",
       message: `You have a new order with order id ${order.orderId}`,
     };
-    console.log(options);
+    // console.log(options);
     await sendEmail(options);
 
     res.status(200).json({
@@ -179,7 +179,7 @@ export const updateOrderRequirements = catchAsyncErrors(
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
     "seller buyer",
-    "name email"
+    "name email avatar"
   );
 
   if (!order) {
@@ -199,7 +199,7 @@ export const myOrders = catchAsyncErrors(async (req, res, next) => {
   const orders = await Order.find({ user: req.user._id })
     .populate("gig", "title images")
     .populate("seller buyer", "name avatar");
-  console.log(orders);
+  // console.log(orders);
 
   res.status(200).json({
     success: true,
@@ -276,7 +276,7 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
       confirm: true,
     });
 
-    console.log(paymentIntent);
+    // console.log(paymentIntent);
 
     res.status(201).json({
       message: "Payment Intent created Sucessfully",
