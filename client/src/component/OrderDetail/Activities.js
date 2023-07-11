@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DateTag } from "../DateTag";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Moment from "react-moment";
 import { GrDocument } from "react-icons/gr";
 import { IoDocumentOutline } from "react-icons/io5";
@@ -16,8 +16,11 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { windowContext } from "../../App";
 import { HiDownload } from "react-icons/hi";
 import { getFileSize, downloadFile } from "../../utility/util";
+import { OrderMessageInput } from "./OrderMessageInput";
+import { SocketContext } from "../../context/socket/socket";
 
 export const Activities = ({ orderDetail }) => {
+  const navigate = useNavigate();
   const {
     user,
     isAuthenticated,
@@ -25,22 +28,157 @@ export const Activities = ({ orderDetail }) => {
     error: userError,
   } = useSelector((state) => state.user);
 
+  const [online, setOnline] = useState(false);
+  const [fileLoading, setFileLoading] = useState(false);
+
+  // console.log(fileLoading);
+
+  const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
 
   const params = useParams();
-  console.log(orderDetail);
+  // console.log(orderDetail);
   const [orderMessages, setOrderMessages] = useState([]);
 
-  console.log(orderMessages);
+  // console.log(orderMessages);
 
   useEffect(() => {
     getOrderMessages();
   }, []);
 
+  // online status of seller or buyer
+  useEffect(() => {
+    const userToCheck =
+      user._id.toString() === orderDetail.buyer._id.toString()
+        ? orderDetail.seller._id
+        : orderDetail.buyer._id;
+    socket.emit("is_online", userToCheck);
+  }, [orderDetail, socket]);
+
+  useEffect(() => {
+    socket.on("is_online_from_server", (data) => {
+      // console.log(data);
+      const onlineClientId = data.id.toString();
+      const userToCheck =
+        user._id.toString() === orderDetail.buyer._id.toString()
+          ? orderDetail.seller._id
+          : orderDetail.buyer._id;
+      if (onlineClientId === userToCheck) {
+        setOnline(data.online);
+      }
+    });
+
+    socket.on("online_from_server", (data) => {
+      const onlineClientId = data.toString();
+      const userToCheck =
+        user._id.toString() === orderDetail.buyer._id.toString()
+          ? orderDetail.seller._id
+          : orderDetail.buyer._id;
+      if (onlineClientId === userToCheck) {
+        setOnline(true);
+      }
+    });
+
+    socket.on("offline_from_server", (data) => {
+      console.log("offline from server", data);
+      const onlineClientId = data?.toString();
+
+      const userToCheck =
+        user._id.toString() === orderDetail.buyer._id.toString()
+          ? orderDetail.seller._id
+          : orderDetail.buyer._id;
+      if (onlineClientId.toString() === userToCheck.toString()) {
+        setOnline(false);
+      }
+    });
+
+    return () => {
+      socket.off("is_online_from_server");
+      socket.off("online_from_server");
+      socket.off("offline_from_server");
+    };
+  }, [orderDetail.id, socket]);
+
+  // console.log('orderMessages', orderMessages);
+  // CHECKING FOR RECEIVING MESSAGES
+  useEffect(() => {
+    socket.on("receive_message", async (data) => {
+      console.log("receive message is running");
+      console.log("data", data);
+
+      if (data.orderId !== params.id) {
+        return;
+      }
+
+      setOrderMessages((prev) => {
+        const date = new Date(data.createdAt)
+          .toLocaleDateString()
+          .substring(0, 10);
+        let found = false;
+        prev.forEach((message) => {
+          if (message.date === date) {
+            console.log("found date");
+            found = true;
+            message.dateWiseMessages.push(data);
+          }
+        });
+        if (!found) {
+          prev.push({
+            date,
+            dateWiseMessages: [data],
+          });
+        }
+        return [...prev];
+      });
+    });
+
+    return () => {
+      socket.off("receive_message");
+    };
+  }, [fileLoading, socket]);
+
+  // CHECKING FOR RECEIVING MESSAGES SELF
+  useEffect(() => {
+    socket.on(
+      "receive_message_self",
+      async (data) => {
+        console.log("self receive message is running");
+        console.log(data);
+        if (data.orderId !== params.id) {
+          return;
+        }
+        setOrderMessages((prev) => {
+          const date = new Date(data.createdAt)
+            .toLocaleDateString()
+            .substring(0, 10);
+          let found = false;
+          prev.forEach((message) => {
+            if (message.date === date) {
+              found = true;
+              message.dateWiseMessages.push(data);
+            }
+          });
+          if (!found) {
+            prev.push({
+              date,
+              dateWiseMessages: [data],
+            });
+          }
+          return [...prev];
+        });
+      },
+      [fileLoading, socket]
+    );
+
+    return () => {
+      socket.off("receive_message_self");
+    };
+  });
+
   const getOrderMessages = async () => {
     try {
       const { data } = await axios.get(`/message/order/${params.id}`);
-      // console.log(data);
+      console.log(data);
 
       const messages = buildDateWiseMessages(
         data.messages,
@@ -57,54 +195,10 @@ export const Activities = ({ orderDetail }) => {
   const buildDateWiseMessages = (messages, deliveries, revisions) => {
     let map = new Map();
 
-    // const defaultMessages = [
-    //   {
-    //     createdAt: orderDetail.createdAt,
-    //     heading: orderDetail.buyer._id === orderDetail.user._id ? "You" : orderDetail.buyer.name + " placed the order",
-    //     message: {
-    //       text: "Order placed",
-    //     },
-    //     files: [],
-    //   },
-    //   {
-    //     createdAt: orderDetail.requirementsSubmittedAt,
-    //     heading: orderDetail.buyer._id === orderDetail.user._id ? "You" : orderDetail.buyer.name + " sent the requirements",
-    //     message: {
-    //       text: "",
-    //     },
-    //     files:
-    //   }
-    // ];
-
-    // messages = [
-    //   {
-    //     _id: { $oid: "64983de8b2a96721eeae5b86" },
-    //     message: { text: "hi\n" },
-    //     files: [],
-    //     users: ["62ae0e440add07840c0dddbb", "62c1cb91cba98afc7f33f9a4"],
-    //     sender: { $oid: "62ae0e440add07840c0dddbb" },
-    //     receiver: { $oid: "62c1cb91cba98afc7f33f9a4" },
-    //     markAsRead: false,
-    //     createdAt: { $date: { $numberLong: "1687698920738" } },
-    //     updatedAt: { $date: { $numberLong: "1687698920738" } },
-    //     __v: { $numberInt: "0" },
-    //   },
-    //   {
-    //     _id: { $oid: "64983dedb2a96721eeae5b91" },
-    //     message: { text: "hello" },
-    //     files: [],
-    //     users: ["62ae0e440add07840c0dddbb", "62c1cb91cba98afc7f33f9a4"],
-    //     sender: { $oid: "62ae0e440add07840c0dddbb" },
-    //     receiver: { $oid: "62c1cb91cba98afc7f33f9a4" },
-    //     markAsRead: false,
-    //     createdAt: { $date: { $numberLong: "1687698925608" } },
-    //     updatedAt: { $date: { $numberLong: "1687698925608" } },
-    //     __v: { $numberInt: "0" },
-    //   },
-    // ];
-
     for (const message of messages) {
-      const date = new Date(message.createdAt).toISOString().substr(0, 10);
+      const date = new Date(message.createdAt)
+        .toLocaleDateString()
+        .substring(0, 10);
       if (map.has(date)) {
         map.get(date).push(message);
       } else {
@@ -150,10 +244,13 @@ export const Activities = ({ orderDetail }) => {
     return map;
   };
 
+  // console.log(orderMessages);
+
+
   return (
     <div className="bg-white relative py-8 text-sm sm:text-base">
       <section className="relative pl-6 flex flex-col gap-4 pb-12">
-        <DateTag left={"-1.5rem"} date={orderDetail.createdAt} />
+        <DateTag left={"-1.5rem"} date={new Date(orderDetail.createdAt).toLocaleDateString()} />
 
         <div className="flex items-center gap-4 font-semibold text-light_heading">
           <div className="p-2 aspect-square bg-purple-200 text-purple-600 rounded-full">
@@ -247,7 +344,7 @@ export const Activities = ({ orderDetail }) => {
         <section className="relative pl-6 flex flex-col gap-4 pb-12">
           <DateTag
             left={"-1.5rem"}
-            date={orderDetail.requirementsSubmittedAt}
+            date={new Date(orderDetail.requirementsSubmittedAt).toLocaleDateString()}
           />
           <div className="flex items-center gap-4 font-semibold text-light_heading">
             <div className="p-2 aspect-square bg-blue-200 text-blue-600  rounded-full">
@@ -353,7 +450,7 @@ export const Activities = ({ orderDetail }) => {
                       </span>
                       <span className="text-icons font-normal text-xs">
                         <Moment format="MMM DD, H:mm A">
-                          {orderDetail.createdAt}
+                          {message.createdAt}
                         </Moment>
                       </span>
                     </div>
@@ -422,6 +519,47 @@ export const Activities = ({ orderDetail }) => {
               ))}
           </section>
         ))}
+
+      <section className="relative pl-6 flex flex-col gap-4 pb-4">
+        <div className="flex items-center gap-4 text-light_heading">
+          <div className="aspect-square rounded-full">
+            <Avatar
+              avatarUrl={user.avatar.url}
+              userName={user.name}
+              width="1.75rem"
+              fontSize="1rem"
+              alt={user.name}
+            />
+          </div>
+          <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
+            <span className="mr-2 font-semibold text-primary">
+              Have something to share with &nbsp;
+              <Link
+                to={`/user/${orderDetail.seller._id}`}
+                className="text-primary hover:underline"
+              >
+                {orderDetail.seller.name}
+              </Link>
+              ?
+            </span>
+            <span className="flex items-center gap-2">
+              <div
+                className={`w-2 h-2 text-light_heading rounded-full ${
+                  online ? "bg-primary" : "bg-no_focus"
+                }`}
+              ></div>
+              <div>Seller is {online ? "Online" : "Offline"}</div>
+            </span>
+          </div>
+        </div>
+      </section>
+      <div className="px-6">
+        <OrderMessageInput
+          fileLoading={fileLoading}
+          setFileLoading={(val) => setFileLoading(val)}
+          orderDetail={orderDetail}
+        />
+      </div>
     </div>
   );
 };
