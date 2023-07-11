@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single("file");
 
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
-  const { from, to, message, files } = req.body;
+  const { from, to, message, files, orderId } = req.body;
   // console.log(req.body);
   // return;
 
@@ -44,7 +44,8 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
     sender: from,
     receiver: to,
     files,
-  });
+    orderId,
+  })
 
   res.status(201).json({
     success: true,
@@ -220,16 +221,20 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   if (file) {
     let result;
     if (fileType.includes("video")) {
-      result = await cloudinary.v2.uploader.upload_large(file.path, {
+      result = await cloudinary.v2.uploader.upload_large(
+        file.path,
+        {
           folder: "FreelanceMe",
           resource_type: "video",
           chunk_size: 6000000,
-        }, (err, result) => {
+        },
+        (err, result) => {
           if (err) {
             console.log(err);
           }
           console.log(result);
-        })
+        }
+      );
     } else {
       result = await cloudinary.v2.uploader
         .upload(file.path, {
@@ -290,8 +295,7 @@ export const getAllOrderMessages = catchAsyncErrors(async (req, res, next) => {
 
   const messages = await Message.find({ orderId })
     .populate("sender", "name avatar")
-    .populate("receiver", "name avatar")
-    .sort({ updatedAt: -1 });
+    .populate("receiver", "name avatar");
 
   res.status(200).json({
     success: true,
