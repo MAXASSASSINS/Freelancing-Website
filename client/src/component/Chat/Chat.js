@@ -55,7 +55,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     if (!isAuthenticated) {
       navigate("/login");
     } else {
-      socket.emit("new_user", user._id.toString());
       socket.emit("is_online", gigDetail.user._id.toString());
       console.log("new user emitted");
     }

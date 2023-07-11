@@ -26,13 +26,6 @@ export const Home = () => {
     dispatch(getAllGig());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      // console.log("app.js socket is running");
-      socket.emit("new_user", user._id.toString());
-    }
-  }, [isAuthenticated, user]);
-
   // SHOW ONLINE STATUS OF THE USER
   // useEffect(() => {
   //   socket.emit("online", isAuthenticated ? user._id.toString() : null);

@@ -132,7 +132,6 @@ export const Inbox = () => {
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN
   useEffect(() => {
     if (isAuthenticated) {
-      socket.emit("new_user", user._id.toString());
       getListOfAllInboxClients().then((res) => {
         dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: res });
       });
