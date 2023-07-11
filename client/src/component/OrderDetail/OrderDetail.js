@@ -6,17 +6,31 @@ import { Delivery } from "./Delivery";
 import { colors, green_color } from "../../utility/color";
 import { windowContext } from "../../App";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { OrderDetailSideModal } from "./OrderDetailSideModal";
+import { useSelector } from "react-redux";
+import { DeliveryTimer } from "./DeliveryTimer";
+import { socket } from "../../context/socket/socket";
 
 export const OrderDetail = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
   const params = useParams();
+  const navigate = useNavigate();
 
   const [orderDetail, setOrderDetail] = useState({});
+
+  const { user, isAuthenticated, loading, error } = useSelector(
+    (state) => state.user
+  );
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [user]);
 
   useEffect(() => {
     getOrderDetail();
@@ -87,7 +101,7 @@ export const OrderDetail = () => {
         </header>
 
         {orderDetail._id && (
-          <main className="rounded md:flex justify-between items-start gap-8 lg:gap-16">
+          <main className="rounded md:flex justify-between gap-8 lg:gap-16">
             <div className="flex-grow">
               {activeTab === 0 && <Activities orderDetail={orderDetail} />}
               {activeTab === 1 && <Details orderDetail={orderDetail} />}
@@ -95,7 +109,10 @@ export const OrderDetail = () => {
               {activeTab === 3 && <Delivery orderDetail={orderDetail} />}
             </div>
 
-            <div>
+            <div className="flex flex-col gap-8">
+              {{
+                /* orderDetail.seller._id  && orderDetail.status === 'In Progress' && */
+              } && <DeliveryTimer orderDetail={orderDetail} />}
               <OrderDetailSideModal orderDetail={orderDetail} />
             </div>
           </main>
