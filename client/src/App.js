@@ -84,6 +84,13 @@ const App = () => {
     return () => window.removeEventListener("resize", resizeWindow);
   }, [resizeWindow]);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      // console.log("app.js socket is running");
+      socket.emit("new_user", user._id.toString());
+    }
+  }, [isAuthenticated, user]);
+
   // SHOW ONLINE STATUS OF THE USER
   useEffect(() => {
     socket.emit("online", isAuthenticated ? user._id.toString() : null);
@@ -101,10 +108,7 @@ const App = () => {
         <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
           <SocketContext.Provider value={socket}>
             <Tooltip id="my-tooltip" place="bottom" />
-            {
-              windowWidth < 900 &&
-              <Sidebar></Sidebar>
-            }
+            {windowWidth < 900 && <Sidebar></Sidebar>}
             <Header></Header>
             <ToastContainer />
             <Routes>
