@@ -19,26 +19,26 @@ export const orderReducer = (state = { orders: null }, action) => {
     case ALL_ORDER_REQUEST:
     case UPDATE_ALL_ORDERS_REQUEST:
       return {
-        loading: true,
+        orderLoading: true,
         orders: null,
       };
     case ALL_ORDER_SUCCESS:
       return {
-        loading: false,
+        orderLoading: false,
         orders: action.payload.orders,
         ordersCount: action.payload.ordersCount,
       };
     case ALL_ORDER_FAIL:
     case UPDATE_ALL_ORDERS_FAIL:
       return {
-        loading: false,
+        orderLoading: false,
         error: action.payload,
       };
 
     case UPDATE_ALL_ORDERS_SUCCESS:
       return {
         ...state,
-        loading: false,
+        orderLoading: false,
         orders: action.payload,
       };
     case CLEAR_ERRORS:
@@ -58,17 +58,17 @@ export const userOrdersDetailsReducer = (
   switch (action.type) {
     case USER_ORDERS_REQUEST:
       return {
-        loading: true,
+        orderLoading: true,
         userOrders: null,
       };
     case USER_ORDERS_SUCCESS:
       return {
-        loading: false,
+        orderLoading: false,
         userOrders: action.payload.userOrders,
       };
     case USER_ORDERS_FAIL:
       return {
-        loading: false,
+        orderLoading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:
@@ -85,17 +85,17 @@ export const orderDetailReducer = (state = { orderDetail: null }, action) => {
   switch (action.type) {
     case ORDER_DETAIL_REQUEST:
       return {
-        loading: true,
+        orderLoading: true,
         orderDetail: null,
       };
     case ORDER_DETAIL_SUCCESS:
       return {
-        loading: false,
+        orderLoading: false,
         orderDetail: action.payload.order,
       };
     case ORDER_DETAIL_FAIL:
       return {
-        loading: false,
+        orderLoading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:

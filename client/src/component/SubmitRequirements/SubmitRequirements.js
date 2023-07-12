@@ -47,7 +47,7 @@ export const SubmitRequirements = () => {
     dispatch(getOrderDetail(params.orderId));
   }, [dispatch, params.orderId]);
 
-  const { orderDetail, loading: orderLoading } = useSelector(
+  const { orderDetail, orderLoading } = useSelector(
     (state) => state.orderDetail
   );
 
