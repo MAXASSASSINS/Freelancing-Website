@@ -101,7 +101,7 @@ export const OrderDetail = () => {
         </header>
 
         {orderDetail._id && (
-          <main className="rounded md:flex justify-between gap-8 lg:gap-16">
+          <main className="rounded flex flex-col-reverse min-[900px]:flex-row justify-between gap-8 lg:gap-16">
             <div className="flex-grow">
               {activeTab === 0 && <Activities orderDetail={orderDetail} />}
               {activeTab === 1 && <Details orderDetail={orderDetail} />}
@@ -112,7 +112,7 @@ export const OrderDetail = () => {
             <div className="flex flex-col gap-8">
               {{
                 /* orderDetail.seller._id  && orderDetail.status === 'In Progress' && */
-              } && <DeliveryTimer orderDetail={orderDetail} />}
+              } && windowWidth > 900 && <DeliveryTimer orderDetail={orderDetail} />}
               <OrderDetailSideModal orderDetail={orderDetail} />
             </div>
           </main>
