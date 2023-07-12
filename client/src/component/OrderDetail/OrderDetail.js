@@ -22,7 +22,7 @@ export const OrderDetail = () => {
 
   const [orderDetail, setOrderDetail] = useState({});
 
-  const { user, isAuthenticated, userLoading, error } = useSelector(
+  const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
 

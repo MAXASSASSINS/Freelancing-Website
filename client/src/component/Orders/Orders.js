@@ -18,7 +18,7 @@ export const Orders = () => {
     user,
     isAuthenticated,
     userLoading,
-    error: userError,
+    userError,
   } = useSelector((state) => state.user);
 
   useEffect(() => {

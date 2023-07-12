@@ -18,7 +18,7 @@ export const Home = () => {
 
   const socket = useContext(SocketContext);
 
-  let { gigLoading, error, gigs, gigsCount } = useSelector((state) => state.gigs);
+  let { gigLoading, userError, gigs, gigsCount } = useSelector((state) => state.gigs);
 
   const { user, isAuthenticated } = useSelector((state) => state.user);
 

@@ -25,7 +25,7 @@ import {
 //         case USER_FAIL:
 //             return {
 //                 userLoading: false,
-//                 error: action.payload
+//                 userError: action.payload
 //             };
 //         default:
 //             return state;
@@ -41,7 +41,7 @@ export const gigUserReducer = (state = null, action) => {
     case GIG_USER_FAIL:
       return {
         userLoading: false,
-        error: action.payload,
+        userError: action.payload,
       };
     default:
       return state;
@@ -52,7 +52,7 @@ const LOGIN_USER_INITIAL_STATE = {
   isAuthenticated: false,
   userLoading: false,
   user: JSON.parse(localStorage.getItem("loggedInUser")) || null,
-  error: null,
+  userError: null,
 };
 
 export const loginUserReducer = (state = LOGIN_USER_INITIAL_STATE, action) => {
@@ -62,21 +62,21 @@ export const loginUserReducer = (state = LOGIN_USER_INITIAL_STATE, action) => {
         user: null,
         userLoading: true,
         isAuthenticated: false,
-        error: null,
+        userError: null,
       };
     case LOGIN_USER_SUCCESS:
       return {
         user: action.payload,
         userLoading: false,
         isAuthenticated: true,
-        error: null,
+        userError: null,
       };
     case LOGIN_USER_FAIL:
       return {
         userLoading: false,
         isAuthenticated: false,
         user: null,
-        error: action.payload,
+        userError: action.payload,
       };
     default:
       return state;
@@ -106,7 +106,7 @@ export const userReducer = (state = { user: {} }, action) => {
         userLoading: false,
         isAuthenticated: false,
         user: null,
-        error: action.payload,
+        userError: action.payload,
       };
 
     case LOAD_USER_FAIL:
@@ -114,7 +114,7 @@ export const userReducer = (state = { user: {} }, action) => {
         userLoading: false,
         isAuthenticated: false,
         user: null,
-        error: action.payload,
+        userError: action.payload,
       };
 
     case LOGOUT_USER_REQUEST:
@@ -134,7 +134,7 @@ export const userReducer = (state = { user: {} }, action) => {
       return {
         ...state,
         userLoading: false,
-        error: action.payload,
+        userError: action.payload,
       };
 
     default: {

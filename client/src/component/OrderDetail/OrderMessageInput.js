@@ -18,7 +18,7 @@ export const OrderMessageInput = ({
     user,
     isAuthenticated,
     userLoading,
-    error,
+    userError,
   } = useSelector((state) => state.user);
 
   const socket = useContext(SocketContext);
