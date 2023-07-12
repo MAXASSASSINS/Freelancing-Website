@@ -64,7 +64,7 @@ export const CreateGig = () => {
   if (!gigId) navigate("/404");
 
   const { windowWidth, windowHeight } = useContext(windowContext);
-  const { user, isAuthenticated, loading, error } = useSelector(
+  const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
   );
 

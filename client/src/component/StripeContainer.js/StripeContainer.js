@@ -22,7 +22,7 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   const [cardNumberError, setCardNumberError] = useState(false);
   const [cardExpiryError, setCardExpiryError] = useState(false);

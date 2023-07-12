@@ -11,7 +11,7 @@ import { logoutUser } from "../../actions/userAction";
 export const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, isAuthenticated, error } = useSelector(
+  const { user, userLoading, isAuthenticated, error } = useSelector(
     (state) => state.user
   );
   const [sidebar, setSidebar] = useState(false);

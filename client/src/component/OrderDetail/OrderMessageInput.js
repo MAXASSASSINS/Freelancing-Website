@@ -6,11 +6,20 @@ import { TextArea } from "../TextArea/TextArea";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { SocketContext } from "../../context/socket/socket";
+import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 
-export const OrderMessageInput = ({ orderDetail, fileLoading, setFileLoading }) => {
-  const { user, isAuthenticated, loading, error } = useSelector(
-    (state) => state.user
-  );
+export const OrderMessageInput = ({
+  orderDetail,
+  fileLoading,
+  setFileLoading,
+}) => {
+
+  const {
+    user,
+    isAuthenticated,
+    userLoading,
+    error,
+  } = useSelector((state) => state.user);
 
   const socket = useContext(SocketContext);
 
@@ -25,8 +34,6 @@ export const OrderMessageInput = ({ orderDetail, fileLoading, setFileLoading }) 
   const [selectedFiles, setSelectedFiles] = useState(null);
   // const [fileLoading, setFileLoading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
- 
 
   const handleEmojiClick = (emoji) => {
     console.log(emoji);
@@ -127,7 +134,10 @@ export const OrderMessageInput = ({ orderDetail, fileLoading, setFileLoading }) 
       const messageData = {
         message,
         from: user._id,
-        to: user._id === orderDetail.buyer._id ? orderDetail.seller._id : orderDetail.buyer._id,
+        to:
+          user._id === orderDetail.buyer._id
+            ? orderDetail.seller._id
+            : orderDetail.buyer._id,
         files,
         orderId: orderDetail._id,
       };
@@ -158,7 +168,10 @@ export const OrderMessageInput = ({ orderDetail, fileLoading, setFileLoading }) 
 
   // console.log(orderDetail);
   const handleSendMessageSocket = async (message, files) => {
-    const rec = user._id === orderDetail.buyer._id ? orderDetail.seller : orderDetail.buyer;
+    const rec =
+      user._id === orderDetail.buyer._id
+        ? orderDetail.seller
+        : orderDetail.buyer;
     console.log(rec);
     const sender = {
       avatar: user.avatar,
@@ -179,7 +192,7 @@ export const OrderMessageInput = ({ orderDetail, fileLoading, setFileLoading }) 
       receiver,
     };
 
-    console.log('messageData', messageData);
+    console.log("messageData", messageData);
     await socket.emit("send_message", messageData);
     // console.log(allClientUserLastMessage);
   };

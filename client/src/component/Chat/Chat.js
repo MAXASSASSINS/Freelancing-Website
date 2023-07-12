@@ -30,7 +30,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const socket = useContext(SocketContext);
   const { windowWidth, windowHeight } = useContext(windowContext);
 
-  const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   new Picker({ data });
   // All States

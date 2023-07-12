@@ -24,7 +24,7 @@ export const Activities = ({ orderDetail }) => {
   const {
     user,
     isAuthenticated,
-    loading: userLoading,
+    userLoading,
     error: userError,
   } = useSelector((state) => state.user);
 

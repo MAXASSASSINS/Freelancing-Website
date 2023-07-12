@@ -9,7 +9,7 @@ export const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();

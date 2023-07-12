@@ -16,7 +16,7 @@ import { Avatar } from "../Avatar/Avatar";
 export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   const show = () => {
     dispatch(showDimBackground());

@@ -24,7 +24,7 @@ import {
 //             return action.payload.user;
 //         case USER_FAIL:
 //             return {
-//                 loading: false,
+//                 userLoading: false,
 //                 error: action.payload
 //             };
 //         default:
@@ -40,7 +40,7 @@ export const gigUserReducer = (state = null, action) => {
       return action.payload.user;
     case GIG_USER_FAIL:
       return {
-        loading: false,
+        userLoading: false,
         error: action.payload,
       };
     default:
@@ -50,7 +50,7 @@ export const gigUserReducer = (state = null, action) => {
 
 const LOGIN_USER_INITIAL_STATE = {
   isAuthenticated: false,
-  loading: false,
+  userLoading: false,
   user: JSON.parse(localStorage.getItem("loggedInUser")) || null,
   error: null,
 };
@@ -60,20 +60,20 @@ export const loginUserReducer = (state = LOGIN_USER_INITIAL_STATE, action) => {
     case LOGIN_USER_REQUEST:
       return {
         user: null,
-        loading: true,
+        userLoading: true,
         isAuthenticated: false,
         error: null,
       };
     case LOGIN_USER_SUCCESS:
       return {
         user: action.payload,
-        loading: false,
+        userLoading: false,
         isAuthenticated: true,
         error: null,
       };
     case LOGIN_USER_FAIL:
       return {
-        loading: false,
+        userLoading: false,
         isAuthenticated: false,
         user: null,
         error: action.payload,
@@ -88,14 +88,14 @@ export const userReducer = (state = { user: {} }, action) => {
     case USER_REQUEST:
     case LOAD_USER_REQUEST:
       return {
-        loading: true,
+        userLoading: true,
         isAuthenticated: false,
       };
     case USER_SUCCESS:
     case LOAD_USER_SUCCESS:
       return {
         ...state,
-        loading: false,
+        userLoading: false,
         isAuthenticated: true,
         user: action.payload,
       };
@@ -103,7 +103,7 @@ export const userReducer = (state = { user: {} }, action) => {
     case USER_FAIL:
       return {
         ...state,
-        loading: false,
+        userLoading: false,
         isAuthenticated: false,
         user: null,
         error: action.payload,
@@ -111,7 +111,7 @@ export const userReducer = (state = { user: {} }, action) => {
 
     case LOAD_USER_FAIL:
       return {
-        loading: false,
+        userLoading: false,
         isAuthenticated: false,
         user: null,
         error: action.payload,
@@ -120,12 +120,12 @@ export const userReducer = (state = { user: {} }, action) => {
     case LOGOUT_USER_REQUEST:
       return {
         ...state,
-        loading: true,
+        userLoading: true,
       };
 
     case LOGOUT_USER_SUCCESS:
       return {
-        loading: false,
+        userLoading: false,
         isAuthenticated: false,
         user: {},
       };
@@ -133,7 +133,7 @@ export const userReducer = (state = { user: {} }, action) => {
     case LOGOUT_USER_FAIL:
       return {
         ...state,
-        loading: false,
+        userLoading: false,
         error: action.payload,
       };
 

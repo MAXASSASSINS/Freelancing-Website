@@ -24,7 +24,7 @@ export const UserDetail = () => {
   const [reviewCount, setReviewCount] = useState(5);
   const [userReviewCount, setUserReviewCount] = useState(null);
 
-  const { user, isAuthenticated, loading, error } = useSelector(
+  const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
   );
 

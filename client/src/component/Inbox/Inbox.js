@@ -60,7 +60,7 @@ export const Inbox = () => {
 
   const navigate = useNavigate();
 
-  const { user, isAuthenticated, loading, error } = useSelector(
+  const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
   );
 

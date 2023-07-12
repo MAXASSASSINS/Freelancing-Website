@@ -51,7 +51,7 @@ export const GigDetail = () => {
   }, [dispatch, params.id]);
 
   const { gigDetail } = useSelector((state) => state.gigDetail);
-  const { user, loading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
 
   useEffect(() => {
     // console.log(gigDetail);
