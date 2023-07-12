@@ -32,7 +32,7 @@ export const gigReducer = (state = { gigs: null }, action) => {
     case UPDATE_ALL_GIGS_FAIL:
       return {
         gigLoading: false,
-        error: action.payload,
+        gigError: action.payload,
       };
 
     case UPDATE_ALL_GIGS_SUCCESS:
@@ -44,7 +44,7 @@ export const gigReducer = (state = { gigs: null }, action) => {
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        gigError: null,
       };
     default:
       return state;
@@ -66,12 +66,12 @@ export const userGigsDetailsReducer = (state = { userGigs: [] }, action) => {
     case USER_GIGS_FAIL:
       return {
         gigLoading: false,
-        error: action.payload,
+        gigError: action.payload,
       };
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        gigError: null,
       };
     default:
       return state;
@@ -93,12 +93,12 @@ export const gigDetailReducer = (state = { gigDetail: null }, action) => {
     case GIG_DETAIL_FAIL:
       return {
         gigLoading: false,
-        error: action.payload,
+        gigError: action.payload,
       };
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        gigError: null,
       };
     default:
       return state;
