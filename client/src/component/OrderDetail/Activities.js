@@ -480,7 +480,7 @@ export const Activities = ({ orderDetail }) => {
                       <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
                         {message.files?.map((file, index) => (
                           <div key={index} className="">
-                            <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem]">
+                            <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
                               {file.type.includes("video") ? (
                                 <a
                                   href={file.url}
@@ -505,13 +505,13 @@ export const Activities = ({ orderDetail }) => {
                                 </a>
                               ) : file.type.includes("audio") ? (
                                 <audio
-                                  className="max-w-[10rem]"
+                                  className="max-w-[10rem] min-[1000px]:max-w-[12rem]"
                                   preload="none"
                                   controls
                                   src={file.url}
                                 />
                               ) : (
-                                <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded">
+                                <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded min-[1000px]:w-48 min-[1000px]:h-28">
                                   <div>
                                     <IoDocumentOutline />
                                   </div>
@@ -520,7 +520,7 @@ export const Activities = ({ orderDetail }) => {
                             </p>
                             <div
                               onClick={() => downloadFile(file.url, file.name)}
-                              className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem]"
+                              className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]"
                             >
                               <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
                                 <HiDownload />
