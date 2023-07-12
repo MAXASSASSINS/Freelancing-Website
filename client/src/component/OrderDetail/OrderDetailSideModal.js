@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export const OrderDetailSideModal = ({ orderDetail }) => {
   return (
-    <div className="hidden md:block text-dark_grey bg-white min-w-[14rem] max-w-[20rem] border-1 border-dark_separator order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
+    <div className="hidden min-[900px]:block text-dark_grey bg-white min-w-[14rem] max-w-[20rem] border-1 border-dark_separator order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
       <img className="aspect-[16/10]" src={orderDetail.image.url}></img>
       <div className="p-3">
         <div className="border-b-1 border-b-dark_separator">
