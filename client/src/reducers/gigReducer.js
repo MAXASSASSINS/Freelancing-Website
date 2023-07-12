@@ -19,26 +19,26 @@ export const gigReducer = (state = { gigs: null }, action) => {
     case ALL_GIG_REQUEST:
     case UPDATE_ALL_GIGS_REQUEST:
       return {
-        loading: true,
+        gigLoading: true,
         gigs: null,
       };
     case ALL_GIG_SUCCESS:
       return {
-        loading: false,
+        gigLoading: false,
         gigs: action.payload.gigs,
         gigsCount: action.payload.gigsCount,
       };
     case ALL_GIG_FAIL:
     case UPDATE_ALL_GIGS_FAIL:
       return {
-        loading: false,
+        gigLoading: false,
         error: action.payload,
       };
 
     case UPDATE_ALL_GIGS_SUCCESS:
       return {
         ...state,
-        loading: false,
+        gigLoading: false,
         gigs: action.payload,
       };
     case CLEAR_ERRORS:
@@ -55,17 +55,17 @@ export const userGigsDetailsReducer = (state = { userGigs: [] }, action) => {
   switch (action.type) {
     case USER_GIGS_REQUEST:
       return {
-        loading: true,
+        gigLoading: true,
         userGigs: null,
       };
     case USER_GIGS_SUCCESS:
       return {
-        loading: false,
+        gigLoading: false,
         userGigs: action.payload.userGigs,
       };
     case USER_GIGS_FAIL:
       return {
-        loading: false,
+        gigLoading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:
@@ -82,17 +82,17 @@ export const gigDetailReducer = (state = { gigDetail: null }, action) => {
   switch (action.type) {
     case GIG_DETAIL_REQUEST:
       return {
-        loading: true,
+        gigLoading: true,
         gigDetail: null,
       };
     case GIG_DETAIL_SUCCESS:
       return {
-        loading: false,
+        gigLoading: false,
         gigDetail: action.payload.gig,
       };
     case GIG_DETAIL_FAIL:
       return {
-        loading: false,
+        gigLoading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:
