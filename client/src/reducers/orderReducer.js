@@ -32,7 +32,7 @@ export const orderReducer = (state = { orders: null }, action) => {
     case UPDATE_ALL_ORDERS_FAIL:
       return {
         orderLoading: false,
-        error: action.payload,
+        orderError: action.payload,
       };
 
     case UPDATE_ALL_ORDERS_SUCCESS:
@@ -44,7 +44,7 @@ export const orderReducer = (state = { orders: null }, action) => {
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        orderError: null,
       };
     default:
       return state;
@@ -69,12 +69,12 @@ export const userOrdersDetailsReducer = (
     case USER_ORDERS_FAIL:
       return {
         orderLoading: false,
-        error: action.payload,
+        orderError: action.payload,
       };
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        orderError: null,
       };
     default:
       return state;
@@ -96,12 +96,12 @@ export const orderDetailReducer = (state = { orderDetail: null }, action) => {
     case ORDER_DETAIL_FAIL:
       return {
         orderLoading: false,
-        error: action.payload,
+        orderError: action.payload,
       };
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null,
+        orderError: null,
       };
     default:
       return state;
