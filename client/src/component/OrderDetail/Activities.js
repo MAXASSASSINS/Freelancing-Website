@@ -18,15 +18,14 @@ import { HiDownload } from "react-icons/hi";
 import { getFileSize, downloadFile } from "../../utility/util";
 import { OrderMessageInput } from "./OrderMessageInput";
 import { SocketContext } from "../../context/socket/socket";
+import { DeliveryTimer } from "./DeliveryTimer";
+import { orderReducer } from "../../reducers/orderReducer";
 
 export const Activities = ({ orderDetail }) => {
   const navigate = useNavigate();
-  const {
-    user,
-    isAuthenticated,
-    userLoading,
-    userError,
-  } = useSelector((state) => state.user);
+  const { user, isAuthenticated, userLoading, userError } = useSelector(
+    (state) => state.user
+  );
 
   const [online, setOnline] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
@@ -246,44 +245,124 @@ export const Activities = ({ orderDetail }) => {
 
   // console.log(orderMessages);
 
-
   return (
-    <div className="bg-white relative py-8 text-sm sm:text-base">
-      <section className="relative pl-6 flex flex-col gap-4 pb-12">
-        <DateTag left={"-1.5rem"} date={new Date(orderDetail.createdAt).toLocaleDateString()} />
+    <>
+      <div className="mb-8 min-[900px]:hidden">
+        <DeliveryTimer orderDetail={orderDetail} />
+      </div>
+      <div className="bg-white relative py-8 text-sm sm:text-base">
+        <DataSendingLoading
+          show={fileLoading}
+          loadingText={"sending message"}
+        />
 
-        <div className="flex items-center gap-4 font-semibold text-light_heading">
-          <div className="p-2 aspect-square bg-purple-200 text-purple-600 rounded-full">
-            <IoDocumentOutline />
-          </div>
-          <div className="[&>*]:leading-5 py-2 pr-6 border-b flex-grow border-b-dark_separator">
-            <span className="mr-2">
-              {orderDetail.buyer._id === user._id ? (
-                "You "
-              ) : (
-                <Link
-                  to={`/user/${orderDetail.buyer._id}`}
-                  className="text-primary hover:underline"
-                >
-                  {orderDetail.buyer.name}
-                </Link>
-              )}
-              placed the order
-            </span>
-            <span className="text-icons font-normal text-xs">
-              <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
-            </span>
-          </div>
-        </div>
+        <section className="relative pl-6 flex flex-col gap-4 pb-12">
+          <DateTag
+            left={"-1.5rem"}
+            date={new Date(orderDetail.createdAt).toLocaleDateString()}
+          />
 
-        {Date.now(orderDetail.requirementsSubmittedAt).toString() ===
+          <div className="flex items-center gap-4 font-semibold text-light_heading">
+            <div className="p-2 aspect-square bg-purple-200 text-purple-600 rounded-full">
+              <IoDocumentOutline />
+            </div>
+            <div className="[&>*]:leading-5 py-2 pr-6 border-b flex-grow border-b-dark_separator">
+              <span className="mr-2">
+                {orderDetail.buyer._id === user._id ? (
+                  "You "
+                ) : (
+                  <Link
+                    to={`/user/${orderDetail.buyer._id}`}
+                    className="text-primary hover:underline"
+                  >
+                    {orderDetail.buyer.name}
+                  </Link>
+                )}
+                placed the order
+              </span>
+              <span className="text-icons font-normal text-xs">
+                <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
+              </span>
+            </div>
+          </div>
+
+          {Date.now(orderDetail.requirementsSubmittedAt).toString() ===
+            Date.now(orderDetail.createdAt).toString() && (
+            <>
+              <div className="flex items-center gap-4 font-semibold text-light_heading">
+                <div className="p-2 aspect-square bg-blue-200 text-blue-600  rounded-full">
+                  <GoPencil />
+                </div>
+                <div className="[&>*]:leading-5 pr-6 flex-grow py-2 border-b border-b-dark_separator">
+                  <span className="mr-2">
+                    {orderDetail.buyer._id === user._id ? (
+                      "You "
+                    ) : (
+                      <Link
+                        to={`/user/${orderDetail.buyer._id}`}
+                        className="text-primary hover:underline"
+                      >
+                        {orderDetail.buyer.name}
+                      </Link>
+                    )}
+                    sent the requirements
+                  </span>
+                  <span className="text-icons font-normal text-xs">
+                    <Moment format="MMM DD, H:mm A">
+                      {orderDetail.createdAt}
+                    </Moment>
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 font-semibold text-light_heading">
+                <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
+                  <RiRocket2Line />
+                </div>
+                <div className="flex-grow pr-6 [&>*]:leading-5 py-2 border-b border-b-dark_separator">
+                  <span className="mr-2">The order started</span>
+                  <span className="text-icons font-normal text-xs">
+                    <Moment format="MMM DD, H:mm A">
+                      {orderDetail.createdAt}
+                    </Moment>
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 font-semibold text-light_heading">
+                <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
+                  <BiTimeFive />
+                </div>
+                <div className="flex-grow pr-6 [&>*]:leading-5 py-2 border-b border-b-dark_separator">
+                  <span className="mr-2">
+                    The delivery date was updated to &nbsp;
+                    <Moment format="MMM DD">{orderDetail.deliveryDate}</Moment>
+                  </span>
+                  <span className="text-icons font-normal text-xs">
+                    <Moment format="MMM DD, H:mm A">
+                      {orderDetail.createdAt}
+                    </Moment>
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+
+        {Date.now(orderDetail.requirementsSubmittedAt).toString() !==
           Date.now(orderDetail.createdAt).toString() && (
-          <>
+          <section className="relative pl-6 flex flex-col gap-4 pb-12">
+            <DateTag
+              left={"-1.5rem"}
+              date={new Date(
+                orderDetail.requirementsSubmittedAt
+              ).toLocaleDateString()}
+            />
             <div className="flex items-center gap-4 font-semibold text-light_heading">
               <div className="p-2 aspect-square bg-blue-200 text-blue-600  rounded-full">
                 <GoPencil />
               </div>
-              <div className="[&>*]:leading-5 pr-6 flex-grow py-2 border-b border-b-dark_separator">
+              <div className="pr-6 [&>*]:leading-5 py-2 border-b flex-grow border-b-dark_separator">
                 <span className="mr-2">
                   {orderDetail.buyer._id === user._id ? (
                     "You "
@@ -309,7 +388,7 @@ export const Activities = ({ orderDetail }) => {
               <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
                 <RiRocket2Line />
               </div>
-              <div className="flex-grow pr-6 [&>*]:leading-5 py-2 border-b border-b-dark_separator">
+              <div className="pr-6 [&>*]:leading-5 py-2 border-b flex-grow border-b-dark_separator">
                 <span className="mr-2">The order started</span>
                 <span className="text-icons font-normal text-xs">
                   <Moment format="MMM DD, H:mm A">
@@ -323,7 +402,7 @@ export const Activities = ({ orderDetail }) => {
               <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
                 <BiTimeFive />
               </div>
-              <div className="flex-grow pr-6 [&>*]:leading-5 py-2 border-b border-b-dark_separator">
+              <div className="pr-6 [&>*]:leading-5 flex-grow py-2 border-b border-b-dark_separator">
                 <span className="mr-2">
                   The delivery date was updated to &nbsp;
                   <Moment format="MMM DD">{orderDetail.deliveryDate}</Moment>
@@ -335,231 +414,179 @@ export const Activities = ({ orderDetail }) => {
                 </span>
               </div>
             </div>
-          </>
+          </section>
         )}
-      </section>
 
-      {Date.now(orderDetail.requirementsSubmittedAt).toString() !==
-        Date.now(orderDetail.createdAt).toString() && (
-        <section className="relative pl-6 flex flex-col gap-4 pb-12">
-          <DateTag
-            left={"-1.5rem"}
-            date={new Date(orderDetail.requirementsSubmittedAt).toLocaleDateString()}
-          />
-          <div className="flex items-center gap-4 font-semibold text-light_heading">
-            <div className="p-2 aspect-square bg-blue-200 text-blue-600  rounded-full">
-              <GoPencil />
-            </div>
-            <div className="pr-6 [&>*]:leading-5 py-2 border-b flex-grow border-b-dark_separator">
-              <span className="mr-2">
-                {orderDetail.buyer._id === user._id ? (
-                  "You "
-                ) : (
-                  <Link
-                    to={`/user/${orderDetail.buyer._id}`}
-                    className="text-primary hover:underline"
-                  >
-                    {orderDetail.buyer.name}
-                  </Link>
-                )}
-                sent the requirements
-              </span>
-              <span className="text-icons font-normal text-xs">
-                <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
-              </span>
-            </div>
-          </div>
+        {orderMessages.length > 0 &&
+          orderMessages.map((obj, index) => (
+            <section
+              key={index}
+              className="relative pl-6 flex flex-col gap-4 pb-16"
+            >
+              <DateTag left={"-1.5rem"} date={obj.date} />
 
-          <div className="flex items-center gap-4 font-semibold text-light_heading">
-            <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
-              <RiRocket2Line />
-            </div>
-            <div className="pr-6 [&>*]:leading-5 py-2 border-b flex-grow border-b-dark_separator">
-              <span className="mr-2">The order started</span>
-              <span className="text-icons font-normal text-xs">
-                <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
-              </span>
-            </div>
-          </div>
+              {obj.dateWiseMessages.length > 0 &&
+                obj.dateWiseMessages.map((message) => (
+                  <div className="">
+                    <div
+                      key={message._id}
+                      className="flex items-center gap-4 font-semibold text-light_heading"
+                    >
+                      <div className="aspect-square rounded-full">
+                        <Avatar
+                          avatarUrl={message.sender.avatar.url}
+                          userName={message.sender.name}
+                          width="1.75rem"
+                          fontSize="1rem"
+                          alt={message.sender.name}
+                        />
+                      </div>
+                      <div className="[&>*]:leading-5 flex-grow pr-6 py-2 border-b border-b-dark_separator">
+                        <span className="mr-2">
+                          {message.sender._id === user._id ? (
+                            "You"
+                          ) : (
+                            <Link
+                              to={`/user/${message.sender._id}`}
+                              className="text-primary hover:underline"
+                            >
+                              {message.sender.name}
+                            </Link>
+                          )}
+                          &nbsp; sent &nbsp;
+                          {message.receiver._id === user._id ? (
+                            "You "
+                          ) : (
+                            <Link
+                              to={`/user/${message.receiver._id}`}
+                              className="text-primary hover:underline"
+                            >
+                              {message.receiver.name}
+                            </Link>
+                          )}
+                          &nbsp; a message
+                        </span>
+                        <span className="text-icons font-normal text-xs">
+                          <Moment format="MMM DD, H:mm A">
+                            {message.createdAt}
+                          </Moment>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="pt-2 ml-11 pb-4 border-b">
+                      <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                        {message.message.text}
+                      </p>
+                      <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
+                        {message.files?.map((file, index) => (
+                          <div key={index} className="">
+                            <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem]">
+                              {file.type.includes("video") ? (
+                                <a
+                                  href={file.url}
+                                  target="_blank"
+                                  rel="noopener"
+                                >
+                                  <LazyVideo
+                                    file={file}
+                                    maxWidth={windowWidth > 1024 ? 240 : 160}
+                                  />
+                                </a>
+                              ) : file.type.includes("image") ? (
+                                <a
+                                  href={file.url}
+                                  target="_blank"
+                                  rel="noopener"
+                                >
+                                  <LazyImage
+                                    file={file}
+                                    maxWidth={windowWidth > 1024 ? 240 : 160}
+                                  />
+                                </a>
+                              ) : file.type.includes("audio") ? (
+                                <audio
+                                  className="max-w-[10rem]"
+                                  preload="none"
+                                  controls
+                                  src={file.url}
+                                />
+                              ) : (
+                                <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded">
+                                  <div>
+                                    <IoDocumentOutline />
+                                  </div>
+                                </div>
+                              )}
+                            </p>
+                            <div
+                              onClick={() => downloadFile(file.url, file.name)}
+                              className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem]"
+                            >
+                              <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
+                                <HiDownload />
+                                <div
+                                  data-tooltip-id="my-tooltip"
+                                  data-tooltip-content={file.name}
+                                  data-tooltip-place="bottom"
+                                  className="w-[12ch] sm:w-[15ch] text-right whitespace-nowrap overflow-hidden"
+                                >
+                                  {file.name}
+                                </div>
+                              </div>
+                              <p className="text-right">
+                                ({getFileSize(file.size ? file.size : 0)})
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </section>
+          ))}
 
-          <div className="flex items-center gap-4 font-semibold text-light_heading">
-            <div className="p-2 aspect-square bg-green-200 text-green-600  rounded-full">
-              <BiTimeFive />
+        <section className="relative pl-6 flex flex-col gap-4 pb-4">
+          <div className="flex items-center gap-4 text-light_heading">
+            <div className="aspect-square rounded-full">
+              <Avatar
+                avatarUrl={user.avatar.url}
+                userName={user.name}
+                width="1.75rem"
+                fontSize="1rem"
+                alt={user.name}
+              />
             </div>
-            <div className="pr-6 [&>*]:leading-5 flex-grow py-2 border-b border-b-dark_separator">
-              <span className="mr-2">
-                The delivery date was updated to &nbsp;
-                <Moment format="MMM DD">{orderDetail.deliveryDate}</Moment>
+            <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
+              <span className="mr-2 font-semibold text-primary">
+                Have something to share with &nbsp;
+                <Link
+                  to={`/user/${orderDetail.seller._id}`}
+                  className="text-primary hover:underline"
+                >
+                  {orderDetail.seller.name}
+                </Link>
+                ?
               </span>
-              <span className="text-icons font-normal text-xs">
-                <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
+              <span className="flex items-center gap-2">
+                <div
+                  className={`w-2 h-2 text-light_heading rounded-full ${
+                    online ? "bg-primary" : "bg-no_focus"
+                  }`}
+                ></div>
+                <div>Seller is {online ? "Online" : "Offline"}</div>
               </span>
             </div>
           </div>
         </section>
-      )}
-
-      {orderMessages.length > 0 &&
-        orderMessages.map((obj, index) => (
-          <section
-            key={index}
-            className="relative pl-6 flex flex-col gap-4 pb-16"
-          >
-            <DateTag left={"-1.5rem"} date={obj.date} />
-
-            {obj.dateWiseMessages.length > 0 &&
-              obj.dateWiseMessages.map((message) => (
-                <div className="">
-                  <div
-                    key={message._id}
-                    className="flex items-center gap-4 font-semibold text-light_heading"
-                  >
-                    <div className="aspect-square rounded-full">
-                      <Avatar
-                        avatarUrl={message.sender.avatar.url}
-                        userName={message.sender.name}
-                        width="1.75rem"
-                        fontSize="1rem"
-                        alt={message.sender.name}
-                      />
-                    </div>
-                    <div className="[&>*]:leading-5 flex-grow pr-6 py-2 border-b border-b-dark_separator">
-                      <span className="mr-2">
-                        {message.sender._id === user._id ? (
-                          "You"
-                        ) : (
-                          <Link
-                            to={`/user/${message.sender._id}`}
-                            className="text-primary hover:underline"
-                          >
-                            {message.sender.name}
-                          </Link>
-                        )}
-                        &nbsp; sent &nbsp;
-                        {message.receiver._id === user._id ? (
-                          "You "
-                        ) : (
-                          <Link
-                            to={`/user/${message.receiver._id}`}
-                            className="text-primary hover:underline"
-                          >
-                            {message.receiver.name}
-                          </Link>
-                        )}
-                        &nbsp; a message
-                      </span>
-                      <span className="text-icons font-normal text-xs">
-                        <Moment format="MMM DD, H:mm A">
-                          {message.createdAt}
-                        </Moment>
-                      </span>
-                    </div>
-                  </div>
-                  <div className="pt-2 ml-11 pb-4 border-b">
-                    <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
-                      {message.message.text}
-                    </p>
-                    <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
-                      {message.files?.map((file, index) => (
-                        <div key={index} className="">
-                          <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem]">
-                            {file.type.includes("video") ? (
-                              <a href={file.url} target="_blank" rel="noopener">
-                                <LazyVideo
-                                  file={file}
-                                  maxWidth={windowWidth > 1024 ? 240 : 160}
-                                />
-                              </a>
-                            ) : file.type.includes("image") ? (
-                              <a href={file.url} target="_blank" rel="noopener">
-                                <LazyImage
-                                  file={file}
-                                  maxWidth={windowWidth > 1024 ? 240 : 160}
-                                />
-                              </a>
-                            ) : file.type.includes("audio") ? (
-                              <audio
-                                className="max-w-[10rem]"
-                                preload="none"
-                                controls
-                                src={file.url}
-                              />
-                            ) : (
-                              <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded">
-                                <div>
-                                  <IoDocumentOutline />
-                                </div>
-                              </div>
-                            )}
-                          </p>
-                          <div
-                            onClick={() => downloadFile(file.url, file.name)}
-                            className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem]"
-                          >
-                            <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
-                              <HiDownload />
-                              <div
-                                data-tooltip-id="my-tooltip"
-                                data-tooltip-content={file.name}
-                                data-tooltip-place="bottom"
-                                className="max-w-[12ch] sm:max-w-[15ch] whitespace-nowrap overflow-hidden"
-                              >
-                                {file.name}
-                              </div>
-                            </div>
-                            <p className="text-right">
-                              ({getFileSize(file.size ? file.size : 0)})
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </section>
-        ))}
-
-      <section className="relative pl-6 flex flex-col gap-4 pb-4">
-        <div className="flex items-center gap-4 text-light_heading">
-          <div className="aspect-square rounded-full">
-            <Avatar
-              avatarUrl={user.avatar.url}
-              userName={user.name}
-              width="1.75rem"
-              fontSize="1rem"
-              alt={user.name}
-            />
-          </div>
-          <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
-            <span className="mr-2 font-semibold text-primary">
-              Have something to share with &nbsp;
-              <Link
-                to={`/user/${orderDetail.seller._id}`}
-                className="text-primary hover:underline"
-              >
-                {orderDetail.seller.name}
-              </Link>
-              ?
-            </span>
-            <span className="flex items-center gap-2">
-              <div
-                className={`w-2 h-2 text-light_heading rounded-full ${
-                  online ? "bg-primary" : "bg-no_focus"
-                }`}
-              ></div>
-              <div>Seller is {online ? "Online" : "Offline"}</div>
-            </span>
-          </div>
+        <div className="px-6">
+          <OrderMessageInput
+            fileLoading={fileLoading}
+            setFileLoading={(val) => setFileLoading(val)}
+            orderDetail={orderDetail}
+          />
         </div>
-      </section>
-      <div className="px-6">
-        <OrderMessageInput
-          fileLoading={fileLoading}
-          setFileLoading={(val) => setFileLoading(val)}
-          orderDetail={orderDetail}
-        />
       </div>
-    </div>
+    </>
   );
 };
