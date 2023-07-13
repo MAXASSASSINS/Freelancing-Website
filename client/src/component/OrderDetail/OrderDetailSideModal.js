@@ -3,11 +3,13 @@ import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import { LazyImage } from "../LazyImage/LazyImage";
 
 export const OrderDetailSideModal = ({ orderDetail }) => {
   return (
     <div className="hidden min-[900px]:block text-dark_grey bg-white min-w-[14rem] max-w-[20rem] border-1 border-dark_separator order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
-      <img className="aspect-[16/10]" src={orderDetail.image.url}></img>
+      <LazyImage aspectRatio="16/10" file={orderDetail.image} lazyLoad={false} />
+      {/* <img className="aspect-[16/10]" src={orderDetail.image.url}></img> */}
       <div className="p-3">
         <div className="border-b-1 border-b-dark_separator">
           <Link to={`/gig/details/${orderDetail.gig}`} className='hover:underline text-light_grey'>
