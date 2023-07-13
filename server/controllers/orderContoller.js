@@ -70,6 +70,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
   const image = {
     publicId: gig.images[0].publicId,
     url: gig.images[0].url,
+    blurhash: gig.images[0].blurhash,
   };
 
   // res.send(requirements);
