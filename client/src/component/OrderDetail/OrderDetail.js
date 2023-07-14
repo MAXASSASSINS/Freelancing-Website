@@ -11,42 +11,42 @@ import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { OrderDetailSideModal } from "./OrderDetailSideModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { DeliveryTimer } from "./DeliveryTimer";
 import { socket } from "../../context/socket/socket";
+import { getOrderDetail } from "../../actions/orderAction";
 
 export const OrderDetail = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [orderDetail, setOrderDetail] = useState({});
+  // const [orderDetail, setOrderDetail] = useState({});
 
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
 
+  const { orderDetail, orderLoading, orderError } = useSelector(
+    (state) => state.orderDetail
+  );
+
+  const [activeTab, setActiveTab] = useState(0);
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
+    } else {
+      dispatch(getOrderDetail(params.id));
     }
   }, [user]);
 
-  useEffect(() => {
-    getOrderDetail();
-  }, []);
+  // console.log(orderDetail);
 
-  const getOrderDetail = async () => {
-    try {
-      const { data } = await axios.get(`/order/details/${params.id}`);
-      console.log(data);
-      setOrderDetail(data.order);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const [activeTab, setActiveTab] = useState(0);
+  if (orderError) {
+    navigate("/404");
+  }
 
   const handleActivityClick = () => {
     setActiveTab(0);
@@ -100,19 +100,30 @@ export const OrderDetail = () => {
           </nav>
         </header>
 
-        {orderDetail._id && (
+        {orderDetail && (
           <main className="rounded flex flex-col-reverse min-[900px]:flex-row justify-between gap-8 lg:gap-16">
             <div className="flex-grow">
-              {activeTab === 0 && <Activities orderDetail={orderDetail} />}
-              {activeTab === 1 && <Details orderDetail={orderDetail} />}
-              {activeTab === 2 && <Requirements orderDetail={orderDetail} />}
-              {activeTab === 3 && <Delivery orderDetail={orderDetail} />}
+              <div style={{ display: activeTab === 0 ? "block" : "none" }}>
+                <Activities orderDetail={orderDetail} />
+              </div>
+              <div style={{ display: activeTab === 1 ? "block" : "none" }}>
+                <Details orderDetail={orderDetail} />
+              </div>
+              <div style={{ display: activeTab === 2 ? "block" : "none" }}>
+                <Requirements orderDetail={orderDetail} />
+              </div>
+              <div style={{ display: activeTab === 3 ? "block" : "none" }}>
+                <Delivery orderDetail={orderDetail} />
+              </div>
             </div>
 
             <div className="flex flex-col gap-8">
               {{
                 /* orderDetail.seller._id  && orderDetail.status === 'In Progress' && */
-              } && windowWidth > 900 && <DeliveryTimer orderDetail={orderDetail} />}
+              } &&
+                windowWidth > 900 && (
+                  <DeliveryTimer orderDetail={orderDetail} />
+                )}
               <OrderDetailSideModal orderDetail={orderDetail} />
             </div>
           </main>
