@@ -13,18 +13,16 @@ export const OrderMessageInput = ({
   fileLoading,
   setFileLoading,
 }) => {
-
-  const {
-    user,
-    isAuthenticated,
-    userLoading,
-    userError,
-  } = useSelector((state) => state.user);
+  const { user, isAuthenticated, userLoading, userError } = useSelector(
+    (state) => state.user
+  );
 
   const socket = useContext(SocketContext);
 
-  const inboxChatFormRef = useRef(null);
-  const chatTextAreaRef = useRef(null);
+  // const inboxChatFormRef = useRef(null);
+  // const chatTextAreaRef = useRef(null);
+
+  const inputFileRef = useRef(null);
 
   const emojiPickerOpenerIconRef = useRef(null);
 
@@ -36,7 +34,7 @@ export const OrderMessageInput = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleEmojiClick = (emoji) => {
-    console.log(emoji);
+    // console.log(emoji);
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
@@ -66,11 +64,10 @@ export const OrderMessageInput = ({
       };
       arr.push(file);
     }
-    document.getElementById("file-input").value = "";
+    inputFileRef.current.value = "";
     if (arr.length === 0) {
       setSelectedFiles(null);
       setIsFilePicked(false);
-
       return;
     }
     setIsFilePicked(true);
@@ -160,7 +157,7 @@ export const OrderMessageInput = ({
     if (arr.length === 0) {
       setIsFilePicked(false);
       setSelectedFiles(null);
-      document.getElementById("file-input").value = "";
+      inputFileRef.current.value = "";
       return;
     }
     setSelectedFiles(arr);
@@ -192,7 +189,7 @@ export const OrderMessageInput = ({
       receiver,
     };
 
-    console.log("messageData", messageData);
+    // console.log("messageData", messageData);
     await socket.emit("send_message", messageData);
     // console.log(allClientUserLastMessage);
   };
@@ -200,7 +197,7 @@ export const OrderMessageInput = ({
   window.onclick = (event) => {
     if (
       event.target !== document.querySelector("em-emoji-picker") &&
-      !emojiPickerOpenerIconRef.current.contains(event.target)
+      !emojiPickerOpenerIconRef.current?.contains(event.target)
     ) {
       setShowEmojiPicker(false);
     }
@@ -209,8 +206,8 @@ export const OrderMessageInput = ({
   return (
     <div>
       <form
-        ref={inboxChatFormRef}
-        id="inbox-chat-form"
+        // ref={inboxChatFormRef}
+        // id="inbox-chat-form"
         onSubmit={(e) => e.preventDefault()}
       >
         {isFilePicked && (
@@ -247,7 +244,7 @@ export const OrderMessageInput = ({
         )}
         <textarea
           className="p-2 text-sm overflow-y-scroll border border-no_focus rounded-[3px] block w-full max-h-40 leading-6 resize-none focus:outline-none focus:border-dark_grey"
-          ref={chatTextAreaRef}
+          // ref={chatTextAreaRef}
           rows={6}
           maxLength={2500}
           onChange={(e) => {
@@ -288,17 +285,19 @@ export const OrderMessageInput = ({
               data-tooltip-place="top"
               data-tooltip-id="my-tooltip"
             >
-              <label className="p-2" htmlFor="file-input">
+              <label
+                className="p-2"
+              >
                 <i className="fa-solid fa-paperclip"></i>
+                <input
+                  onChange={handleSelectionOfFiles}
+                  multiple={true}
+                  ref={inputFileRef}
+                  type="file"
+                  // accept="image/*,video/*"
+                  hidden={true}
+                ></input>
               </label>
-              <input
-                onChange={handleSelectionOfFiles}
-                id="file-input"
-                multiple={true}
-                type="file"
-                // accept="image/*,video/*"
-                hidden={true}
-              ></input>
             </div>
           </div>
           <button
