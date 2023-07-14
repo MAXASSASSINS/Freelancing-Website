@@ -3,10 +3,13 @@ import { OrderMessageInput } from "./OrderMessageInput";
 import { IoClose } from "react-icons/io5";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket/socket";
+import { updateOrderDetail } from "../../actions/orderAction";
 
-export const ChatBox = ({ setFileLoading }) => {
+export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
+  const dispatch = useDispatch();
+
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
@@ -23,12 +26,29 @@ export const ChatBox = ({ setFileLoading }) => {
       files = await sendFileClientCloudinary(selectedFiles);
       // console.log(files);
 
-      // add message to database
-      const res = await addMessageToDatabase(message, files);
-      console.log(res);
-
+      let res;
+      if (isDeliveryMessage) {
+        res = await addDeliveryToOrder(message, files);
+        dispatch(updateOrderDetail(res.order));
+        const delivery = res.order.deliveries[res.order.deliveries.length - 1];
+        const deliveryMessage = {
+          _id: delivery._id,
+          sender: orderDetail.seller,
+          receiver: orderDetail.buyer,
+          files: delivery.files,
+          message: {
+            text: delivery.message,
+          },
+          createdAt: delivery.deliveredAt,
+          orderId: orderDetail._id,
+        };
+        await handleSendMessageSocket(deliveryMessage, files);
+      } else {
+        res = await addMessageToDatabase(message, files);
+        await handleSendMessageSocket(res.newMessage, files);
+      }
+      
       // send message to socket
-      await handleSendMessageSocket(res.newMessage, files);
     } catch (error) {
       console.log(error);
     } finally {
@@ -65,6 +85,24 @@ export const ChatBox = ({ setFileLoading }) => {
 
       const { data } = await axios.post("/add/message", messageData);
       console.log(data);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // add delivery to order
+  const addDeliveryToOrder = async (message, files = []) => {
+    try {
+      const deliveryData = {
+        message,
+        files,
+      };
+      const { data } = await axios.post(
+        `/order/add/delivery/${orderDetail._id}`,
+        deliveryData
+      );
+      // console.log(res);
       return data;
     } catch (error) {
       throw error;
