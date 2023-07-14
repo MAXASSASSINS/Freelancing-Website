@@ -269,7 +269,7 @@ export const Activities = ({ orderDetail }) => {
             <div className="[&>*]:leading-5 py-2 pr-6 border-b flex-grow border-b-dark_separator">
               <span className="mr-2">
                 {orderDetail.buyer._id === user._id ? (
-                  "You "
+                  "You"
                 ) : (
                   <Link
                     to={`/user/${orderDetail.buyer._id}`}
@@ -278,7 +278,7 @@ export const Activities = ({ orderDetail }) => {
                     {orderDetail.buyer.name}
                   </Link>
                 )}
-                placed the order
+                &nbsp; placed the order
               </span>
               <span className="text-icons font-normal text-xs">
                 <Moment format="MMM DD, H:mm A">{orderDetail.createdAt}</Moment>
@@ -305,7 +305,7 @@ export const Activities = ({ orderDetail }) => {
                         {orderDetail.buyer.name}
                       </Link>
                     )}
-                    sent the requirements
+                    &nbsp; sent the requirements
                   </span>
                   <span className="text-icons font-normal text-xs">
                     <Moment format="MMM DD, H:mm A">
@@ -374,7 +374,7 @@ export const Activities = ({ orderDetail }) => {
                       {orderDetail.buyer.name}
                     </Link>
                   )}
-                  sent the requirements
+                  &nbsp; sent the requirements
                 </span>
                 <span className="text-icons font-normal text-xs">
                   <Moment format="MMM DD, H:mm A">
