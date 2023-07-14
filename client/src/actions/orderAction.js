@@ -9,6 +9,9 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
+  UPDATE_ORDER_DETAIL_REQUEST,
+  UPDATE_ORDER_DETAIL_SUCCESS,
+  UPDATE_ORDER_DETAIL_FAIL,
   UPDATE_ALL_ORDERS_REQUEST,
   UPDATE_ALL_ORDERS_SUCCESS,
   UPDATE_ALL_ORDERS_FAIL,
@@ -66,6 +69,15 @@ export const getOrderDetail = (id) => async (dispatch) => {
       payload: error.response.data,
     });
   }
+};
+
+export const updateOrderDetail = (data) => async (dispatch) => {
+  dispatch({ type: UPDATE_ORDER_DETAIL_REQUEST });
+
+  dispatch({
+    type: UPDATE_ORDER_DETAIL_SUCCESS,
+    payload: data,
+  });
 };
 
 export const updateAllOrders = (data) => async (dispatch) => {

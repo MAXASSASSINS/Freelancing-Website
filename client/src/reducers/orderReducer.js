@@ -8,6 +8,9 @@ import {
   ORDER_DETAIL_REQUEST,
   ORDER_DETAIL_SUCCESS,
   ORDER_DETAIL_FAIL,
+  UPDATE_ORDER_DETAIL_REQUEST,
+  UPDATE_ORDER_DETAIL_SUCCESS,
+  UPDATE_ORDER_DETAIL_FAIL,
   UPDATE_ALL_ORDERS_REQUEST,
   UPDATE_ALL_ORDERS_SUCCESS,
   UPDATE_ALL_ORDERS_FAIL,
@@ -97,6 +100,17 @@ export const orderDetailReducer = (state = { orderDetail: null }, action) => {
       return {
         orderLoading: false,
         orderError: action.payload,
+      };
+    case UPDATE_ORDER_DETAIL_REQUEST:
+      return {
+        ...state,
+        orderLoading: true,
+      };
+    case UPDATE_ORDER_DETAIL_SUCCESS:
+      return {
+        ...state,
+        orderLoading: false,
+        orderDetail: action.payload,
       };
     case CLEAR_ERRORS:
       return {
