@@ -16,16 +16,17 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { windowContext } from "../../App";
 import { HiDownload } from "react-icons/hi";
 import { getFileSize, downloadFile } from "../../utility/util";
-import { OrderMessageInput } from "./OrderMessageInput";
 import { SocketContext } from "../../context/socket/socket";
 import { DeliveryTimer } from "./DeliveryTimer";
-import { orderReducer } from "../../reducers/orderReducer";
+import { ChatBox } from "./ChatBox";
 
 export const Activities = ({ orderDetail }) => {
   const navigate = useNavigate();
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
+
+  // const {orderDetail} = useSelector((state) => state.orderDetail);
 
   const [online, setOnline] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
@@ -47,6 +48,7 @@ export const Activities = ({ orderDetail }) => {
 
   // online status of seller or buyer
   useEffect(() => {
+    console.log(orderDetail);
     const userToCheck =
       user._id.toString() === orderDetail.buyer._id.toString()
         ? orderDetail.seller._id
@@ -134,14 +136,14 @@ export const Activities = ({ orderDetail }) => {
     return () => {
       socket.off("receive_message");
     };
-  }, [fileLoading, socket]);
+  }, [fileLoading, socket, orderDetail]);
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
     socket.on(
       "receive_message_self",
       async (data) => {
-        console.log("self receive message is running");
+        console.log("self receive message is running", data);
         console.log(data);
         if (data.orderId !== params.id) {
           return;
@@ -172,7 +174,7 @@ export const Activities = ({ orderDetail }) => {
     return () => {
       socket.off("receive_message_self");
     };
-  });
+  }, [fileLoading, socket, orderDetail]);
 
   const getOrderMessages = async () => {
     try {
@@ -181,8 +183,8 @@ export const Activities = ({ orderDetail }) => {
 
       const messages = buildDateWiseMessages(
         data.messages,
-        orderDetail?.deliveries,
-        orderDetail?.revisions
+        orderDetail.deliveries,
+        orderDetail.revisions
       );
 
       setOrderMessages(messages);
@@ -191,39 +193,55 @@ export const Activities = ({ orderDetail }) => {
     }
   };
 
+  const pushMessage = (map, message) => {
+    const date = new Date(message.createdAt)
+      .toLocaleDateString()
+      .substring(0, 10);
+    if (map.has(date)) {
+      map.get(date).push(message);
+    } else {
+      map.set(date, [message]);
+    }
+  };
+
   const buildDateWiseMessages = (messages, deliveries, revisions) => {
     let map = new Map();
 
     for (const message of messages) {
-      const date = new Date(message.createdAt)
-        .toLocaleDateString()
-        .substring(0, 10);
-      if (map.has(date)) {
-        map.get(date).push(message);
-      } else {
-        map.set(date, [message]);
-      }
+      pushMessage(map, message);
     }
 
     if (deliveries) {
       for (const delivery of deliveries) {
-        const date = new Date(delivery.createdAt).toDateString();
-        if (map.has(date)) {
-          map.get(date).push(delivery);
-        } else {
-          map.set(date, [delivery]);
-        }
+        const message = {
+          _id: delivery._id,
+          sender: orderDetail.seller,
+          receiver: orderDetail.buyer,
+          files: delivery.files,
+          message: {
+            text: delivery.message,
+          },
+          createdAt: delivery.deliveredAt,
+          orderId: orderDetail._id,
+        };
+        pushMessage(map, message);
       }
     }
 
     if (revisions) {
       for (const revision of revisions) {
-        const date = new Date(revision.createdAt).toDateString();
-        if (map.has(date)) {
-          map.get(date).push(revision);
-        } else {
-          map.set(date, [revision]);
-        }
+        const message = {
+          _id: revision._id,
+          sender: orderDetail.seller,
+          receiver: orderDetail.buyer,
+          files: revision.files,
+          message: {
+            text: revision.message,
+          },
+          createdAt: revision.requestedAt,
+          orderId: orderDetail._id,
+        };
+        pushMessage(map, message);
       }
     }
 
@@ -580,11 +598,7 @@ export const Activities = ({ orderDetail }) => {
           </div>
         </section>
         <div className="px-6">
-          <OrderMessageInput
-            fileLoading={fileLoading}
-            setFileLoading={(val) => setFileLoading(val)}
-            orderDetail={orderDetail}
-          />
+          <ChatBox setFileLoading={(val) => setFileLoading(val)} />
         </div>
       </div>
     </>
