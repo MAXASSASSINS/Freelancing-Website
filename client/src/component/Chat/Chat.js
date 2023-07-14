@@ -22,6 +22,7 @@ import { getFileSize } from "../../utility/util";
 import { IoDocumentOutline } from "react-icons/io5";
 import { downloadFile } from "../../utility/util";
 import { BsEmojiSmile } from "react-icons/bs";
+import { Avatar } from "../Avatar/Avatar";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
@@ -30,7 +31,9 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const socket = useContext(SocketContext);
   const { windowWidth, windowHeight } = useContext(windowContext);
 
-  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   new Picker({ data });
   // All States
@@ -449,7 +452,14 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
           loadingText={"Sending message..."}
         />
         <header>
-          <img src={gigDetail.user.avatar.url}></img>
+          <div className="chat-header-img">
+            <Avatar
+              avatarUrl={gigDetail.user.avatar.url}
+              userName={gigDetail.user.name}
+              width="3rem"
+              fontSize="1.3rem"
+            />
+          </div>
           <div>
             <div className="chat-seller-name">
               Message {gigDetail.user.name}
