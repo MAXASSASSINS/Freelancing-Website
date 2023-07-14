@@ -1,36 +1,19 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
 import { BsEmojiSmile } from "react-icons/bs";
-import { TextArea } from "../TextArea/TextArea";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import { SocketContext } from "../../context/socket/socket";
-import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 
-export const OrderMessageInput = ({
-  orderDetail,
-  fileLoading,
-  setFileLoading,
-}) => {
-  const { user, isAuthenticated, userLoading, userError } = useSelector(
-    (state) => state.user
-  );
-
-  const socket = useContext(SocketContext);
-
-  // const inboxChatFormRef = useRef(null);
-  // const chatTextAreaRef = useRef(null);
+export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
+  
 
   const inputFileRef = useRef(null);
-
   const emojiPickerOpenerIconRef = useRef(null);
-
   const scrollToBottomDivRefInbox = useRef(null);
+
   const [message, setMessage] = useState("");
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState(null);
-  // const [fileLoading, setFileLoading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleEmojiClick = (emoji) => {
@@ -75,80 +58,6 @@ export const OrderMessageInput = ({
     scrollToBottomDivRefInbox.current?.scrollIntoView();
   };
 
-  const handleSubmissionOfInboxForms = async () => {
-    await sendChat();
-  };
-
-  const sendChat = async () => {
-    setFileLoading(true);
-    // setIsFilePicked(false);
-
-    let files = [];
-    try {
-      // upload files to cloudinary
-      files = await sendFileClientCloudinary(selectedFiles);
-      // console.log(files);
-      // return;
-      // add message to database
-      const res = await addMessageToDatabase(message, files);
-      console.log(res);
-
-      // send message to socket
-      await handleSendMessageSocket(res.newMessage, files);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setFileLoading(false);
-    }
-  };
-
-  // client side uploading to cloudinary
-  const sendFileClientCloudinary = async (files) => {
-    console.log(files);
-
-    if (isFilePicked) {
-      const arr = files.map((file) => {
-        return file.selectedFile;
-      });
-
-      try {
-        const res = await uploadToCloudinaryV2(arr, 5 * 1024 * 1024 * 1024);
-        return res;
-      } catch (error) {
-        console.log(error);
-        throw error;
-      } finally {
-        setIsFilePicked(false);
-        setSelectedFiles(null);
-      }
-    }
-    return [];
-  };
-
-  // add message to database
-  const addMessageToDatabase = async (messageData, files = []) => {
-    try {
-      const messageData = {
-        message,
-        from: user._id,
-        to:
-          user._id === orderDetail.buyer._id
-            ? orderDetail.seller._id
-            : orderDetail.buyer._id,
-        files,
-        orderId: orderDetail._id,
-      };
-
-      const { data } = await axios.post("/add/message", messageData);
-      console.log(data);
-      return data;
-    } catch (error) {
-      throw error;
-    } finally {
-      setMessage("");
-    }
-  };
-
   const handleFileClickedRemoval = (id) => () => {
     let arr = selectedFiles;
     arr = arr.filter((file) => {
@@ -163,35 +72,23 @@ export const OrderMessageInput = ({
     setSelectedFiles(arr);
   };
 
-  // console.log(orderDetail);
-  const handleSendMessageSocket = async (message, files) => {
-    const rec =
-      user._id === orderDetail.buyer._id
-        ? orderDetail.seller
-        : orderDetail.buyer;
-    console.log(rec);
-    const sender = {
-      avatar: user.avatar,
-      name: user.name,
-      _id: user._id,
-    };
-    const receiver = {
-      avatar: rec.avatar,
-      name: rec.name,
-      _id: rec._id,
-    };
+  const handleTextAreaChange = (e) => {
+    setMessage(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
+  };
 
-    if (receiver._id !== rec._id) return;
-
-    const messageData = {
-      ...message,
-      sender,
-      receiver,
-    };
-
-    // console.log("messageData", messageData);
-    await socket.emit("send_message", messageData);
-    // console.log(allClientUserLastMessage);
+  const handleSendClick = () => {
+    let files = [];
+    if (isFilePicked) {
+      files = selectedFiles.map((file) => {
+        return file.selectedFile;
+      });
+    }
+    handleSubmissionOfForm(message, files);
+    setMessage("");
+    setIsFilePicked(false);
+    setSelectedFiles(null);
   };
 
   window.onclick = (event) => {
@@ -205,11 +102,7 @@ export const OrderMessageInput = ({
 
   return (
     <div>
-      <form
-        // ref={inboxChatFormRef}
-        // id="inbox-chat-form"
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form onSubmit={(e) => e.preventDefault()}>
         {isFilePicked && (
           <div className="max-h-[124px] p-4 text-light_heading mb-4 overflow-y-scroll border border-no_focus rounded-[4px]">
             <div className="text-[10px] font-semibold">
@@ -244,13 +137,9 @@ export const OrderMessageInput = ({
         )}
         <textarea
           className="p-2 text-sm overflow-y-scroll border border-no_focus rounded-[3px] block w-full max-h-40 leading-6 resize-none focus:outline-none focus:border-dark_grey"
-          // ref={chatTextAreaRef}
           rows={6}
           maxLength={2500}
-          onChange={(e) => {
-            setMessage(e.target.value), (e.target.style.height = "auto");
-            e.target.style.height = e.target.scrollHeight + "px";
-          }}
+          onChange={handleTextAreaChange}
           value={message}
           placeholder="Type your message here..."
           spellCheck={false}
@@ -285,9 +174,7 @@ export const OrderMessageInput = ({
               data-tooltip-place="top"
               data-tooltip-id="my-tooltip"
             >
-              <label
-                className="p-2"
-              >
+              <label className="p-2">
                 <i className="fa-solid fa-paperclip"></i>
                 <input
                   onChange={handleSelectionOfFiles}
@@ -303,7 +190,7 @@ export const OrderMessageInput = ({
           <button
             className="bg-primary text-white rounded-[0.25rem] p-2 px-4"
             disabled={message.length <= 0 && !isFilePicked}
-            onClick={handleSubmissionOfInboxForms}
+            onClick={handleSendClick}
             style={{
               opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
             }}
