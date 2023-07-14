@@ -63,7 +63,7 @@ export const getOrderDetail = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ORDER_DETAIL_FAIL,
-      payload: error.response.data.message,
+      payload: error.response.data,
     });
   }
 };
