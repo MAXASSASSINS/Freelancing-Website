@@ -209,7 +209,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
       runValidators: true,
       useFindAndModify: false,
     }
-  );
+  ).populate("seller buyer", "name email avatar");
 
   // send email to buyer
   const options = {
