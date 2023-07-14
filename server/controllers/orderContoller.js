@@ -176,6 +176,57 @@ export const updateOrderRequirements = catchAsyncErrors(
   }
 );
 
+// add order delivery
+export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
+
+  const { message, files} = req.body;
+
+  if(!message && !files?.length){
+    return next(new ErrorHandler("Please add a message or a file", 400));
+  }
+
+  let order = await Order.findById(req.params.id).populate("buyer", "email");
+
+  const buyerEmail = order.buyer.email;
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
+  if(order.deliveryDate < Date.now()){
+    return next(new ErrorHandler("Delivery date has passed", 400));
+  }
+
+  if (order.status == "Completed") {
+    return next(new ErrorHandler("Order already completed", 400));
+  }
+
+  order = await Order.findByIdAndUpdate(
+    req.params.id,
+    {$push: {deliveries: {message, files}}},
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  // send email to buyer
+  const options = {
+    to: buyerEmail,
+    subject: "Order Delivered",
+    message: `Your order with order id ${order.orderId} has been delivered`,
+  };
+  // console.log(options);
+  await sendEmail(options);
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully added your order delivery",
+    order,
+  });
+});
+
 // Get single order
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
