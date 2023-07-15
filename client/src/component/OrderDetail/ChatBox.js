@@ -41,6 +41,7 @@ export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
           },
           createdAt: delivery.deliveredAt,
           orderId: orderDetail._id,
+          forDelivery: true,
         };
         await handleSendMessageSocket(deliveryMessage, files);
       } else {
