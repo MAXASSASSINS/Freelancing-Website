@@ -211,7 +211,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
 
   order = await Order.findByIdAndUpdate(
     req.params.id,
-    { $push: { deliveries: { message, files } } },
+    { $push: { deliveries: { message, files } }, status: "Delivered" },
     {
       new: true,
       runValidators: true,
