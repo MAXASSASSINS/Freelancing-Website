@@ -45,7 +45,7 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
     receiver: to,
     files,
     orderId,
-  })
+  });
 
   res.status(201).json({
     success: true,
@@ -63,6 +63,7 @@ export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
         { sender: from, receiver: to },
         { sender: to, receiver: from },
       ])
+      .and([{ orderId: null }])
       .populate("sender", "name avatar")
       .populate("receiver", "name avatar")
       .sort({ updatedAt: 1 });
@@ -82,6 +83,7 @@ export const getAllMessagesForCurrentUser = catchAsyncErrors(
 
     const messages = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
+      .and([{ orderId: null }])
       .populate("sender", "name avatar")
       .populate("receiver", "name avatar")
       .sort({ updatedAt: -1 });
@@ -197,6 +199,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
         { sender: from, receiver: to },
         { sender: to, receiver: from },
       ])
+      .and([{ orderId: null }])
       .select("message files createdAt")
       .sort({ updatedAt: -1 })
       .limit(1)
