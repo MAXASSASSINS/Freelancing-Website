@@ -190,7 +190,9 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if (!order.seller._id != req.user._id) {
+  console.log(order.seller.toString(), req.user._id.toString());
+
+  if (order.seller.toString() !== req.user._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add delivery to this order",
