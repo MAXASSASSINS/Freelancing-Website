@@ -6,6 +6,28 @@ import { Link } from "react-router-dom";
 import { LazyImage } from "../LazyImage/LazyImage";
 
 export const OrderDetailSideModal = ({ orderDetail }) => {
+
+  orderDetail.status = "Delivered"
+
+  const statusColor = () => {
+    switch (orderDetail.status) {
+      case "Pending":
+        return "bg-yellow-500";
+      case "In Progress":
+        return "bg-blue-500";
+      case "Completed":
+        return "bg-primary";
+      case "Cancelled":
+        return "bg-red-500";
+      case "Delivered":
+        return "bg-fuchsia-500";
+      case "In Revision":
+        return "bg-warning";
+      default:
+        return "bg-yellow-500";
+    }
+  };
+
   return (
     <div className="hidden min-[900px]:block text-dark_grey bg-white min-w-[14rem] max-w-[20rem] border-1 border-dark_separator order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
       <LazyImage aspectRatio="16/10" file={orderDetail.image} lazyLoad={false} />
@@ -48,7 +70,7 @@ export const OrderDetailSideModal = ({ orderDetail }) => {
         <div className="flex flex-col gap-3 py-4 [&>*]:flex [&>*]:justify-between">
           <div>
             <span className="text-light_heading text-sm">Status</span>
-            <span className="py-1 px-2 bg-yellow-500 text-white uppercase text-[10px] rounded-[3px]">
+            <span className={`py-1 px-2 text-white uppercase text-[10px] rounded-[3px] ${statusColor()}`}>
               {orderDetail.status}
             </span>
           </div>
