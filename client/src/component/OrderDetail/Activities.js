@@ -19,6 +19,7 @@ import { getFileSize, downloadFile } from "../../utility/util";
 import { SocketContext } from "../../context/socket/socket";
 import { DeliveryTimer } from "./DeliveryTimer";
 import { ChatBox } from "./ChatBox";
+import { FiPackage } from "react-icons/fi";
 
 export const Activities = ({ orderDetail }) => {
   const navigate = useNavigate();
@@ -30,8 +31,6 @@ export const Activities = ({ orderDetail }) => {
 
   const [online, setOnline] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
-
-  // console.log(fileLoading);
 
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
@@ -100,7 +99,6 @@ export const Activities = ({ orderDetail }) => {
     };
   }, [orderDetail.id, socket]);
 
-  // console.log('orderMessages', orderMessages);
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
@@ -110,6 +108,12 @@ export const Activities = ({ orderDetail }) => {
       if (data.orderId !== params.id) {
         return;
       }
+      
+      if(data.forDelivery){
+        console.log(orderDetail.deliveries.length);
+        data = {...data, deliveryNumber: orderDetail.deliveries.length + 1};
+      }
+
 
       setOrderMessages((prev) => {
         const date = new Date(data.createdAt)
@@ -144,10 +148,16 @@ export const Activities = ({ orderDetail }) => {
       "receive_message_self",
       async (data) => {
         console.log("self receive message is running", data);
-        console.log(data);
+
         if (data.orderId !== params.id) {
           return;
         }
+
+        if(data.forDelivery){
+          console.log(orderDetail.deliveries.length);
+          data = {...data, deliveryNumber: orderDetail.deliveries.length};
+        }
+
         setOrderMessages((prev) => {
           const date = new Date(data.createdAt)
             .toLocaleDateString()
@@ -207,12 +217,13 @@ export const Activities = ({ orderDetail }) => {
   const buildDateWiseMessages = (messages, deliveries, revisions) => {
     let map = new Map();
 
-    for (const message of messages) {
+    for (let message of messages) {
+      message = { ...message, forDelivery: false, forRevision: false };
       pushMessage(map, message);
     }
 
     if (deliveries) {
-      for (const delivery of deliveries) {
+      deliveries.forEach((delivery, index) => {
         const message = {
           _id: delivery._id,
           sender: orderDetail.seller,
@@ -223,9 +234,12 @@ export const Activities = ({ orderDetail }) => {
           },
           createdAt: delivery.deliveredAt,
           orderId: orderDetail._id,
+          forDelivery: true,
+          forRevision: false,
+          deliveryNumber: index + 1,
         };
         pushMessage(map, message);
-      }
+      });
     }
 
     if (revisions) {
@@ -240,6 +254,8 @@ export const Activities = ({ orderDetail }) => {
           },
           createdAt: revision.requestedAt,
           orderId: orderDetail._id,
+          forDelivery: false,
+          forRevision: true,
         };
         pushMessage(map, message);
       }
@@ -444,123 +460,277 @@ export const Activities = ({ orderDetail }) => {
               <DateTag left={"-1.5rem"} date={obj.date} />
 
               {obj.dateWiseMessages.length > 0 &&
-                obj.dateWiseMessages.map((message) => (
-                  <div className="">
-                    <div
-                      key={message._id}
-                      className="flex items-center gap-4 font-semibold text-light_heading"
-                    >
-                      <div className="aspect-square rounded-full">
-                        <Avatar
-                          avatarUrl={message.sender.avatar.url}
-                          userName={message.sender.name}
-                          width="1.75rem"
-                          fontSize="1rem"
-                          alt={message.sender.name}
-                        />
+                obj.dateWiseMessages.map((message) =>
+                  message.forDelivery ? (
+                    <div className="">
+                      <div
+                        key={message._id}
+                        className="flex items-center gap-4 font-semibold text-light_heading"
+                      >
+                        <div className="p-2 aspect-square bg-pink-100 text-pink-400 rounded-full">
+                          <FiPackage />
+                        </div>
+                        <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                          <span className="mr-2">
+                            {message.sender._id === user._id ? (
+                              "You delivered the order"
+                            ) : (
+                              <>
+                                <Link
+                                  to={`/user/${message.sender._id}`}
+                                  className="text-primary hover:underline"
+                                >
+                                  {message.sender.name}
+                                </Link>
+                                &nbsp; delivered your order
+                              </>
+                            )}
+                          </span>
+                          <span className="text-icons font-normal text-xs">
+                            <Moment format="MMM DD, H:mm A">
+                              {message.createdAt}
+                            </Moment>
+                          </span>
+                        </div>
                       </div>
-                      <div className="[&>*]:leading-5 flex-grow pr-6 py-2 border-b border-b-dark_separator">
-                        <span className="mr-2">
-                          {message.sender._id === user._id ? (
-                            "You"
-                          ) : (
-                            <Link
-                              to={`/user/${message.sender._id}`}
-                              className="text-primary hover:underline"
-                            >
-                              {message.sender.name}
-                            </Link>
-                          )}
-                          &nbsp; sent &nbsp;
-                          {message.receiver._id === user._id ? (
-                            "You "
-                          ) : (
-                            <Link
-                              to={`/user/${message.receiver._id}`}
-                              className="text-primary hover:underline"
-                            >
-                              {message.receiver.name}
-                            </Link>
-                          )}
-                          &nbsp; a message
-                        </span>
-                        <span className="text-icons font-normal text-xs">
-                          <Moment format="MMM DD, H:mm A">
-                            {message.createdAt}
-                          </Moment>
-                        </span>
-                      </div>
-                    </div>
-                    <div className="pt-2 ml-11 pb-4 border-b">
-                      <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
-                        {message.message.text}
-                      </p>
-                      <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
-                        {message.files?.map((file, index) => (
-                          <div key={index} className="">
-                            <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
-                              {file.type.includes("video") ? (
-                                <a
-                                  href={file.url}
-                                  target="_blank"
-                                  rel="noopener"
-                                >
-                                  <LazyVideo
-                                    file={file}
-                                    maxWidth={windowWidth > 1024 ? 240 : 160}
-                                  />
-                                </a>
-                              ) : file.type.includes("image") ? (
-                                <a
-                                  href={file.url}
-                                  target="_blank"
-                                  rel="noopener"
-                                >
-                                  <LazyImage
-                                    file={file}
-                                    maxWidth={windowWidth > 1024 ? 240 : 160}
-                                  />
-                                </a>
-                              ) : file.type.includes("audio") ? (
-                                <audio
-                                  className="max-w-[10rem] min-[1000px]:max-w-[12rem]"
-                                  preload="none"
-                                  controls
-                                  src={file.url}
-                                />
-                              ) : (
-                                <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded min-[1000px]:w-48 min-[1000px]:h-28">
-                                  <div>
-                                    <IoDocumentOutline />
-                                  </div>
-                                </div>
-                              )}
-                            </p>
-                            <div
-                              onClick={() => downloadFile(file.url, file.name)}
-                              className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]"
-                            >
-                              <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
-                                <HiDownload />
-                                <div
-                                  data-tooltip-id="my-tooltip"
-                                  data-tooltip-content={file.name}
-                                  data-tooltip-place="bottom"
-                                  className="w-[12ch] sm:w-[15ch] text-right whitespace-nowrap overflow-hidden"
-                                >
-                                  {file.name}
-                                </div>
-                              </div>
-                              <p className="text-right">
-                                ({getFileSize(file.size ? file.size : 0)})
-                              </p>
+                      <div className="border mr-6 rounded mt-4">
+                        <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
+                          delivery #{message.deliveryNumber}
+                        </div>
+                        <div className="p-4">
+                          <div
+                            key={message._id}
+                            className="flex items-center gap-4 font-semibold text-light_heading"
+                          >
+                            <div className="aspect-square rounded-full">
+                              <Avatar
+                                avatarUrl={message.sender.avatar.url}
+                                userName={message.sender.name}
+                                width="1.75rem"
+                                fontSize="1rem"
+                                alt={message.sender.name}
+                              />
+                            </div>
+                            <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                              <span className="mr-2">
+                                {message.sender._id === user._id ? (
+                                  "Your message"
+                                ) : (
+                                  <>
+                                    <Link
+                                      to={`/user/${message.sender._id}`}
+                                      className="text-primary hover:underline"
+                                    >
+                                      {message.sender.name}
+                                    </Link>
+                                    's message
+                                  </>
+                                )}
+                              </span>
+                              <span className="text-icons font-normal text-xs">
+                                <Moment format="MMM DD, H:mm A">
+                                  {message.createdAt}
+                                </Moment>
+                              </span>
                             </div>
                           </div>
-                        ))}
+                          <div className="ml-11 pb-4">
+                            <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                              {message.message.text}
+                            </p>
+                            <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
+                              {message.files?.map((file, index) => (
+                                <div key={index} className="">
+                                  <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
+                                    {file.type.includes("video") ? (
+                                      <a
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener"
+                                      >
+                                        <LazyVideo
+                                          file={file}
+                                          maxWidth={
+                                            windowWidth > 1024 ? 240 : 160
+                                          }
+                                        />
+                                      </a>
+                                    ) : file.type.includes("image") ? (
+                                      <a
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener"
+                                      >
+                                        <LazyImage
+                                          file={file}
+                                          maxWidth={
+                                            windowWidth > 1024 ? 240 : 160
+                                          }
+                                        />
+                                      </a>
+                                    ) : file.type.includes("audio") ? (
+                                      <audio
+                                        className="max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                                        preload="none"
+                                        controls
+                                        src={file.url}
+                                      />
+                                    ) : (
+                                      <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded min-[1000px]:w-48 min-[1000px]:h-28">
+                                        <div>
+                                          <IoDocumentOutline />
+                                        </div>
+                                      </div>
+                                    )}
+                                  </p>
+                                  <div
+                                    onClick={() =>
+                                      downloadFile(file.url, file.name)
+                                    }
+                                    className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                                  >
+                                    <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
+                                      <HiDownload />
+                                      <div
+                                        data-tooltip-id="my-tooltip"
+                                        data-tooltip-content={file.name}
+                                        data-tooltip-place="bottom"
+                                        className="w-[12ch] sm:w-[15ch] text-right whitespace-nowrap overflow-hidden"
+                                      >
+                                        {file.name}
+                                      </div>
+                                    </div>
+                                    <p className="text-right">
+                                      ({getFileSize(file.size ? file.size : 0)})
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ) : (
+                    <div className="">
+                      <div
+                        key={message._id}
+                        className="flex items-center gap-4 font-semibold text-light_heading"
+                      >
+                        <div className="aspect-square rounded-full">
+                          <Avatar
+                            avatarUrl={message.sender.avatar.url}
+                            userName={message.sender.name}
+                            width="1.75rem"
+                            fontSize="1rem"
+                            alt={message.sender.name}
+                          />
+                        </div>
+                        <div className="[&>*]:leading-5 flex-grow pr-6 py-2 border-b border-b-dark_separator">
+                          <span className="mr-2">
+                            {message.sender._id === user._id ? (
+                              "You"
+                            ) : (
+                              <Link
+                                to={`/user/${message.sender._id}`}
+                                className="text-primary hover:underline"
+                              >
+                                {message.sender.name}
+                              </Link>
+                            )}
+                            &nbsp; sent &nbsp;
+                            {message.receiver._id === user._id ? (
+                              "You "
+                            ) : (
+                              <Link
+                                to={`/user/${message.receiver._id}`}
+                                className="text-primary hover:underline"
+                              >
+                                {message.receiver.name}
+                              </Link>
+                            )}
+                            &nbsp; a message
+                          </span>
+                          <span className="text-icons font-normal text-xs">
+                            <Moment format="MMM DD, H:mm A">
+                              {message.createdAt}
+                            </Moment>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="pt-2 ml-11 pb-4 border-b">
+                        <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                          {message.message.text}
+                        </p>
+                        <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
+                          {message.files?.map((file, index) => (
+                            <div key={index} className="">
+                              <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
+                                {file.type.includes("video") ? (
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    <LazyVideo
+                                      file={file}
+                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                                    />
+                                  </a>
+                                ) : file.type.includes("image") ? (
+                                  <a
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener"
+                                  >
+                                    <LazyImage
+                                      file={file}
+                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                                    />
+                                  </a>
+                                ) : file.type.includes("audio") ? (
+                                  <audio
+                                    className="max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                                    preload="none"
+                                    controls
+                                    src={file.url}
+                                  />
+                                ) : (
+                                  <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded min-[1000px]:w-48 min-[1000px]:h-28">
+                                    <div>
+                                      <IoDocumentOutline />
+                                    </div>
+                                  </div>
+                                )}
+                              </p>
+                              <div
+                                onClick={() =>
+                                  downloadFile(file.url, file.name)
+                                }
+                                className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                              >
+                                <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
+                                  <HiDownload />
+                                  <div
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content={file.name}
+                                    data-tooltip-place="bottom"
+                                    className="w-[12ch] sm:w-[15ch] text-right whitespace-nowrap overflow-hidden"
+                                  >
+                                    {file.name}
+                                  </div>
+                                </div>
+                                <p className="text-right">
+                                  ({getFileSize(file.size ? file.size : 0)})
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
             </section>
           ))}
 
@@ -597,6 +767,7 @@ export const Activities = ({ orderDetail }) => {
             </div>
           </div>
         </section>
+
         <div className="px-6">
           <ChatBox setFileLoading={(val) => setFileLoading(val)} />
         </div>
