@@ -114,7 +114,6 @@ export const updateOrderRequirements = catchAsyncErrors(
       return next(new ErrorHandler("Order not found with this Id", 404));
     }
 
-
     // if (order.requirementsSubmitted) {
     //   return next(new ErrorHandler("Requirements already submitted", 400));
     // }
@@ -158,7 +157,6 @@ export const updateOrderRequirements = catchAsyncErrors(
       }
     );
 
-
     // send email to seller
     const options = {
       to: sellerEmail,
@@ -178,10 +176,9 @@ export const updateOrderRequirements = catchAsyncErrors(
 
 // add order delivery
 export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
+  const { message, files } = req.body;
 
-  const { message, files} = req.body;
-
-  if(!message && !files?.length){
+  if (!message && !files?.length) {
     return next(new ErrorHandler("Please add a message or a file", 400));
   }
 
@@ -193,7 +190,16 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if(order.deliveryDate < Date.now()){
+  if (!order.seller._id != req.user._id) {
+    return next(
+      new ErrorHandler(
+        "You are not authorized to add delivery to this order",
+        401
+      )
+    );
+  }
+
+  if (order.deliveryDate < Date.now()) {
     return next(new ErrorHandler("Delivery date has passed", 400));
   }
 
@@ -203,7 +209,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
 
   order = await Order.findByIdAndUpdate(
     req.params.id,
-    {$push: {deliveries: {message, files}}},
+    { $push: { deliveries: { message, files } } },
     {
       new: true,
       runValidators: true,
