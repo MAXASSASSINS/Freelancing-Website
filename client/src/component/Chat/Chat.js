@@ -310,6 +310,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
+      if(data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);
@@ -323,6 +324,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
     socket.on("receive_message_self", async (data) => {
+      if(data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);

@@ -582,6 +582,7 @@ export const Inbox = () => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
+      if(data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       const { message, sender, receiver } = data;
@@ -620,6 +621,7 @@ export const Inbox = () => {
   useEffect(() => {
     // console.log("receive message self is running");
     socket.on("receive_message_self", async (data) => {
+      if(data.orderId) return;
       // console.log("receive message is running");
       const messageData = data;
       const { message, sender, receiver } = data;
