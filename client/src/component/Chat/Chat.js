@@ -19,10 +19,12 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { windowContext } from "../../App";
 import { HiDownload } from "react-icons/hi";
 import { getFileSize } from "../../utility/util";
-import { IoDocumentOutline } from "react-icons/io5";
+import { IoClose, IoDocumentOutline } from "react-icons/io5";
 import { downloadFile } from "../../utility/util";
 import { BsEmojiSmile } from "react-icons/bs";
 import { Avatar } from "../Avatar/Avatar";
+import { ImAttachment } from "react-icons/im";
+import { FaRegPaperPlane } from "react-icons/fa";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
@@ -310,7 +312,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
-      if(data.orderId) return;
+      if (data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);
@@ -324,7 +326,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
     socket.on("receive_message_self", async (data) => {
-      if(data.orderId) return;
+      if (data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);
@@ -474,7 +476,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
             </div>
           </div>
           <span onClick={() => setShowChatBox(false)}>
-            <i className="fa-solid fa-xmark"></i>
+            <IoClose />
           </span>
         </header>
         <main>
@@ -507,16 +509,12 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                 {allMessages &&
                   allMessages.map((message) => (
                     <li key={message._id}>
-                      {message.sender.avatar.url ? (
-                        <img src={message.sender.avatar.url}></img>
-                      ) : (
-                        <i
-                          className={
-                            "fa-solid fa-" +
-                            message.sender.name[0].toLowerCase()
-                          }
-                        ></i>
-                      )}
+                      <Avatar
+                        avatarUrl={message.sender.avatar.url}
+                        userName={message.sender.name}
+                        width="2.5rem"
+                        fontSize="1.3rem"
+                      />
                       <div>
                         <div className="chat-message-owner-time-div">
                           <span className="chat-message-owner">
@@ -624,7 +622,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                           type="button"
                           onClick={handleFileClickedRemoval(file.id)}
                         >
-                          <i className="fa-solid fa-xmark"></i>
+                          <IoClose />
                         </button>
                       </li>
                     ))}
@@ -671,7 +669,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
             </div>
             <div className="chat-attachment">
               <label htmlFor="chat-input-file">
-                <i className="fa-solid fa-paperclip"></i>
+                <ImAttachment />
               </label>
               <input
                 onChange={handleSelectionOfFiles}
@@ -689,7 +687,8 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
             }}
           >
-            <i className="fa-regular fa-paper-plane"></i>
+            {/* <i className="fa-regular fa-paper-plane"></i> */}
+            <FaRegPaperPlane style={{display: "inline"}}/>
             &nbsp; Send Message
           </button>
         </footer>
