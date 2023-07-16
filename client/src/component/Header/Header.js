@@ -12,11 +12,16 @@ import { loggedUser } from "../../actions/userAction";
 import { Outlet, Navigate, Link, useNavigate } from "react-router-dom";
 import { Fragment } from "react";
 import { Avatar } from "../Avatar/Avatar";
+import { FaRegEnvelope } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
+import { BiUserCircle } from "react-icons/bi";
 
 export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   const show = () => {
     dispatch(showDimBackground());
@@ -48,16 +53,16 @@ export const Header = () => {
 
         <div className="navigation-icons">
           <Link to="/get/all/messages/for/current/user">
-            <i className="fa-regular fa-envelope inbox-icon"></i>
+            <FaRegEnvelope className="inbox-icon" />
           </Link>
-          <i className="fa-regular fa-heart my-list-icon"></i>
+          <FaRegHeart className="my-list-icon" />
           <div className="orders-icon" onClick={() => navigate("/orders")}>
             Orders
           </div>
           {!isAuthenticated ? (
             <Link to="/login">
               <div>
-                <i className="fa-regular fa-circle-user profile-icon"></i>
+                <BiUserCircle className="profile-icon" />
               </div>
             </Link>
           ) : (
