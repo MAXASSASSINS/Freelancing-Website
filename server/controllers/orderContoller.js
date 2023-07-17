@@ -205,8 +205,8 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Delivery date has passed", 400));
   }
 
-  if (order.status == "Completed") {
-    return next(new ErrorHandler("Order already completed", 400));
+  if (order.status !== "In Progress") {
+    return next(new ErrorHandler("You can't deliver an order which is not in progress", 400));
   }
 
   order = await Order.findByIdAndUpdate(
