@@ -9,7 +9,9 @@ export const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -25,21 +27,27 @@ export const Login = () => {
   }, [dispatch, isAuthenticated]);
 
   return (
-    <>
-      <h1>Login</h1>
-      <form onSubmit={(e) => handleLoginSubmit(e)}>
-        <input
-          onChange={(e) => setLoginEmail(e.target.value)}
-          placeholder="Email"
-          value={loginEmail}
-        ></input>
-        <input
-          onChange={(e) => setLoginPassword(e.target.value)}
-          placeholder="Password"
-          value={loginPassword}
-        ></input>
-        <button type="submit">Submit</button>
+    <div className="mt-40 col-md-4 offset-md-4">
+      <div className="text-center">
+        <h2 className="text-5xl">Login</h2>
+      </div>
+      <form className="mt-8 flex flex-col gap-4" onSubmit={handleLoginSubmit}>
+        <div className="form-group">
+          <label className="mb-2" for="email">
+            Email-Id
+          </label>
+          <input onChange={(e) => setLoginEmail(e.target.value)} id="email" type="email" class="form-control" />
+        </div>
+        <div className="form-group">
+          <label className="mb-2" for="password">
+            Password
+          </label>
+          <input onChange={(e) => setLoginPassword(e.target.value)} id="password" type="password" class="form-control" />
+        </div>
+        <div className="form-group">
+          <button className="btn btn-info">Submit</button>
+        </div>
       </form>
-    </>
+    </div>
   );
 };
