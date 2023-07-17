@@ -22,6 +22,10 @@ import {
 } from "draft-js";
 import { TextEditor } from "../TextEditor/TextEditor";
 import { Avatar } from "../Avatar/Avatar";
+import { FaCheck, FaRegClock } from "react-icons/fa";
+import { FiRepeat } from "react-icons/fi";
+import { BsCheck } from "react-icons/bs";
+import { HiStar } from "react-icons/hi";
 
 export const GigDetail = () => {
   const dispatch = useDispatch();
@@ -257,11 +261,11 @@ export const GigDetail = () => {
                   </header>
                   <div className="delivery-revision-div">
                     <div className="package-delivery">
-                      <i className="fa-regular fa-clock"></i>
+                      <FaRegClock />
                       <p>{pricePackageInfo.packageDeliveryTime}</p>
                     </div>
                     <div className="package-revisions">
-                      <i className="fa-solid fa-repeat"></i>
+                      <FiRepeat />
                       <p>{pricePackageInfo.revisions}</p>
                     </div>
                   </div>
@@ -274,7 +278,7 @@ export const GigDetail = () => {
                             : undefined
                         }
                       >
-                        <i className="fa-solid fa-check"></i>
+                        <FaCheck />
                         Source File
                       </li>
                       <li
@@ -284,7 +288,7 @@ export const GigDetail = () => {
                             : undefined
                         }
                       >
-                        <i className="fa-solid fa-check"></i>
+                        <FaCheck />
                         Commercial Use
                       </li>
                     </ul>
@@ -395,7 +399,7 @@ export const GigDetail = () => {
                     </span>
                     &nbsp; &nbsp;
                     <div className="user-detail-review-rating-stars">
-                      <i className="fas fa-star"></i>
+                      <HiStar />
                       <RatingStars rating={gigDetail.ratings}></RatingStars>
                     </div>
                     &nbsp; &nbsp;
@@ -531,11 +535,11 @@ export const GigDetail = () => {
                 </header>
                 <div className="delivery-revision-div">
                   <div className="package-delivery">
-                    <i className="fa-regular fa-clock"></i>
+                    <FaRegClock />
                     <p>{pricePackageInfo.packageDeliveryTime}</p>
                   </div>
                   <div className="package-revisions">
-                    <i className="fa-solid fa-repeat"></i>
+                    <FiRepeat />
                     <p>{pricePackageInfo.revisions}</p>
                   </div>
                 </div>
@@ -546,7 +550,7 @@ export const GigDetail = () => {
                         pricePackageInfo.sourceFile && "package-output-selected"
                       }
                     >
-                      <i className="fa-solid fa-check"></i>
+                      <FaCheck />
                       Source File
                     </li>
                     <li
@@ -555,7 +559,7 @@ export const GigDetail = () => {
                         "package-output-selected"
                       }
                     >
-                      <i className="fa-solid fa-check"></i>
+                      <FaCheck />
                       Commercial Use
                     </li>
                   </ul>

@@ -7,6 +7,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../actions/userAction";
+import { FaBars } from "react-icons/fa";
+import { BiUserCircle } from "react-icons/bi";
 
 export const Sidebar = () => {
   const dispatch = useDispatch();
@@ -32,10 +34,7 @@ export const Sidebar = () => {
   return (
     <>
       <div onClick={showSidebar}>
-        <i
-          className="fa-solid fa-bars hamburger-icon"
-          onClick={showSidebar}
-        ></i>
+        <FaBars className="hamburger-icon" />
       </div>
       <div className="sidebar">
         <div className={"site-sidebar " + (sidebar ? "menu-shown" : null)}>
@@ -52,7 +51,7 @@ export const Sidebar = () => {
               />
             ) : (
               <div>
-                <i className="fa-regular fa-circle-user sidebar-profile-icon"></i>
+                <BiUserCircle className="sidebar-profile-icon" />
               </div>
             )}
 

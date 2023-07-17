@@ -1,14 +1,16 @@
 import React from "react";
 import "./footer.css";
 import "../../component/common.css";
+import { BsFacebook, BsInstagram } from "react-icons/bs";
+import { FaGooglePlay } from "react-icons/fa";
 
 export const Footer = () => {
   return (
     <footer className="global-footer">
       <div className="socials">
-        <i className="fa-brands fa-facebook"></i>
-        <i className="fa-brands fa-instagram"></i>
-        <i className="fa-brands fa-google-play"></i>
+        <BsFacebook />
+        <BsInstagram />
+        <FaGooglePlay />
       </div>
       <div>Created by Mohd. Shadab</div>
     </footer>

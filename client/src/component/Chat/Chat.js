@@ -687,7 +687,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
             }}
           >
-            {/* <i className="fa-regular fa-paper-plane"></i> */}
             <FaRegPaperPlane style={{display: "inline"}}/>
             &nbsp; Send Message
           </button>

@@ -1,10 +1,12 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import "./gigCard.css";
 import { MyCarousel } from "../Carousel/MyCarousel";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { IoMdImages } from "react-icons/io";
 import { Avatar } from "../Avatar/Avatar";
+import { HiStar } from "react-icons/hi";
+import { FaBars, FaRegHeart } from "react-icons/fa";
 
 export const GigCard = ({ gig, lazyLoad }) => {
   // console.log(gig.pricing)
@@ -36,15 +38,15 @@ export const GigCard = ({ gig, lazyLoad }) => {
           <h2 className="gig-title">{gig.title}</h2>
         </Link>
         <div className="ratings-container">
-          <i className="fa-solid fa-star"></i>
+          <HiStar />
           <span className="ratings">{gig.ratings.toFixed(1)}</span>
           <span className="no-of-reviews">({gig.numOfReviews})</span>
         </div>
 
         <div className="action-price-container">
           <div className="add-to-list-container">
-            <i className="fa-solid fa-bars bars"></i>
-            <i className="fa-solid fa-heart"></i>
+            <FaBars style={{ display: "inline" }} />
+            <FaRegHeart style={{ display: "inline" }} />
           </div>
           <Link to={`/gig/details/${gig._id}`}>
             <div className="price-container">

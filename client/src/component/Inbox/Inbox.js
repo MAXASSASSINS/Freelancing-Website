@@ -48,7 +48,9 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { Avatar } from "../Avatar/Avatar";
 import Cookies from "js-cookie";
-import { IoDocumentOutline } from "react-icons/io5";
+import { IoClose, IoDocumentOutline } from "react-icons/io5";
+import { FaEllipsisH, FaPaperclip, FaPlane, FaRegPaperPlane, FaSearch } from "react-icons/fa";
+import { BiChevronLeft } from "react-icons/bi";
 
 export const Inbox = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
@@ -582,7 +584,7 @@ export const Inbox = () => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
-      if(data.orderId) return;
+      if (data.orderId) return;
       console.log("receive message is running");
       const messageData = data;
       const { message, sender, receiver } = data;
@@ -621,7 +623,7 @@ export const Inbox = () => {
   useEffect(() => {
     // console.log("receive message self is running");
     socket.on("receive_message_self", async (data) => {
-      if(data.orderId) return;
+      if (data.orderId) return;
       // console.log("receive message is running");
       const messageData = data;
       const { message, sender, receiver } = data;
@@ -783,7 +785,7 @@ export const Inbox = () => {
             spellCheck={false}
             placeholder="Search for a username"
           ></input>
-          <i className="fas fa-search"></i>
+          <FaSearch />
         </div>
         <ul className="client-list-ul">
           {onlineStatusOfClients &&
@@ -913,7 +915,7 @@ export const Inbox = () => {
                       className="inbox-message-list-header-icon"
                       onClick={() => setHideMessageListOnSmallDevices(true)}
                     >
-                      <i className="fa-solid fa-chevron-left"></i>
+                      <BiChevronLeft />
                     </div>
                     <h2>
                       <div className="inbox-client-name">
@@ -949,7 +951,7 @@ export const Inbox = () => {
                       </div>
                     </h2>
                     <div className="inbox-message-list-header-icon">
-                      <i className="fa-solid fa-ellipsis"></i>
+                      <FaEllipsisH />
                     </div>
                   </header>
                 </div>
@@ -965,21 +967,13 @@ export const Inbox = () => {
                         className="inbox-message-list-info"
                         key={index + item.message}
                       >
-                        {item.sender.avatar.url ? (
-                          <img
-                            className="inbox-message-list-user-profile-image"
-                            src={item.sender.avatar.url}
-                          ></img>
-                        ) : (
-                          <div>
-                            <i
-                              className={
-                                "fa-solid fa-" +
-                                item.sender.name[0].toLowerCase()
-                              }
-                            ></i>
-                          </div>
-                        )}
+                        <div className="mr-2">
+                          <Avatar
+                            avatarUrl={item.sender.avatar.url}
+                            userName={item.sender.name}
+                            width="2rem"
+                          />
+                        </div>
                         <div className="inbox-messages-list-sender-info">
                           <div className="inbox-messages-list-sender-details">
                             <div className="inbox-messages-list-sender-name">
@@ -1072,20 +1066,11 @@ export const Inbox = () => {
                     ))}
                     {fileLoading && (
                       <div className="inbox-message-list-info">
-                        {user.avatar.url ? (
-                          <img
-                            className="inbox-message-list-user-profile-image"
-                            src={user.avatar.url}
-                          ></img>
-                        ) : (
-                          <div className="inbox-lazy-loading-user-icon">
-                            <i
-                              className={
-                                "fa-solid fa-" + user.name[0].toLowerCase()
-                              }
-                            ></i>
-                          </div>
-                        )}
+                        <Avatar 
+                          avatarUrl={user.avatar.url}
+                          userName={user.name}
+                          width="2rem"
+                        />
                         <div className="inbox-messages-list-sender-info">
                           <div className="inbox-messages-list-sender-details">
                             <div className="inbox-messages-list-sender-name">
@@ -1126,7 +1111,7 @@ export const Inbox = () => {
                                   type="button"
                                   onClick={handleFileClickedRemoval(file.id)}
                                 >
-                                  <i className="fa-solid fa-xmark"></i>
+                                  <IoClose />
                                 </button>
                               </li>
                             ))}
@@ -1180,7 +1165,7 @@ export const Inbox = () => {
                         data-tooltip-id="my-tooltip"
                       >
                         <label htmlFor="chat-inbox-input-file">
-                          <i className="fa-solid fa-paperclip"></i>
+                          <FaPaperclip/>
                         </label>
                         <input
                           onChange={handleSelectionOfFiles}
@@ -1200,7 +1185,7 @@ export const Inbox = () => {
                           message.length > 0 || isFilePicked ? "1" : "0.4",
                       }}
                     >
-                      <i className="fa-regular fa-paper-plane"></i>
+                      <FaRegPaperPlane style={{display: "inline"}}/>
                       &nbsp; Send Message
                     </button>
                   </footer>

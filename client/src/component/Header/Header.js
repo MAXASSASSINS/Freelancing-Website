@@ -15,6 +15,7 @@ import { Avatar } from "../Avatar/Avatar";
 import { FaRegEnvelope } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { BiUserCircle } from "react-icons/bi";
+import { AiOutlineSearch } from "react-icons/ai";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ export const Header = () => {
             placeholder="Find services"
             autoComplete="off"
           ></input>
-          <i className="fa-solid fa-magnifying-glass search-icon"></i>
+          <AiOutlineSearch className="search-icon" />
         </form>
 
         <div className="navigation-icons">

@@ -3,6 +3,8 @@ import Picker from "@emoji-mart/react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket/socket";
+import { IoClose } from "react-icons/io5";
+import { FaPaperclip, FaRegPaperPlane } from "react-icons/fa";
 
 export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
   
@@ -128,7 +130,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
                       type="button"
                       onClick={handleFileClickedRemoval(file.id)}
                     >
-                      <i className="fa-solid fa-xmark"></i>
+                      <IoClose />
                     </button>
                   </li>
                 ))}
@@ -175,7 +177,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
               data-tooltip-id="my-tooltip"
             >
               <label className="p-2">
-                <i className="fa-solid fa-paperclip"></i>
+                <FaPaperclip />
                 <input
                   onChange={handleSelectionOfFiles}
                   multiple={true}
@@ -195,7 +197,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
               opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
             }}
           >
-            <i className="fa-regular fa-paper-plane"></i>
+            <FaRegPaperPlane className="inline" />
             &nbsp; Send
           </button>
         </div>

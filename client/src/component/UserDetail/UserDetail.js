@@ -14,6 +14,9 @@ import { ReviewList } from "../ReviewList/ReviewList";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { windowContext } from "../../App";
 import { Avatar } from "../Avatar/Avatar";
+import { FaBars, FaHeart, FaPaperPlane, FaRegPaperPlane, FaStar, FaUser } from "react-icons/fa";
+import { IoLocationSharp } from "react-icons/io5";
+import { AiOutlineUser } from "react-icons/ai";
 
 export const UserDetail = () => {
   const navigate = useNavigate();
@@ -73,8 +76,8 @@ export const UserDetail = () => {
           <div className="user-info-large-screen-border first-div">
             <div className="user-info-wrapper">
               <div className="user-info-list-icon">
-                <i className="fa-solid fa-bars bars"></i>
-                <i className="fa-solid fa-heart"></i>
+                <FaBars className="inline" />
+                <FaHeart className="inline" />
               </div>
               <div className="user-detail user-profile-pic">
                 <Avatar
@@ -106,14 +109,16 @@ export const UserDetail = () => {
               <ul>
                 <li>
                   <span>
-                    <i className="fa-solid fa-location-dot"></i> From
+                    <IoLocationSharp className="inline" />
+                    From
                   </span>
                   <p>{gigUser.country}</p>
                 </li>
                 <li>
                   <span>
-                    {" "}
-                    <i className="fa-solid fa-user"></i> Member Since
+                    <FaUser className="inline"/>
+                    Member Since
+
                   </span>
                   <p>
                     <Moment format="MMM YYYY">{gigUser.userSince}</Moment>
@@ -122,7 +127,7 @@ export const UserDetail = () => {
                 <li>
                   <span>
                     {" "}
-                    <i className="fa-solid fa-paper-plane"></i> Last Delivery
+                    <FaPaperPlane className="inline" /> Last Delivery
                   </span>
                   <p>2 months</p>
                 </li>
@@ -272,7 +277,7 @@ export const UserDetail = () => {
                 </span>{" "}
                 &nbsp; &nbsp;
                 <div className="user-detail-review-rating-stars">
-                  <i className="fas fa-star"></i>
+                  <FaStar />
                   <RatingStars rating={gigUser.ratings}></RatingStars>
                   &nbsp; &nbsp;
                 </div>
