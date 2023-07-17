@@ -149,11 +149,11 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
         />
 
         <div className="relative w-full flex items-center justify-between mt-4">
-          <div className="flex">
+          <div className="flex items-center gap-4">
             <div
               onClick={handleEmojiPickerHideOrShow}
               ref={emojiPickerOpenerIconRef}
-              className="text-2xl text-light_heading mr-4 rounded-full p-2 hover:bg-off_white hover:text-primary hover:cursor-pointer inbox"
+              className="text-2xl flex justify-center items-center w-10 h-10 text-light_heading  rounded-full hover:bg-off_white hover:text-primary hover:cursor-pointer"
             >
               <div>
                 <BsEmojiSmile />
@@ -171,13 +171,12 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
               )}
             </div>
             <div
-              className="text-2xl text-light_heading mr-4 rounded-full hover:bg-off_white hover:text-primary hover:cursor-pointer [&>*]:hover:cursor-pointer"
               data-tooltip-content="Max 5GB"
               data-tooltip-place="top"
               data-tooltip-id="my-tooltip"
             >
-              <label className="p-2">
-                <FaPaperclip />
+              <label className="text-2xl flex justify-center items-center w-10 h-10 text-light_heading rounded-full hover:bg-off_white hover:text-primary hover:cursor-pointer [&>*]:hover:cursor-pointer">
+                <FaPaperclip className="inline" />
                 <input
                   onChange={handleSelectionOfFiles}
                   multiple={true}

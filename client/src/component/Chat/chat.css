@@ -313,7 +313,7 @@
 
 .chat-content > footer {
   width: 100%;
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -321,15 +321,21 @@
 
 .chat-content > footer > div {
   display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .chat-emoji,
 .chat-attachment {
   font-size: 1.5rem;
   color: var(--light-heading);
-  margin-right: 1rem;
   padding: 0.5rem;
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .chat-emoji:hover,
@@ -342,6 +348,11 @@
 .chat-emoji > *:hover,
 .chat-attachment > *:hover {
   cursor: pointer;
+}
+
+.chat-emoji-picker-wrapper {
+  position: absolute;
+  bottom: 8rem;
 }
 
 .chat-content > footer > button {

@@ -439,14 +439,21 @@
 
 .inbox-message-list-section-3 > footer > div {
   display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .inbox-emoji,
 .inbox-attachment {
   font-size: 1.5rem;
   color: var(--light-heading);
-  margin-right: 1rem;
   border-radius: 50%;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .inbox-emoji {

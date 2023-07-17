@@ -1159,12 +1159,11 @@ export const Inbox = () => {
                         )}
                       </div>
                       <div
-                        className="inbox-attachment"
                         data-tooltip-content="Max 5GB"
                         data-tooltip-place="top"
                         data-tooltip-id="my-tooltip"
                       >
-                        <label htmlFor="chat-inbox-input-file">
+                        <label className="inbox-attachment" htmlFor="chat-inbox-input-file">
                           <FaPaperclip/>
                         </label>
                         <input

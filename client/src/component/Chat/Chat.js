@@ -24,7 +24,7 @@ import { downloadFile } from "../../utility/util";
 import { BsEmojiSmile } from "react-icons/bs";
 import { Avatar } from "../Avatar/Avatar";
 import { ImAttachment } from "react-icons/im";
-import { FaRegPaperPlane } from "react-icons/fa";
+import { FaPaperclip, FaRegPaperPlane } from "react-icons/fa";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
@@ -648,15 +648,16 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         </main>
         <footer>
           <div>
-            <div className="chat-emoji contact-seller-emoji-picker">
-              <div
-                ref={emojiPickerOpenerIconRef}
-                onClick={handleEmojiPickerHideOrShow}
-              >
-                <div>
-                  <BsEmojiSmile />
-                </div>
+            <div
+              ref={emojiPickerOpenerIconRef}
+              onClick={handleEmojiPickerHideOrShow}
+              className="chat-emoji contact-seller-emoji-picker"
+            >
+              <div>
+                <BsEmojiSmile />
               </div>
+            </div>
+            <div className="chat-emoji-picker-wrapper">
               {showEmojiPicker && (
                 <Picker
                   onEmojiSelect={handleEmojiClick}
@@ -667,17 +668,21 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                 />
               )}
             </div>
-            <div className="chat-attachment">
-              <label htmlFor="chat-input-file">
-                <ImAttachment />
+            <div
+              data-tooltip-content="Max 5GB"
+              data-tooltip-place="top"
+              data-tooltip-id="my-tooltip"
+            >
+              <label className="chat-attachment" htmlFor="chat-input-file">
+                <FaPaperclip />
+                <input
+                  onChange={handleSelectionOfFiles}
+                  id="chat-input-file"
+                  multiple={true}
+                  type="file"
+                  hidden={true}
+                ></input>
               </label>
-              <input
-                onChange={handleSelectionOfFiles}
-                id="chat-input-file"
-                multiple={true}
-                type="file"
-                hidden={true}
-              ></input>
             </div>
           </div>
           <button
@@ -687,7 +692,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
             }}
           >
-            <FaRegPaperPlane style={{display: "inline"}}/>
+            <FaRegPaperPlane style={{ display: "inline" }} />
             &nbsp; Send Message
           </button>
         </footer>
