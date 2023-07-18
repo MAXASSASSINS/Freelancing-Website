@@ -24,7 +24,8 @@ import { downloadFile } from "../../utility/util";
 import { BsEmojiSmile } from "react-icons/bs";
 import { Avatar } from "../Avatar/Avatar";
 import { ImAttachment } from "react-icons/im";
-import { FaPaperclip, FaRegPaperPlane } from "react-icons/fa";
+import { FaRegPaperPlane } from "react-icons/fa";
+import { FiPaperclip } from "react-icons/fi";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
@@ -674,7 +675,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               data-tooltip-id="my-tooltip"
             >
               <label className="chat-attachment" htmlFor="chat-input-file">
-                <FaPaperclip />
+                <FiPaperclip />
                 <input
                   onChange={handleSelectionOfFiles}
                   id="chat-input-file"
