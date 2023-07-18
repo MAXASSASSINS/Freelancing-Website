@@ -118,9 +118,8 @@ export const OrderDetail = () => {
             </div>
 
             <div className="flex flex-col gap-8">
-              {{
-                /* orderDetail.seller._id  && orderDetail.status === 'In Progress' && */
-              } &&
+              {orderDetail.seller._id === user._id &&
+                (orderDetail.status === "In Progress" || orderDetail.status === "In Revision") &&
                 windowWidth > 900 && (
                   <DeliveryTimer orderDetail={orderDetail} />
                 )}
@@ -131,4 +130,5 @@ export const OrderDetail = () => {
       </div>
     </div>
   );
+
 };
