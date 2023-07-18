@@ -86,6 +86,20 @@ export const runSocket = (server) => {
       socket.emit("online_status_of_all_clients_from_server", onlineStatusList);
     });
 
+    socket.on("update_order_detail", async (data) => {
+
+      const receiverSocketIds = onlineUserList.get(data.seller._id.toString());
+      const senderSocketIds = onlineUserList.get(data.buyer._id.toString());
+
+      receiverSocketIds?.forEach((receiverSocketId) => {
+        io.to(receiverSocketId).emit("update_order_detail_server", data);
+      });
+
+      senderSocketIds?.forEach((senderSocketId) => {
+        io.to(senderSocketId).emit("update_order_detail_server", data);
+      });
+    });
+
     socket.on("disconnect", () => {
       console.log("disconnect", socket.id);
       const userId = getUserBySocketId(socket.id);
