@@ -7,7 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket/socket";
 import { updateOrderDetail } from "../../actions/orderAction";
 
-export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
+export const ChatBox = ({
+  setFileLoading,
+  isDeliveryMessage = false,
+  isRevisionMessage = false,
+}) => {
   const dispatch = useDispatch();
 
   const { user, isAuthenticated, userLoading, userError } = useSelector(
@@ -44,11 +48,29 @@ export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
           forDelivery: true,
         };
         await handleSendMessageSocket(deliveryMessage, files);
+      } else if (isRevisionMessage) {
+        res = await addRevisionToOrder(message, files);
+        dispatch(updateOrderDetail(res.order));
+        const revision = res.order.revisions[res.order.revisions.length - 1];
+        const revisionMessage = {
+          _id: revision._id,
+          sender: orderDetail.buyer,
+          receiver: orderDetail.seller,
+          files: revision.files,
+          message: {
+            text: revision.message,
+          },
+          createdAt: revision.requestedAt,
+          orderId: orderDetail._id,
+          forRevision: true,
+        };
+        await handleSendMessageSocket(revisionMessage, files);
+
       } else {
         res = await addMessageToDatabase(message, files);
         await handleSendMessageSocket(res.newMessage, files);
       }
-      
+
       // send message to socket
     } catch (error) {
       console.log(error);
@@ -110,6 +132,24 @@ export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
     }
   };
 
+  // add revision to order
+  const addRevisionToOrder = async (message, files = []) => {
+    try {
+      const deliveryData = {
+        message,
+        files,
+      };
+      const { data } = await axios.post(
+        `/order/add/revision/${orderDetail._id}`,
+        deliveryData
+      );
+      // console.log(res);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const handleSendMessageSocket = async (message, files) => {
     const rec =
       user._id === orderDetail.buyer._id
@@ -140,7 +180,14 @@ export const ChatBox = ({ setFileLoading, isDeliveryMessage = false }) => {
 
   return (
     <div>
-      <OrderMessageInput handleSubmissionOfForm={sendChat} />
+      <OrderMessageInput
+        handleSubmissionOfForm={sendChat}
+        placeholder={
+          isRevisionMessage
+            ? "Specifying what you'de like to change will help the seller perfect your project."
+            : null
+        }
+      />
     </div>
   );
 };
