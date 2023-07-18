@@ -49,8 +49,9 @@ import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { Avatar } from "../Avatar/Avatar";
 import Cookies from "js-cookie";
 import { IoClose, IoDocumentOutline } from "react-icons/io5";
-import { FaEllipsisH, FaPaperclip, FaPlane, FaRegPaperPlane, FaSearch } from "react-icons/fa";
+import { FaEllipsisH, FaRegPaperPlane, FaSearch } from "react-icons/fa";
 import { BiChevronLeft } from "react-icons/bi";
+import { FiPaperclip } from "react-icons/fi";
 
 export const Inbox = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
@@ -1164,7 +1165,7 @@ export const Inbox = () => {
                         data-tooltip-id="my-tooltip"
                       >
                         <label className="inbox-attachment" htmlFor="chat-inbox-input-file">
-                          <FaPaperclip/>
+                          <FiPaperclip />
                         </label>
                         <input
                           onChange={handleSelectionOfFiles}
