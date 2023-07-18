@@ -230,7 +230,7 @@ export const UserDetail = () => {
             </div>
           )}
           <div className="user-detail-gig-list-container">
-            <h2>saba_parveen's Gigs</h2>
+            <h2>{gigUser.name}'s Gigs</h2>
             <div className="user-detail-gig-list">
               {active
                 ? userGigs &&
