@@ -6,7 +6,7 @@ import Moment from "react-moment";
 import { GrDocument } from "react-icons/gr";
 import { IoDocumentOutline } from "react-icons/io5";
 import { RiRocket2Line } from "react-icons/ri";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { GoPencil } from "react-icons/go";
 import { BiTimeFive } from "react-icons/bi";
 import { Avatar } from "../Avatar/Avatar";
@@ -20,9 +20,12 @@ import { SocketContext } from "../../context/socket/socket";
 import { DeliveryTimer } from "./DeliveryTimer";
 import { ChatBox } from "./ChatBox";
 import { FiPackage } from "react-icons/fi";
+import DeliveryApproval from "./DeliveryApproval";
+import { updateOrderDetail } from "../../actions/orderAction";
 
 export const Activities = ({ orderDetail }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
@@ -108,12 +111,11 @@ export const Activities = ({ orderDetail }) => {
       if (data.orderId !== params.id) {
         return;
       }
-      
-      if(data.forDelivery){
-        console.log(orderDetail.deliveries.length);
-        data = {...data, deliveryNumber: orderDetail.deliveries.length + 1};
-      }
 
+      if (data.forDelivery) {
+        console.log(orderDetail.deliveries.length);
+        data = { ...data, deliveryNumber: orderDetail.deliveries.length + 1 };
+      }
 
       setOrderMessages((prev) => {
         const date = new Date(data.createdAt)
@@ -151,11 +153,11 @@ export const Activities = ({ orderDetail }) => {
 
         if (data.orderId !== params.id) {
           return;
-        }
+        }          
 
-        if(data.forDelivery){
+        if (data.forDelivery) {
           console.log(orderDetail.deliveries.length);
-          data = {...data, deliveryNumber: orderDetail.deliveries.length};
+          data = { ...data, deliveryNumber: orderDetail.deliveries.length };
         }
 
         setOrderMessages((prev) => {
@@ -185,6 +187,15 @@ export const Activities = ({ orderDetail }) => {
       socket.off("receive_message_self");
     };
   }, [fileLoading, socket, orderDetail]);
+
+  // CHECKING FOR UPDATES ON ORDER DETAIL
+  useEffect(() => {
+    socket.on("update_order_detail_server", (data) => {
+      dispatch(updateOrderDetail(data));
+    });
+  },[fileLoading, socket]);
+
+
 
   const getOrderMessages = async () => {
     try {
@@ -263,6 +274,15 @@ export const Activities = ({ orderDetail }) => {
 
     map = new Map([...map.entries()].sort());
 
+    map = new Map(
+      [...map.entries()].map(([key, value]) => {
+        const newEntry = value.sort((a, b) => {
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        });
+        return [key, newEntry];
+      })
+    );
+
     map = Array.from(map, ([date, dateWiseMessages]) => ({
       date,
       dateWiseMessages,
@@ -281,9 +301,13 @@ export const Activities = ({ orderDetail }) => {
 
   return (
     <>
-      <div className="mb-8 min-[900px]:hidden">
-        <DeliveryTimer orderDetail={orderDetail} />
-      </div>
+      {orderDetail.seller._id === user._id &&
+        (orderDetail.status === "In Progress" ||
+          orderDetail.status === "In Revision") && (
+          <div className="mb-8 min-[900px]:hidden">
+            <DeliveryTimer orderDetail={orderDetail} />
+          </div>
+        )}
       <div className="bg-white relative py-8 text-sm sm:text-base">
         <DataSendingLoading
           show={fileLoading}
@@ -611,6 +635,156 @@ export const Activities = ({ orderDetail }) => {
                         </div>
                       </div>
                     </div>
+                  ) : message.forRevision ? (
+                    <div className="">
+                      <div
+                        key={message._id}
+                        className="flex items-center gap-4 font-semibold text-light_heading"
+                      >
+                        <div className="p-2 aspect-square bg-pink-100 text-pink-400 rounded-full">
+                          <FiPackage />
+                        </div>
+                        <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                          <span className="mr-2">
+                            {message.sender._id === user._id ? (
+                              "You requested a revision"
+                            ) : (
+                              <>
+                                <Link
+                                  to={`/user/${message.sender._id}`}
+                                  className="text-primary hover:underline"
+                                >
+                                  {message.sender.name}
+                                </Link>
+                                &nbsp; requested a revision
+                              </>
+                            )}
+                          </span>
+                          <span className="text-icons font-normal text-xs">
+                            <Moment format="MMM DD, H:mm A">
+                              {message.createdAt}
+                            </Moment>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="border mr-6 rounded mt-4">
+                        <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
+                          Revision
+                        </div>
+                        <div className="p-4">
+                          <div
+                            key={message._id}
+                            className="flex items-center gap-4 font-semibold text-light_heading"
+                          >
+                            <div className="aspect-square rounded-full">
+                              <Avatar
+                                avatarUrl={message.sender.avatar.url}
+                                userName={message.sender.name}
+                                width="1.75rem"
+                                fontSize="1rem"
+                                alt={message.sender.name}
+                              />
+                            </div>
+                            <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                              <span className="mr-2">
+                                {message.sender._id === user._id ? (
+                                  "Your message"
+                                ) : (
+                                  <>
+                                    <Link
+                                      to={`/user/${message.sender._id}`}
+                                      className="text-primary hover:underline"
+                                    >
+                                      {message.sender.name}
+                                    </Link>
+                                    's message
+                                  </>
+                                )}
+                              </span>
+                              <span className="text-icons font-normal text-xs">
+                                <Moment format="MMM DD, H:mm A">
+                                  {message.createdAt}
+                                </Moment>
+                              </span>
+                            </div>
+                          </div>
+                          <div className="ml-11 pb-4">
+                            <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                              {message.message.text}
+                            </p>
+                            <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
+                              {message.files?.map((file, index) => (
+                                <div key={index} className="">
+                                  <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] overflow-hidden min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
+                                    {file.type.includes("video") ? (
+                                      <a
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener"
+                                      >
+                                        <LazyVideo
+                                          file={file}
+                                          maxWidth={
+                                            windowWidth > 1024 ? 240 : 160
+                                          }
+                                        />
+                                      </a>
+                                    ) : file.type.includes("image") ? (
+                                      <a
+                                        href={file.url}
+                                        target="_blank"
+                                        rel="noopener"
+                                      >
+                                        <LazyImage
+                                          file={file}
+                                          maxWidth={
+                                            windowWidth > 1024 ? 240 : 160
+                                          }
+                                        />
+                                      </a>
+                                    ) : file.type.includes("audio") ? (
+                                      <audio
+                                        className="max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                                        preload="none"
+                                        controls
+                                        src={file.url}
+                                      />
+                                    ) : (
+                                      <div className="bg-separator w-40 h-24 flex justify-center items-center text-5xl rounded min-[1000px]:w-48 min-[1000px]:h-28">
+                                        <div>
+                                          <IoDocumentOutline />
+                                        </div>
+                                      </div>
+                                    )}
+                                  </p>
+                                  <div
+                                    onClick={() =>
+                                      downloadFile(file.url, file.name)
+                                    }
+                                    className="max-w-[8rem] flex flex-col justify-between gap-2 cursor-pointer mt-2 text-xs bg-separator p-2 min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]"
+                                  >
+                                    <div className="flex justify-between items-center hover:cursor-pointer hover:text-primary">
+                                      <HiDownload />
+                                      <div
+                                        data-tooltip-id="my-tooltip"
+                                        data-tooltip-content={file.name}
+                                        data-tooltip-place="bottom"
+                                        className="w-[12ch] sm:w-[15ch] text-right whitespace-nowrap overflow-hidden"
+                                      >
+                                        {file.name}
+                                      </div>
+                                    </div>
+                                    <p className="text-right">
+                                      ({getFileSize(file.size ? file.size : 0)})
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <div className="">
                       <div
@@ -733,6 +907,11 @@ export const Activities = ({ orderDetail }) => {
                 )}
             </section>
           ))}
+
+        {orderDetail.buyer._id === user._id &&
+          orderDetail.status === "Delivered" && (
+            <DeliveryApproval setFileLoading={setFileLoading} />
+          )}
 
         <section className="relative pl-6 flex flex-col gap-4 pb-4">
           <div className="flex items-center gap-4 text-light_heading">
