@@ -48,6 +48,7 @@ export const ChatBox = ({
           forDelivery: true,
         };
         await handleSendMessageSocket(deliveryMessage, files);
+        await socket.emit("update_order_detail", res.order);
       } else if (isRevisionMessage) {
         res = await addRevisionToOrder(message, files);
         dispatch(updateOrderDetail(res.order));
@@ -65,7 +66,7 @@ export const ChatBox = ({
           forRevision: true,
         };
         await handleSendMessageSocket(revisionMessage, files);
-
+        await socket.emit("update_order_detail", res.order);
       } else {
         res = await addMessageToDatabase(message, files);
         await handleSendMessageSocket(res.newMessage, files);
