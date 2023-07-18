@@ -182,7 +182,10 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please add a message or a file", 400));
   }
 
-  let order = await Order.findById(req.params.id).populate("buyer", "email");
+  let order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email"
+  );
 
   const buyerEmail = order.buyer.email;
 
@@ -192,7 +195,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
 
   console.log(order.seller.toString(), req.user._id.toString());
 
-  if (order.seller.toString() !== req.user._id.toString()) {
+  if (order.seller._id.toString() !== req.user._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add delivery to this order",
@@ -205,8 +208,13 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Delivery date has passed", 400));
   }
 
-  if (order.status !== "In Progress") {
-    return next(new ErrorHandler("You can't deliver an order which is not in progress", 400));
+  if (order.status !== "In Progress" && order.status !== "In Revision") {
+    return next(
+      new ErrorHandler(
+        "You can only deliver an order which is in progress or in revision",
+        400
+      )
+    );
   }
 
   order = await Order.findByIdAndUpdate(
@@ -223,14 +231,93 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
   const options = {
     to: buyerEmail,
     subject: "Order Delivered",
-    message: `Your order with order id ${order.orderId} has been delivered`,
+    message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   };
   // console.log(options);
-  await sendEmail(options);
+  // await sendEmail(options);
 
   res.status(200).json({
     success: true,
     message: "Sucessfully added your order delivery",
+    order,
+  });
+});
+
+// add order revision
+export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
+  const { message, files } = req.body;
+
+  if (!message && !files?.length) {
+    return next(new ErrorHandler("Please add a message or a file", 400));
+  }
+
+  let order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email"
+  );
+
+  const sellerEmail = order.seller.email;
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
+  if (order.buyer._id.toString() !== req.user._id.toString()) {
+    return next(
+      new ErrorHandler(
+        "You are not authorized to add revision to this order",
+        401
+      )
+    );
+  }
+
+  if (order.deliveryDate < Date.now()) {
+    return next(
+      new ErrorHandler("Order already passed its expected delivery date", 400)
+    );
+  }
+
+  if (order.status !== "Delivered") {
+    return next(
+      new ErrorHandler(
+        "You can only request a revision if your order is delivered",
+        400
+      )
+    );
+  }
+
+  console.log(order.revisions.length, order.packageDetails.revisions);
+  if (order.revisions.length > order.packageDetails.revisions) {
+    return next(
+      new ErrorHandler(
+        "You have already requested the maximum number of revisions",
+        400
+      )
+    );
+  }
+
+  order = await Order.findByIdAndUpdate(
+    req.params.id,
+    { $push: { revisions: { message, files } }, status: "In Revision" },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  ).populate("seller buyer", "name email avatar");
+
+  // send email to buyer
+  const options = {
+    to: sellerEmail,
+    subject: "Revision Requested",
+    message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
+  };
+  // console.log(options);
+  // await sendEmail(options);
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully added your order revision",
     order,
   });
 });

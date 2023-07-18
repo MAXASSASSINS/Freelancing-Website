@@ -11,6 +11,7 @@ import {
   deleteAllOrders,
   updateOrderRequirements,
   addOrderDelivery,
+  addOrderRevision,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -36,6 +37,7 @@ router.put(
 router.put("/order/update/:id", isAuthenticated, updateOrder);
 router.put("/order/update/requirements/:id", isAuthenticated, updateOrderRequirements);
 router.post("/order/add/delivery/:id", isAuthenticated, addOrderDelivery);
+router.post("/order/add/revision/:id", isAuthenticated, addOrderRevision);
 
 router.delete("/orders/delete", deleteAllOrders);
 
