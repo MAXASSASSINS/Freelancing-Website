@@ -4,10 +4,16 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket/socket";
 import { IoClose } from "react-icons/io5";
-import { FaPaperclip, FaRegPaperPlane } from "react-icons/fa";
+import { FaRegPaperPlane } from "react-icons/fa";
+import { GrAttachment } from "react-icons/gr";
+import { RiAttachment2 } from "react-icons/ri";
+import { FiPaperclip } from "react-icons/fi";
 
-export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
+
+
+export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeholder }) => {
   
+  const defaultPlaceholder = "Type your message here...";
 
   const inputFileRef = useRef(null);
   const emojiPickerOpenerIconRef = useRef(null);
@@ -143,7 +149,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
           maxLength={2500}
           onChange={handleTextAreaChange}
           value={message}
-          placeholder="Type your message here..."
+          placeholder={placeholder || defaultPlaceholder}
           spellCheck={false}
           onBlur={(e) => (e.target.parentElement.style.borderColor = "#a6a5a5")}
         />
@@ -176,7 +182,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm }) => {
               data-tooltip-id="my-tooltip"
             >
               <label className="text-2xl flex justify-center items-center w-10 h-10 text-light_heading rounded-full hover:bg-off_white hover:text-primary hover:cursor-pointer [&>*]:hover:cursor-pointer">
-                <FaPaperclip className="inline" />
+                <FiPaperclip className="inline" />
                 <input
                   onChange={handleSelectionOfFiles}
                   multiple={true}
