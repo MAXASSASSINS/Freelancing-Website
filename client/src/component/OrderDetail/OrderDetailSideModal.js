@@ -7,8 +7,6 @@ import { LazyImage } from "../LazyImage/LazyImage";
 
 export const OrderDetailSideModal = ({ orderDetail }) => {
 
-  orderDetail.status = "Delivered"
-
   const statusColor = () => {
     switch (orderDetail.status) {
       case "Pending":
