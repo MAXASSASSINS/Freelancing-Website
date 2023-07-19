@@ -7,6 +7,7 @@ import Features from "../utils/features.js";
 import axios from "axios";
 import cloudinary from "cloudinary";
 import fs from "fs";
+import Order from "../models/orderModel.js";
 
 import multer from "multer";
 
@@ -25,6 +26,45 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
   // console.log(req.body);
   // return;
+
+  if (message?.length == 0 && files?.length === 0) {
+    return next(
+      new ErrorHandler("Please enter a message or upload a file", 400)
+    );
+  }
+
+  if (from.toString() === to.toString()) {
+    return next(new ErrorHandler("You can't send message to yourself", 400));
+  }
+
+  const newMessage = await Message.create({
+    message: {
+      text: message,
+    },
+    users: [from, to],
+    sender: from,
+    receiver: to,
+    files,
+    orderId,
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Successfully added your message",
+    newMessage,
+  });
+});
+
+export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
+  const { from, to, message, files, orderId } = req.body;
+
+  const order = await Order.findById(orderId);
+
+  if (order.status === "Completed" || order.status === "Pending" || order.status === "Cancelled") {
+    return next(
+      new ErrorHandler("Order is either not started or completed or cancelled", 400)
+    );
+  }
 
   if (message?.length == 0 && files?.length === 0) {
     return next(
