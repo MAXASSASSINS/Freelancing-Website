@@ -153,7 +153,7 @@ export const Activities = ({ orderDetail }) => {
 
         if (data.orderId !== params.id) {
           return;
-        }          
+        }
 
         if (data.forDelivery) {
           console.log(orderDetail.deliveries.length);
@@ -193,9 +193,7 @@ export const Activities = ({ orderDetail }) => {
     socket.on("update_order_detail_server", (data) => {
       dispatch(updateOrderDetail(data));
     });
-  },[fileLoading, socket]);
-
-
+  }, [fileLoading, socket]);
 
   const getOrderMessages = async () => {
     try {
@@ -257,8 +255,8 @@ export const Activities = ({ orderDetail }) => {
       for (const revision of revisions) {
         const message = {
           _id: revision._id,
-          sender: orderDetail.seller,
-          receiver: orderDetail.buyer,
+          sender: orderDetail.buyer,
+          receiver: orderDetail.seller,
           files: revision.files,
           message: {
             text: revision.message,
@@ -538,7 +536,7 @@ export const Activities = ({ orderDetail }) => {
                             <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                               <span className="mr-2">
                                 {message.sender._id === user._id ? (
-                                  "Your message"
+                                  "Me"
                                 ) : (
                                   <>
                                     <Link
@@ -550,11 +548,6 @@ export const Activities = ({ orderDetail }) => {
                                     's message
                                   </>
                                 )}
-                              </span>
-                              <span className="text-icons font-normal text-xs">
-                                <Moment format="MMM DD, H:mm A">
-                                  {message.createdAt}
-                                </Moment>
                               </span>
                             </div>
                           </div>
@@ -669,7 +662,7 @@ export const Activities = ({ orderDetail }) => {
                       </div>
                       <div className="border mr-6 rounded mt-4">
                         <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
-                          Revision
+                          Revision Request
                         </div>
                         <div className="p-4">
                           <div
@@ -688,7 +681,7 @@ export const Activities = ({ orderDetail }) => {
                             <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                               <span className="mr-2">
                                 {message.sender._id === user._id ? (
-                                  "Your message"
+                                  "Me"
                                 ) : (
                                   <>
                                     <Link
@@ -700,11 +693,6 @@ export const Activities = ({ orderDetail }) => {
                                     's message
                                   </>
                                 )}
-                              </span>
-                              <span className="text-icons font-normal text-xs">
-                                <Moment format="MMM DD, H:mm A">
-                                  {message.createdAt}
-                                </Moment>
                               </span>
                             </div>
                           </div>
@@ -913,43 +901,48 @@ export const Activities = ({ orderDetail }) => {
             <DeliveryApproval setFileLoading={setFileLoading} />
           )}
 
-        <section className="relative pl-6 flex flex-col gap-4 pb-4">
-          <div className="flex items-center gap-4 text-light_heading">
-            <div className="aspect-square rounded-full">
-              <Avatar
-                avatarUrl={user.avatar.url}
-                userName={user.name}
-                width="1.75rem"
-                fontSize="1rem"
-                alt={user.name}
-              />
-            </div>
-            <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
-              <span className="mr-2 font-semibold text-primary">
-                Have something to share with &nbsp;
-                <Link
-                  to={`/user/${orderDetail.seller._id}`}
-                  className="text-primary hover:underline"
-                >
-                  {orderDetail.seller.name}
-                </Link>
-                ?
-              </span>
-              <span className="flex items-center gap-2">
-                <div
-                  className={`w-2 h-2 text-light_heading rounded-full ${
-                    online ? "bg-primary" : "bg-no_focus"
-                  }`}
-                ></div>
-                <div>Seller is {online ? "Online" : "Offline"}</div>
-              </span>
-            </div>
-          </div>
-        </section>
+        {orderDetail.status !== "Completed" &&
+          orderDetail.status !== "Cancelled" && (
+            <>
+              <section className="relative pl-6 flex flex-col gap-4 pb-4">
+                <div className="flex items-center gap-4 text-light_heading">
+                  <div className="aspect-square rounded-full">
+                    <Avatar
+                      avatarUrl={user.avatar.url}
+                      userName={user.name}
+                      width="1.75rem"
+                      fontSize="1rem"
+                      alt={user.name}
+                    />
+                  </div>
+                  <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
+                    <span className="mr-2 font-semibold text-primary">
+                      Have something to share with &nbsp;
+                      <Link
+                        to={`/user/${orderDetail.seller._id}`}
+                        className="text-primary hover:underline"
+                      >
+                        {orderDetail.seller.name}
+                      </Link>
+                      ?
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <div
+                        className={`w-2 h-2 text-light_heading rounded-full ${
+                          online ? "bg-primary" : "bg-no_focus"
+                        }`}
+                      ></div>
+                      <div>Seller is {online ? "Online" : "Offline"}</div>
+                    </span>
+                  </div>
+                </div>
+              </section>
 
-        <div className="px-6">
-          <ChatBox setFileLoading={(val) => setFileLoading(val)} />
-        </div>
+              <div className="px-6">
+                <ChatBox setFileLoading={(val) => setFileLoading(val)} />
+              </div>
+            </>
+          )}
       </div>
     </>
   );
