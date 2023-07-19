@@ -399,7 +399,8 @@ export const myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log("hello");
   const orders = await Order.find({ user: req.user._id })
     .populate("gig", "title images")
-    .populate("seller buyer", "name avatar");
+    .populate("seller buyer", "name avatar")
+    .sort("-createdAt");
   // console.log(orders);
 
   res.status(200).json({
