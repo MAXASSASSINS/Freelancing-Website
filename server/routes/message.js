@@ -2,6 +2,7 @@ import express from "express";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 import {
   addMessage,
+  addOrderMessage,
   deleteAllMessages,
   getAllMessagesBetweenTwoUsers,
   getAllMessagesForCurrentUser,
@@ -17,6 +18,9 @@ import { uploadMultipleFiles, uploadSingleFile } from "../utils/multer.js";
 const router = express.Router();
 
 router.post("/add/message", isAuthenticated, addMessage);
+router.post("/add/order/message/:id", isAuthenticated, addOrderMessage);
+
+
 router.post(
   "/get/all/messages/between/two/users",
   isAuthenticated,
