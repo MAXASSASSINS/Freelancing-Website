@@ -107,8 +107,10 @@ export const ChatBox = ({
         orderId: orderDetail._id,
       };
 
-      const { data } = await axios.post("/add/message", messageData);
-      console.log(data);
+      const { data } = await axios.post(
+        `/add/order/message/${orderDetail._id}`,
+        messageData
+      );
       return data;
     } catch (error) {
       throw error;
