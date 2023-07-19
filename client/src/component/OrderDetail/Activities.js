@@ -297,15 +297,6 @@ export const Activities = ({ orderDetail }) => {
 
   console.log(orderMessages);
 
-  console.log(
-    "order complete",
-    orderMessages.some((message) => {
-      return (
-        message.date === new Date(orderDetail.completedAt).toLocaleDateString()
-      );
-    })
-  );
-
   return (
     <>
       {orderDetail.seller._id === user._id &&
@@ -487,8 +478,22 @@ export const Activities = ({ orderDetail }) => {
             <section
               key={index}
               className="relative pl-6 flex flex-col gap-4 pb-16"
+              style={{
+                marginTop:
+                  obj.date ===
+                  new Date(
+                    orderDetail.requirementsSubmittedAt
+                  ).toLocaleDateString()
+                    ? "-2rem"
+                    : 0,
+              }}
             >
-              <DateTag left={"-1.5rem"} date={obj.date} />
+              {obj.date !==
+                new Date(
+                  orderDetail.requirementsSubmittedAt
+                ).toLocaleDateString() && (
+                <DateTag left={"-1.5rem"} date={obj.date} />
+              )}
 
               {obj.dateWiseMessages.length > 0 &&
                 obj.dateWiseMessages.map((message) =>
@@ -537,7 +542,7 @@ export const Activities = ({ orderDetail }) => {
                               <Avatar
                                 avatarUrl={message.sender.avatar.url}
                                 userName={message.sender.name}
-                                width="1.75rem"
+                                width="2rem"
                                 fontSize="1rem"
                                 alt={message.sender.name}
                               />
@@ -682,7 +687,7 @@ export const Activities = ({ orderDetail }) => {
                               <Avatar
                                 avatarUrl={message.sender.avatar.url}
                                 userName={message.sender.name}
-                                width="1.75rem"
+                                width="2rem"
                                 fontSize="1rem"
                                 alt={message.sender.name}
                               />
@@ -792,7 +797,7 @@ export const Activities = ({ orderDetail }) => {
                           <Avatar
                             avatarUrl={message.sender.avatar.url}
                             userName={message.sender.name}
-                            width="1.75rem"
+                            width="2rem"
                             fontSize="1rem"
                             alt={message.sender.name}
                           />
@@ -919,7 +924,7 @@ export const Activities = ({ orderDetail }) => {
                     <Avatar
                       avatarUrl={user.avatar.url}
                       userName={user.name}
-                      width="1.75rem"
+                      width="2rem"
                       fontSize="1rem"
                       alt={user.name}
                     />
