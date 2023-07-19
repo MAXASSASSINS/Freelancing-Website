@@ -322,6 +322,60 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// order completed
+export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
+  let order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email avatar"
+  );
+
+  const buyerEmail = order.buyer.email;
+  const sellerEmail = order.seller.email;
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
+  if (order.buyer._id.toString() !== req.user._id.toString()) {
+    return next(
+      new ErrorHandler("You are not authorized to complete this order", 401)
+    );
+  }
+
+  if (order.status !== "Delivered") {
+    return next(
+      new ErrorHandler("You can only complete an order which is delivered", 400)
+    );
+  }
+
+  order = await Order.findByIdAndUpdate(
+    req.params.id,
+    { status: "Completed",
+      completedAt: Date.now()
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  ).populate("seller buyer", "name email avatar");
+
+  // send email to buyer
+  const options = {
+    to: sellerEmail,
+    subject: "Order Completed",
+    message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
+  };
+  // console.log(options);
+  // await sendEmail(options);
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully completed your order",
+    order,
+  });
+});
+
 // Get single order
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(

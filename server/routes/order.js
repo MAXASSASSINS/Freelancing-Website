@@ -12,6 +12,7 @@ import {
   updateOrderRequirements,
   addOrderDelivery,
   addOrderRevision,
+  markOrderAsCompleted,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -38,6 +39,8 @@ router.put("/order/update/:id", isAuthenticated, updateOrder);
 router.put("/order/update/requirements/:id", isAuthenticated, updateOrderRequirements);
 router.post("/order/add/delivery/:id", isAuthenticated, addOrderDelivery);
 router.post("/order/add/revision/:id", isAuthenticated, addOrderRevision);
+router.post('/order/completed/:id', isAuthenticated, markOrderAsCompleted)
+
 
 router.delete("/orders/delete", deleteAllOrders);
 
