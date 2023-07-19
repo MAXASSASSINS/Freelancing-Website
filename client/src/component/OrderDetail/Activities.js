@@ -295,7 +295,16 @@ export const Activities = ({ orderDetail }) => {
     return map;
   };
 
-  // console.log(orderMessages);
+  console.log(orderMessages);
+
+  console.log(
+    "order complete",
+    orderMessages.some((message) => {
+      return (
+        message.date === new Date(orderDetail.completedAt).toLocaleDateString()
+      );
+    })
+  );
 
   return (
     <>
@@ -943,6 +952,48 @@ export const Activities = ({ orderDetail }) => {
               </div>
             </>
           )}
+
+        {orderDetail.status === "Completed" && (
+          <section
+            className="relative pl-6 flex flex-col gap-4 pb-12"
+            style={{
+              marginTop: orderMessages.some((message) => {
+                return (
+                  message.date ===
+                  new Date(orderDetail.completedAt).toLocaleDateString()
+                );
+              })
+                ? "-3rem"
+                : "0rem",
+            }}
+          >
+            {!orderMessages.some((message) => {
+              return (
+                message.date ===
+                new Date(orderDetail.completedAt).toLocaleDateString()
+              );
+            }) && (
+              <DateTag
+                left={"-1.5rem"}
+                date={new Date(orderDetail.completedAt).toLocaleDateString()}
+              />
+            )}
+
+            <div className="flex items-center gap-4 font-semibold text-light_heading">
+              <div className="p-2 aspect-square bg-purple-200 text-purple-600 rounded-full">
+                <IoDocumentOutline />
+              </div>
+              <div className="[&>*]:leading-5 py-2 pr-6 border-b flex-grow border-b-dark_separator">
+                <span className="mr-2">The order was completed</span>
+                <span className="text-icons font-normal text-xs">
+                  <Moment format="MMM DD, H:mm A">
+                    {orderDetail.completedAt}
+                  </Moment>
+                </span>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </>
   );
