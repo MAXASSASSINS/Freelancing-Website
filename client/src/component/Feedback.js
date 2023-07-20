@@ -5,7 +5,7 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { TextArea } from "./TextArea/TextArea";
 import { OrderDetailSideModal } from "./OrderDetail/OrderDetailSideModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderDetail } from "../actions/orderAction";
+import { getOrderDetail, updateOrderDetail } from "../actions/orderAction";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -55,9 +55,10 @@ export const Feedback = () => {
         comment: commentRef.current.currValue,
       };
       const { data } = await axios.post(
-        `/orders/${params.id}/feedback`,
+        `/order/${params.id}/buyer/feedback`,
         feedback
       );
+			// dispatch(updateOrderDetail(data));	
       console.log(data);
       navigate(`/orders/${params.id}`);
     } catch (error) {
