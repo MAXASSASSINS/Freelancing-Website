@@ -999,6 +999,14 @@ export const Activities = ({ orderDetail }) => {
             </div>
           </section>
         )}
+
+        <Link to={`/orders/${orderDetail._id}/feedback`}>
+          <div className="flex justify-end mx-6">
+            <button className="p-3 px-4 relative bg-primary hover:cursor-pointer hover:bg-primary_hover text-white rounded-sm">
+              Share Feedback
+            </button>
+          </div>
+        </Link>
       </div>
     </>
   );
