@@ -350,9 +350,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
 
   order = await Order.findByIdAndUpdate(
     req.params.id,
-    { status: "Completed",
-      completedAt: Date.now()
-    },
+    { status: "Completed", completedAt: Date.now() },
     {
       new: true,
       runValidators: true,
@@ -407,6 +405,54 @@ export const myOrders = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Sucessfully found your orders",
     orders,
+  });
+});
+
+// add buyer feedback
+export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
+  const { communication, service, recommend, comment } = req.body;
+
+  const order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email"
+  );
+
+  if (!order)
+    return next(new ErrorHandler("Order not found with this Id", 404));
+
+  if (order.buyer._id.toString() !== req.user._id.toString())
+    return next(
+      new ErrorHandler(
+        "You are not authorized to add feedback to this order",
+        401
+      )
+    );
+
+  if (order.status !== "Completed")
+    return next(
+      new ErrorHandler(
+        "You can only add feedback to an order which is completed",
+        400
+      )
+    );
+
+  const buyerFeedback = {
+    communication,
+    service,
+    recommend,
+    comment,
+  };
+
+  const updatedOrder = await Order.findByIdAndUpdate(
+    req.params.id,
+    { buyerFeedback },
+    { new: true, runValidators: true, useFindAndModify: false }
+  ).populate("seller buyer", "name email avatar");
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully added your feedback",
+    order: updatedOrder,
   });
 });
 

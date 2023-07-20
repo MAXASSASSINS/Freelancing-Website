@@ -13,6 +13,7 @@ import {
   addOrderDelivery,
   addOrderRevision,
   markOrderAsCompleted,
+  addBuyerFeedback,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -36,11 +37,15 @@ router.put(
 );
 
 router.put("/order/update/:id", isAuthenticated, updateOrder);
-router.put("/order/update/requirements/:id", isAuthenticated, updateOrderRequirements);
+router.put(
+  "/order/update/requirements/:id",
+  isAuthenticated,
+  updateOrderRequirements
+);
 router.post("/order/add/delivery/:id", isAuthenticated, addOrderDelivery);
 router.post("/order/add/revision/:id", isAuthenticated, addOrderRevision);
-router.post('/order/completed/:id', isAuthenticated, markOrderAsCompleted)
-
+router.post("/order/completed/:id", isAuthenticated, markOrderAsCompleted);
+router.post("/order/:id/buyer/feedback", isAuthenticated, addBuyerFeedback);
 
 router.delete("/orders/delete", deleteAllOrders);
 
