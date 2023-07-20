@@ -289,6 +289,37 @@ const orderSchema = new mongoose.Schema({
   cancelledAt: {
     type: Date,
   },
+  buyerFeedback: {
+    communication: {
+      type: Number,
+      min: 0,
+      max: 5,
+    },
+    service: {
+      type: Number,
+      min: 0,
+      max: 5,
+    },
+    recommend: {
+      type: Number,
+      min: 0,
+      max: 5,
+    },
+    comment: {
+      type: String,
+    },
+  },
+  sellerFeedback: {
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+    },
+    comment: {
+      type: String,
+    },
+  },
+
 });
 
 export default mongoose.model("Order", orderSchema);
