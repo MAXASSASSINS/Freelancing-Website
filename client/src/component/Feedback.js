@@ -36,6 +36,7 @@ export const Feedback = () => {
   const commentRef = useRef(null);
 
   useEffect(() => {
+    if (orderDetail?._id === params.id) return;
     dispatch(getOrderDetail(params.id));
   }, []);
 
@@ -58,8 +59,6 @@ export const Feedback = () => {
         `/order/${params.id}/buyer/feedback`,
         feedback
       );
-			// dispatch(updateOrderDetail(data));	
-      console.log(data);
       navigate(`/orders/${params.id}`);
     } catch (error) {
       console.log(error);
