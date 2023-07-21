@@ -308,6 +308,9 @@ const orderSchema = new mongoose.Schema({
     comment: {
       type: String,
     },
+    createdAt: {
+      type: Date,
+    },
   },
   sellerFeedback: {
     rating: {
@@ -317,6 +320,9 @@ const orderSchema = new mongoose.Schema({
     },
     comment: {
       type: String,
+    },
+    createdAt: {
+      type: Date,
     },
   },
 

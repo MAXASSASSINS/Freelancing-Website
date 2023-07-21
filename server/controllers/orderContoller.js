@@ -441,6 +441,7 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     service,
     recommend,
     comment,
+    createdAt: Date.now(),
   };
 
   const updatedOrder = await Order.findByIdAndUpdate(
