@@ -589,7 +589,7 @@ export const Activities = ({ orderDetail }) => {
                                 </span>
                               </div>
                             </div>
-                            <div className="ml-11 pb-4">
+                            <div className="ml-12 pb-4">
                               <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
                                 {message.message.text}
                               </p>
@@ -736,7 +736,7 @@ export const Activities = ({ orderDetail }) => {
                                 </span>
                               </div>
                             </div>
-                            <div className="ml-11 pb-4">
+                            <div className="ml-12 pb-4">
                               <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
                                 {message.message.text}
                               </p>
@@ -862,7 +862,7 @@ export const Activities = ({ orderDetail }) => {
                             </span>
                           </div>
                         </div>
-                        <div className="pt-2 ml-11 pb-4 border-b">
+                        <div className="pt-2 ml-12 pb-4 border-b">
                           <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
                             {message.message.text}
                           </p>
@@ -1134,7 +1134,7 @@ export const Activities = ({ orderDetail }) => {
                               </span>
                             </div>
                           </div>
-                          <div className="ml-11 pb-4">
+                          <div className="ml-12 pb-4">
                             <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
                               {orderDetail.buyerFeedback.comment}
                             </p>
