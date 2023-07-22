@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { Rating } from "@mui/material";
 import { FaRegStar, FaStar } from "react-icons/fa";
-import { TextArea } from "./TextArea/TextArea";
-import { OrderDetailSideModal } from "./OrderDetail/OrderDetailSideModal";
+import { TextArea } from "../TextArea/TextArea";
+import { OrderDetailSideModal } from "../OrderDetail/OrderDetailSideModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrderDetail, updateOrderDetail } from "../actions/orderAction";
+import { getOrderDetail, updateOrderDetail } from "../../actions/orderAction";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-export const Feedback = () => {
+export const BuyerFeedback = () => {
   const feedbackQuestions = [
     {
       title: "Communication with Seller",
