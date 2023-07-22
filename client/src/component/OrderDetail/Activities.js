@@ -24,10 +24,14 @@ import DeliveryApproval from "./DeliveryApproval";
 import { updateOrderDetail } from "../../actions/orderAction";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { Rating } from "@mui/material";
+import { TextArea } from "../TextArea/TextArea";
+import { SellerFeedback } from "../Feedback/SellerFeedback";
 
-export const Activities = ({ orderDetail }) => {
+export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const params = useParams();
+
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
@@ -40,7 +44,6 @@ export const Activities = ({ orderDetail }) => {
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
 
-  const params = useParams();
   // console.log(orderDetail);
   const [orderMessages, setOrderMessages] = useState([]);
 
@@ -1035,64 +1038,49 @@ export const Activities = ({ orderDetail }) => {
               </section>
 
               {orderDetail.buyer._id === user._id &&
-                (orderDetail.buyerFeedback ? (
-                  <section
-                    className="relative pl-6 flex flex-col gap-4 pb-12"
-                    style={{
-                      marginTop:
-                        new Date(
-                          orderDetail.completedAt
-                        ).toLocaleDateString() ===
-                        new Date(
-                          orderDetail.buyerFeedback.createdAt
-                        ).toLocaleDateString()
-                          ? "-2rem"
-                          : "0rem",
-                    }}
-                  >
-                    {new Date(orderDetail.completedAt).toLocaleDateString() !==
+                !orderDetail.buyerFeedback?.createdAt && (
+                  <Link to={`/orders/${orderDetail._id}/feedback`}>
+                    <div className="flex justify-end mx-6">
+                      <button className="p-3 px-4 relative bg-primary hover:cursor-pointer hover:bg-primary_hover text-white rounded-sm">
+                        Share Feedback
+                      </button>
+                    </div>
+                  </Link>
+                )}
+
+              {orderDetail.buyerFeedback && (
+                <section
+                  className="relative pl-6 flex flex-col gap-4 pb-16"
+                  style={{
+                    marginTop:
+                      new Date(orderDetail.completedAt).toLocaleDateString() ===
                       new Date(
                         orderDetail.buyerFeedback.createdAt
-                      ).toLocaleDateString() && (
-                      <DateTag
-                        left={"-1.5rem"}
-                        date={new Date(
-                          orderDetail.buyerFeedback.createdAt
-                        ).toLocaleDateString()}
-                      />
-                    )}
-                    <div className="">
-                      <div className="flex items-center gap-4 font-semibold text-light_heading">
-                        <div className="p-2 aspect-square bg-orange-100 text-gold rounded-full">
-                          <FaStar />
-                        </div>
-                        <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
-                          <span className="mr-2">
-                            {orderDetail.buyer._id === user._id ? (
-                              "You left a review"
-                            ) : (
-                              <>
-                                <Link
-                                  to={`/user/${orderDetail.buyer._id}`}
-                                  className="text-primary hover:underline"
-                                >
-                                  {orderDetail.buyer.name}
-                                </Link>
-                                &nbsp; gave you a review
-                              </>
-                            )}
-                          </span>
-                          <span className="text-icons font-normal text-xs">
-                            <Moment format="MMM DD, H:mm A">
-                              {orderDetail.buyerFeedback.createdAt}
-                            </Moment>
-                          </span>
-                        </div>
+                      ).toLocaleDateString()
+                        ? "-2rem"
+                        : "0rem",
+                  }}
+                >
+                  {new Date(orderDetail.completedAt).toLocaleDateString() !==
+                    new Date(
+                      orderDetail.buyerFeedback.createdAt
+                    ).toLocaleDateString() && (
+                    <DateTag
+                      left={"-1.5rem"}
+                      date={new Date(
+                        orderDetail.buyerFeedback.createdAt
+                      ).toLocaleDateString()}
+                    />
+                  )}
+                  <div className="border-b pb-6">
+                    <div className="flex items-center gap-4 font-semibold text-light_heading">
+                      <div className="p-2 aspect-square bg-orange-100 text-gold rounded-full">
+                        <FaStar />
                       </div>
-                      <div className="border mr-6 rounded mt-4">
-                        <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
+                      <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                        <span className="mr-2">
                           {orderDetail.buyer._id === user._id ? (
-                            "Your review"
+                            "You left a review"
                           ) : (
                             <>
                               <Link
@@ -1101,88 +1089,219 @@ export const Activities = ({ orderDetail }) => {
                               >
                                 {orderDetail.buyer.name}
                               </Link>
-                              's review
+                              &nbsp; gave you a review
                             </>
                           )}
-                        </div>
-                        <div className="p-4">
-                          <div className="flex items-center gap-4 font-semibold text-light_heading">
-                            <div className="aspect-square rounded-full">
-                              <Avatar
-                                avatarUrl={orderDetail.seller.avatar.url}
-                                userName={orderDetail.seller.name}
-                                width="2rem"
-                                fontSize="1rem"
-                                alt={orderDetail.seller.name}
-                              />
-                            </div>
-                            <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
-                              <span className="mr-2">
-                                {orderDetail.buyer._id === user._id ? (
-                                  "Me"
-                                ) : (
-                                  <>
-                                    <Link
-                                      to={`/user/${orderDetail.buyer._id}`}
-                                      className="text-primary hover:underline"
-                                    >
-                                      {orderDetail.buyer.name}
-                                    </Link>
-                                    's message
-                                  </>
-                                )}
-                              </span>
-                            </div>
+                        </span>
+                        <span className="text-icons font-normal text-xs">
+                          <Moment format="MMM DD, H:mm A">
+                            {orderDetail.buyerFeedback.createdAt}
+                          </Moment>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="border mr-6 rounded mt-4">
+                      <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
+                        {orderDetail.buyer._id === user._id ? (
+                          "Your review"
+                        ) : (
+                          <>
+                            <Link
+                              to={`/user/${orderDetail.buyer._id}`}
+                              className="text-primary hover:underline"
+                            >
+                              {orderDetail.buyer.name}
+                            </Link>
+                            's review
+                          </>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center gap-4 font-semibold text-light_heading">
+                          <div className="aspect-square rounded-full">
+                            <Avatar
+                              avatarUrl={orderDetail.seller.avatar.url}
+                              userName={orderDetail.seller.name}
+                              width="2rem"
+                              fontSize="1rem"
+                              alt={orderDetail.seller.name}
+                            />
                           </div>
-                          <div className="ml-12 pb-4">
-                            <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
-                              {orderDetail.buyerFeedback.comment}
-                            </p>
-                            <div className="pt-6 max-w-max">
-                              {buyerFeedback.map((feedback, index) => (
-                                <div
-                                  key={index}
-                                  className="flex flex-col sm:flex-row gap-1 mb-4 sm:mb-0 sm:gap-8 sm:justify-between"
-                                >
-                                  <h3 className=" text-light_grey font-semibold sm:mb-4">
-                                    {feedback.title}
-                                  </h3>
-                                  <Rating
-                                    size="small"
-                                    value={feedback.value}
-                                    icon={<FaStar className="text-gold" />}
-                                    emptyIcon={
-                                      <FaRegStar className="text-gold" />
-                                    }
-                                    readOnly
-                                  />
-                                </div>
-                              ))}
-                            </div>
+                          <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                            <span className="mr-2">
+                              {orderDetail.buyer._id === user._id ? (
+                                "Me"
+                              ) : (
+                                <>
+                                  <Link
+                                    to={`/user/${orderDetail.buyer._id}`}
+                                    className="text-primary hover:underline"
+                                  >
+                                    {orderDetail.buyer.name}
+                                  </Link>
+                                  's message
+                                </>
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="ml-12 pb-4">
+                          <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                            {orderDetail.buyerFeedback.comment}
+                          </p>
+                          <div className="pt-6 max-w-max">
+                            {buyerFeedback.map((feedback, index) => (
+                              <div
+                                key={index}
+                                className="flex flex-col sm:flex-row gap-1 mb-4 sm:mb-0 sm:gap-8 sm:justify-between"
+                              >
+                                <h3 className=" text-light_grey font-semibold sm:mb-4">
+                                  {feedback.title}
+                                </h3>
+                                <Rating
+                                  size="small"
+                                  value={feedback.value}
+                                  icon={<FaStar className="text-gold" />}
+                                  emptyIcon={
+                                    <FaRegStar className="text-gold" />
+                                  }
+                                  readOnly
+                                />
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
                     </div>
-                  </section>
-                ) : (
-                  <Link to={`/orders/${orderDetail._id}/feedback`}>
-                    <div className="flex justify-end mx-6">
-                      <button className="p-3 px-4 relative bg-primary hover:cursor-pointer hover:bg-primary_hover text-white rounded-sm">
-                        Share Feedback
-                      </button>
+                  </div>
+                </section>
+              )}
+
+              {orderDetail.sellerFeedback && (
+                <section
+                  className="relative pl-6 flex flex-col gap-4 pb-12"
+                  style={{
+                    marginTop:
+                      new Date(orderDetail.sellerFeedback.createdAt).toLocaleDateString() ===
+                      new Date(
+                        orderDetail.buyerFeedback.createdAt
+                      ).toLocaleDateString()
+                        ? "-2rem"
+                        : "0rem",
+                  }}
+                >
+                  {new Date(orderDetail.sellerFeedback.createdAt).toLocaleDateString() !==
+                    new Date(
+                      orderDetail.buyerFeedback.createdAt
+                    ).toLocaleDateString() && (
+                    <DateTag
+                      left={"-1.5rem"}
+                      date={new Date(
+                        orderDetail.buyerFeedback.createdAt
+                      ).toLocaleDateString()}
+                    />
+                  )}
+                  <div className="pb-6">
+                    <div className="flex items-center gap-4 font-semibold text-light_heading">
+                      <div className="p-2 aspect-square bg-orange-100 text-gold rounded-full">
+                        <FaStar />
+                      </div>
+                      <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                        <span className="mr-2">
+                          {orderDetail.seller._id === user._id ? (
+                            "You left a review"
+                          ) : (
+                            <>
+                              <Link
+                                to={`/user/${orderDetail.seller._id}`}
+                                className="text-primary hover:underline"
+                              >
+                                {orderDetail.seller.name}
+                              </Link>
+                              &nbsp; gave you a review
+                            </>
+                          )}
+                        </span>
+                        <span className="text-icons font-normal text-xs">
+                          <Moment format="MMM DD, H:mm A">
+                            {orderDetail.sellerFeedback.createdAt}
+                          </Moment>
+                        </span>
+                      </div>
                     </div>
-                  </Link>
-                ))}
+                    <div className="border mr-6 rounded mt-4">
+                      <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
+                        {orderDetail.seller._id === user._id ? (
+                          "Your review"
+                        ) : (
+                          <>
+                            <Link
+                              to={`/user/${orderDetail.seller._id}`}
+                              className="text-primary hover:underline"
+                            >
+                              {orderDetail.seller.name}
+                            </Link>
+                            's review
+                          </>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center gap-4 font-semibold text-light_heading">
+                          <div className="aspect-square rounded-full">
+                            <Avatar
+                              avatarUrl={orderDetail.seller.avatar.url}
+                              userName={orderDetail.seller.name}
+                              width="2rem"
+                              fontSize="1rem"
+                              alt={orderDetail.seller.name}
+                            />
+                          </div>
+                          <div className="[&>*]:leading-5 flex items-center flex-grow pr-6 py-2">
+                            <span className="mr-2">
+                              {orderDetail.seller._id === user._id ? (
+                                "Me"
+                              ) : (
+                                <>
+                                  <Link
+                                    to={`/user/${orderDetail.seller._id}`}
+                                    className="text-primary hover:underline"
+                                  >
+                                    {orderDetail.seller.name}
+                                  </Link>
+                                  's message
+                                </>
+                              )}
+                            </span>
+                            <Rating 
+                              size="small"
+                              value={orderDetail.sellerFeedback.rating}
+                              icon={<FaStar className="text-gold" />}
+                              emptyIcon={
+                                <FaRegStar className="text-gold" />
+                              }
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="ml-12 pb-4">
+                          <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                            {orderDetail.sellerFeedback.comment}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {orderDetail.seller._id === user._id &&
+                orderDetail.askSellerFeedback && (
+                  <section className="relative px-6 flex flex-col gap-4 pb-12">
+                    <SellerFeedback />
+                  </section>
+                )}
             </>
           )}
-
-          <Link to={`/orders/${orderDetail._id}/feedback`}>
-            <div className="flex justify-end mx-6">
-              <button className="p-3 px-4 relative bg-primary hover:cursor-pointer hover:bg-primary_hover text-white rounded-sm">
-                Share Feedback
-              </button>
-            </div>
-          </Link>
         </div>
       )}
     </>
