@@ -32,7 +32,14 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["Pending", "In Progress", "Completed", "Cancelled", "Delivered", "In Revision"],
+    enum: [
+      "Pending",
+      "In Progress",
+      "Completed",
+      "Cancelled",
+      "Delivered",
+      "In Revision",
+    ],
     default: "Pending",
   },
   createdAt: {
@@ -184,7 +191,7 @@ const orderSchema = new mongoose.Schema({
     blurhash: {
       type: String,
       required: [true, "Please provide blurhash for your image"],
-    }
+    },
   },
   gigTitle: {
     type: String,
@@ -277,7 +284,6 @@ const orderSchema = new mongoose.Schema({
         default: Date.now,
       },
     },
-
   ],
   deliveryDate: {
     type: Date,
@@ -294,22 +300,27 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       min: 0,
       max: 5,
+      select: false
     },
     service: {
       type: Number,
       min: 0,
       max: 5,
+      select: false
     },
     recommend: {
       type: Number,
       min: 0,
       max: 5,
+      select: false
     },
     comment: {
       type: String,
+      select: false
     },
     createdAt: {
       type: Date,
+      select: false
     },
   },
   sellerFeedback: {
@@ -317,15 +328,17 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       min: 0,
       max: 5,
+      select: false,
     },
     comment: {
       type: String,
+      select: false,
     },
     createdAt: {
       type: Date,
+      select: false,
     },
   },
-
 });
 
 export default mongoose.model("Order", orderSchema);
