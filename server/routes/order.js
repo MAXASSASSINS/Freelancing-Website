@@ -14,6 +14,7 @@ import {
   addOrderRevision,
   markOrderAsCompleted,
   addBuyerFeedback,
+  addSellerFeedback,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -46,6 +47,7 @@ router.post("/order/add/delivery/:id", isAuthenticated, addOrderDelivery);
 router.post("/order/add/revision/:id", isAuthenticated, addOrderRevision);
 router.post("/order/completed/:id", isAuthenticated, markOrderAsCompleted);
 router.post("/order/:id/buyer/feedback", isAuthenticated, addBuyerFeedback);
+router.post("/order/:id/seller/feedback", isAuthenticated, addSellerFeedback);
 
 router.delete("/orders/delete", deleteAllOrders);
 

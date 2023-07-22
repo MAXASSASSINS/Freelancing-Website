@@ -374,12 +374,38 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Get single order
+// Get order detail
 export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
-  const order = await Order.findById(req.params.id).populate(
-    "seller buyer",
-    "name email avatar"
-  );
+  let order = await Order.findById(req.params.id)
+    .populate("seller buyer", "name email avatar")
+    .select(
+      "+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating"
+    );
+
+  const { buyer, seller } = order;
+
+  if (order.status !== "Completed") {
+    order = {
+      ...order._doc,
+      buyerFeedback: undefined,
+      sellerFeedback: undefined,
+      askSellerFeedback: false,
+    };
+  }
+
+  if (
+    order.status === "Completed" &&
+    seller._id.toString() === req.user._id.toString()
+  ) {
+    if (order.buyerFeedback.createdAt && !order.sellerFeedback.createdAt) {
+      order = {
+        ...order._doc,
+        buyerFeedback: undefined,
+        sellerFeedback: undefined,
+        askSellerFeedback: true,
+      };
+    }
+  }
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
@@ -454,6 +480,79 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Sucessfully added your feedback",
     order: updatedOrder,
+  });
+});
+
+// add seller feedback
+export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
+  const { rating, comment } = req.body;
+
+  let order = await Order.findById(req.params.id).populate(
+    "seller buyer",
+    "name email avatar"
+  );
+
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+  if (order.seller._id.toString() !== req.user._id.toString()) {
+    return next(
+      new ErrorHandler(
+        "You are not authorized to add feedback as a seller to this order",
+        401
+      )
+    );
+  }
+
+  if (order.status !== "Completed") {
+    return next(
+      new ErrorHandler(
+        "You can only add feedback to an order which is completed",
+        400
+      )
+    );
+  }
+
+  if (order.buyerFeedback.createdAt) {
+    return next(
+      new ErrorHandler(
+        "You can only add feedback after the buyer has added feedback",
+        400
+      )
+    );
+  }
+
+  if(order.sellerFeedback.createdAt){
+    return next(
+      new ErrorHandler(
+        "You have already added feedback to this order",
+        400
+      )
+    );
+  }
+
+  const sellerFeedback = {
+    rating,
+    comment,
+    createdAt: Date.now(),
+  };
+
+  order = await Order.findByIdAndUpdate(
+    req.params.id,
+    { sellerFeedback },
+    { new: true, runValidators: true, useFindAndModify: false }
+  ).populate("seller buyer", "name email avatar")
+  .select("+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating");
+
+  order = {
+    ...order._doc,
+    askSellerFeedback: false,
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Sucessfully added your feedback",
+    order,
   });
 });
 
