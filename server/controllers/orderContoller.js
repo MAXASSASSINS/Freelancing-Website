@@ -443,24 +443,33 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     "name email"
   );
 
-  if (!order)
+  if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
+  }
 
-  if (order.buyer._id.toString() !== req.user._id.toString())
+  if (order.buyer._id.toString() !== req.user._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add feedback to this order",
         401
       )
     );
+  }
 
-  if (order.status !== "Completed")
+  if (order.status !== "Completed") {
     return next(
       new ErrorHandler(
         "You can only add feedback to an order which is completed",
         400
       )
     );
+  }
+
+  if (order.buyerFeedback.createdAt) {
+    return next(
+      new ErrorHandler("You have already added feedback to this order", 400)
+    );
+  }
 
   const buyerFeedback = {
     communication,
@@ -522,12 +531,9 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if(order.sellerFeedback.createdAt){
+  if (order.sellerFeedback.createdAt) {
     return next(
-      new ErrorHandler(
-        "You have already added feedback to this order",
-        400
-      )
+      new ErrorHandler("You have already added feedback to this order", 400)
     );
   }
 
@@ -541,13 +547,16 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     req.params.id,
     { sellerFeedback },
     { new: true, runValidators: true, useFindAndModify: false }
-  ).populate("seller buyer", "name email avatar")
-  .select("+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating");
+  )
+    .populate("seller buyer", "name email avatar")
+    .select(
+      "+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating"
+    );
 
   order = {
     ...order._doc,
     askSellerFeedback: false,
-  }
+  };
 
   res.status(200).json({
     success: true,
