@@ -593,7 +593,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                               </div>
                             </div>
                             <div className="ml-12 pb-4">
-                              <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                              <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
                                 {message.message.text}
                               </p>
                               <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
@@ -740,7 +740,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                               </div>
                             </div>
                             <div className="ml-12 pb-4">
-                              <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                              <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
                                 {message.message.text}
                               </p>
                               <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
@@ -866,7 +866,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                           </div>
                         </div>
                         <div className="pt-2 ml-12 pb-4 border-b">
-                          <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                          <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
                             {message.message.text}
                           </p>
                           <div className="mt-8 pr-6 flex flex-col gap-8 min-[500px]:grid min-[500px]:grid-cols-2 min-[500px]:items-end min-[1200px]:grid-cols-3">
@@ -1146,7 +1146,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                           </div>
                         </div>
                         <div className="ml-12 pb-4">
-                          <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                          <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
                             {orderDetail.buyerFeedback.comment}
                           </p>
                           <div className="pt-6 max-w-max">
@@ -1284,7 +1284,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                           </div>
                         </div>
                         <div className="ml-12 pb-4">
-                          <p className="leading-5 pr-6 text-dark_grey max-w-2xl">
+                          <p className="leading-5 pr-6 whitespace-pre-wrap text-dark_grey max-w-2xl">
                             {orderDetail.sellerFeedback.comment}
                           </p>
                         </div>
