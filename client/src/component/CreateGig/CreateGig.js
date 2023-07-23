@@ -533,7 +533,7 @@ export const CreateGig = () => {
               packageDescriptionRefs.current[index].current.currValue,
             packageDeliveryTime:
               deliveryTimeRefs.current[index].current.currValue,
-            revisions: Number(
+            revisions: deliveryRevisionsRefs.current[index].current.currValue === "Unlimited" ? Number.MAX_VALUE :  Number(
               deliveryRevisionsRefs.current[index].current.currValue
             ),
             sourceFile: sourceFileRefs.current[index].current.currValue,
