@@ -278,9 +278,7 @@ export const UserDetail = () => {
           <div className="user-detail-review-list-container">
             <div className="user-detail-review-list">
               <h2>
-                <span className="user-detail-review-heading">
-                  Reviews as Seller
-                </span>{" "}
+                <span className="user-detail-review-heading">Reviews</span>{" "}
                 &nbsp; &nbsp;
                 <div className="user-detail-review-rating-stars">
                   <FaStar />
@@ -295,45 +293,43 @@ export const UserDetail = () => {
                   ({gigUser.numOfRatings})
                 </span>
               </h2>
-              {userGigs.map((userGig) =>
-                userGig.reviews.map(
-                  (review, index) =>
-                    index < reviewCount && (
-                      <div className="user-detail-review">
-                        <div className="user-detail-review-customer">
-                          <div className="user-detail-review-customer-img">
-                            <Avatar
-                              userName={review.name}
-                              avatarUrl={review.avatar.url}
-                              width={"2rem"}
-                              fontSize={"1rem"}
-                            />
-                          </div>
-                          <div className="user-detail-review-customer-name">
-                            {review.name}
-                          </div>
-                          <RatingStars rating={review.rating}></RatingStars>
-                          <div>{review.rating}</div>
+              {gigUser.reviews.map(
+                (review, index) =>
+                  index < reviewCount && (
+                    <div className="user-detail-review">
+                      <div className="user-detail-review-customer">
+                        <div className="user-detail-review-customer-img">
+                          <Avatar
+                            userName={review.name}
+                            avatarUrl={review.avatar.url}
+                            width={"2rem"}
+                            fontSize={"1rem"}
+                          />
                         </div>
-                        <div className="user-detail-review-customer-country">
-                          <img
-                            src={getFlag("India").image}
-                            alt="country flag"
-                          ></img>
-                          <div>{review.country}</div>
+                        <div className="user-detail-review-customer-name">
+                          {review.name}
                         </div>
-                        <p className="user-detail-review-paragraph">
-                          {review.comment}
-                        </p>
-                        <p className="user-detail-review-publish">
-                          Published &nbsp;
-                          <span>
-                            <Moment fromNow={true}>{review.createdAt}</Moment>
-                          </span>
-                        </p>
+                        <RatingStars rating={review.rating}></RatingStars>
+                        <div>{review.rating}</div>
                       </div>
-                    )
-                )
+                      <div className="user-detail-review-customer-country">
+                        <img
+                          src={getFlag("India").image}
+                          alt="country flag"
+                        ></img>
+                        <div>{review.country}</div>
+                      </div>
+                      <p className="user-detail-review-paragraph">
+                        {review.comment}
+                      </p>
+                      <p className="user-detail-review-publish">
+                        Published &nbsp;
+                        <span>
+                          <Moment fromNow={true}>{review.createdAt}</Moment>
+                        </span>
+                      </p>
+                    </div>
+                  )
               )}
               {userReviewCount != null && userReviewCount >= reviewCount && (
                 <div
