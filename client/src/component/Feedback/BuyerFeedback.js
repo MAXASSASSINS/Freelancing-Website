@@ -59,7 +59,7 @@ export const BuyerFeedback = () => {
         `/order/${params.id}/buyer/feedback`,
         feedback
       );
-      navigate(`/orders/${params.id}`);
+      navigate(`/orders/${params.id}`, {replace: true});
     } catch (error) {
       console.log(error);
     }
