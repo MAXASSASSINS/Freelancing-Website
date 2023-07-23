@@ -40,7 +40,7 @@ export const GigCard = ({ gig, lazyLoad }) => {
         <div className="ratings-container">
           <HiStar />
           <span className="ratings">{gig.ratings.toFixed(1)}</span>
-          <span className="no-of-reviews">({gig.numOfReviews})</span>
+          <span className="no-of-reviews">({gig.numOfRatings})</span>
         </div>
 
         <div className="action-price-container">
