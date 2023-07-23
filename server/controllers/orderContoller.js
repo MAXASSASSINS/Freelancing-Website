@@ -585,8 +585,8 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     name: order.seller.name,
     avatar: order.seller.avatar,
     country: order.seller.country,
-    rating: order.sellerFeedback.rating,
-    comment: order.sellerFeedback.comment,
+    rating: rating,
+    comment: comment,
   };
 
   if (reviewForSeller.comment) gig.reviews.push(reviewForSeller);
