@@ -292,7 +292,7 @@
 .create-gig-main .description .description-wrapper .gig-description-error {
   color: var(--warning);
   font-size: 0.8rem;
-  margin-top: 1rem;
+  margin-top: -1rem;
   word-spacing: 1px;
 }
 .create-gig-main .requirements {
