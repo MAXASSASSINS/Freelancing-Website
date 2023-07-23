@@ -138,7 +138,7 @@ const orderSchema = new mongoose.Schema({
     },
     revisions: {
       type: Number,
-      required: [true, "Please enter the delivery time of your package"],
+      required: [true, "Please enter the number of revisions of your package"],
       default: 1,
     },
     sourceFile: {
