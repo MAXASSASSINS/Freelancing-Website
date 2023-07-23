@@ -1,5 +1,6 @@
 import Order from "../models/orderModel.js";
 import Gig from "../models/gigModel.js";
+import User from "../models/userModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import { stripe } from "../utils/stripe.js";
@@ -495,6 +496,7 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
 // add seller feedback
 export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment } = req.body;
+  console.log("comment", comment);
 
   let order = await Order.findById(req.params.id).populate(
     "seller buyer",
@@ -548,7 +550,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     { sellerFeedback },
     { new: true, runValidators: true, useFindAndModify: false }
   )
-    .populate("seller buyer", "name email avatar")
+    .populate("seller buyer", "name email avatar country ")
     .select(
       "+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating"
     );
@@ -557,6 +559,67 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     ...order._doc,
     askSellerFeedback: false,
   };
+
+  const buyer = await User.findById(order.buyer._id);
+  const seller = await User.findById(order.seller._id);
+  const gig = await Gig.findById(order.gig);
+
+  const reviewForSeller = {
+    user: order.buyer._id,
+    name: order.buyer.name,
+    avatar: order.buyer.avatar,
+    country: order.buyer.country,
+    rating: Math.round(
+      Number(
+        (order.buyerFeedback.communication +
+          order.buyerFeedback.service +
+          order.buyerFeedback.recommend) /
+          3
+      )
+    ),
+    comment: order.buyerFeedback.comment,
+  };
+
+  const reveiwForBuyer = {
+    user: order.seller._id,
+    name: order.seller.name,
+    avatar: order.seller.avatar,
+    country: order.seller.country,
+    rating: order.sellerFeedback.rating,
+    comment: order.sellerFeedback.comment,
+  };
+
+  if (reviewForSeller.comment) gig.reviews.push(reviewForSeller);
+  gig.numOfReviews = gig.reviews.length;
+  gig.numOfRatings += 1;
+
+  if (reviewForSeller.comment) seller.reviews.push(seller);
+  seller.numOfRatings += 1;
+  seller.numOfReviews = seller.reviews.length;
+
+  if (reveiwForBuyer.comment) buyer.reviews.push(reveiwForBuyer);
+  buyer.numOfRatings += 1;
+  buyer.numOfReviews = buyer.reviews.length;
+
+  const newRatingsGig =
+    (gig.ratings * (gig.numOfRatings - 1) + reviewForSeller.rating) /
+    gig.numOfRatings;
+
+  const newRatingsSeller =
+    (seller.ratings * (seller.numOfRatings - 1) + reviewForSeller.rating) /
+    seller.numOfRatings;
+
+  const newRatingsBuyer =
+    (buyer.ratings * (buyer.numOfRatings - 1) + reveiwForBuyer.rating) /
+    buyer.numOfRatings;
+
+  gig.ratings = newRatingsGig;
+  seller.ratings = newRatingsSeller;
+  buyer.ratings = newRatingsBuyer;
+
+  await gig.save({ validateBeforeSave: false });
+  await seller.save({ validateBeforeSave: false });
+  await buyer.save({ validateBeforeSave: false });
 
   res.status(200).json({
     success: true,
