@@ -278,7 +278,7 @@ export const GigDetail = () => {
                             : undefined
                         }
                       >
-                        <FaCheck />
+                        <FaCheck className="inline" />
                         Source File
                       </li>
                       <li
@@ -288,7 +288,7 @@ export const GigDetail = () => {
                             : undefined
                         }
                       >
-                        <FaCheck />
+                        <FaCheck className="inline" />
                         Commercial Use
                       </li>
                     </ul>
@@ -550,7 +550,7 @@ export const GigDetail = () => {
                         pricePackageInfo.sourceFile && "package-output-selected"
                       }
                     >
-                      <FaCheck />
+                      <FaCheck className="inline"/>
                       Source File
                     </li>
                     <li
@@ -559,7 +559,7 @@ export const GigDetail = () => {
                         "package-output-selected"
                       }
                     >
-                      <FaCheck />
+                      <FaCheck className="inline" />
                       Commercial Use
                     </li>
                   </ul>
