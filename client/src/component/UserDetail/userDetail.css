@@ -323,11 +323,8 @@
   color: var(--dark-grey);
 }
 
-.user-detail-review-customer > img {
-  width: 2rem;
-  border-radius: 50%;
+.user-detail-review-customer > .user-detail-review-customer-img {
   margin-left: -2.75rem;
-  float: left;
 }
 
 .user-detail-review-customer-country {
@@ -351,6 +348,7 @@
   line-height: 1.5;
   color: var(--light-grey);
   word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .user-detail-review-publish {
