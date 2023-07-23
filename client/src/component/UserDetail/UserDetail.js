@@ -14,7 +14,14 @@ import { ReviewList } from "../ReviewList/ReviewList";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { windowContext } from "../../App";
 import { Avatar } from "../Avatar/Avatar";
-import { FaBars, FaHeart, FaPaperPlane, FaRegPaperPlane, FaStar, FaUser } from "react-icons/fa";
+import {
+  FaBars,
+  FaHeart,
+  FaPaperPlane,
+  FaRegPaperPlane,
+  FaStar,
+  FaUser,
+} from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { AiOutlineUser } from "react-icons/ai";
 
@@ -116,9 +123,8 @@ export const UserDetail = () => {
                 </li>
                 <li>
                   <span>
-                    <FaUser className="inline"/>
+                    <FaUser className="inline" />
                     Member Since
-
                   </span>
                   <p>
                     <Moment format="MMM YYYY">{gigUser.userSince}</Moment>
@@ -295,7 +301,14 @@ export const UserDetail = () => {
                     index < reviewCount && (
                       <div className="user-detail-review">
                         <div className="user-detail-review-customer">
-                          <img alt="client" src={review.avatar.url}></img>
+                          <div className="user-detail-review-customer-img">
+                            <Avatar
+                              userName={review.name}
+                              avatarUrl={review.avatar.url}
+                              width={"2rem"}
+                              fontSize={"1rem"}
+                            />
+                          </div>
                           <div className="user-detail-review-customer-name">
                             {review.name}
                           </div>

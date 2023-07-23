@@ -55,7 +55,9 @@ export const GigDetail = () => {
   }, [dispatch, params.id]);
 
   const { gigDetail } = useSelector((state) => state.gigDetail);
-  const { user, userLoading, isAuthenticated } = useSelector((state) => state.user);
+  const { user, userLoading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   useEffect(() => {
     // console.log(gigDetail);
@@ -462,7 +464,15 @@ export const GigDetail = () => {
                         index < reviewCount && (
                           <div className="user-detail-review" key={index}>
                             <div className="user-detail-review-customer">
-                              <img alt="client" src={review.avatar.url}></img>
+                              <div className="user-detail-review-customer-img">
+                                <Avatar
+                                  avatarUrl={review.avatar.url}
+                                  userName={review.name}
+                                  width="2rem"
+                                  alt={review.name}
+                                  fontSize="1rem"
+                                />
+                              </div>
                               <div className="user-detail-review-customer-name">
                                 {review.name}
                               </div>
@@ -550,7 +560,7 @@ export const GigDetail = () => {
                         pricePackageInfo.sourceFile && "package-output-selected"
                       }
                     >
-                      <FaCheck className="inline"/>
+                      <FaCheck className="inline" />
                       Source File
                     </li>
                     <li
