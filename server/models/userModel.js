@@ -185,10 +185,9 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
 
-  online: {
-    required: true,
-    type: Boolean,
-    default: false,
+  balance: {
+    type: Number,
+    default: 0,
   },
 
   resetPasswordToken: String,
