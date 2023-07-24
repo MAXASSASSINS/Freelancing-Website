@@ -31,3 +31,10 @@ export const getPosterForVideo = (url) => {
   newUrl += ".jpg";
   return newUrl;
 };
+
+export const numberToCurrency = (number) => {
+  return number.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
