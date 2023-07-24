@@ -359,6 +359,11 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
+  // adding balance to seller's account
+  const seller = await User.findById(order.seller._id);
+  seller.balance += order.amount;
+  await seller.save({ validateBeforeSave: false });
+
   // send email to buyer
   const options = {
     to: sellerEmail,
