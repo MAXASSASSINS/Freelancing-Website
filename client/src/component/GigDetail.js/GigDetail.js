@@ -81,8 +81,8 @@ export const GigDetail = () => {
       return null;
     });
 
-  const increaseReviewCount = (reviewCount) => () => {
-    setReviewCount(reviewCount + 5);
+  const increaseReviewCount = () => {
+    setReviewCount(prev =>  prev + 5);
   };
 
   const reviewCountAccoridingToRating = (rating) => {
@@ -501,10 +501,10 @@ export const GigDetail = () => {
                         )
                       );
                     })}
-                  {gigReviews != null && gigReviews.length >= reviewCount && (
+                  {gigReviews?.length > reviewCount && (
                     <div
                       className="user-review-see-more"
-                      onClick={increaseReviewCount(reviewCount)}
+                      onClick={increaseReviewCount}
                     >
                       + See more
                     </div>

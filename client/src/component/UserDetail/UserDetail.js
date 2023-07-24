@@ -48,16 +48,16 @@ export const UserDetail = () => {
 
   const [active, setActive] = useState(true);
 
-  useEffect(() => {
-    setUserReviewCount(() => {
-      let count = 0;
-      userGigs &&
-        userGigs.map((userGig) => {
-          count += userGig.reviews.length;
-        });
-      return count;
-    });
-  }, [userGigs]);
+  // useEffect(() => {
+  //   setUserReviewCount(() => {
+  //     let count = 0;
+  //     userGigs &&
+  //       userGigs.map((userGig) => {
+  //         count += userGig.reviews.length;
+  //       });
+  //     return count;
+  //   });
+  // }, [userGigs]);
   // console.log(userReviewCount);
   // console.log(gigUser);
   // console.log(userGigs);
@@ -70,10 +70,13 @@ export const UserDetail = () => {
       return null;
     });
 
-  const increaseReviewCount = (reviewCount) => () => {
-    setReviewCount(reviewCount + 5);
+  const increaseReviewCount = () => {
+    setReviewCount(prev => prev + 5);
     console.log(reviewCount);
   };
+
+  if(isAuthenticated)
+    console.log(user.reviews.length, reviewCount);
 
   return (
     userGigs &&
@@ -331,10 +334,10 @@ export const UserDetail = () => {
                     </div>
                   )
               )}
-              {userReviewCount != null && userReviewCount >= reviewCount && (
+              {isAuthenticated && user.reviews.length > reviewCount && (
                 <div
                   className="user-review-see-more"
-                  onClick={increaseReviewCount(reviewCount)}
+                  onClick={increaseReviewCount}
                 >
                   + See more
                 </div>
