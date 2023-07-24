@@ -256,7 +256,7 @@ export const GigDetail = () => {
                         {pricePackageInfo.packageTitle}
                       </div>
                       <div className="price-package-price">
-                        ₹{pricePackageInfo.packagePrice}
+                        ₹{Number(pricePackageInfo.packagePrice).toFixed(2)}
                       </div>
                     </h3>
                     <p>{pricePackageInfo.packageDescription}</p>
@@ -538,7 +538,7 @@ export const GigDetail = () => {
                       {pricePackageInfo.packageTitle}
                     </div>
                     <div className="price-package-price">
-                      ₹{pricePackageInfo.packagePrice}
+                      ₹{Number(pricePackageInfo.packagePrice).toFixed(2)}
                     </div>
                   </h3>
                   <p>{pricePackageInfo.packageDescription}</p>
