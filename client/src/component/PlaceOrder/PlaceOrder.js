@@ -10,6 +10,7 @@ import { IoClose } from "react-icons/io5";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { Tooltip } from "../Tooltip/Tooltip.js";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading.js";
+import { numberToCurrency } from "../../utility/util";
 
 const stripePromise = loadStripe(
   "pk_test_51MtFFeSAmwdBmm1f0hqgnIYATUgc4R2mqS4M35gX3zAFo870EWa7DPOSpM79cBBJbHYkAN4qEKbDdukHEpYxdOXd00xnfGsKMi"
@@ -64,7 +65,7 @@ export const PlaceOrder = () => {
               <div>
                 <div className="flex justify-between mt-3">
                   <h4 className="font-bold">{packageDetail.packageTitle}</h4>
-                  <p>₹{Number(packageDetail.packagePrice).toFixed(2)}</p>
+                  <p>₹{numberToCurrency(packageDetail.packagePrice)}</p>
                 </div>
                 <div className="mt-4">
                   <ul className="flex flex-col gap-2">
@@ -110,14 +111,14 @@ export const PlaceOrder = () => {
                   />
                 </div>
                 <div>
-                  ₹{(Number(packageDetail.packagePrice) * 0.21).toFixed(2)}
+                  ₹{(numberToCurrency(Number(packageDetail.packagePrice) * 0.21))}
                 </div>
               </div>
             </div>
             <div className=" bg-white px-4 py-3 flex items-center justify-between text-[18px]">
               <div className="font-bold">Total</div>
               <div className="font-bold">
-                ₹{(Number(packageDetail.packagePrice) * 1.21).toFixed(2)}
+                ₹{(numberToCurrency(Number(packageDetail.packagePrice) * 1.21))}
               </div>
             </div>
             <div className="bg-white px-4 flex items-center justify-between">
@@ -135,7 +136,7 @@ export const PlaceOrder = () => {
               </button>
               <p className="py-3 text-center text-no_focus text-[14px] leading-5">
                 You will be charged ₹
-                {(Number(packageDetail.packagePrice) * 1.21).toFixed(2)}. Total
+                {numberToCurrency((Number(packageDetail.packagePrice) * 1.21))}. Total
                 amount includes currency conversion fees.
               </p>
             </div>

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "../../actions/userAction";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { numberToCurrency } from "../../utility/util";
 
 export const BalanceDetail = () => {
   const dispatch = useDispatch();
@@ -74,7 +75,7 @@ export const BalanceDetail = () => {
                   </p>
                 </div>
                 <h3 className="text-4xl font-bold mb-24">
-                  {Number(Number(user.balance).toFixed(2)).toLocaleString()}
+                  ₹{numberToCurrency(user.balance)}
                 </h3>
                 <button className="px-4 py-3 bg-dark_grey hover:bg-light_grey hover:cursor-pointer text-white rounded">
                   Withdraw balance
@@ -100,7 +101,7 @@ export const BalanceDetail = () => {
                     </p>
                   </div>
                   <h3 className="text-2xl font-bold">
-                    ₹{Number(Number(earnings).toFixed(2)).toLocaleString()}
+                    ₹{numberToCurrency(earnings)}
                   </h3>
                   <p className="text-sm mt-1 text-light_heading">
                     Your earnings since joining
@@ -120,7 +121,7 @@ export const BalanceDetail = () => {
                     </p>
                   </div>
                   <h3 className="text-2xl font-bold">
-                    ₹{Number(Number(expenses).toFixed(2)).toLocaleString()}
+                    ₹{numberToCurrency(expenses)}
                   </h3>
                   <p className="text-sm mt-1 text-light_heading">
                     Your expenses since joining
@@ -169,7 +170,7 @@ export const BalanceDetail = () => {
                           : "text-warning"
                       }`}
                     >
-                      ₹{Number(Number(order.amount).toFixed(2)).toLocaleString()}
+                      ₹{numberToCurrency(order.amount)}
                     </li>
                   </div>
                 ))}

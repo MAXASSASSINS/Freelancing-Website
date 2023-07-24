@@ -22,7 +22,7 @@ import { BsTrash } from "react-icons/bs";
 import { CheckInput } from "../CheckInput/CheckInput";
 import { getOrderDetail } from "../../actions/orderAction";
 import Moment from "react-moment";
-import { getFileSize } from "../../utility/util";
+import { getFileSize, numberToCurrency } from "../../utility/util";
 import axios from "axios";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
@@ -405,7 +405,7 @@ export const SubmitRequirements = () => {
                     </div>
                     <div>
                       <span>Price</span>
-                      <span>₹{Number(orderDetail.amount).toFixed(2)}</span>
+                      <span>₹{numberToCurrency(orderDetail.amount)}</span>
                     </div>
                   </div>
                 )}

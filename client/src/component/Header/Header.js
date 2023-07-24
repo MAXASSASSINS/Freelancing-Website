@@ -16,6 +16,7 @@ import { FaRegEnvelope } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
+import { numberToCurrency } from "../../utility/util";
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -86,9 +87,10 @@ export const Header = () => {
           )}
           {isAuthenticated && (
             <div className="header-balance">
-              <Link to={'/balance/detail'} >
+              <Link to={"/balance/detail"}>
                 <p>
-                  ₹{Number(Number(user.balance).toFixed(2)).toLocaleString()}{" "}
+                  ₹
+                  {numberToCurrency(user.balance)}
                 </p>
               </Link>
             </div>
