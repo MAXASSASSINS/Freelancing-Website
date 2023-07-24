@@ -30,11 +30,18 @@ export const Orders = () => {
   }, [user]);
 
   const getOrderList = async () => {
-    setLoading(true);
-    const { data } = await axios.get("/orders/me");
-    console.log(data);
-    setOrders(data.orders);
-    setLoading(false);
+    try{  
+      setLoading(true);
+      const { data } = await axios.get("/orders/me");
+      console.log(data);
+      setOrders(data.orders);
+    }
+    catch(err){
+      console.log(err);
+    }
+    finally{
+      setLoading(false);
+    }
   };
 
   const handleViewClick = (order) => {
