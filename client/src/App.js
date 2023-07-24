@@ -45,6 +45,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Orders } from "./component/Orders/Orders";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
+import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
 
 export const windowContext = createContext();
 
@@ -154,6 +155,7 @@ const App = () => {
               <Route exact path="/orders" element={<Orders />} />
               <Route exact path="/orders/:id" element={<OrderDetail />} />
               <Route exact path="/orders/:id/feedback" element={<BuyerFeedback />} />
+              <Route exact path="/balance/detail" element={<BalanceDetail />} />
             </Routes>
             {/* <Footer /> */}
           </SocketContext.Provider>
