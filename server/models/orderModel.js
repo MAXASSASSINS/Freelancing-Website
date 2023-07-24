@@ -320,7 +320,6 @@ const orderSchema = new mongoose.Schema({
     },
     createdAt: {
       type: Date,
-      select: false
     },
   },
   sellerFeedback: {
@@ -336,7 +335,6 @@ const orderSchema = new mongoose.Schema({
     },
     createdAt: {
       type: Date,
-      select: false,
     },
   },
 });
