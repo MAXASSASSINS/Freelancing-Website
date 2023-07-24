@@ -53,10 +53,14 @@ export const Header = () => {
         </form>
 
         <div className="navigation-icons">
-          <Link to="/get/all/messages/for/current/user">
-            <FaRegEnvelope className="inbox-icon" />
-          </Link>
-          <FaRegHeart className="my-list-icon" />
+          <div className="inbox-icon">
+            <Link to="/get/all/messages/for/current/user">
+              <FaRegEnvelope />
+            </Link>
+          </div>
+          <div className="my-list-icon">
+            <FaRegHeart />
+          </div>
           <div className="orders-icon" onClick={() => navigate("/orders")}>
             Orders
           </div>
@@ -77,6 +81,15 @@ export const Header = () => {
                   alt="user profile"
                   onlineStatusWidth={"0.8rem"}
                 />
+              </Link>
+            </div>
+          )}
+          {isAuthenticated && (
+            <div className="header-balance">
+              <Link to={'/balance/detail'} >
+                <p>
+                  ₹{Number(Number(user.balance).toFixed(2)).toLocaleString()}{" "}
+                </p>
               </Link>
             </div>
           )}

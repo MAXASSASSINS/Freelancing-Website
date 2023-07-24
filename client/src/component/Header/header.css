@@ -49,13 +49,10 @@
 .navigation-icons {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex-grow: 1;
-}
-
-.navigation-icons > * {
+  gap: 1.5rem;
   margin-left: 1.5rem;
 }
+
 
 .search-input::placeholder {
   font-size: 1rem;
@@ -131,6 +128,24 @@
   color: var(--primary);
 }
 
+.header-balance{
+  font-weight: 600;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  text-align: center;
+  display: none;
+  border-radius: 0.25rem;
+}
+
+.header-balance p{
+  padding: 0.2rem 0.4rem;
+}
+
+.header-balance:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 @media screen and (min-width: 600px) {
   .header {
     padding: 0 2rem;
@@ -142,7 +157,7 @@
   }
 
   .header-container {
-    margin: 0 20px;
+    margin-left: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -166,6 +181,10 @@
   .profile-pic,
   .profile-icon {
     display: inline;
+  }
+
+  .header-balance{
+    display: block;
   }
 }
 
