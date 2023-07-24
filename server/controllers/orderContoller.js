@@ -385,7 +385,7 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   let order = await Order.findById(req.params.id)
     .populate("seller buyer", "name email avatar")
     .select(
-      "+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating"
+      "+buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.comment +sellerFeedback.rating"
     );
 
   const { buyer, seller } = order;
@@ -501,12 +501,14 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
 // add seller feedback
 export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment } = req.body;
-  console.log("comment", comment);
+  // console.log("comment", comment);
+  console.log(rating, comment);
 
-  let order = await Order.findById(req.params.id).populate(
-    "seller buyer",
-    "name email avatar"
-  );
+  let order = await Order.findById(req.params.id)
+    .populate("seller buyer", "name email avatar")
+    .select(
+      "+buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service  +sellerFeedback.comment +sellerFeedback.rating"
+    );
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
@@ -529,7 +531,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.buyerFeedback.createdAt) {
+  if (!order.buyerFeedback.createdAt) {
     return next(
       new ErrorHandler(
         "You can only add feedback after the buyer has added feedback",
@@ -557,7 +559,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   )
     .populate("seller buyer", "name email avatar country ")
     .select(
-      "+buyerFeedback.createdAt +buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.createdAt +sellerFeedback.comment +sellerFeedback.rating"
+      "+buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.comment +sellerFeedback.rating"
     );
 
   order = {
@@ -585,7 +587,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     comment: order.buyerFeedback.comment,
   };
 
-  const reveiwForBuyer = {
+  const reviewForBuyer = {
     user: order.seller._id,
     name: order.seller.name,
     avatar: order.seller.avatar,
@@ -598,11 +600,11 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   gig.numOfReviews = gig.reviews.length;
   gig.numOfRatings += 1;
 
-  if (reviewForSeller.comment) seller.reviews.push(seller);
+  if (reviewForSeller.comment) seller.reviews.push(reviewForSeller);
   seller.numOfRatings += 1;
   seller.numOfReviews = seller.reviews.length;
 
-  if (reveiwForBuyer.comment) buyer.reviews.push(reveiwForBuyer);
+  if (reviewForBuyer.comment) buyer.reviews.push(reviewForBuyer);
   buyer.numOfRatings += 1;
   buyer.numOfReviews = buyer.reviews.length;
 
@@ -615,7 +617,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     seller.numOfRatings;
 
   const newRatingsBuyer =
-    (buyer.ratings * (buyer.numOfRatings - 1) + reveiwForBuyer.rating) /
+    (buyer.ratings * (buyer.numOfRatings - 1) + reviewForBuyer.rating) /
     buyer.numOfRatings;
 
   gig.ratings = newRatingsGig;
