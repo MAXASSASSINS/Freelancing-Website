@@ -16,7 +16,7 @@ export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "aut
     <div className="relative">
       <img
         data-src={url}
-        className="w-full"
+        className="w-full object-cover"
         style={{ aspectRatio: aspectRatio }}
         // src={url}
         src={lazyLoad ? "" : url}

@@ -18,7 +18,7 @@ export const LazyVideo = ({ file, maxWidth, lazyLoad = false, aspectRatio = "aut
       <video
         data-poster={getPosterForVideo(file.url)}
         poster={lazyLoad ? "" : getPosterForVideo(file.url)}
-        className="w-full"
+        className="w-full object-contain"
         style={{ aspectRatio: aspectRatio }}
         src={file.url}
         alt=""
