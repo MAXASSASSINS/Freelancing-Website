@@ -32,7 +32,7 @@ const DeliveryApproval = ({ setFileLoading }) => {
   };
 
   const handleShowRevisionBox = () => {
-    if (orderDetail.packageDetails.revisions >= orderDetail.revisions.length) {
+    if (orderDetail.packageDetails.revisions.length >= orderDetail.revisions.length) {
       toast.error("You have exceeded you maximum revision requests");
       return;
     }
