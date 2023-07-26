@@ -604,26 +604,28 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                                         <a
                                           href={file.url}
                                           target="_blank"
-                                          rel="noopener"
+                                          rel="noopener noreferrer"
                                         >
                                           <LazyVideo
                                             file={file}
                                             maxWidth={
                                               windowWidth > 1024 ? 240 : 160
                                             }
+                                            aspectRatio="16/9"
                                           />
                                         </a>
                                       ) : file.type.includes("image") ? (
                                         <a
                                           href={file.url}
                                           target="_blank"
-                                          rel="noopener"
+                                          rel="noopener noreferrer"
                                         >
                                           <LazyImage
                                             file={file}
                                             maxWidth={
                                               windowWidth > 1024 ? 240 : 160
                                             }
+                                            aspectRatio="16/9"
                                           />
                                         </a>
                                       ) : file.type.includes("audio") ? (
@@ -751,26 +753,28 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                                         <a
                                           href={file.url}
                                           target="_blank"
-                                          rel="noopener"
+                                          rel="noopener noreferrer"
                                         >
                                           <LazyVideo
                                             file={file}
                                             maxWidth={
                                               windowWidth > 1024 ? 240 : 160
                                             }
+                                            aspectRatio="16/9"
                                           />
                                         </a>
                                       ) : file.type.includes("image") ? (
                                         <a
                                           href={file.url}
                                           target="_blank"
-                                          rel="noopener"
+                                          rel="noopener noreferrer"
                                         >
                                           <LazyImage
                                             file={file}
                                             maxWidth={
                                               windowWidth > 1024 ? 240 : 160
                                             }
+                                            aspectRatio="16/9"
                                           />
                                         </a>
                                       ) : file.type.includes("audio") ? (
@@ -877,26 +881,28 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                                     <a
                                       href={file.url}
                                       target="_blank"
-                                      rel="noopener"
+                                      rel="noopener noreferrer"
                                     >
                                       <LazyVideo
                                         file={file}
                                         maxWidth={
                                           windowWidth > 1024 ? 240 : 160
                                         }
+                                        aspectRatio="16/9"
                                       />
                                     </a>
                                   ) : file.type.includes("image") ? (
                                     <a
                                       href={file.url}
                                       target="_blank"
-                                      rel="noopener"
+                                      rel="noopener noreferrer"
                                     >
                                       <LazyImage
                                         file={file}
                                         maxWidth={
                                           windowWidth > 1024 ? 240 : 160
                                         }
+                                        aspectRatio="16/9"
                                       />
                                     </a>
                                   ) : file.type.includes("audio") ? (

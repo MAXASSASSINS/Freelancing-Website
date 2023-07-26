@@ -1002,7 +1002,7 @@ export const Inbox = () => {
                                     <a
                                       href={file.url}
                                       target="_blank"
-                                      rel="noopener"
+                                      rel="noopener noreferrer"
                                     >
                                       <LazyVideo
                                         file={file}
@@ -1015,7 +1015,7 @@ export const Inbox = () => {
                                     <a
                                       href={file.url}
                                       target="_blank"
-                                      rel="noopener"
+                                      rel="noopener noreferrer"
                                     >
                                       <LazyImage
                                         file={file}

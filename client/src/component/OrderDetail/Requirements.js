@@ -35,7 +35,7 @@ export const Requirements = ({ orderDetail }) => {
                         <div key={index} className="">
                           <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
                             {file.type.includes("video") ? (
-                              <a href={file.url} target="_blank" rel="noopener">
+                              <a href={file.url} target="_blank" rel="noopener noreferrer">
                                 <LazyVideo
                                   file={file}
                                   maxWidth={windowWidth > 1024 ? 240 : 160}
@@ -43,7 +43,7 @@ export const Requirements = ({ orderDetail }) => {
                                 />
                               </a>
                             ) : file.type.includes("image") ? (
-                              <a href={file.url} target="_blank" rel="noopener">
+                              <a href={file.url} target="_blank" rel="noopener noreferrer">
                                 <LazyImage
                                   file={file}
                                   maxWidth={windowWidth > 1024 ? 240 : 160}

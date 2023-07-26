@@ -544,7 +544,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                                   <a
                                     href={file.url}
                                     target="_blank"
-                                    rel="noopener"
+                                    rel="noopener noreferrer"
                                   >
                                     <LazyVideo
                                       file={file}
@@ -555,7 +555,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                                   <a
                                     href={file.url}
                                     target="_blank"
-                                    rel="noopener"
+                                    rel="noopener noreferrer"
                                   >
                                     <LazyImage
                                       file={file}
