@@ -362,6 +362,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
   // adding balance to seller's account
   const seller = await User.findById(order.seller._id);
   seller.balance += order.amount;
+  seller.lastDelivery = Date.now();
   await seller.save({ validateBeforeSave: false });
 
   // send email to buyer
@@ -427,7 +428,8 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
   // console.log("hello");
-  const orders = await Order.find({ user: req.user._id })
+  const orders = await Order.find({ seller: req.user._id })
+    .or([{ buyer: req.user._id }])
     .populate("gig", "title images")
     .populate("seller buyer", "name avatar")
     .sort("-createdAt");
