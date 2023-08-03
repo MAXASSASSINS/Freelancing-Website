@@ -95,7 +95,7 @@ export const getGig = catchAsyncErrors(async (req, res, next) => {
   // console.log("id---->", req.params.id);
   const gig = await Gig.findById(req.params.id).populate(
     "user",
-    "name avatar numOfRatings ratings userSince country description tagline online"
+    "name avatar numOfRatings ratings userSince country description tagline online lastDelivery"
   );
 
   if (!gig) {
