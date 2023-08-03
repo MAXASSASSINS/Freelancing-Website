@@ -17,7 +17,13 @@ dotenv.config();
 
 app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(
+  {
+    origin: "https://feelance-me-frontend.vercel.app/",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  }
+));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
