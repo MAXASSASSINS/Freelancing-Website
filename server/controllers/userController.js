@@ -6,24 +6,26 @@ import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
 import cloudinary from "cloudinary";
 import bcrypt from "bcryptjs";
+// import { stripe } from "../utils/stripe.js";
+import Stripe from "stripe";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
-  const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: "avatars",
-    width: 150,
-    crop: "scale",
-  });
+  // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  //   folder: "avatars",
+  //   width: 150,
+  //   crop: "scale",
+  // });
 
   const { name, email, password } = req.body;
   const user = await User.create({
     name,
     email,
     password,
-    avatar: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
-    },
+    // avatar: {
+    //   public_id: myCloud.public_id,
+    //   url: myCloud.secure_url,
+    // },
   });
 
   sendToken(user, 201, res);
@@ -232,4 +234,99 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
     message: "User details updated sucessfully",
     user,
   });
+});
+
+export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
+  // console.log(stripe.account);
+  const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+  if (!req.user.stripeAccountId) {
+    const account = await stripe.accounts.create({
+      type: "standard",
+      email: req.user.email,
+      business_type: "individual",
+      individual: {
+        email: req.user.email,
+      },
+      country: "IN",
+      default_currency: "inr",
+    });
+
+    const accountLink = await stripe.accountLinks.create({
+      account: account.id,
+      refresh_url: "http://localhost:3000",
+      return_url: "http://localhost:3000/balance/detail",
+      type: "account_onboarding",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully fetched account link",
+      // redirectUrl: accountLink.url,
+      redirectUrl: process.env.accountLink,
+    });
+  } else {
+    const accountId = req.user.stripeAccountId;
+    const accountDetails = await stripe.accounts.retrieve(accountId);
+
+    // const charge = await stripe.charges.create({
+    //   amount: 10*100,
+    //   currency: "inr",
+    //   source: accountId,
+    // });
+
+    // const charge = await stripe.charges.create({
+    //   customer: 'acct_1MtFFeSAmwdBmm1f',
+    //   source: accountId,
+    //   amount: 1 * 100,
+    //   currency: "inr",
+    //   // application_fee: 1 * 100,
+    //   // destination: accountId,
+    // });
+
+    // await stripe.payouts.create(
+    //   {
+    //     amount: amount,
+    //     currency: currency,
+    //   },
+    //   {
+    //     stripeAccount: accountId,
+    //   }
+    // );
+
+    // const paymentMethod = await stripe.paymentMethods.create({
+    //   type: 'card',
+    //   card: {
+    //     number: '4242424242424242',
+    //     exp_month: 8,
+    //     exp_year: 2024,
+    //     cvc: '314',
+    //   },
+    // });
+
+    // const paymentIntent = await stripe.paymentIntents.create(
+    //   {
+    //     amount: 1000,
+    //     currency: "usd",
+    //     automatic_payment_methods: {
+    //       enabled: true,
+    //     },
+    //     payment_method: 'card',
+    //   },
+    //   {
+    //     stripeAccount: accountId,
+    //   }
+    // );
+
+
+    
+    
+
+    res.status(200).json({
+      success: true,
+      message: "You have already created your account",
+      accountDetails,
+      // paymentIntent : paymentIntent ? paymentIntent : "",
+    });
+  }
 });
