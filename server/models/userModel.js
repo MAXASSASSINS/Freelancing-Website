@@ -29,11 +29,11 @@ const userSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      required: true,
+      default: "myAvatar"
     },
     url: {
       type: String,
-      required: true,
+      default: "https://res.cloudinary.com/dyod45bn8/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1691056205/kisspng-computer-icons-user-avatar-woman-avatar-5b0c5b2f6ecaa1.2446433615275364314538_zsiim6.jpg",
     },
   },
 
@@ -95,6 +95,7 @@ const userSchema = new mongoose.Schema({
   country: {
     type: String,
     required: true,
+    default: "India",
   },
 
   role: {
@@ -188,6 +189,15 @@ const userSchema = new mongoose.Schema({
   balance: {
     type: Number,
     default: 0,
+  },
+
+  stripeAccountId: {
+    type: String,
+    default: "",
+  },
+
+  lastDelivery: {
+    type: Date,
   },
 
   resetPasswordToken: String,
