@@ -24,6 +24,7 @@ import {
 } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { AiOutlineUser } from "react-icons/ai";
+import { gigUserReducer } from "../../reducers/userReducers";
 
 export const UserDetail = () => {
   const navigate = useNavigate();
@@ -71,12 +72,11 @@ export const UserDetail = () => {
     });
 
   const increaseReviewCount = () => {
-    setReviewCount(prev => prev + 5);
+    setReviewCount((prev) => prev + 5);
     console.log(reviewCount);
   };
 
-  if(isAuthenticated)
-    console.log(user.reviews.length, reviewCount);
+  if (isAuthenticated) console.log(user.reviews.length, reviewCount);
 
   return (
     userGigs &&
@@ -138,7 +138,15 @@ export const UserDetail = () => {
                     {" "}
                     <FaPaperPlane className="inline" /> Last Delivery
                   </span>
-                  <p>2 months</p>
+                  <p>
+                    {gigUser.lastDelivery ? (
+                      <Moment  fromNow>
+                        {gigUser.lastDelivery}
+                      </Moment>
+                    ) : (
+                      "---"
+                    )}
+                  </p>
                 </li>
               </ul>
             </div>

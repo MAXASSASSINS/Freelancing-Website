@@ -82,7 +82,7 @@ export const GigDetail = () => {
     });
 
   const increaseReviewCount = () => {
-    setReviewCount(prev =>  prev + 5);
+    setReviewCount((prev) => prev + 5);
   };
 
   const reviewCountAccoridingToRating = (rating) => {
@@ -383,7 +383,13 @@ export const GigDetail = () => {
                     </li>
                     <li>
                       Last delivery
-                      <div>about 1 hour ago</div>
+                      <div>
+                        {gigDetail.user.lastDelivery ? (
+                          <Moment fromNow>{gigDetail.user.lastDelivery}</Moment>
+                        ) : (
+                          "---"
+                        )}
+                      </div>
                     </li>
                   </ul>
                 </div>
