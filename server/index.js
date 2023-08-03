@@ -21,13 +21,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const whitelist = [process.env.FRONTEND_URL_DEV, process.env.FRONTEND_URL_PROD]
 app.use(cors(
   {
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
+    // origin: function (origin, callback) {
+    //   if (whitelist.indexOf(origin) !== -1) {
+    //     callback(null, true)
+    //   } else {
+    //     callback(new Error('Not allowed by CORS'))
+    //   }
+    // },
+    origin: "*",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }
