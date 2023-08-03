@@ -28,7 +28,7 @@ app.use(cors(
     //     callback(new Error('Not allowed by CORS'))
     //   }
     // },
-    origin: "*",
+    origin: "https://vercel.com/maxassassins/feelance-me-frontend",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }
