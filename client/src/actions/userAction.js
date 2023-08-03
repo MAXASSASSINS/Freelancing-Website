@@ -14,6 +14,9 @@ import {
   LOGOUT_USER_REQUEST,
   LOGOUT_USER_SUCCESS,
   LOGOUT_USER_FAIL,
+  SIGNUP_USER_FAIL,
+  SIGNUP_USER_REQUEST,
+  SIGNUP_USER_SUCCESS,
 } from "../constants/userConstants";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -94,6 +97,24 @@ export const loggedUser = (email, password) => async (dispatch) => {
       // payload: "failed user login",
     });
     // return false;
+  }
+};
+
+export const signUpUser = (name, email, password) => async (dispatch) => {
+  try {
+    dispatch({ type: SIGNUP_USER_REQUEST });
+
+    const {data} = await axios.post("/register", { name, email, password });
+
+    dispatch({
+      type: SIGNUP_USER_SUCCESS,
+      payload: data.user,
+    });
+  } catch (error) {
+    dispatch({
+      type: SIGNUP_USER_FAIL,
+      payload: error.response.data,
+    });
   }
 };
 
