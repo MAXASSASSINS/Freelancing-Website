@@ -10,6 +10,7 @@ import {
   getAllUsers,
   getUser,
   updateUser,
+  widthdrawl,
 } from "../controllers/userController.js";
 import "../controllers/authGoogle.js";
 import { googleCallback } from "../controllers/authGoogle.js";
@@ -32,6 +33,8 @@ router.post("/forgotPassword", forgotPassword);
 router.put("/forgotPassword:token", resetPassword);
 
 router.put("/changePassword", isAuthenticated, changePassword);
+
+router.get("/withdrawl", isAuthenticated, widthdrawl);
 
 router.get(
   "/admin/allUsers",
