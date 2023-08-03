@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DateTag } from "../DateTag";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Moment from "react-moment";
 import { GrDocument } from "react-icons/gr";
@@ -202,7 +202,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
   const getOrderMessages = async () => {
     try {
-      const { data } = await axios.get(`/message/order/${params.id}`);
+      const { data } = await axiosInstance.get(`/message/order/${params.id}`);
       console.log(data);
 
       const messages = buildDateWiseMessages(

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import "./sidebar.css";
 import { Avatar } from "../Avatar/Avatar";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../actions/userAction";

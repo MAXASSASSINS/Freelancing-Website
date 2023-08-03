@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { Avatar } from "../Avatar/Avatar";
 
@@ -32,7 +32,7 @@ export const Orders = () => {
   const getOrderList = async () => {
     try{  
       setLoading(true);
-      const { data } = await axios.get("/orders/me");
+      const { data } = await axiosInstance.get("/orders/me");
       console.log(data);
       setOrders(data.orders);
     }

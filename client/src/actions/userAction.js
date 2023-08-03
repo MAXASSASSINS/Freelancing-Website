@@ -18,13 +18,13 @@ import {
   SIGNUP_USER_REQUEST,
   SIGNUP_USER_SUCCESS,
 } from "../constants/userConstants";
-import axios from "axios";
+import { axiosInstance } from "../utility/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 export const getUser = (id) => async (dispatch) => {
   try {
     dispatch({ type: USER_REQUEST });
-    const { data } = await axios.get(`/user/${id}`);
+    const { data } = await axiosInstance.get(`/user/${id}`);
     // const data = await user.json();
 
     dispatch({
@@ -42,7 +42,7 @@ export const getUser = (id) => async (dispatch) => {
 export const getGigUser = (id) => async (dispatch) => {
   try {
     dispatch({ type: GIG_USER_REQUEST });
-    const { data } = await axios.get(`/user/${id}`);
+    const { data } = await axiosInstance.get(`/user/${id}`);
     // const data = await user.json();
 
     dispatch({
@@ -67,7 +67,11 @@ export const loggedUser = (email, password) => async (dispatch) => {
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.post("/login", { email, password }, config);
+    const { data } = await axiosInstance.post(
+      "/login",
+      { email, password },
+      config
+    );
 
     console.log(data);
     // console.log(dispatch);
@@ -104,7 +108,11 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
   try {
     dispatch({ type: SIGNUP_USER_REQUEST });
 
-    const {data} = await axios.post("/register", { name, email, password });
+    const { data } = await axiosInstance.post("/register", {
+      name,
+      email,
+      password,
+    });
 
     dispatch({
       type: SIGNUP_USER_SUCCESS,
@@ -121,9 +129,9 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_USER_REQUEST });
-    const { data } = await axios.get("http://localhost:4000/me");
+    const { data } = await axiosInstance.get("http://localhost:4000/me");
 
-    console.log('me', data);
+    console.log("me", data);
 
     dispatch({
       type: LOAD_USER_SUCCESS,
@@ -143,7 +151,7 @@ export const logoutUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOGOUT_USER_REQUEST });
 
-    const { data } = await axios.get("/logout");
+    const { data } = await axiosInstance.get("/logout");
 
     dispatch({
       type: LOGOUT_USER_SUCCESS,

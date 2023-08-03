@@ -23,7 +23,7 @@ import { CheckInput } from "../CheckInput/CheckInput";
 import { getOrderDetail } from "../../actions/orderAction";
 import Moment from "react-moment";
 import { getFileSize, numberToCurrency } from "../../utility/util";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { FREE_TEXT } from "../../constants/globalConstants";
@@ -181,7 +181,7 @@ export const SubmitRequirements = () => {
     });
 
     try {
-      const { data } = await axios.put(`/order/update/requirements/${params.orderId}`, {
+      const { data } = await axiosInstance.put(`/order/update/requirements/${params.orderId}`, {
         requirements: payload,
       });
       console.log(data);

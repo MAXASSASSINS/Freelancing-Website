@@ -5,7 +5,7 @@ import { Activities } from "./Activities";
 import { Delivery } from "./Delivery";
 import { colors, green_color } from "../../utility/color";
 import { windowContext } from "../../App";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";

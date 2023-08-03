@@ -9,7 +9,7 @@ import { io, Socket } from "socket.io-client";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import Moment from "react-moment";
 import moment from "moment";
 import "moment-timezone";
@@ -149,7 +149,7 @@ export const Inbox = () => {
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.get(
+    const { data } = await axiosInstance.get(
       "/list/of/all/inbox/clients/for/current/user",
       config
     );
@@ -167,7 +167,7 @@ export const Inbox = () => {
     for (let i = 0; i < listOfAllClients.length; i++) {
       const userId = listOfAllClients[i].toString();
 
-      const { data } = await axios.get(`/user/${userId}`, config);
+      const { data } = await axiosInstance.get(`/user/${userId}`, config);
       temp1.push(data);
       // temp2.push(false);
     }
@@ -186,7 +186,7 @@ export const Inbox = () => {
     for (let i = 0; i < listOfAllClients.length; i++) {
       const userId = listOfAllClients[i].toString();
 
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `/get/last/message/between/two/user`,
         {
           from: userId,
@@ -265,7 +265,7 @@ export const Inbox = () => {
     };
 
     setInboxMessagesLoading(true);
-    const { data } = await axios.post(
+    const { data } = await axiosInstance.post(
       "/get/all/messages/between/two/users",
       postData,
       config
@@ -342,7 +342,7 @@ export const Inbox = () => {
         files,
       };
 
-      const { data } = await axios.post("/add/message", messageData);
+      const { data } = await axiosInstance.post("/add/message", messageData);
       // console.log(data);
       return data;
     } catch (error) {

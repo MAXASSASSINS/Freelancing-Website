@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { TextArea } from "../TextArea/TextArea";
 import { updateOrderDetail } from "../../actions/orderAction";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export const SellerFeedback = () => {
         rating,
         comment: commentRef.current.currValue,
       } 
-      const { data } = await axios.post(`/order/${params.id}/seller/feedback`, feedback);
+      const { data } = await axiosInstance.post(`/order/${params.id}/seller/feedback`, feedback);
       dispatch(updateOrderDetail(data.order));
       console.log(data);
     }

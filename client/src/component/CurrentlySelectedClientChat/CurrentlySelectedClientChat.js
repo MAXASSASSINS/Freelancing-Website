@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import Moment from "react-moment";
 import moment from "moment";
 import "moment-timezone";
@@ -75,7 +75,7 @@ export const CurrentlySelectedClientChat = ({
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.post(url, dataToPost, config);
+    const { data } = await axiosInstance.post(url, dataToPost, config);
     // console.log(data);
     await getAllMessagesBetweenTwoUser(currentSelectedClient._id);
     await handleSendMessageSocket(message);
@@ -95,7 +95,7 @@ export const CurrentlySelectedClientChat = ({
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.post(
+    const { data } = await axiosInstance.post(
       "/get/all/messages/between/two/users",
       postData,
       config

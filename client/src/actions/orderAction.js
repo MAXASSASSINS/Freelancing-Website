@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "../utility/axiosInstance";
 import {
   ALL_ORDER_REQUEST,
   ALL_ORDER_SUCCESS,
@@ -21,7 +21,7 @@ import {
 export const getAllOrder = () => async (dispatch) => {
   try {
     dispatch({ type: ALL_ORDER_REQUEST });
-    const { data } = await axios.get("/order/orders");
+    const { data } = await axiosInstance.get("/order/orders");
 
     dispatch({
       type: ALL_ORDER_SUCCESS,
@@ -39,7 +39,7 @@ export const getUserOrders = (id) => async (dispatch) => {
   try {
     dispatch({ type: USER_ORDERS_REQUEST });
 
-    const { data } = await axios.get(`/order/orders/user/${id}`);
+    const { data } = await axiosInstance.get(`/order/orders/user/${id}`);
 
     dispatch({
       type: USER_ORDERS_SUCCESS,
@@ -57,7 +57,7 @@ export const getOrderDetail = (id) => async (dispatch) => {
   try {
     dispatch({ type: ORDER_DETAIL_REQUEST });
 
-    const { data } = await axios.get(`/order/details/${id}`);
+    const { data } = await axiosInstance.get(`/order/details/${id}`);
 
     dispatch({
       type: ORDER_DETAIL_SUCCESS,

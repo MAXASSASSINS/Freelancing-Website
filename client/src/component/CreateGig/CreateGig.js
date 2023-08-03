@@ -45,7 +45,7 @@ import { MULTIPLE_CHOICE } from "./createGigConstants";
 import { IoIosClose } from "react-icons/io";
 import { countryWithPhoneCodesData } from "./CountryPhoneCode";
 import { no_focus_color, green_color } from "../../utility/color";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { getGigDetail } from "../../actions/gigAction";
@@ -389,13 +389,13 @@ export const CreateGig = () => {
       setShowDataSendingLoadingScreen(true);
       const data = await collectRequiredData();
       if (searchParams.get("id") === "null") {
-        const res = await axios.post("/gig/create", data);
+        const res = await axiosInstance.post("/gig/create", data);
         if (res.status === 201) {
           setSearchParams({ ...searchParams, id: res.data.gigId });
           console.log(res.data);
         }
       } else {
-        const res = await axios.put(
+        const res = await axiosInstance.put(
           `/gig/update/${searchParams.get("id")}`,
           data
         );
@@ -860,7 +860,7 @@ export const CreateGig = () => {
     };
     let data;
     try {
-      data = await axios.post("/verify/number", body);
+      data = await axiosInstance.post("/verify/number", body);
       data = data.data;
     } catch (err) {
       invalidPhoneNumberRef.current.style.display = "block";
@@ -877,7 +877,7 @@ export const CreateGig = () => {
       code: verificationCode,
       to: to,
     };
-    const { data } = await axios.post("/verify/code", body);
+    const { data } = await axiosInstance.post("/verify/code", body);
 
     console.log(data);
 
@@ -903,7 +903,7 @@ export const CreateGig = () => {
     };
 
     try {
-      const res = await axios.put(
+      const res = await axiosInstance.put(
         `/gig/update/${searchParams.get("id")}`,
         data
       );

@@ -9,7 +9,7 @@ import Moment from "react-moment";
 import "moment-timezone";
 
 import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { ToastContainer, toast } from "react-toastify";
 import { SocketContext } from "../../context/socket/socket";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
@@ -273,7 +273,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         files,
       };
 
-      const { data } = await axios.post("/add/message", messageData);
+      const { data } = await axiosInstance.post("/add/message", messageData);
       // console.log(data);
       return data;
     } catch (error) {
@@ -381,7 +381,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         "Content-Type": "application/json",
       },
     };
-    const { data } = await axios.post(
+    const { data } = await axiosInstance.post(
       "/get/all/messages/between/two/users",
       postData,
       config

@@ -12,7 +12,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -86,7 +86,7 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
         gigId: params.id,
         packageNumber: params.packageNumber,
       };
-      const orderRes = await axios.post("/order/new", orderData);
+      const orderRes = await axiosInstance.post("/order/new", orderData);
       console.log(orderRes);
       orderId = orderRes.data.order._id;
       // setParentLoadingStatus(false);
@@ -102,7 +102,7 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
     // creating payment intent
     try {
       const { id } = paymentMethod;
-      const { data } = await axios.post("/package/payment", {
+      const { data } = await axiosInstance.post("/package/payment", {
         id,
         gigId: params.id,
         packageNumber: params.packageNumber,

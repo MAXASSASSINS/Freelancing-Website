@@ -5,7 +5,7 @@ import { OrderMessageInput } from "./OrderMessageInput";
 import { ChatBox } from "./ChatBox";
 import { BiChevronLeft } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { useParams } from "react-router-dom";
 import { updateOrderDetail } from "../../actions/orderAction";
 import { ToastContainer, toast } from "react-toastify";
@@ -25,7 +25,7 @@ const DeliveryApproval = ({ setFileLoading }) => {
   };
 
   const handleOrderCompletion = async () => {
-    const { data } = await axios.post(`/order/completed/${params.id}`);
+    const { data } = await axiosInstance.post(`/order/completed/${params.id}`);
     console.log(data);
     dispatch(updateOrderDetail(data.order));
     setShowFinalDeliveryConfirmation(false);

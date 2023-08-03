@@ -13,12 +13,12 @@ import {
   UPDATE_ALL_GIGS_FAIL,
   CLEAR_ERRORS,
 } from "../constants/gigConstants.js";
-import axios from "axios";
+import { axiosInstance } from "../utility/axiosInstance.js";
 
 export const getAllGig = () => async (dispatch) => {
   try {
     dispatch({ type: ALL_GIG_REQUEST });
-    const { data } = await axios.get("/gig/gigs");
+    const { data } = await axiosInstance.get("/gig/gigs");
     // const data = await fetchedData.json();
 
     dispatch({
@@ -37,7 +37,7 @@ export const getUserGigs = (id) => async (dispatch) => {
   try {
     dispatch({ type: USER_GIGS_REQUEST });
 
-    const { data } = await axios.get(`/gig/gigs/user/${id}`);
+    const { data } = await axiosInstance.get(`/gig/gigs/user/${id}`);
     // const data = await fetchedData.json();
 
     dispatch({
@@ -57,7 +57,7 @@ export const getGigDetail = (id) => async (dispatch) => {
   try {
     dispatch({ type: GIG_DETAIL_REQUEST });
 
-    const { data } = await axios.get(`/gig/details/${id}`);
+    const { data } = await axiosInstance.get(`/gig/details/${id}`);
 
     dispatch({
       type: GIG_DETAIL_SUCCESS,

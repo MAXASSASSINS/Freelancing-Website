@@ -7,7 +7,7 @@ import { OrderDetailSideModal } from "../OrderDetail/OrderDetailSideModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrderDetail, updateOrderDetail } from "../../actions/orderAction";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 
 export const BuyerFeedback = () => {
   const feedbackQuestions = [
@@ -55,7 +55,7 @@ export const BuyerFeedback = () => {
         recommend: ratings[2],
         comment: commentRef.current.currValue,
       };
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `/order/${params.id}/buyer/feedback`,
         feedback
       );

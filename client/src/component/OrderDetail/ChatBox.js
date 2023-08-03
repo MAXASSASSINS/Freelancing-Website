@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { OrderMessageInput } from "./OrderMessageInput";
 import { IoClose } from "react-icons/io5";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-import axios from "axios";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketContext } from "../../context/socket/socket";
 import { updateOrderDetail } from "../../actions/orderAction";
@@ -107,7 +107,7 @@ export const ChatBox = ({
         orderId: orderDetail._id,
       };
 
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `/add/order/message/${orderDetail._id}`,
         messageData
       );
@@ -124,7 +124,7 @@ export const ChatBox = ({
         message,
         files,
       };
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `/order/add/delivery/${orderDetail._id}`,
         deliveryData
       );
@@ -142,7 +142,7 @@ export const ChatBox = ({
         message,
         files,
       };
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         `/order/add/revision/${orderDetail._id}`,
         deliveryData
       );
