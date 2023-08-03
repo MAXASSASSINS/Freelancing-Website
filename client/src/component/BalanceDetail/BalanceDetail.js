@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser } from "../../actions/userAction";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { numberToCurrency } from "../../utility/util";
 
@@ -52,6 +52,16 @@ export const BalanceDetail = () => {
     return acc;
   }, 0);
 
+  const handleWithdrawl = async () => {
+    try {
+      const { data } = await axios.get("/withdrawl");
+      console.log(data);
+      if(data.redirectUrl) window.location.href = data.redirectUrl;
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
+
 
   return (
     isAuthenticated && (
@@ -77,7 +87,7 @@ export const BalanceDetail = () => {
                 <h3 className="text-4xl font-bold mb-24">
                   ₹{numberToCurrency(user.balance)}
                 </h3>
-                <button className="px-4 py-3 bg-dark_grey hover:bg-light_grey hover:cursor-pointer text-white rounded">
+                <button onClick={handleWithdrawl} className="px-4 py-3 bg-dark_grey hover:bg-light_grey hover:cursor-pointer text-white rounded">
                   Withdraw balance
                 </button>
               </div>
@@ -159,7 +169,13 @@ export const BalanceDetail = () => {
                         {order.seller._id === user._id ? "Earning" : "Buying"}
                       </li>
                     </div>
-                    <li className="hidden sm:inline">poochie723</li>
+                    <li className="hidden sm:inline">
+                      {
+                        order.seller._id === user._id
+                          ? order.buyer.name
+                          : order.seller.name 
+                      }
+                    </li>
                     <li className="hidden min-[480px]:inline uppercase underline hover:cursor-pointer">
                       <Link to={`/orders/${order._id}`} >{order.orderId}</Link>
                     </li>
