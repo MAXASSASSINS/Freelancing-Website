@@ -46,9 +46,11 @@ import { Orders } from "./component/Orders/Orders";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
 import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
+import { SignUp } from "./component/SignUp";
+
+import { loadStripe } from "@stripe/stripe-js";
 
 export const windowContext = createContext();
-
 // export const socket = io.connect("http://localhost:4000");
 
 const App = () => {
@@ -126,6 +128,7 @@ const App = () => {
               ></Route>
               <Route exact path="/" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
+              <Route exact path="/signUp" element={<SignUp />} />
               {/* {
 					gigs && gigs.map(gig => (
 						<Sidebar gig={gig} key={gig._id} />
@@ -154,7 +157,11 @@ const App = () => {
               ></Route>
               <Route exact path="/orders" element={<Orders />} />
               <Route exact path="/orders/:id" element={<OrderDetail />} />
-              <Route exact path="/orders/:id/feedback" element={<BuyerFeedback />} />
+              <Route
+                exact
+                path="/orders/:id/feedback"
+                element={<BuyerFeedback />}
+              />
               <Route exact path="/balance/detail" element={<BalanceDetail />} />
             </Routes>
             {/* <Footer /> */}
