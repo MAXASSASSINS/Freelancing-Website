@@ -123,7 +123,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch({ type: LOAD_USER_REQUEST });
     const { data } = await axios.get("/me");
 
-    console.log(data);
+    console.log('me', data);
 
     dispatch({
       type: LOAD_USER_SUCCESS,
