@@ -121,7 +121,7 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_USER_REQUEST });
-    const { data } = await axios.get("/me");
+    const { data } = await axios.get("http://localhost:4000/me");
 
     console.log('me', data);
 
