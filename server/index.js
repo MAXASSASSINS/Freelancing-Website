@@ -18,7 +18,7 @@ dotenv.config();
 app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const whitelist = [process.env.FRONTEND_URL_DEV, process.env.FRONTEND_URL_PROD]
+const whitelist = [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_DEV, 'http://192.168.0.103:3000']
 app.use(cors(
   {
     // origin: function (origin, callback) {
@@ -29,6 +29,7 @@ app.use(cors(
     //   }
     // },
     // origin: "http://localhost:3000",
+    // origin: "http://192.168.0.103:3000",
     origin: whitelist,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -36,10 +37,11 @@ app.use(cors(
 ));
 
 app.use(function (req, res, next){
-  res.header(`Access-Control-Allow-Origin: ${whitelist}`);
-  res.header("Access-Control-Allow-Credentials: true");
-  res.header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers: Content-Type, *");
+  console.log(req.headers.origin)
+  res.set('Access-Control-Allow-Origin', req.headers.origin);
+  res.set("Access-Control-Allow-Credentials", true);
+  // res.set("Access-Control-Allow-Methods", 'GET, POST, PUT, DELETE');
+  // res.header("Access-Control-Allow-Headers: Content-Type, *");
   next();
 })
 
