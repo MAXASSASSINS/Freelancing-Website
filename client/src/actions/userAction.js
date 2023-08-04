@@ -129,7 +129,7 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
 export const loadUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_USER_REQUEST });
-    const { data } = await axiosInstance.get("http://localhost:4000/me");
+    const { data } = await axiosInstance.get("/me");
 
     console.log("me", data);
 

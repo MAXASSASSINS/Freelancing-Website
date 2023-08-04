@@ -37,7 +37,7 @@ app.use(cors(
 ));
 
 app.use(function (req, res, next){
-  console.log(req.headers.origin)
+  console.log('origin', req.headers.origin)
   res.set('Access-Control-Allow-Origin', req.headers.origin);
   res.set("Access-Control-Allow-Credentials", true);
   // res.set("Access-Control-Allow-Methods", 'GET, POST, PUT, DELETE');
