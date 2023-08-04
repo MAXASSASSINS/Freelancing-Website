@@ -95,7 +95,7 @@ export let server = http.createServer(app);
 mongoose
   .connect(process.env.CONNECTION_URL, { useUnifiedTopology: true })
   .then(
-    server.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT || 4000, () => {
       console.log("server is running on port " + process.env.PORT);
       return server;
     })
