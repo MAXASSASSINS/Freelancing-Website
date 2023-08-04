@@ -19,31 +19,33 @@ app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const whitelist = [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_DEV, 'http://192.168.0.103:3000']
+// const whitelist = [];
 app.use(cors(
   {
-    // origin: function (origin, callback) {
-    //   if (whitelist.indexOf(origin) !== -1) {
-    //     callback(null, true)
-    //   } else {
-    //     callback(new Error('Not allowed by CORS'))
-    //   }
-    // },
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     // origin: "http://localhost:3000",
     // origin: "http://192.168.0.103:3000",
-    origin: whitelist,
+    // origin: whitelist,
+    allowedHeaders: "*",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }
 ));
 
-app.use(function (req, res, next){
-  console.log('origin', req.headers.origin)
-  res.set('Access-Control-Allow-Origin', req.headers.origin);
-  res.set("Access-Control-Allow-Credentials", true);
-  // res.set("Access-Control-Allow-Methods", 'GET, POST, PUT, DELETE');
-  // res.header("Access-Control-Allow-Headers: Content-Type, *");
-  next();
-})
+// app.use(function (req, res, next){
+//   console.log('origin', req.headers.origin)
+//   res.set('Access-Control-Allow-Origin', req.headers.origin);
+//   res.set("Access-Control-Allow-Credentials", true);
+//   res.set("Access-Control-Allow-Methods", 'GET, POST, PUT, DELETE');
+//   // res.header("Access-Control-Allow-Headers: Content-Type, *");
+//   next();
+// })
 
 app.use(express.json());
 app.use(cookieParser());
