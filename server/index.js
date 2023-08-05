@@ -23,7 +23,7 @@ const whitelist = [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_DEV, 
 app.use(cors(
   {
     origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
+      if (whitelist.indexOf(origin) !== -1 || !origin) {
         callback(null, true)
       } else {
         callback(new Error('Not allowed by CORS'))
@@ -32,7 +32,7 @@ app.use(cors(
     // origin: "http://localhost:3000",
     // origin: "http://192.168.0.103:3000",
     // origin: whitelist,
-    allowedHeaders: "*",
+    allowedHeaders: 'Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization',
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }
