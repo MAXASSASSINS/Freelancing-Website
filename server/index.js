@@ -17,6 +17,7 @@ dotenv.config();
 
 app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
 const whitelist = ['http://localhost:3000', 'https://feelance-me-frontend.vercel.app', 'http://192.168.0.103:3000']
 app.use("*", cors(
@@ -46,7 +47,7 @@ app.use("*", cors(
 //   next();
 // })
 
-app.use(express.json());
+
 app.use(cookieParser());
 app.use(passport.initialize());
 
