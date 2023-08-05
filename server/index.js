@@ -18,8 +18,8 @@ dotenv.config();
 app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const whitelist = [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL_DEV, 'http://192.168.0.103:3000']
-// const whitelist = [];
+const whitelist = ['http://localhost:3000', 'https://feelance-me-frontend.vercel.app', 'http://192.168.0.103:3000']
+
 app.use(cors(
   {
     origin: function (origin, callback) {
