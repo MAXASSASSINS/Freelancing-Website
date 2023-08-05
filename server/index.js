@@ -19,8 +19,7 @@ app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const whitelist = ['http://localhost:3000', 'https://feelance-me-frontend.vercel.app', 'http://192.168.0.103:3000']
-
-app.use(cors(
+app.use("*", cors(
   {
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1 || !origin) {
