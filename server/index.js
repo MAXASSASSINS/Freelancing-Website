@@ -19,24 +19,29 @@ app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-const whitelist = ['http://localhost:3000', 'https://feelance-me-frontend.vercel.app', 'http://192.168.0.103:3000']
-app.use("*", cors(
-  {
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1 || !origin) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
+const whitelist = [
+  "http://localhost:3000",
+  "https://feelance-me-frontend.vercel.app",
+  "http://192.168.0.103:3000",
+];
+app.use(
+  cors({
+    // origin: function (origin, callback) {
+    //   if (whitelist.indexOf(origin) !== -1 || !origin) {
+    //     callback(null, true);
+    //   } else {
+    //     callback(new Error("Not allowed by CORS"));
+    //   }
+    // },
     // origin: "http://localhost:3000",
     // origin: "http://192.168.0.103:3000",
-    // origin: whitelist,
-    allowedHeaders: 'Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization',
+    origin: whitelist,
+    // allowedHeaders:
+    //   "Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-  }
-));
+  })
+);
 
 // app.use(function (req, res, next){
 //   console.log('origin', req.headers.origin)
@@ -46,7 +51,6 @@ app.use("*", cors(
 //   // res.header("Access-Control-Allow-Headers: Content-Type, *");
 //   next();
 // })
-
 
 app.use(cookieParser());
 app.use(passport.initialize());
