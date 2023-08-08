@@ -4,7 +4,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import Features from "../utils/features.js";
 import cloudinary from "cloudinary";
-import multer from "multer";
+import { tagOptions } from "../Data/tagsData.js";
 
 const checkForErrors = (body, currentStep) => {
   let error = "";
@@ -24,9 +24,18 @@ const checkForErrors = (body, currentStep) => {
         return error;
       }
 
-      if (!searchTags || searchTags.length < 1) {
-        error = "Please enter at least 1 tag";
+      if (!searchTags || searchTags.length < 1 || searchTags.length > 5) {
+        error = "Number of tags must be between 1 & 5";
         return error;
+      }
+
+      if (searchTags) {
+        for (let i = 0; i < searchTags.length; i++) {
+          if (!tagOptions.includes(searchTags[i])) {
+            error = "Please enter valid tags";
+            return error;
+          }
+        }
       }
       break;
     case 3:
@@ -125,6 +134,10 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
 
   if (!gig) {
     return next(new ErrorHandler("Gig not found", 404));
+  }
+
+  if(gig.user.toString() !== req.user.id){
+    return next(new ErrorHandler("You are not authorized to update this gig", 401));
   }
 
   if (step === 2) {

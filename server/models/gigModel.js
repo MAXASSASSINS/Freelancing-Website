@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 const gigSchema = new mongoose.Schema({
   title: {
@@ -12,12 +13,7 @@ const gigSchema = new mongoose.Schema({
     type: String,
     // required: [true, "Please enter you gig sub category"],
   },
-  searchTags: [
-    {
-      type: String,
-      // required: [true, "Please enter at least 1 tag"],
-    },
-  ],
+  searchTags: [],
   pricing: [
     {
       packageTitle: {

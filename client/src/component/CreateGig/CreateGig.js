@@ -55,6 +55,8 @@ import {
   uploadToCloudinaryV2,
 } from "../../utility/cloudinary";
 import { FREE_TEXT } from "../../constants/globalConstants";
+import ReactSelect from "react-select";
+import { tagOptions } from "./tagsData";
 
 export const CreateGig = () => {
   const navigate = useNavigate();
@@ -85,6 +87,8 @@ export const CreateGig = () => {
   const [gigTitleInput, setGigTitleInput] = useState("I will ");
   const [enalbeGigTitleInputWarning, setEnalbeGigTitleInputWarning] =
     useState(false);
+  const [tags, setTags] = useState([]);
+  const [tagListWarning, setTagListWarning] = useState(false);
 
   const selectedCategoryRef = useRef(null);
   const selectedSubCategoryRef = useRef(null);
@@ -96,7 +100,6 @@ export const CreateGig = () => {
   const [categoryWarning, setCategoryWarning] = useState("");
 
   const tagListRef = useRef(null);
-  const [tagListWarning, setTagListWarning] = useState(false);
 
   const gigDescriptionRef = useRef(null);
   const [gigDescriptionError, setGigDescriptionError] = useState(false);
@@ -255,7 +258,11 @@ export const CreateGig = () => {
       setGigTitleInput(title);
       setSelectedCategory(category);
       setSelectedSubCategory(subCategory);
-      tagListRef.current.value = searchTags.join(", ");
+      // tagListRef.current.value = searchTags.join(", ");
+      const tags = searchTags.map((item, index) => {
+        return { value: item, label: item };
+      });
+      setTags(tags);
 
       // step 2
       pricing.map((item, index) => {
@@ -362,6 +369,18 @@ export const CreateGig = () => {
     }
   };
 
+  const handleTagsChange = (tags) => {
+    setTags(tags);
+    if(tags.length >= 1 && tags.length  < 6){
+      setTagListWarning(false);
+    }
+    else{
+      setTagListWarning(true);
+    }
+  };
+
+  console.log(tags);
+
   const handleSaveAndContinue = async () => {
     if (checkForWarnings()) return true;
 
@@ -425,7 +444,7 @@ export const CreateGig = () => {
           return true;
         }
 
-        if (tagListRef.current.value.length < 1) {
+        if (tags.length < 1 || tags.length > 5) {
           setTagListWarning(true);
           return true;
         }
@@ -521,7 +540,7 @@ export const CreateGig = () => {
           title: gigTitleInput,
           category: selectedCategory,
           subCategory: selectedSubCategory,
-          searchTags: getSearchTags(tagListRef.current.value),
+          searchTags: getSearchTags(),
         };
         return { data, step: 1 };
       case 2:
@@ -533,9 +552,13 @@ export const CreateGig = () => {
               packageDescriptionRefs.current[index].current.currValue,
             packageDeliveryTime:
               deliveryTimeRefs.current[index].current.currValue,
-            revisions: deliveryRevisionsRefs.current[index].current.currValue === "Unlimited" ? Number.MAX_VALUE :  Number(
-              deliveryRevisionsRefs.current[index].current.currValue
-            ),
+            revisions:
+              deliveryRevisionsRefs.current[index].current.currValue ===
+              "Unlimited"
+                ? Number.MAX_VALUE
+                : Number(
+                    deliveryRevisionsRefs.current[index].current.currValue
+                  ),
             sourceFile: sourceFileRefs.current[index].current.currValue,
             commercialUse: commercialUseRefs.current[index].current.currValue,
             packagePrice: Number(packagePriceRefs.current[index].current.value),
@@ -574,7 +597,9 @@ export const CreateGig = () => {
         // console.log("images", images);
 
         const res1 = await uploadToCloudinaryV2(images);
-        const res2 = await uploadToCloudinaryV2(sellerShowcaseVideo ? [sellerShowcaseVideo] : []);
+        const res2 = await uploadToCloudinaryV2(
+          sellerShowcaseVideo ? [sellerShowcaseVideo] : []
+        );
         // console.log(res2);
 
         const media = {
@@ -586,11 +611,9 @@ export const CreateGig = () => {
     }
   };
 
-  const getSearchTags = (val) => {
-    const tags = val.split(",");
-    const tagsList = [];
-    tags.forEach((item, index) => {
-      tagsList.push(item.trim());
+  const getSearchTags = () => {
+    const tagsList = tags.map((item, index) => {
+      return item.value;
     });
     return tagsList;
   };
@@ -942,6 +965,22 @@ export const CreateGig = () => {
     });
   };
 
+  // console.log(tags);
+  // const newTagsList = tagOptions.map((tag) => {
+  //   return tag.toLowerCase();
+  // })
+
+  // console.log(JSON.stringify(newTagsList));
+
+  // const set = new Set(newTagsList);
+  // const newarr = [...set];
+  // const ul = newarr.map((item) => {
+  //   return {
+  //     label: item,
+  //     value: item
+  //   }
+  // })
+  // console.log(JSON.stringify(ul));
   return (
     <div className="create-gig-main">
       <nav>
@@ -1153,14 +1192,24 @@ export const CreateGig = () => {
                 Enter search terms you feel your buyers will use when looking
                 for your service.
               </p>
-              <input ref={tagListRef}></input>
+              {/* <input ref={tagListRef}></input> */}
+              <ReactSelect
+                ref={tagListRef}
+                options={tagOptions}
+                isMulti
+                maxMenuHeight={150}
+                placeholder="Enter your tags"
+                onChange={handleTagsChange}
+                value={tags}
+                menuPlacement="top"
+              />
               <p className="recommend">
                 5 tags maximum. Use letters and numbers only. <br />
                 Tags should be comma seprated.
               </p>
               {tagListWarning && (
                 <p className="tag-list-warning">
-                  Tag list must contain at least 1 tag
+                  Number of tags is not in range of 1 to 5
                 </p>
               )}
             </div>
