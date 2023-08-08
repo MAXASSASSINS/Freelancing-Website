@@ -47,7 +47,7 @@ export const getGigUser = (id) => async (dispatch) => {
 
     dispatch({
       type: GIG_USER_SUCCESS,
-      payload: data,
+      payload: data.user,
     });
   } catch (error) {
     dispatch({

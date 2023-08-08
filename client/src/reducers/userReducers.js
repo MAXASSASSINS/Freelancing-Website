@@ -35,16 +35,23 @@ import {
 //     }
 // });
 
-export const gigUserReducer = (state = null, action) => {
+export const gigUserReducer = (state = {user: {}}, action) => {
   switch (action.type) {
     case GIG_USER_REQUEST:
-      return null;
+      return {
+        userLoading: true,
+      }
     case GIG_USER_SUCCESS:
-      return action.payload.user;
+      return {
+        ...state,
+        userLoading: false,
+        user: action.payload,
+      };
     case GIG_USER_FAIL:
       return {
         userLoading: false,
         userError: action.payload,
+        user: null,
       };
     default:
       return state;
