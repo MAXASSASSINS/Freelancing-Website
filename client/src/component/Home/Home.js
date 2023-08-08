@@ -18,7 +18,9 @@ export const Home = () => {
 
   const socket = useContext(SocketContext);
 
-  let { gigLoading, userError, gigs, gigsCount } = useSelector((state) => state.gigs);
+  let { gigLoading, userError, gigs, gigsCount } = useSelector(
+    (state) => state.gigs
+  );
 
   const { user, isAuthenticated } = useSelector((state) => state.user);
 
@@ -110,7 +112,10 @@ export const Home = () => {
   return (
     <>
       <div className="all-gigs-container">
-        {gigs && gigs.map((gig) => <GigCard lazyLoad={true} gig={gig} key={gig._id} />)}
+        {gigs &&
+          gigs.map((gig) => (
+            <GigCard lazyLoad={true} gig={gig} key={gig._id} />
+          ))}
       </div>
     </>
   );
