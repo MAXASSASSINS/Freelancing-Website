@@ -43,7 +43,12 @@ class Features {
   }
 
   populate() {
-    this.query = this.query.populate("user", "name avatar online");
+    this.query = this.query.populate("user", "name avatar");
+    return this;
+  }
+
+  select(){
+    this.query = this.query.select('title pricing images ratings numOfRatings');
     return this;
   }
 }

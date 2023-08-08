@@ -79,7 +79,8 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
     .search()
     .filter()
     .pagination(resultPerPage)
-    .populate();
+    .populate()
+    .select();
   const gigs = await feature.query;
 
   res.status(200).json({
