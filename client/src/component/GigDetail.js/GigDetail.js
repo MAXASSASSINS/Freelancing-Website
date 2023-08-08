@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import "./gigDetail.css";
 import { GigCard } from "../GigCard/GigCard";
 import { useDispatch, useSelector } from "react-redux";

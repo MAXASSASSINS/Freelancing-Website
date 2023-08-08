@@ -50,14 +50,26 @@ import { SignUp } from "./component/SignUp";
 
 import { loadStripe } from "@stripe/stripe-js";
 
+import {
+  useGlobalLoading,
+  useUpdateGlobalLoading,
+} from "./context/globalLoadingContext";
+import { GoLaw } from "react-icons/go";
+import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
+import { GlobalLoadingProvider } from "./context/globalLoadingContext";
+
 export const windowContext = createContext();
-// export const socket = io.connect("http://localhost:4000");
 
 const App = () => {
   let { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useSelector((state) => state.user);
+  const { user, isAuthenticated, userLoading } = useSelector(
+    (state) => state.user
+  );
+
+  const globalLoading = useGlobalLoading();
+  console.log(globalLoading);
 
   const [windowWidth, setWindowWidth] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
@@ -111,6 +123,7 @@ const App = () => {
       <windowContext.Provider value={{ windowWidth, windowHeight }}>
         <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
           <SocketContext.Provider value={socket}>
+            <DataSendingLoading show={globalLoading} />
             <Tooltip id="my-tooltip" place="bottom" />
             {windowWidth < 900 && <Sidebar></Sidebar>}
             <Header></Header>

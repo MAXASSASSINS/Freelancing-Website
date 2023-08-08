@@ -44,9 +44,10 @@ export const UserDetail = () => {
     dispatch(getUserGigs(params.id));
   }, [dispatch, params.id]);
 
-  const gigUser = useSelector((state) => state.gigUser);
+  const {user: gigUser} = useSelector((state) => state.gigUser);
   const { userGigs } = useSelector((state) => state.userGigs);
 
+  console.log(gigUser);
   const [active, setActive] = useState(true);
 
   // useEffect(() => {
@@ -80,7 +81,7 @@ export const UserDetail = () => {
 
   return (
     userGigs &&
-    gigUser && (
+    Object.keys(gigUser).length > 0 && (
       <div className="user-details-max-width-container">
         <div className="user-info-div">
           <div className="user-info-large-screen-border first-div">

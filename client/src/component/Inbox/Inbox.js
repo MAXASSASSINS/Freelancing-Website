@@ -52,9 +52,11 @@ import { IoClose, IoDocumentOutline } from "react-icons/io5";
 import { FaEllipsisH, FaRegPaperPlane, FaSearch } from "react-icons/fa";
 import { BiChevronLeft } from "react-icons/bi";
 import { FiPaperclip } from "react-icons/fi";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 export const Inbox = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);
+  const updateGlobalLoading = useUpdateGlobalLoading();
 
   const token = Cookies.get("token");
 
@@ -144,59 +146,81 @@ export const Inbox = () => {
   }, [user]);
 
   const getListOfAllInboxClients = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const { data } = await axiosInstance.get(
-      "/list/of/all/inbox/clients/for/current/user",
-      config
-    );
-    return data.list;
+    try {
+      updateGlobalLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axiosInstance.get(
+        "/list/of/all/inbox/clients/for/current/user",
+        config
+      );
+      return data.list;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      updateGlobalLoading(false);
+    }
   };
 
   const handleAllClientDetails = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const temp1 = [];
-    // const temp2 = [];
-    for (let i = 0; i < listOfAllClients.length; i++) {
-      const userId = listOfAllClients[i].toString();
+    try {
+      updateGlobalLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const temp1 = [];
+      // const temp2 = [];
+      for (let i = 0; i < listOfAllClients.length; i++) {
+        const userId = listOfAllClients[i].toString();
 
-      const { data } = await axiosInstance.get(`/user/${userId}`, config);
-      temp1.push(data);
-      // temp2.push(false);
+        const { data } = await axiosInstance.get(`/user/${userId}`, config);
+        temp1.push(data);
+        // temp2.push(false);
+      }
+      // console.log(temp2);
+      // dispatch({ type: FETCH_ONLINE_STATUS_OF_CLIENTS, payload: temp2 });
+      return temp1;
+    } catch (err) {
+      console.log(err);
+    } finally {
+      updateGlobalLoading(false);
     }
-    // console.log(temp2);
-    // dispatch({ type: FETCH_ONLINE_STATUS_OF_CLIENTS, payload: temp2 });
-    return temp1;
   };
 
   const handleAllClientUserLastMessage = async () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const temp2 = [];
-    for (let i = 0; i < listOfAllClients.length; i++) {
-      const userId = listOfAllClients[i].toString();
-
-      const { data } = await axiosInstance.post(
-        `/get/last/message/between/two/user`,
-        {
-          from: userId,
-          to: user._id,
+    try {
+      updateGlobalLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
         },
-        config
-      );
-      temp2.push(data);
+      };
+      const temp2 = [];
+      for (let i = 0; i < listOfAllClients.length; i++) {
+        const userId = listOfAllClients[i].toString();
+
+        const { data } = await axiosInstance.post(
+          `/get/last/message/between/two/user`,
+          {
+            from: userId,
+            to: user._id,
+          },
+          config
+        );
+        temp2.push(data);
+      }
+      return temp2;
+    } catch (err) {
+      console.log(err);
     }
-    return temp2;
+    finally {
+      updateGlobalLoading(false);
+    }
   };
 
   // GET CLIENT DETAILS ALONG WITH LAST CHAT
@@ -1067,7 +1091,7 @@ export const Inbox = () => {
                     ))}
                     {fileLoading && (
                       <div className="inbox-message-list-info">
-                        <Avatar 
+                        <Avatar
                           avatarUrl={user.avatar.url}
                           userName={user.name}
                           width="2rem"
@@ -1164,7 +1188,10 @@ export const Inbox = () => {
                         data-tooltip-place="top"
                         data-tooltip-id="my-tooltip"
                       >
-                        <label className="inbox-attachment" htmlFor="chat-inbox-input-file">
+                        <label
+                          className="inbox-attachment"
+                          htmlFor="chat-inbox-input-file"
+                        >
                           <FiPaperclip />
                         </label>
                         <input
@@ -1185,7 +1212,7 @@ export const Inbox = () => {
                           message.length > 0 || isFilePicked ? "1" : "0.4",
                       }}
                     >
-                      <FaRegPaperPlane style={{display: "inline"}}/>
+                      <FaRegPaperPlane style={{ display: "inline" }} />
                       &nbsp; Send Message
                     </button>
                   </footer>
