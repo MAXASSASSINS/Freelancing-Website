@@ -89,14 +89,33 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
     .filter()
     .pagination(resultPerPage)
     .populate()
-    .select();
+    .select()
+
   const gigs = await feature.query;
 
+
+  let keywords = req.query.keyword ? req.query.keyword.split(",") : [];
+  gigs.forEach((gig) => {
+    gig.matchingStatus = keywords.reduce((count, kw) => {
+      if (gig.title.toLowerCase().includes(kw.toLowerCase())) {
+        return count + 1;
+      }
+      if (gig.searchTags.some(tag => tag.toLowerCase().includes(kw.toLowerCase()))) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  });
+
+  const sortedResults = gigs.sort(
+    (a, b) => b.matchingStatus - a.matchingStatus
+  );
+  
   res.status(200).json({
     success: true,
     message: "successfully fetched all gigs from database",
     gigsCount,
-    gigs,
+    gigs: sortedResults,
   });
 });
 
@@ -136,8 +155,10 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Gig not found", 404));
   }
 
-  if(gig.user.toString() !== req.user.id){
-    return next(new ErrorHandler("You are not authorized to update this gig", 401));
+  if (gig.user.toString() !== req.user.id) {
+    return next(
+      new ErrorHandler("You are not authorized to update this gig", 401)
+    );
   }
 
   if (step === 2) {
