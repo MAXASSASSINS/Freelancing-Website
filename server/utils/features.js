@@ -5,16 +5,20 @@ class Features {
   }
 
   search() {
-    const keyword = this.queryStr.keyword
-      ? {
-          searchTags: {
-            $regex: this.queryStr.keyword,
-            $options: "i",
-          },
-        }
-      : {};
+    const keywords = this.queryStr.keyword ?  this.queryStr.keyword.split(",") : [];
+    let query = {};
+    if (keywords.length > 0) {
+      query = {
+        $or: keywords.map((kw) => ({
+          $or: [
+            { title: { $regex: kw, $options: "i" } },
+            { searchTags: { $regex: kw, $options: "i" } },
+          ],
+        })),
+      };
+    }
 
-    this.query = this.query.find({ ...keyword });
+    this.query = this.query.find({ ...query });
     return this;
   }
 
@@ -47,10 +51,11 @@ class Features {
     return this;
   }
 
-  select(){
-    this.query = this.query.select('title pricing images ratings numOfRatings');
+  select() {
+    this.query = this.query.select("title pricing images ratings numOfRatings searchTags");
     return this;
   }
+
 }
 
 export default Features;
