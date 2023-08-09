@@ -48,9 +48,11 @@ export const Header = () => {
             onFocus={show}
             onBlur={hide}
             placeholder="Find services"
-            autoComplete="off"
+            // autoComplete="off"
           ></input>
-          <AiOutlineSearch className="search-icon" />
+          <div className="search-icon">
+            <AiOutlineSearch />
+          </div>
         </form>
 
         <div className="navigation-icons">
@@ -88,10 +90,7 @@ export const Header = () => {
           {isAuthenticated && (
             <div className="header-balance">
               <Link to={"/balance/detail"}>
-                <p>
-                  ₹
-                  {numberToCurrency(user.balance)}
-                </p>
+                <p>₹{numberToCurrency(user.balance)}</p>
               </Link>
             </div>
           )}

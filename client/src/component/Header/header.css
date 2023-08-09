@@ -35,6 +35,9 @@
 
 .header-container > form {
   width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .search-input {
@@ -42,7 +45,7 @@
   width: 100%;
   padding: 0.75rem;
   border-width: 0px;
-  outline: 1px solid var(--no-focus);
+  border: 1px solid var(--no-focus);
   border-radius: 0.25rem;
 }
 
@@ -60,13 +63,24 @@
 }
 
 .search-input:focus {
-  outline: 1px solid var(--dark-grey);
+  outline: none;
+  border: 1px solid var(--dark-grey);
 }
 
 .search-icon {
-  display: none;
-  position: relative;
-  left: -2rem;
+  position: absolute;
+  right: 0;
+  background-color: var(--dark-grey);
+  color: white;
+  height: 44.5px;
+  width: 44.5px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom-right-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .search-icon:hover {
