@@ -177,7 +177,8 @@ const App = () => {
               />
               <Route exact path="/balance/detail" element={<BalanceDetail />} />
             </Routes>
-            {/* <Footer /> */}
+            <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div>
+            <Footer />
           </SocketContext.Provider>
         </CloudinaryContext>
       </windowContext.Provider>
