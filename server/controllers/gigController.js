@@ -94,13 +94,14 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
   const gigs = await feature.query;
 
 
-  let keywords = req.query.keyword ? req.query.keyword.split(",") : [];
+  let keywords = req.query.keywords ? req.query.keywords.split(",") : [];
   gigs.forEach((gig) => {
     gig.matchingStatus = keywords.reduce((count, kw) => {
       if (gig.title.toLowerCase().includes(kw.toLowerCase())) {
         return count + 1;
       }
-      if (gig.searchTags.some(tag => tag.toLowerCase().includes(kw.toLowerCase()))) {
+      const gigTags = gig.searchTags.map((tag) => tag.toLowerCase());
+      if (gigTags.some(tag => tag.toLowerCase().includes(kw.toLowerCase()))) {
         return count + 1;
       }
       return count;

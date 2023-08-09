@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../component/common.css";
 import "./header.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -17,10 +17,14 @@ import { FaRegHeart } from "react-icons/fa";
 import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { numberToCurrency } from "../../utility/util";
+import { getAllGig } from "../../actions/gigAction";
 
 export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const searchRef = useRef(null);
+
   const { user, userLoading, isAuthenticated } = useSelector(
     (state) => state.user
   );
@@ -33,6 +37,16 @@ export const Header = () => {
     dispatch(hideDimBackground());
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const searchQuery = searchRef.current.value;
+    const keywords = searchQuery.split(" ");
+    dispatch(getAllGig(keywords.join(",")));
+    hideDimBackground();
+    searchRef.current.value = "";
+    searchRef.current.blur();
+  }
+
   return (
     <header className="header">
       <div className="header-container">
@@ -42,15 +56,16 @@ export const Header = () => {
           </h1>
         </div>
 
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
           <input
+            ref={searchRef}
             className="search-input"
             onFocus={show}
             onBlur={hide}
             placeholder="Find services"
             // autoComplete="off"
           ></input>
-          <div className="search-icon">
+          <div onClick={handleSubmit} className="search-icon">
             <AiOutlineSearch />
           </div>
         </form>

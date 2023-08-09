@@ -15,10 +15,13 @@ import {
 } from "../constants/gigConstants.js";
 import { axiosInstance } from "../utility/axiosInstance.js";
 
-export const getAllGig = () => async (dispatch) => {
+export const getAllGig = (keywords) => async (dispatch) => {
   try {
     dispatch({ type: ALL_GIG_REQUEST });
-    const { data } = await axiosInstance.get("/gig/gigs");
+    if (!keywords) {
+      keywords = "";
+    }
+    const { data } = await axiosInstance.get(`/gig/gigs?keywords=${keywords}`);
     // const data = await fetchedData.json();
 
     dispatch({

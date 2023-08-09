@@ -5,7 +5,7 @@ class Features {
   }
 
   search() {
-    const keywords = this.queryStr.keyword ?  this.queryStr.keyword.split(",") : [];
+    const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(",") : [];
     let query = {};
     if (keywords.length > 0) {
       query = {
