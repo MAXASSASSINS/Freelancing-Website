@@ -13,7 +13,7 @@ const gigSchema = new mongoose.Schema({
     type: String,
     // required: [true, "Please enter you gig sub category"],
   },
-  searchTags: [],
+  searchTags: [String],
   pricing: [
     {
       packageTitle: {
@@ -190,4 +190,7 @@ const gigSchema = new mongoose.Schema({
     },
   ],
 });
+
+gigSchema.index({ title: "text", searchTags: "text" });
+
 export default mongoose.model("Gig", gigSchema);
