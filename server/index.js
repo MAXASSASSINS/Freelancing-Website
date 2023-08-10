@@ -100,7 +100,7 @@ mongoose
   .connect(process.env.CONNECTION_URL, { useUnifiedTopology: true })
   .then(
     server.listen(process.env.PORT || 4000, () => {
-      console.log("server is running on port " + process.env.PORT);
+      console.log("server is running on port " + (process.env.PORT || 4000));
       return server;
     })
   )
