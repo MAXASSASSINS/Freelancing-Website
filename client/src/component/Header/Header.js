@@ -43,7 +43,6 @@ export const Header = () => {
     const keywords = searchQuery.split(" ");
     dispatch(getAllGig(keywords.join(",")));
     hideDimBackground();
-    searchRef.current.value = "";
     searchRef.current.blur();
   }
 
