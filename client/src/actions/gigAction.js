@@ -15,23 +15,31 @@ import {
 } from "../constants/gigConstants.js";
 import { axiosInstance } from "../utility/axiosInstance.js";
 
-export const getAllGig = (keywords) => async (dispatch) => {
+export const getAllGig = (keywords, category) => async (dispatch) => {
   try {
     dispatch({ type: ALL_GIG_REQUEST });
-    if (!keywords) {
-      keywords = "";
+    let payload = {};
+    if(keywords){
+      const {data} = await axiosInstance.get(`/gig/gigs?keywords=${keywords}`);
+      payload = data;
     }
-    const { data } = await axiosInstance.get(`/gig/gigs?keywords=${keywords}`);
-    // const data = await fetchedData.json();
-
+    else if(category){
+      const {data} = await axiosInstance.get(`/gig/gigs?category=${category}`);
+      payload = data;
+    }
+    else{
+      const {data} = await axiosInstance.get(`/gig/gigs`);
+      payload = data;
+    }
     dispatch({
       type: ALL_GIG_SUCCESS,
-      payload: data,
+      payload
     });
   } catch (error) {
+    console.log(error.response.data);
     dispatch({
       type: ALL_GIG_FAIL,
-      payload: error.response.data.message,
+      payload: error.response.data,
     });
   }
 };
