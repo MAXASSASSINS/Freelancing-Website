@@ -69,7 +69,6 @@ const App = () => {
   );
 
   const globalLoading = useGlobalLoading();
-  console.log(globalLoading);
 
   const [windowWidth, setWindowWidth] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
@@ -140,6 +139,7 @@ const App = () => {
                 element={<Inbox />}
               ></Route>
               <Route exact path="/" element={<Home />} />
+              <Route exact path="/search" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/signUp" element={<SignUp />} />
               {/* {
