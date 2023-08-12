@@ -111,7 +111,7 @@ export const Home = () => {
   }, [gigs]);
 
   return (
-    <>
+    <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)]">
       <SearchTagsBar />
       {gigs?.length > 0 ? (
         <div className="all-gigs-container">
@@ -122,13 +122,19 @@ export const Home = () => {
         </div>
       ) : (
         <div className="h-[calc(100vh-146.5px)] sm:h-[calc(100vh-81px)] mx-6 text-dark_grey flex flex-col items-center justify-center">
-          <img className="max-w-sm sm:max-w-lg object-contain" src="/images/confused-man-with-question-mark-concept-flat-illustration-free-vector.jpg"></img>
+          <img
+            className="max-w-sm sm:max-w-lg object-contain"
+            src="/images/confused-man-with-question-mark-concept-flat-illustration-free-vector.jpg"
+          ></img>
           <h1 className="text-center text-xl sm:text-3xl capitalize font-semibold">
             No Services Found For Your Search
           </h1>
-          <p className="max-w-[40ch] text-center mt-2 leading-5 sm:leading-normal sm:text-lg text-light_heading">Try a new search or select from the categories above for better results.</p>
+          <p className="max-w-[40ch] text-center mt-2 leading-5 sm:leading-normal sm:text-lg text-light_heading">
+            Try a new search or select from the categories above for better
+            results.
+          </p>
         </div>
       )}
-    </>
+    </div>
   );
 };

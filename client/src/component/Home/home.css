@@ -2,7 +2,6 @@
   display: grid;
   padding: 2rem 1.5rem 0;
   gap: 1.25rem;
-  min-height: 100vh;
 }
 
 @media screen and (min-width: 600px) {
