@@ -65,6 +65,9 @@ export const createGig = catchAsyncErrors(async (req, res, next) => {
   const newData = { ...data, user: req.user.id };
   const error = checkForErrors(newData, 1);
 
+  newData.category = newData.category.toLowerCase();
+  newData.subCategory = newData.subCategory.toLowerCase();
+
   if (error) {
     return next(new ErrorHandler(error, 400));
   }
@@ -89,34 +92,37 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
     .filter()
     .pagination(resultPerPage)
     .populate()
-    .select()
+    .select();
 
-  const gigs = await feature.query;
-
+  let gigs = await feature.query;
 
   let keywords = req.query.keywords ? req.query.keywords.split(",") : [];
-  gigs.forEach((gig) => {
-    gig.matchingStatus = keywords.reduce((count, kw) => {
-      if (gig.title.toLowerCase().includes(kw.toLowerCase())) {
-        return count + 1;
-      }
-      const gigTags = gig.searchTags.map((tag) => tag.toLowerCase());
-      if (gigTags.some(tag => tag.toLowerCase().includes(kw.toLowerCase()))) {
-        return count + 1;
-      }
-      return count;
-    }, 0);
-  });
 
-  const sortedResults = gigs.sort(
-    (a, b) => b.matchingStatus - a.matchingStatus
-  );
+  if (keywords.length > 0) {
+    gigs.forEach((gig) => {
+      gig.matchingStatus = keywords.reduce((count, kw) => {
+        if (gig.title.toLowerCase().includes(kw.toLowerCase())) {
+          return count + 1;
+        }
+        const gigTags = gig.searchTags.map((tag) => tag.toLowerCase());
+        if (
+          gigTags.some((tag) => tag.toLowerCase().includes(kw.toLowerCase()))
+        ) {
+          return count + 1;
+        }
+        return count;
+      }, 0);
+    });
+    gigs = gigs.sort(
+      (a, b) => b.matchingStatus - a.matchingStatus
+    );
+  }
   
   res.status(200).json({
     success: true,
     message: "successfully fetched all gigs from database",
     gigsCount,
-    gigs: sortedResults,
+    gigs,
   });
 });
 

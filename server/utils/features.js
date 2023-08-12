@@ -5,11 +5,11 @@ class Features {
   }
 
   search() {
-    const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(",") : [];
     let query = {};
+    const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(",") : [];
     if (keywords.length > 0) {
       query = {
-        $or: keywords.map((kw) => ({
+        $and: keywords.map((kw) => ({
           $or: [
             { title: { $regex: kw, $options: "i" } },
             { searchTags: { $regex: kw, $options: "i" } },
@@ -18,6 +18,15 @@ class Features {
       };
     }
 
+    if(this.queryStr.category){
+      query = {
+        category: {
+          $regex: this.queryStr.category,
+          $options: "i",
+        }
+      }
+    }
+    console.log(query);
     this.query = this.query.find({ ...query });
     return this;
   }
@@ -26,7 +35,7 @@ class Features {
     const queryCopy = { ...this.queryStr };
 
     // removing some fields for category
-    const removeFileds = ["keyword", "page", "limit"];
+    const removeFileds = ["keyword", "page", "limit", "category"];
     removeFileds.forEach((key) => delete queryCopy[key]);
 
     // fiter for price and rating
