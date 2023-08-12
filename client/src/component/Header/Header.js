@@ -37,12 +37,23 @@ export const Header = () => {
     dispatch(hideDimBackground());
   };
 
+  const handleLogoClick = () => {
+    searchRef.current.value = "";
+    dispatch(getAllGig());
+    navigate("/");
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    hideDimBackground();
     const searchQuery = searchRef.current.value;
+    if(searchQuery.trim() === ""){
+      window.history.pushState('/search', 'Search', `/search`);
+      return;
+    }
     const keywords = searchQuery.split(" ");
     dispatch(getAllGig(keywords.join(",")));
-    hideDimBackground();
+    window.history.pushState('/search', 'Search', `/search?keywords=${keywords.join(",")}`);
     searchRef.current.blur();
   }
 
@@ -50,7 +61,7 @@ export const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="title-wrapper">
-          <h1 className="heading" onClick={() => navigate("/")}>
+          <h1 className="heading" onClick={handleLogoClick}>
             FreelanceMe
           </h1>
         </div>
