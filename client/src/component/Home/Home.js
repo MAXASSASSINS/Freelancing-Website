@@ -111,7 +111,7 @@ export const Home = () => {
   }, [gigs]);
 
   return (
-    <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)]">
+    <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
       <SearchTagsBar />
       {gigs?.length > 0 ? (
         <div className="all-gigs-container">
