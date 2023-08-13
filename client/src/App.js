@@ -18,6 +18,7 @@ import {
   useParams,
   Navigate,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import { UserDetail } from "./component/UserDetail/UserDetail";
 import { GigDetail } from "./component/GigDetail.js/GigDetail";
@@ -64,6 +65,7 @@ const App = () => {
   let { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, userLoading } = useSelector(
     (state) => state.user
   );
@@ -116,6 +118,15 @@ const App = () => {
       clearInterval(interval);
     };
   }, [user, isAuthenticated]);
+
+
+  // List of paths where footer will be hidden
+  const pathsWithoutFooter = ['/get/all/messages/for/current/user']; // Add any other paths here
+
+  // Checking if the current location matches any path in pathsWithoutFooter
+  const hideFooter = pathsWithoutFooter.some((path) =>
+    location.pathname.startsWith(path)
+  );
 
   return (
     <>
@@ -178,7 +189,7 @@ const App = () => {
               <Route exact path="/balance/detail" element={<BalanceDetail />} />
             </Routes>
             <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div>
-            <Footer />
+            {!hideFooter && <Footer />}
           </SocketContext.Provider>
         </CloudinaryContext>
       </windowContext.Provider>
