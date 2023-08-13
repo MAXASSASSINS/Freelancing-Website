@@ -27,7 +27,7 @@ export const verifyNumber = (req, res) => {
     .services("VA571fee7d19f3e28ef9a285e861a341b1")
     .verifications.create({ to: req.body.to, channel: "sms" })
     .then((verification) => {
-      console.log(verification.status);
+      
       res.status(200).json({ success: true });
     })
     .catch((err) => {
@@ -37,13 +37,13 @@ export const verifyNumber = (req, res) => {
 };
 
 export const verifyCode = (req, res) => {
-  console.log(req.body);
+  
   try {
     twilioClient.verify.v2
       .services("VA571fee7d19f3e28ef9a285e861a341b1")
       .verificationChecks.create({ to: req.body.to, code: req.body.code })
       .then((verification_check) => {
-        console.log(verification_check.status);
+        
         if (verification_check.status === "approved")
           res.status(200).json({ success: true });
         else res.status(202).json({ success: false, error: "Invalid code" });

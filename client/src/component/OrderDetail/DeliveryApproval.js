@@ -26,7 +26,7 @@ const DeliveryApproval = ({ setFileLoading }) => {
 
   const handleOrderCompletion = async () => {
     const { data } = await axiosInstance.post(`/order/completed/${params.id}`);
-    console.log(data);
+    
     dispatch(updateOrderDetail(data.order));
     setShowFinalDeliveryConfirmation(false);
   };

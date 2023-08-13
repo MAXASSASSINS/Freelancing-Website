@@ -25,7 +25,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleEmojiClick = (emoji) => {
-    // console.log(emoji);
+    // 
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };

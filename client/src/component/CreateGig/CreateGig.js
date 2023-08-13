@@ -224,7 +224,6 @@ export const CreateGig = () => {
   // fetching gig details if user is editing a gig
   useEffect(() => {
     if (gigId != "null") {
-      console.log("gig id is not null");
       dispatch(getGigDetail(gigId));
     }
   }, [searchParams.get("id")]);
@@ -232,7 +231,6 @@ export const CreateGig = () => {
   // populating the respective fields with the gig details fetched from server
   useEffect(() => {
     if (gigDetail && gigId != "null") {
-      console.log(gigDetail);
       const {
         title,
         category,
@@ -246,8 +244,6 @@ export const CreateGig = () => {
         searchTags,
         active,
       } = gigDetail;
-
-      console.log(gigDetail.video);
 
       // step 1
       gigTitleInputRef.current.setTextComingFromParent(title);
@@ -361,7 +357,9 @@ export const CreateGig = () => {
 
   const getSubCategoryList = (val) => {
     if (val !== "Select a category") {
-      const index = Object.keys(subCategoriesData).indexOf(val);
+      const index = Object.keys(subCategoriesData).findIndex((item) => {
+        return item.toLowerCase() === val.toLowerCase();
+      });
       const list = Object.values(subCategoriesData)[index];
       return list;
     } else {
@@ -371,15 +369,12 @@ export const CreateGig = () => {
 
   const handleTagsChange = (tags) => {
     setTags(tags);
-    if(tags.length >= 1 && tags.length  < 6){
+    if (tags.length >= 1 && tags.length < 6) {
       setTagListWarning(false);
-    }
-    else{
+    } else {
       setTagListWarning(true);
     }
   };
-
-  console.log(tags);
 
   const handleSaveAndContinue = async () => {
     if (checkForWarnings()) return true;
@@ -403,7 +398,7 @@ export const CreateGig = () => {
   };
 
   const handleSendData = async () => {
-    // console.log("running");
+    // 
     try {
       setShowDataSendingLoadingScreen(true);
       const data = await collectRequiredData();
@@ -411,14 +406,14 @@ export const CreateGig = () => {
         const res = await axiosInstance.post("/gig/create", data);
         if (res.status === 201) {
           setSearchParams({ ...searchParams, id: res.data.gigId });
-          console.log(res.data);
+          
         }
       } else {
         const res = await axiosInstance.put(
           `/gig/update/${searchParams.get("id")}`,
           data
         );
-        console.log(res.data);
+        
       }
     } catch (err) {
       console.log(err);
@@ -594,13 +589,13 @@ export const CreateGig = () => {
           }
         });
 
-        // console.log("images", images);
+        // 
 
         const res1 = await uploadToCloudinaryV2(images);
         const res2 = await uploadToCloudinaryV2(
           sellerShowcaseVideo ? [sellerShowcaseVideo] : []
         );
-        // console.log(res2);
+        // 
 
         const media = {
           images: res1,
@@ -632,7 +627,7 @@ export const CreateGig = () => {
 
   const checkForAnyEmptyFieldsForQuestion = () => {
     let error = false;
-    console.log(questionTitle);
+    
     if (questionTitle.toString().trim().length < 2) {
       error = true;
       setWarningEnabled(true);
@@ -729,7 +724,7 @@ export const CreateGig = () => {
 
   const handleShowEditQuestion = (index) => {
     const showEditQuestion = questionsDetails[index].showEditQuestion;
-    // console.log(showEditQuestion);
+    // 
     const payload = {
       questionIndex: index,
       showEditQuestion: questionsDetails[index].showEditQuestion,
@@ -802,7 +797,7 @@ export const CreateGig = () => {
       }
     });
     setSellerShowcaseImages(newSellerShowcaseImages);
-    console.log(newSellerShowcaseImages);
+    
   };
 
   // const getSellerShowcaseDocuments = (val, index) => {
@@ -816,7 +811,7 @@ export const CreateGig = () => {
   //     }
   //   })
   //   setSellerShowcaseDocuments(newSellerShowcaseDocuments);
-  //   console.log(newSellerShowcaseDocuments);
+  //   
   // }
 
   const getSellerShowcaseVideoError = (val) => {
@@ -877,7 +872,7 @@ export const CreateGig = () => {
 
   const handleVerifyPhoneNumber = async () => {
     const to = dialCode.toString() + phoneNumber.toString();
-    console.log(to);
+    
     const body = {
       to,
     };
@@ -902,7 +897,7 @@ export const CreateGig = () => {
     };
     const { data } = await axiosInstance.post("/verify/code", body);
 
-    console.log(data);
+    
 
     if (data.success) {
       verificationCodeErrorRef.current.style.display = "none";
@@ -913,7 +908,7 @@ export const CreateGig = () => {
       setVerifiedStatusOfSeller(true);
     } else {
       verificationCodeErrorRef.current.style.display = "block";
-      console.log(data.error);
+      
     }
   };
 
@@ -930,7 +925,7 @@ export const CreateGig = () => {
         `/gig/update/${searchParams.get("id")}`,
         data
       );
-      console.log(res);
+      
       const id = searchParams.get("id");
       navigate(`/gig/details/${id}`);
     } catch (error) {
@@ -965,12 +960,12 @@ export const CreateGig = () => {
     });
   };
 
-  // console.log(tags);
+  // 
   // const newTagsList = tagOptions.map((tag) => {
   //   return tag.toLowerCase();
   // })
 
-  // console.log(JSON.stringify(newTagsList));
+  // 
 
   // const set = new Set(newTagsList);
   // const newarr = [...set];
@@ -980,7 +975,7 @@ export const CreateGig = () => {
   //     value: item
   //   }
   // })
-  // console.log(JSON.stringify(ul));
+  // 
   return (
     <div className="create-gig-main">
       <nav>

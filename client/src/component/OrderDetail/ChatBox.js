@@ -28,7 +28,7 @@ export const ChatBox = ({
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-      // console.log(files);
+      // 
 
       let res;
       if (isDeliveryMessage) {
@@ -82,7 +82,7 @@ export const ChatBox = ({
 
   // client side uploading to cloudinary
   const sendFileClientCloudinary = async (files) => {
-    console.log(files);
+    
 
     try {
       const res = await uploadToCloudinaryV2(files, 5 * 1024 * 1024 * 1024);
@@ -128,7 +128,7 @@ export const ChatBox = ({
         `/order/add/delivery/${orderDetail._id}`,
         deliveryData
       );
-      // console.log(res);
+      // 
       return data;
     } catch (error) {
       throw error;
@@ -146,7 +146,7 @@ export const ChatBox = ({
         `/order/add/revision/${orderDetail._id}`,
         deliveryData
       );
-      // console.log(res);
+      // 
       return data;
     } catch (error) {
       throw error;
@@ -158,7 +158,7 @@ export const ChatBox = ({
       user._id === orderDetail.buyer._id
         ? orderDetail.seller
         : orderDetail.buyer;
-    console.log(rec);
+    
     const sender = {
       avatar: user.avatar,
       name: user.name,

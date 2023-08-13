@@ -46,7 +46,7 @@ router.post("/send/files", isAuthenticated, uploadSingleFile, sendFileUpload);
 router.delete("/delete/messages", deleteAllMessages);
 
 router.post("/add/file", isAuthenticated, uploadSingleFile, (req, res) => {
-  console.log(req.file);
+  
 
   res.send("file uploaded successfully");
 });

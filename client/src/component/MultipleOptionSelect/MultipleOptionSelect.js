@@ -32,7 +32,7 @@ export const MultipleOptionSelect = forwardRef(({ options, multiple }, ref) => {
   // }
 
   const handleChange = (index) => {
-    // console.log(index);
+    // 
     optionsRefs.current[index].current.setIsCheckedComingFromParent(
       !optionsRefs.current[index].current.currValue
     );

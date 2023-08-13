@@ -60,13 +60,13 @@ export const GigDetail = () => {
   );
 
   useEffect(() => {
-    // console.log(gigDetail);
+    // 
     setGigReviews(gigDetail && gigDetail.reviews);
     setPricePackageInfo(gigDetail && gigDetail.pricing[0]);
 
     // setting editor state
     const description = gigDetail && gigDetail.description;
-    // console.log(description);
+    // 
     if (!description) return;
     let contentState = convertFromRaw(JSON.parse(description));
     let editorState = EditorState.createWithContent(contentState);
@@ -137,7 +137,7 @@ export const GigDetail = () => {
       .classList.add("gig-review-rating-selected");
   };
 
-  // console.log(gigDetail);
+  // 
   const handlePricePackageSelection = (e) => {
     if (e.target.classList.contains("price-package-selected")) {
       return;
@@ -175,7 +175,7 @@ export const GigDetail = () => {
     }
     if (checkUserOpenItsOwnGig())
       return toast.error("You can not buy your own gig");
-    // console.log('You can not buy your own gig')
+    // 
     navigate(
       `/gig/place/order/${gigDetail._id}/${currentlySelectedPackageNumber}`
     );

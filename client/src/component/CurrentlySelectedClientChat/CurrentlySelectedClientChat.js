@@ -52,8 +52,8 @@ export const CurrentlySelectedClientChat = ({
     e.preventDefault();
     if (message.length > 0) {
       // const formattedMessage = message.replace(/\n/g, "<br>\n");
-      // console.log(message);
-      // console.log(formattedMessage);
+      // 
+      // 
       handleSendMessage(message);
       setMessage("");
     }
@@ -76,14 +76,14 @@ export const CurrentlySelectedClientChat = ({
       },
     };
     const { data } = await axiosInstance.post(url, dataToPost, config);
-    // console.log(data);
+    // 
     await getAllMessagesBetweenTwoUser(currentSelectedClient._id);
     await handleSendMessageSocket(message);
     await handleAllClientUserLastMessage();
   };
 
-  // console.log(currentSelectedClient);
-  // console.log('currentSelectedClient');
+  // 
+  // 
   const getAllMessagesBetweenTwoUser = async () => {
     const clientId = currentSelectedClient._id;
     const postData = {
@@ -120,7 +120,7 @@ export const CurrentlySelectedClientChat = ({
   };
 
   const handleSelectionOfFiles = (event) => {
-    console.log(selectedFiles);
+    
     const files = event.target.files;
     let arr = [];
     if (selectedFiles) {
@@ -128,7 +128,7 @@ export const CurrentlySelectedClientChat = ({
         arr.push(selectedFiles[i]);
       }
     }
-    // console.log(arr);
+    // 
     for (let i = 0; i < files.length; i++) {
       let index = 0;
       if (selectedFiles != null) {
@@ -140,8 +140,8 @@ export const CurrentlySelectedClientChat = ({
         selectedFile: files[i],
         id: index,
       };
-      // console.log(file);
-      // console.log(index);
+      // 
+      // 
       arr.push(file);
     }
     document.getElementById("chat-inbox-input-file").value = "";
@@ -151,10 +151,10 @@ export const CurrentlySelectedClientChat = ({
 
       return;
     }
-    // console.log(arr.length);
+    // 
     setIsFilePicked(true);
     setSelectedFiles(arr);
-    console.log(selectedFiles);
+    
     scrollToBottomDivRefInbox.current?.scrollIntoView();
   };
 

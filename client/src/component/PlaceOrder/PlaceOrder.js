@@ -30,7 +30,7 @@ export const PlaceOrder = () => {
   const { gigDetail } = useSelector((state) => state.gigDetail);
   const packageNumber = params.packageNumber;
   const packageDetail = gigDetail?.pricing[packageNumber];
-  // console.log(packageDetail);
+  // 
 
   const handleConfirmPaymentClick = async () => {
     await stripeContainerRef.current.callSubmit();

@@ -49,7 +49,7 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   const isPasswordMatched = await user.comparePassword(password);
 
   // const temp = await bcrypt.hash('3', 10);
-  // console.log(temp);
+  // 
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
@@ -237,7 +237,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
-  // console.log(stripe.account);
+  // 
   const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
   if (!req.user.stripeAccountId) {

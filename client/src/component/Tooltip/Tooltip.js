@@ -5,7 +5,7 @@ import "./Tooltip.css";
 import { colors, dark_grey_color } from "../../utility/color.js";
 
 export const Tooltip = ({ id, place, content, variant }) => {
-  // console.log(place);
+  // 
 
   return (
     <ReactTooltip

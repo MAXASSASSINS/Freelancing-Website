@@ -41,7 +41,7 @@ export const BuyerFeedback = () => {
   }, []);
 
   const handleRatingsChanged = (e, newRating, index) => {
-    console.log(newRating);
+    
     const newRatings = [...ratings];
     newRatings[index] = newRating;
     setRatings(newRatings);

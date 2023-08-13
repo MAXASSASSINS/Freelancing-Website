@@ -1,6 +1,6 @@
 export const categoriesData = [
-  "Graphics & design",
-  "digital marketing",
+  "Graphics & Design",
+  "Digital Marketing",
   "Writing & Translation",
   "Video & Animation",
   "Music & Audio",
@@ -11,17 +11,17 @@ export const categoriesData = [
 ];
 
 export const subCategoriesData = {
-  "Graphics & design": [
-    "Logo design",
-    "Poster design",
-    "Banner design",
-    "Business card design",
-    "Social media design",
+  "Graphics & Design": [
+    "Logo Design",
+    "Poster Design",
+    "Banner Design",
+    "Business card Design",
+    "Social media Design",
     "Illustration",
-    "T-shirt design",
-    "Book cover design",
-    "Packaging design",
-    "Other design",
+    "T-shirt Design",
+    "Book cover Design",
+    "Packaging Design",
+    "Other Design",
   ],
   "digital marketing": [
     "Social media marketing",
@@ -70,7 +70,7 @@ export const subCategoriesData = {
     "Support & IT",
     "Other programming & tech",
   ],
-  Business: [
+  "Business": [
     "Virtual assistant",
     "Market research",
     "Presentations",
@@ -80,7 +80,7 @@ export const subCategoriesData = {
     "Legal consulting",
     "Other business",
   ],
-  Lifestyle: [
+  "Lifestyle": [
     "Arts & crafts",
     "Beauty",
     "Relationship advice",
@@ -90,29 +90,29 @@ export const subCategoriesData = {
     "Dieting & weight loss",
     "Other lifestyle",
   ],
-  Photography: [
-    "Product photography",
-    "Wedding photography",
-    "Event photography",
-    "Real estate photography",
-    "Architecture photography",
-    "Food photography",
-    "Other photography",
+  "Photography": [
+    "Product Photography",
+    "Wedding Photography",
+    "Event Photography",
+    "Real estate Photography",
+    "Architecture Photography",
+    "Food Photography",
+    "Other Photography",
   ],
 };
 
 export const tagsData = [
-  "logo design",
-  "graphic design",
+  "logo Design",
+  "graphic Design",
   "illustration",
-  "poster design",
-  "business card design",
-  "banner design",
-  "social media design",
-  "t-shirt design",
-  "book cover design",
-  "packaging design",
-  "other design",
+  "poster Design",
+  "business card Design",
+  "banner Design",
+  "social media Design",
+  "t-shirt Design",
+  "book cover Design",
+  "packaging Design",
+  "other Design",
   "social media marketing",
   "search engine optimization",
   "email marketing",
@@ -166,13 +166,13 @@ export const tagsData = [
   "health & fitness",
   "dieting & weight loss",
   "other lifestyle",
-  "product photography",
-  "wedding photography",
-  "event photography",
-  "real estate photography",
-  "architecture photography",
-  "food photography",
-  "other photography",
+  "product Photography",
+  "wedding Photography",
+  "event Photography",
+  "real estate Photography",
+  "architecture Photography",
+  "food Photography",
+  "other Photography",
 ];
 
 export const packagesData = ["Basic", "Standard", "Premium"];

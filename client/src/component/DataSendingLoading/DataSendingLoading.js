@@ -4,7 +4,7 @@ import { BsCheckCircle } from "react-icons/bs";
 
 export const DataSendingLoading = ({ finishedLoading, show, loadingText }) => {
   // const [finishedLoading, setFinishedLoading] = useState(false)
-  // console.log(finishedLoading);
+  // 
   return (
     <div
       className="data-sending-loading-overlay"

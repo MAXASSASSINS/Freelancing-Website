@@ -73,8 +73,8 @@ export const loggedUser = (email, password) => async (dispatch) => {
       config
     );
 
-    console.log(data);
-    // console.log(dispatch);
+    
+    // 
 
     // localStorage.setItem("loggedInUser", JSON.stringify(data.user));
 
@@ -131,7 +131,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch({ type: LOAD_USER_REQUEST });
     const { data } = await axiosInstance.get("/me");
 
-    console.log("me", data);
+    
 
     dispatch({
       type: LOAD_USER_SUCCESS,

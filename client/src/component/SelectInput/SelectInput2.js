@@ -26,11 +26,11 @@ const SelectInput2 = (
   return (
     <div className="select-input-main">
       <select style={style} value={choosedOption} onChange={handleChange}>
-        <option value={defaultOption}>{defaultOption}</option>
+        <option value={defaultOption.toLowerCase()}>{defaultOption}</option>
         {data?.map((item, index) => {
           if (defaultOption !== item) {
             return (
-              <option key={index + item} value={item}>
+              <option key={index + item} value={item.toLowerCase()}>
                 {item}
               </option>
             );

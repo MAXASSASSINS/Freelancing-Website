@@ -17,7 +17,7 @@ export const runSocket = (server) => {
   let currentUserId = "";
 
   io.on("connection", (socket) => {
-    // console.log(socket.id);
+    // 
 
     socket.on("new_user", (userId) => {
       addNewUser(userId, socket.id);
@@ -82,7 +82,7 @@ export const runSocket = (server) => {
         });
       }
 
-      // console.log(onlineStatusList);
+      // 
       socket.emit("online_status_of_all_clients_from_server", onlineStatusList);
     });
 
@@ -101,7 +101,7 @@ export const runSocket = (server) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("disconnect", socket.id);
+      
       const userId = getUserBySocketId(socket.id);
       removeUser(socket.id, userId);
 
@@ -127,7 +127,7 @@ export const runSocket = (server) => {
 
   const removeUser = async (socketId, userId) => {
     const set = onlineUserList.get(userId);
-    console.log(set);
+    
     if (!set) return;
     set.delete(socketId);
     if (set.size === 0) {
@@ -138,8 +138,8 @@ export const runSocket = (server) => {
   };
 
   const getUserBySocketId = (socketId) => {
-    // console.log(onlineUserList)
-    // console.log(socketId + " outstide");
+    // 
+    // 
     for (let [key, value] of onlineUserList.entries()) {
       if (value.has(socketId)) {
         return key;
@@ -150,7 +150,7 @@ export const runSocket = (server) => {
   const updateUserLastSeen = async (userId, socket, next) => {
     try {
       let user = await User.findById(userId);
-      // console.log(user.online);
+      // 
       if (!user) {
         return new ErrorHandler("User not found", 404);
       }

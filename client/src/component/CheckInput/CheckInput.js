@@ -11,8 +11,8 @@ export const CheckInput = forwardRef(
     const [isChecked, setIsChecked] = useState(defaultValue);
 
     const handleChange = (e) => {
-      // console.log(getInputCheckedVal);
-      // console.log(e.target.checked);
+      // 
+      // 
       setIsChecked(e.target.checked);
       getInputCheckedVal && getInputCheckedVal(e.target.checked);
     };
@@ -28,7 +28,7 @@ export const CheckInput = forwardRef(
       [isChecked]
     );
 
-    // console.log(isChecked);
+    // 
 
     return (
       <label className="check-input-main noSelect">

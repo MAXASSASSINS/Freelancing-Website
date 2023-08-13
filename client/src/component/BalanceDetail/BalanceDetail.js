@@ -29,7 +29,7 @@ export const BalanceDetail = () => {
     try {
       setLoading(true);
       const { data } = await axiosInstance.get("/orders/me");
-      console.log(data);
+      
       setOrderList(data.orders);
     } catch (err) {
       console.log(err);
@@ -55,7 +55,7 @@ export const BalanceDetail = () => {
   const handleWithdrawl = async () => {
     try {
       const { data } = await axiosInstance.get("/withdrawl");
-      console.log(data);
+      
       if(data.redirectUrl) window.location.href = data.redirectUrl;
     } catch (err) {
       console.log(err.response.data.message);

@@ -47,7 +47,7 @@ export const UserDetail = () => {
   const {user: gigUser} = useSelector((state) => state.gigUser);
   const { userGigs } = useSelector((state) => state.userGigs);
 
-  console.log(gigUser);
+  
   const [active, setActive] = useState(true);
 
   // useEffect(() => {
@@ -60,9 +60,9 @@ export const UserDetail = () => {
   //     return count;
   //   });
   // }, [userGigs]);
-  // console.log(userReviewCount);
-  // console.log(gigUser);
-  // console.log(userGigs);
+  // 
+  // 
+  // 
 
   const getFlag = (flagName) =>
     flags.find((flag) => {
@@ -74,10 +74,10 @@ export const UserDetail = () => {
 
   const increaseReviewCount = () => {
     setReviewCount((prev) => prev + 5);
-    console.log(reviewCount);
+    
   };
 
-  if (isAuthenticated) console.log(user.reviews.length, reviewCount);
+  if (isAuthenticated) 
 
   return (
     userGigs &&

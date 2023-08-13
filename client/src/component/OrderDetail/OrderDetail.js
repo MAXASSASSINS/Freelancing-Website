@@ -42,7 +42,7 @@ export const OrderDetail = () => {
     }
   }, [user]);
 
-  // console.log(orderDetail);
+  // 
 
   if (orderError) {
     navigate("/404");

@@ -26,7 +26,7 @@ export const AddorUpdateQuestion = ({
   handleUpdateQuestion,
   indexOfQuestionToEdit,
 }) => {
-  // console.log(getRequiredStatusOfQuestion);
+  // 
 
   return (
     <div className="add-question-wrapper">

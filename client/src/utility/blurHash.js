@@ -40,10 +40,10 @@ export const generateBlurHash = async (item, cloudinaryURL) => {
 
 export const getThumbnailOfVideo = async (videoUrl) => {
   const imgUrl = getPosterForVideo(videoUrl);
-  console.log(imgUrl);
+  
   const data = await fetch(imgUrl);
-  console.log(data);
+  
   const blob = await data.blob();
-  console.log(blob);
+  
   return blob;
 };

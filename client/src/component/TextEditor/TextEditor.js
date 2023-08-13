@@ -25,9 +25,6 @@ export const TextEditor = forwardRef(
     );
 
     const handleChange = (editorState) => {
-      console.log(
-        JSON.stringify(convertToRaw(editorState.getCurrentContent()))
-      );
       setEditorState(editorState);
       setLength(editorState.getCurrentContent().getPlainText().length);
     };

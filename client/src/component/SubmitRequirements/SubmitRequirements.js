@@ -98,7 +98,7 @@ export const SubmitRequirements = () => {
     setApproval(val);
   };
 
-  // console.log(answers);
+  // 
 
   const handleStartOrder = async () => {
     // check if any answer is required and not answered
@@ -115,9 +115,9 @@ export const SubmitRequirements = () => {
             return;
           }
         } else {
-          // console.log(item.questionType)
+          // 
           let flag = false;
-          // console.log(answersRef.current[index].current.currValue);
+          // 
           answersRef.current[index].current.currValue.forEach((val, index) => {
             if (val) {
               flag = true;
@@ -165,7 +165,7 @@ export const SubmitRequirements = () => {
         filesData.push(fileUrls.splice(0, chunkSize));
         i++;
       }
-      console.log("filesData", filesData);
+      
     } catch (error) {
       console.log(error);
 
@@ -184,7 +184,7 @@ export const SubmitRequirements = () => {
       const { data } = await axiosInstance.put(`/order/update/requirements/${params.orderId}`, {
         requirements: payload,
       });
-      console.log(data);
+      
     } catch (error) {
       console.log(error);
       setShowDataSendingLoading(false);

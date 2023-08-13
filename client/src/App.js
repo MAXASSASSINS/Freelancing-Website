@@ -84,7 +84,7 @@ const App = () => {
   useEffect(() => {
     // i have put .then to resolve the promise and lead us to the page where we come from this is working now
     store.dispatch(loadUser()).then(() => {
-      // console.log("app navigate is running");
+      // 
       navigate();
     });
   }, []);
@@ -95,7 +95,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    // console.log(windowWidth);
+    // 
     resizeWindow();
     window.addEventListener("resize", resizeWindow);
     return () => window.removeEventListener("resize", resizeWindow);
@@ -103,7 +103,7 @@ const App = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      // console.log("app.js socket is running");
+      // 
       socket.emit("new_user", user._id.toString());
     }
   }, [isAuthenticated, user]);

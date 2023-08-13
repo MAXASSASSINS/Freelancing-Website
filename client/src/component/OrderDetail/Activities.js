@@ -44,10 +44,10 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
 
-  // console.log(orderDetail);
+  // 
   const [orderMessages, setOrderMessages] = useState([]);
 
-  // console.log(orderMessages);
+  // 
 
   useEffect(() => {
     getOrderMessages();
@@ -55,7 +55,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
   // online status of seller or buyer
   useEffect(() => {
-    console.log(orderDetail);
+    
     const userToCheck =
       user._id.toString() === orderDetail.buyer._id.toString()
         ? orderDetail.seller._id
@@ -65,7 +65,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
   useEffect(() => {
     socket.on("is_online_from_server", (data) => {
-      // console.log(data);
+      // 
       const onlineClientId = data.id.toString();
       const userToCheck =
         user._id.toString() === orderDetail.buyer._id.toString()
@@ -88,7 +88,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     });
 
     socket.on("offline_from_server", (data) => {
-      console.log("offline from server", data);
+      
       const onlineClientId = data?.toString();
 
       const userToCheck =
@@ -110,15 +110,15 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
-      console.log("receive message is running");
-      console.log("data", data);
+      
+      
 
       if (data.orderId !== params.id) {
         return;
       }
 
       if (data.forDelivery) {
-        console.log(orderDetail.deliveries.length);
+        
         data = { ...data, deliveryNumber: orderDetail.deliveries.length + 1 };
       }
 
@@ -129,7 +129,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
         let found = false;
         prev.forEach((message) => {
           if (message.date === date) {
-            console.log("found date");
+            
             found = true;
             message.dateWiseMessages.push(data);
           }
@@ -154,14 +154,14 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     socket.on(
       "receive_message_self",
       async (data) => {
-        console.log("self receive message is running", data);
+        
 
         if (data.orderId !== params.id) {
           return;
         }
 
         if (data.forDelivery) {
-          console.log(orderDetail.deliveries.length);
+          
           data = { ...data, deliveryNumber: orderDetail.deliveries.length };
         }
 
@@ -203,7 +203,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const getOrderMessages = async () => {
     try {
       const { data } = await axiosInstance.get(`/message/order/${params.id}`);
-      console.log(data);
+      
 
       const messages = buildDateWiseMessages(
         data.messages,
@@ -292,11 +292,11 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     }));
 
     map.map((dateWiseMessage) => {
-      console.log(dateWiseMessage.date);
+      
     });
 
     setOrderMessages(map);
-    // console.log(dateWiseMessages);
+    // 
     return map;
   };
 

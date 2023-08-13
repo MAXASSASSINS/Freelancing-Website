@@ -109,8 +109,8 @@ export const createGigQuestionReducer = (state, action) => {
         options,
         requiredStatus,
       } = action.payload;
-      // console.log(multipleOptionSelectionStatus);
-      // console.log(requiredStatus)
+      // 
+      // 
       const newQuestion = {
         type,
         multipleOptionSelectionStatus,
@@ -121,7 +121,7 @@ export const createGigQuestionReducer = (state, action) => {
       };
 
       const newState = [...state, newQuestion];
-      // console.log(newState);
+      // 
       return newState;
     }
 

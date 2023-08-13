@@ -25,7 +25,7 @@ export const uploadToCloudinary = async (arr) => {
         },
       }
     );
-    // console.log(data);
+    // 
     const obj = {};
     if (item.type.includes("video")) {
       obj.videoPublicId = data.data.public_id;
@@ -50,9 +50,9 @@ export const uploadToCloudinary = async (arr) => {
 const uploadToCloudinarySingle = async (item, maxSize) => {
 
   // if item is already uploaded
-  console.log(item);
+  
   if(item.url) {
-    console.log("already uploaded");
+    
     return item;
   }
 
@@ -67,17 +67,17 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
 
   try {
     const data = await processFile(item);
-    console.log(data);
+    
 
     // creating blur hash
     const blurhash = await generateBlurHash(item, data.data.secure_url);
-    console.log(blurhash);
+    
     // const url = URL.createObjectURL(item);
-    // console.log(url);
+    // 
     // const blurhash = await encodeImageToBlurhash(url);
-    // console.log(blurhash);
+    // 
 
-    console.log(data);
+    
     const obj = {
       publicId: data.data.public_id,
       url: data.data.secure_url,
@@ -143,11 +143,11 @@ const processFile = async (file) => {
 };
 
 const send = async (piece, start, end, size) => {
-  console.log("start ", start);
-  console.log("end", end);
+  
+  
 
   const formData = new FormData();
-  console.log(XUniqueUploadId);
+  
 
   formData.append("file", piece);
   formData.append("cloud_name", "dyod45bn8");
@@ -161,10 +161,10 @@ const send = async (piece, start, end, size) => {
 
   try {
     const res = await axios.post(POST_URL, formData, { headers });
-    console.log(res.data);
+    
     return res;
   } catch (error) {
-    console.log(error);
+    
     return Promise.reject(error);
   }
 };

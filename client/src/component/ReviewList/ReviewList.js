@@ -18,7 +18,7 @@ export const ReviewList = ({ reviewList }) => {
 
   const increaseReviewCount = (reviewCount) => () => {
     setReviewCount(reviewCount + 5);
-    console.log(reviewCount);
+    
   };
 
   return (

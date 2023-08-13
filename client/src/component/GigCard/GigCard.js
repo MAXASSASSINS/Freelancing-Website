@@ -9,11 +9,11 @@ import { HiStar } from "react-icons/hi";
 import { FaBars, FaRegHeart } from "react-icons/fa";
 
 export const GigCard = ({ gig, lazyLoad }) => {
-  // console.log(gig.pricing)
+  // 
   const handleClick = () => {
-    // console.log("clicked");
+    // 
   };
-  // console.log(gig.user)
+  // 
   return (
     <div className="gig-card">
       <div className="container-wrapper">

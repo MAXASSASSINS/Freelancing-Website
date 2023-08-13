@@ -61,7 +61,7 @@ export const Inbox = () => {
   const token = Cookies.get("token");
 
   const socket = useContext(SocketContext);
-  // console.log(socket);
+  // 
 
   const navigate = useNavigate();
 
@@ -125,7 +125,7 @@ export const Inbox = () => {
   //   if (isAuthenticated) {
   //     socket.emit("online", user._id.toString());
   //     const interval = setInterval(() => {
-  //       console.log("online");
+  //       
   //       socket.emit("online", user._id.toString());
   //     }, [100000]);
   //     return () => {
@@ -182,7 +182,7 @@ export const Inbox = () => {
         temp1.push(data);
         // temp2.push(false);
       }
-      // console.log(temp2);
+      // 
       // dispatch({ type: FETCH_ONLINE_STATUS_OF_CLIENTS, payload: temp2 });
       return temp1;
     } catch (err) {
@@ -227,17 +227,17 @@ export const Inbox = () => {
   useEffect(() => {
     const tempFunc = async () => {
       await handleAllClientDetails().then((res) => {
-        // console.log(res);
+        // 
         dispatch({ type: FETCH_ALL_CLIENTS_DETAILS, payload: res });
-        // console.log(inboxDetails);
+        // 
       });
 
       await handleAllClientUserLastMessage().then((res) => {
-        // console.log(res);
+        // 
         dispatch({ type: FETCH_ALL_CLIENTS_LAST_MESSAGE, payload: res });
       });
     };
-    // console.log("list of all clients useEffect is running")
+    // 
     if (listOfAllClients !== null) {
       tempFunc();
     }
@@ -316,11 +316,11 @@ export const Inbox = () => {
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-      console.log(files);
+      
       // return;
       // add message to database
       const res = await addMessageToDatabase(message, files);
-      console.log(res);
+      
 
       // send message to socket
       await handleSendMessageSocket(message, files);
@@ -331,11 +331,11 @@ export const Inbox = () => {
     }
   };
 
-  // console.log(inboxMessages);
+  // 
 
   // client side uploading to cloudinary
   const sendFileClientCloudinary = async (files) => {
-    console.log(files);
+    
 
     if (isFilePicked) {
       const arr = files.map((file) => {
@@ -367,7 +367,7 @@ export const Inbox = () => {
       };
 
       const { data } = await axiosInstance.post("/add/message", messageData);
-      // console.log(data);
+      // 
       return data;
     } catch (error) {
       throw error;
@@ -410,21 +410,21 @@ export const Inbox = () => {
     // let temp = [];
     // temp = inboxDetails.allClientUserLastMessage.map((mesgs, i) => {
     //   if (i == index) {
-    //     // console.log({ ...mesgs, messages: [messageData] });
+    //     // 
     //     return { ...mesgs, messages: [messageData] };
     //   }
     //   return mesgs;
     // });
-    // console.log(temp);
+    // 
     // dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: temp });
 
     // let temp2 = inboxDetails.inboxMessages;
-    // console.log(temp2);
+    // 
     // temp2.push(messageData);
     // dispatch({ type: UPDATE_ALL_CHATS_WITH_CLIENT, payload: temp2 });
 
     await socket.emit("send_message", messageData);
-    // console.log(allClientUserLastMessage);
+    // 
   };
 
   // MESSAGE SCROLL DOWN TO BOTTOM EFFECT
@@ -448,7 +448,7 @@ export const Inbox = () => {
     };
     socket.emit("typing_started", data);
     const timeout = setTimeout(() => {
-      // console.log("typing_stopped");
+      // 
       socket.emit("typing_stopped", data);
     }, 1000);
 
@@ -495,7 +495,7 @@ export const Inbox = () => {
         });
         return data[index].online;
       });
-      // console.log("online client list srever", temp);
+      // 
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -504,15 +504,15 @@ export const Inbox = () => {
     };
   }, [socket, listOfAllClients]);
 
-  // console.log(onlineStatusOfClients);
+  // 
 
   useEffect(() => {
     socket.on("online_from_server", async (userId) => {
-      // console.log("online from server with " + userId.toString());
+      // 
       const index = listOfAllClients?.findIndex((id) => {
         return id === userId;
       });
-      // console.log(index);
+      // 
       if (index !== -1) {
         // await handleAllClientDetails();
         let temp = onlineStatusOfClients?.map((status, idx) => {
@@ -521,7 +521,7 @@ export const Inbox = () => {
           }
           return status;
         });
-        // console.log(temp);
+        // 
         if (
           currentSelectedClient &&
           currentSelectedClient._id.toString() === userId
@@ -532,15 +532,15 @@ export const Inbox = () => {
       }
     });
 
-    // console.log(onlineStatusOfClients);
+    // 
 
     socket.on("offline_from_server", async (userId) => {
-      console.log("offline from server with " + userId.toString());
+      
       const index = listOfAllClients?.findIndex((id) => {
         return id === userId;
       });
 
-      console.log(index);
+      
       if (index !== -1) {
         // await handleAllClientDetails();
         let temp = onlineStatusOfClients?.map((status, idx) => {
@@ -549,14 +549,14 @@ export const Inbox = () => {
           }
           return status;
         });
-        console.log(temp);
+        
         if (
           currentSelectedClient &&
           currentSelectedClient._id.toString() === userId.toString()
         ) {
           setCurrentSelectedClientOnline(false);
           setCurrentSelectedClient((prev) => {
-            // console.log("hey i have update the last seen");
+            // 
             if (prev) return { ...prev, lastSeen: Date.now() };
           });
         }
@@ -578,7 +578,7 @@ export const Inbox = () => {
     if (currentSelectedClient) {
       socket.emit("is_online", currentSelectedClient._id.toString());
       socket.emit("online", isAuthenticated ? user._id.toString() : null);
-      // console.log("is online emit from client")
+      // 
     }
   }, [currentSelectedClient]);
 
@@ -586,9 +586,9 @@ export const Inbox = () => {
     socket.on("is_online_from_server", (data) => {
       const onlineClientId = data.id.toString();
       if (onlineClientId === currentSelectedClient._id.toString()) {
-        // console.log("is online received " + data.online);
+        // 
         setCurrentSelectedClientOnline(data.online);
-        // console.log(listOfAllClients);
+        // 
       }
       const temp = listOfAllClients?.map((id, idx) => {
         if (id === onlineClientId) {
@@ -596,7 +596,7 @@ export const Inbox = () => {
         }
         return onlineStatusOfClients[idx];
       });
-      // console.log("is online from server", temp, data.online);
+      // 
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -610,14 +610,14 @@ export const Inbox = () => {
   useEffect(() => {
     socket.on("receive_message", async (data) => {
       if (data.orderId) return;
-      console.log("receive message is running");
+      
       const messageData = data;
       const { message, sender, receiver } = data;
       const senderId = sender._id.toString();
       const clientId = senderId;
 
-      // console.log(user);
-      // console.log(inboxDetails);
+      // 
+      // 
 
       const clientIndex = listOfAllClients?.findIndex((id) => {
         return id === clientId;
@@ -626,7 +626,7 @@ export const Inbox = () => {
       let temp = [];
       temp = allClientUserLastMessage?.map((mesgs, i) => {
         if (i == clientIndex) {
-          // console.log({ ...mesgs, messages: [messageData] });
+          // 
           return { ...mesgs, messages: [messageData] };
         }
         return mesgs;
@@ -646,17 +646,17 @@ export const Inbox = () => {
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
-    // console.log("receive message self is running");
+    // 
     socket.on("receive_message_self", async (data) => {
       if (data.orderId) return;
-      // console.log("receive message is running");
+      // 
       const messageData = data;
       const { message, sender, receiver } = data;
       const receiverId = receiver._id.toString();
       const clientId = receiverId;
 
-      // console.log(user);
-      // console.log(inboxDetails);
+      // 
+      // 
 
       const clientIndex = listOfAllClients?.findIndex((id) => {
         return id === clientId;
@@ -665,7 +665,7 @@ export const Inbox = () => {
       let temp = [];
       temp = allClientUserLastMessage?.map((mesgs, i) => {
         if (i == clientIndex) {
-          // console.log({ ...mesgs, messages: [messageData] });
+          // 
           return { ...mesgs, messages: [messageData] };
         }
         return mesgs;

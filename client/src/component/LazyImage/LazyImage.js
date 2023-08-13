@@ -5,7 +5,7 @@ export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "aut
   const { width, height, name, type, url, size, blurhash } = file;
   const defaultBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj";
 
-  // console.log(file);
+  // 
   const [loaded, setLoaded] = useState(false);
 
   const handleOnLoad = () => {

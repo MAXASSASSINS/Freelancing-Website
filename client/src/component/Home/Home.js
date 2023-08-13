@@ -55,7 +55,7 @@ export const Home = () => {
     });
 
     socket.on("offline_from_server", async (userId) => {
-      // console.log("offline from server with " + userId.toString());
+      // 
       if (gigs) {
         const temp = gigs.map((gig) => {
           if (gig.user._id.toString() === userId.toString()) {
@@ -74,7 +74,7 @@ export const Home = () => {
   }, [socket, gigs, dispatch]);
 
   useEffect(() => {
-    console.log("gigs is changed");
+    
   }, [gigs]);
 
   // LAZY LOADING THE IMAGES AND VIDEOS

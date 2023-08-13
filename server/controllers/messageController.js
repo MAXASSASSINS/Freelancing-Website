@@ -24,7 +24,7 @@ const upload = multer({ storage: storage }).single("file");
 
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
-  // console.log(req.body);
+  // 
   // return;
 
   if (message?.length == 0 && files?.length === 0) {
@@ -107,7 +107,7 @@ export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
       .populate("sender", "name avatar")
       .populate("receiver", "name avatar")
       .sort({ updatedAt: 1 });
-    // console.log(messages);
+    // 
     res.status(200).json({
       success: true,
       message: "successfully fetched all messages",
@@ -141,7 +141,7 @@ export const getAllMessagesForCurrentUser = catchAsyncErrors(
       };
       return newObj;
     });
-    // console.log(messages);
+    // 
 
     // const groups = [...new Set(messages.map(message => message.sender._id))];
 
@@ -200,7 +200,7 @@ export const getListOfAllInboxClients = catchAsyncErrors(
   async (req, res, next) => {
     // const userId = "62c1cb91cba98afc7f33f9a4";
     const userId = req.user._id;
-    // console.log("get list of all inbox clients", userId.toString());
+    // 
     let list = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
       .select("sender receiver");
@@ -217,10 +217,10 @@ export const getListOfAllInboxClients = catchAsyncErrors(
       return id.toString() != userId.toString();
     });
 
-    // console.log(list);
+    // 
 
     const length = list.length;
-    // console.log(length);
+    // 
 
     res.status(200).json({
       success: true,
@@ -245,7 +245,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
       .limit(1)
       .lean();
 
-    // console.log(messages);
+    // 
     res.status(200).json({
       success: true,
       message: "successfully fetched all messages",
@@ -256,7 +256,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
 
 export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   const file = req.file;
-  // console.log(file);
+  // 
 
   const fileType = req.file.mimetype;
 
@@ -275,7 +275,7 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
           if (err) {
             console.log(err);
           }
-          console.log(result);
+          
         }
       );
     } else {
@@ -292,10 +292,10 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
     //   public_id: result.public_id,
     //   url: result.secure_url,
     // };
-    // console.log(result);
+    // 
   }
 
-  // console.log(file.path);
+  // 
   fs.unlink(file.path, (err) => {
     if (err)
       return new ErrorHandler("error in deleting a file from uploads", 500);
@@ -311,7 +311,7 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
 
 export const updateAllMessages = catchAsyncErrors(async (req, res, next) => {
   const messages = await Message.find();
-  console.log(messages);
+  
 
   await Message.updateMany(
     {},

@@ -33,7 +33,7 @@ export const blockTypeButtons = [
 ];
 
 export const getIcon = (value) => {
-  // console.log(value);
+  // 
   switch (value) {
     case "BOLD":
       return <GoBold />;

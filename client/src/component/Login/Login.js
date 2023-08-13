@@ -24,8 +24,8 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    // console.log(isAuthenticated);
-    // console.log("login is running");
+    // 
+    // 
     if (isAuthenticated) {
       navigate(-1);
     }

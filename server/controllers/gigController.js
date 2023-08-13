@@ -128,7 +128,7 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
 
 // Get gig details
 export const getGig = catchAsyncErrors(async (req, res, next) => {
-  // console.log("id---->", req.params.id);
+  // 
   const gig = await Gig.findById(req.params.id).populate(
     "user",
     "name avatar numOfRatings ratings userSince country description tagline online lastDelivery"
@@ -148,7 +148,7 @@ export const getGig = catchAsyncErrors(async (req, res, next) => {
 // Update gig
 export const updateGig = catchAsyncErrors(async (req, res, next) => {
   const { data, step } = req.body;
-  console.log(step, data);
+  
 
   const error = checkForErrors(data, step);
 
@@ -205,7 +205,7 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
 
 const fileUpload = catchAsyncErrors(async (req, res, next) => {
   const files = req.files;
-  // console.log(files);
+  // 
 
   let fileUrls = [];
   const p = await Promise.all(
@@ -241,7 +241,7 @@ const fileUpload = catchAsyncErrors(async (req, res, next) => {
             folder: "FreelanceMe",
           })
           .then((result) => {
-            console.log(result);
+            
             fileUrl = {
               public_id: result.public_id,
               url: result.secure_url,
@@ -255,7 +255,7 @@ const fileUpload = catchAsyncErrors(async (req, res, next) => {
     })
   );
 
-  console.log("p", p);
+  
 
   return fileUrls;
 });
@@ -279,7 +279,7 @@ export const deleteGig = catchAsyncErrors(async (req, res, next) => {
 // Create gig review
 export const createGigReview = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment, gigId } = req.body;
-  console.log(req.user.country);
+  
   const review = {
     user: req.user._id,
     name: req.user.name,

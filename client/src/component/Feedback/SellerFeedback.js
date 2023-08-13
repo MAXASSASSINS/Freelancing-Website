@@ -25,7 +25,7 @@ export const SellerFeedback = () => {
       } 
       const { data } = await axiosInstance.post(`/order/${params.id}/seller/feedback`, feedback);
       dispatch(updateOrderDetail(data.order));
-      console.log(data);
+      
     }
     catch(err){
       console.log(err);

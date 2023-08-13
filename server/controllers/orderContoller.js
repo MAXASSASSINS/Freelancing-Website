@@ -17,7 +17,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please select a package", 400));
   }
 
-  // console.log(gigId, packageNumber);
+  // 
   const gig = await Gig.findById(gigId);
 
   if (!gig) {
@@ -109,7 +109,7 @@ export const updateOrderRequirements = catchAsyncErrors(
 
     const sellerEmail = order.seller.email;
 
-    // console.log(order);
+    // 
 
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
@@ -164,7 +164,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       subject: "New Order",
       message: `You have a new order with order id ${order.orderId}`,
     };
-    // console.log(options);
+    // 
     await sendEmail(options);
 
     res.status(200).json({
@@ -194,7 +194,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  console.log(order.seller.toString(), req.user._id.toString());
+  
 
   if (order.seller._id.toString() !== req.user._id.toString()) {
     return next(
@@ -234,7 +234,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     subject: "Order Delivered",
     message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   };
-  // console.log(options);
+  // 
   // await sendEmail(options);
 
   res.status(200).json({
@@ -287,7 +287,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  console.log(order.revisions.length, order.packageDetails.revisions);
+  
   if (order.revisions.length > order.packageDetails.revisions) {
     return next(
       new ErrorHandler(
@@ -313,7 +313,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     subject: "Revision Requested",
     message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
   };
-  // console.log(options);
+  // 
   // await sendEmail(options);
 
   res.status(200).json({
@@ -371,7 +371,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     subject: "Order Completed",
     message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
   };
-  // console.log(options);
+  // 
   // await sendEmail(options);
 
   res.status(200).json({
@@ -427,7 +427,7 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
-  // console.log("hello");
+  // 
   const userId = req.user._id;
   const orders = await Order.find({ 
     $or: [{ seller: userId }, { buyer: userId }]
@@ -505,8 +505,8 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
 // add seller feedback
 export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment } = req.body;
-  // console.log("comment", comment);
-  console.log(rating, comment);
+  // 
+  
 
   let order = await Order.findById(req.params.id)
     .populate("seller buyer", "name email avatar")
@@ -682,7 +682,7 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
 // process payment
 export const packagePayment = catchAsyncErrors(async (req, res, next) => {
   const { id, packageNumber, gigId } = req.body;
-  // console.log(req.body);
+  // 
 
   const gig = await Gig.findById(gigId);
 
@@ -696,7 +696,7 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
 
   const totalAmount = Number(price + serviceFee).toFixed(2);
 
-  // console.log(totalAmount);
+  // 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalAmount * 100,
@@ -707,7 +707,7 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
       confirm: true,
     });
 
-    // console.log(paymentIntent);
+    // 
 
     res.status(201).json({
       message: "Payment Intent created Sucessfully",

@@ -34,7 +34,7 @@ export const Orders = () => {
     try {
       updateGlobalLoading(true);
       const { data } = await axiosInstance.get("/orders/me");
-      console.log(data);
+      
       setOrders(data.orders);
     } catch (err) {
       console.log(err);

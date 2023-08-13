@@ -87,12 +87,12 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
         packageNumber: params.packageNumber,
       };
       const orderRes = await axiosInstance.post("/order/new", orderData);
-      console.log(orderRes);
+      
       orderId = orderRes.data.order._id;
       // setParentLoadingStatus(false);
       // return;
 
-      // console.log(orderId);
+      // 
     } catch (error) {
       console.log(error.response.data.message);
       setParentLoadingStatus(false);
@@ -109,7 +109,7 @@ export const StripeContainer = forwardRef(({ setParentLoadingStatus }, ref) => {
       });
 
       const { clientSecret, paymentIntent: n } = data;
-      console.log(n);
+      
       // confirming payment intent
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
