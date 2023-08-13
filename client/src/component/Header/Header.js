@@ -52,6 +52,7 @@ export const Header = () => {
       return;
     }
     const keywords = searchQuery.split(" ");
+    navigate("/search");
     dispatch(getAllGig(keywords.join(",")));
     window.history.pushState('/search', 'Search', `/search?keywords=${keywords.join(",")}`);
     searchRef.current.blur();
