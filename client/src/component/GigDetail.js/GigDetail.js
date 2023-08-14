@@ -313,8 +313,6 @@ export const GigDetail = () => {
               <header>
                 <h2>About This Gig</h2>
               </header>
-              {/* <div className='gig-details-description-wrapper' dangerouslySetInnerHTML={{ __html: gigDetail.description }}>
-            </div> */}
               <div className="gig-details-description-wrapper">
                 <Editor
                   editorState={editorState}

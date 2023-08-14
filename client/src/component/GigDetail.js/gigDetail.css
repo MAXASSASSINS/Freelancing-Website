@@ -52,7 +52,9 @@
 }
 
 .gig-details-description-wrapper {
-  width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
   color: var(--light-heading);
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--no-focus);
@@ -414,11 +416,8 @@
 @media screen and (min-width: 900px) {
   .gig-detail-main-wrapper {
     display: flex;
-
-    flex-direction: row;
     padding: 2rem;
     max-width: 1300px;
-    justify-content: space-evenly;
     margin: 0 auto;
     padding-top: 3rem;
   }
