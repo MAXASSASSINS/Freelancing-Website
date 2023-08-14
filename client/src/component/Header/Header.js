@@ -62,7 +62,7 @@ export const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="title-wrapper">
-          <h1 className="heading" onClick={handleLogoClick}>
+          <h1 className="heading hover:cursor-pointer" onClick={handleLogoClick}>
             FreelanceMe
           </h1>
         </div>
