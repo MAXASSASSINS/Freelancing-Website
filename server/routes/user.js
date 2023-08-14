@@ -11,6 +11,7 @@ import {
   getUser,
   updateUser,
   widthdrawl,
+  updateFavouriteList,
 } from "../controllers/userController.js";
 import "../controllers/authGoogle.js";
 import { googleCallback } from "../controllers/authGoogle.js";
@@ -35,6 +36,8 @@ router.put("/forgotPassword:token", resetPassword);
 router.put("/changePassword", isAuthenticated, changePassword);
 
 router.get("/withdrawl", isAuthenticated, widthdrawl);
+
+router.post('/user/favourite/gig/:id', isAuthenticated, updateFavouriteList);
 
 router.get(
   "/admin/allUsers",

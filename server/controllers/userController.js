@@ -8,6 +8,7 @@ import cloudinary from "cloudinary";
 import bcrypt from "bcryptjs";
 // import { stripe } from "../utils/stripe.js";
 import Stripe from "stripe";
+import Gig from "../models/gigModel.js";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -49,7 +50,7 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   const isPasswordMatched = await user.comparePassword(password);
 
   // const temp = await bcrypt.hash('3', 10);
-  // 
+  //
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
@@ -237,7 +238,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
-  // 
+  //
   const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
   if (!req.user.stripeAccountId) {
@@ -318,10 +319,6 @@ export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
     //   }
     // );
 
-
-    
-    
-
     res.status(200).json({
       success: true,
       message: "You have already created your account",
@@ -329,4 +326,32 @@ export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
       // paymentIntent : paymentIntent ? paymentIntent : "",
     });
   }
+});
+
+export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
+  const gigId = req.params.id;
+  const userId = req.user.id;
+
+  const gig = await Gig.findById(gigId);
+
+  if (!gig) {
+    return next(new ErrorHandler("Gig does not exist", 404));
+  }
+
+  const user = await User.findById(userId);
+
+  if (user.favouriteGigs.includes(gigId)) {
+    user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigId), 1);
+  }
+  else{
+    user.favouriteGigs.push(gigId);
+  }
+
+  await user.save({
+    validateBeforeSave: false
+  })
+  res.status(200).json({
+    success: true,
+    message: "Favourite list is updated",
+  }); 
 });

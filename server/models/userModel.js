@@ -200,6 +200,13 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
 
+  favouriteGigs: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Gig",
+    }
+  ],
+
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
