@@ -58,6 +58,7 @@ import {
 import { GoLaw } from "react-icons/go";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
 import { GlobalLoadingProvider } from "./context/globalLoadingContext";
+import { FavouriteGigs } from "./component/FavouriteGigs";
 
 export const windowContext = createContext();
 
@@ -187,6 +188,8 @@ const App = () => {
                 element={<BuyerFeedback />}
               />
               <Route exact path="/balance/detail" element={<BalanceDetail />} />
+              <Route
+                exact path="/my/favourite/gigs" element={<FavouriteGigs />} />
             </Routes>
             <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div>
             {!hideFooter && <Footer />}

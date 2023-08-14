@@ -5,6 +5,7 @@ import {
   deleteGig,
   getAllGigs,
   getAllReviews,
+  getFavoriteGigs,
   getGig,
   getUserGigs,
   updateGig,
@@ -16,6 +17,7 @@ const router = express.Router();
 router.post("/gig/create", isAuthenticated, createGig);
 
 router.get("/gig/gigs", getAllGigs);
+router.get("/gig/favourite", isAuthenticated, getFavoriteGigs);
 router.get("/gig/details/:id", getGig);
 router.get("/gig/gigs/user/:id", getUserGigs);
 

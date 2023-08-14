@@ -17,6 +17,7 @@ import {
   SIGNUP_USER_REQUEST,
   SIGNUP_USER_SUCCESS,
   SIGNUP_USER_FAIL,
+  UPDATE_USER_SUCCESS,
 } from "../constants/userConstants";
 
 // export const userReducer = ((state = null, action) => {
@@ -149,7 +150,11 @@ export const userReducer = (state = { user: {} }, action) => {
         userLoading: false,
         userError: action.payload,
       };
-
+    case UPDATE_USER_SUCCESS: 
+      return {
+        ...state,
+        user: action.payload,
+      }
     default: {
       return state;
     }

@@ -340,10 +340,12 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
 
   const user = await User.findById(userId);
 
+  let isFavourite = false;
   if (user.favouriteGigs.includes(gigId)) {
     user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigId), 1);
   }
   else{
+    isFavourite = true;
     user.favouriteGigs.push(gigId);
   }
 
@@ -353,5 +355,6 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Favourite list is updated",
+    isFavourite,
   }); 
 });

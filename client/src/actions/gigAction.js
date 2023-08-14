@@ -19,21 +19,23 @@ export const getAllGig = (keywords, category) => async (dispatch) => {
   try {
     dispatch({ type: ALL_GIG_REQUEST });
     let payload = {};
-    if(keywords){
-      const {data} = await axiosInstance.get(`/gig/gigs?keywords=${keywords}`);
-      payload = data;
-    }
-    else if(category){
-      const {data} = await axiosInstance.get(`/gig/gigs?category=${category}`);
-      payload = data;
-    }
-    else{
-      const {data} = await axiosInstance.get(`/gig/gigs`);
-      payload = data;
+    if (keywords) {
+      const { data } = await axiosInstance.get(
+        `/gig/gigs?keywords=${keywords}`
+      );
+      payload = data.gigs;
+    } else if (category) {
+      const { data } = await axiosInstance.get(
+        `/gig/gigs?category=${category}`
+      );
+      payload = data.gigs;
+    } else {
+      const { data } = await axiosInstance.get(`/gig/gigs`);
+      payload = data.gigs;
     }
     dispatch({
       type: ALL_GIG_SUCCESS,
-      payload
+      payload,
     });
   } catch (error) {
     console.log(error.response.data);
@@ -64,7 +66,7 @@ export const getUserGigs = (id) => async (dispatch) => {
 };
 
 export const getGigDetail = (id) => async (dispatch) => {
-  // 
+  //
   try {
     dispatch({ type: GIG_DETAIL_REQUEST });
 
@@ -78,6 +80,22 @@ export const getGigDetail = (id) => async (dispatch) => {
     dispatch({
       type: GIG_DETAIL_FAIL,
       payload: error.response.data.message,
+    });
+  }
+};
+
+export const getFavoriteGigs = () => async (dispatch) => {
+  try {
+    dispatch({ type: ALL_GIG_REQUEST });
+    const { data } = await axiosInstance.get("/gig/favourite");
+    dispatch({
+      type: ALL_GIG_SUCCESS,
+      payload: data.favouriteGigs,
+    });
+  } catch (error) {
+    dispatch({
+      type: ALL_GIG_FAIL,
+      payload: error.response,
     });
   }
 };

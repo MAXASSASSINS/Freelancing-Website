@@ -113,11 +113,9 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
         return count;
       }, 0);
     });
-    gigs = gigs.sort(
-      (a, b) => b.matchingStatus - a.matchingStatus
-    );
+    gigs = gigs.sort((a, b) => b.matchingStatus - a.matchingStatus);
   }
-  
+
   res.status(200).json({
     success: true,
     message: "successfully fetched all gigs from database",
@@ -126,9 +124,29 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+// Get Favorite gigs
+export const getFavoriteGigs = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
+
+  const favouriteGigs = await Gig.find({
+    _id: { $in: user.favouriteGigs },
+  }).select("title pricing images ratings numOfRatings searchTags")
+  .populate("user", "name avatar");
+
+  res.status(200).json({
+    success: true,
+    message: "successfully fetched all favorite gigs from database",
+    favouriteGigs,
+  });
+});
+
 // Get gig details
 export const getGig = catchAsyncErrors(async (req, res, next) => {
-  // 
+  //
   const gig = await Gig.findById(req.params.id).populate(
     "user",
     "name avatar numOfRatings ratings userSince country description tagline online lastDelivery"
@@ -148,7 +166,6 @@ export const getGig = catchAsyncErrors(async (req, res, next) => {
 // Update gig
 export const updateGig = catchAsyncErrors(async (req, res, next) => {
   const { data, step } = req.body;
-  
 
   const error = checkForErrors(data, step);
 
@@ -205,7 +222,7 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
 
 const fileUpload = catchAsyncErrors(async (req, res, next) => {
   const files = req.files;
-  // 
+  //
 
   let fileUrls = [];
   const p = await Promise.all(
@@ -241,7 +258,6 @@ const fileUpload = catchAsyncErrors(async (req, res, next) => {
             folder: "FreelanceMe",
           })
           .then((result) => {
-            
             fileUrl = {
               public_id: result.public_id,
               url: result.secure_url,
@@ -254,8 +270,6 @@ const fileUpload = catchAsyncErrors(async (req, res, next) => {
       }
     })
   );
-
-  
 
   return fileUrls;
 });
@@ -279,7 +293,7 @@ export const deleteGig = catchAsyncErrors(async (req, res, next) => {
 // Create gig review
 export const createGigReview = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment, gigId } = req.body;
-  
+
   const review = {
     user: req.user._id,
     name: req.user.name,

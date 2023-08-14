@@ -25,7 +25,7 @@ export const gigReducer = (state = { gigs: null }, action) => {
     case ALL_GIG_SUCCESS:
       return {
         gigLoading: false,
-        gigs: action.payload.gigs,
+        gigs: action.payload,
         gigsCount: action.payload.gigsCount,
       };
     case ALL_GIG_FAIL:

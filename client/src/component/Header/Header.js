@@ -87,7 +87,7 @@ export const Header = () => {
               <FaRegEnvelope />
             </Link>
           </div>
-          <div className="my-list-icon">
+          <div className="my-list-icon" onClick={() => navigate("/my/favourite/gigs")} >
             <FaRegHeart />
           </div>
           <div className="orders-icon" onClick={() => navigate("/orders")}>
