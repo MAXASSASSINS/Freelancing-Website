@@ -120,7 +120,7 @@ export const Home = () => {
               <GigCard lazyLoad={true} gig={gig} key={gig._id} />
             ))}
         </div>
-      ) : (
+      ) : !gigLoading && (
         <div className="h-[calc(100vh-146.5px)] sm:h-[calc(100vh-81px)] mx-6 text-dark_grey flex flex-col items-center justify-center">
           <img
             className="max-w-sm sm:max-w-lg object-contain"
