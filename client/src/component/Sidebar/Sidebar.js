@@ -70,8 +70,8 @@ export const Sidebar = () => {
             <Link to="/orders" className="sidebar-menu-item">
               Manage Orders
             </Link>
-            <Link to="/" className="sidebar-menu-item">
-              Lists
+            <Link to="/my/favourite/gigs" className="sidebar-menu-item">
+              Favourites
             </Link>
             {isAuthenticated ? (
               <div onClick={handleLogOut} className="sidebar-menu-item">
