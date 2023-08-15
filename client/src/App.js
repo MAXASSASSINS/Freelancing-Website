@@ -122,7 +122,7 @@ const App = () => {
 
 
   // List of paths where footer will be hidden
-  const pathsWithoutFooter = ['/get/all/messages/for/current/user', '/gig/create/new/gig', '/login', '/register']; // Add any other paths here
+  const pathsWithoutFooter = ['/get/all/messages/for/current/user', '/gig/create/new/gig', '/login', '/register', '/orders/']; // Add any other paths here
 
   // Checking if the current location matches any path in pathsWithoutFooter
   const hideFooter = pathsWithoutFooter.some((path) =>
