@@ -15,23 +15,47 @@ export const useUpdateGlobalLoading = () => {
 export const GlobalLoadingProvider = ({ children }) => {
   const [globalLoading, setGlobalLoading] = useState(false);
 
-    const { gigLoading } = useSelector((state) => state.gigs || {});
-    const {gigLoading: gigDetailLoading} = useSelector((state) => state.gigDetail || {});
-    const { gigLoading: userGigslLoading } = useSelector((state) => state.userGigs || {});
+  const { gigLoading } = useSelector((state) => state.gigs || {});
+  const { gigLoading: gigDetailLoading } = useSelector(
+    (state) => state.gigDetail || {}
+  );
+  const { gigLoading: userGigslLoading } = useSelector(
+    (state) => state.userGigs || {}
+  );
 
-    const { userLoading } = useSelector((state) => state.user || {});
-    const { userLoading: gigUserLoading } = useSelector((state) => state.gigUser || {});
+  const { userLoading } = useSelector((state) => state.user || {});
+  const { userLoading: gigUserLoading } = useSelector(
+    (state) => state.gigUser || {}
+  );
 
-    const { orderLoading } = useSelector((state) => state.order || {});
-    const { orderLoading: orderDetailLoading } = useSelector((state) => state.orderDetail || {});
+  const { orderLoading } = useSelector((state) => state.order || {});
+  const { orderLoading: orderDetailLoading } = useSelector(
+    (state) => state.orderDetail || {}
+  );
 
   useEffect(() => {
-    if (gigLoading || userLoading || orderLoading || gigDetailLoading || userGigslLoading || gigUserLoading || orderDetailLoading) {
+    if (
+      gigLoading ||
+      userLoading ||
+      orderLoading ||
+      gigDetailLoading ||
+      userGigslLoading ||
+      gigUserLoading ||
+      orderDetailLoading
+    ) {
       setGlobalLoading(true);
     } else {
       setGlobalLoading(false);
     }
-  }, [gigLoading, userLoading, orderLoading, gigDetailLoading, userGigslLoading, gigUserLoading, orderDetailLoading]);
+  }, [
+    gigLoading,
+    userLoading,
+    orderLoading,
+    gigDetailLoading,
+    userGigslLoading,
+    gigUserLoading,
+    orderDetailLoading,
+  ]);
 
   const updateGlobalLoading = (val) => {
     setGlobalLoading(val);
