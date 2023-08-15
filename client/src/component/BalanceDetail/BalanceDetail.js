@@ -5,10 +5,15 @@ import { getUser } from "../../actions/userAction";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { numberToCurrency } from "../../utility/util";
+import { useGlobalLoading, useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 export const BalanceDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const globalLoading = useGlobalLoading();
+  const updateGlobalLoading = useUpdateGlobalLoading();
+
+  console.log("globalLoading", globalLoading);
 
   const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
@@ -28,12 +33,15 @@ export const BalanceDetail = () => {
   const getOrderList = async () => {
     try {
       setLoading(true);
+      updateGlobalLoading(true);
+
       const { data } = await axiosInstance.get("/orders/me");
-      
+
       setOrderList(data.orders);
     } catch (err) {
       console.log(err);
     } finally {
+      updateGlobalLoading(false);
       setLoading(false);
     }
   };
@@ -55,13 +63,12 @@ export const BalanceDetail = () => {
   const handleWithdrawl = async () => {
     try {
       const { data } = await axiosInstance.get("/withdrawl");
-      
-      if(data.redirectUrl) window.location.href = data.redirectUrl;
+
+      if (data.redirectUrl) window.location.href = data.redirectUrl;
     } catch (err) {
       console.log(err.response.data.message);
     }
   };
-
 
   return (
     isAuthenticated && (
@@ -87,7 +94,10 @@ export const BalanceDetail = () => {
                 <h3 className="text-4xl font-bold mb-24">
                   ₹{numberToCurrency(user.balance)}
                 </h3>
-                <button onClick={handleWithdrawl} className="px-4 py-3 bg-dark_grey hover:bg-light_grey hover:cursor-pointer text-white rounded">
+                <button
+                  onClick={handleWithdrawl}
+                  className="px-4 py-3 bg-dark_grey hover:bg-light_grey hover:cursor-pointer text-white rounded"
+                >
                   Withdraw balance
                 </button>
               </div>
@@ -155,41 +165,45 @@ export const BalanceDetail = () => {
             </header>
             <main>
               <ul>
-                {orderList.map((order, index) => (
-                  order.status === "Completed" &&
-                  <div
-                    key={index}
-                    className="border-b p-4 py-8 grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4"
-                  >
-                    <div className="flex flex-col-reverse gap-1 md:col-span-2 md:grid md:grid-cols-2 md:gap-4">
-                      <li className="text-xs font-light md:font-normal md:text-sm">
-                        {new Date(order.completedAt).toLocaleDateString()}
-                      </li>
-                      <li className="capitalize">
-                        {order.seller._id === user._id ? "Earning" : "Buying"}
-                      </li>
-                    </div>
-                    <li className="hidden sm:inline">
-                      {
-                        order.seller._id === user._id
-                          ? order.buyer.name
-                          : order.seller.name 
-                      }
-                    </li>
-                    <li className="hidden min-[480px]:inline uppercase underline hover:cursor-pointer">
-                      <Link to={`/orders/${order._id}`} >{order.orderId}</Link>
-                    </li>
-                    <li
-                      className={`text-right font-semibold ${
-                        order.seller._id === user._id
-                          ? "text-primary"
-                          : "text-warning"
-                      }`}
-                    >
-                      ₹{numberToCurrency(order.amount)}
-                    </li>
-                  </div>
-                ))}
+                {orderList.map(
+                  (order, index) =>
+                    order.status === "Completed" && (
+                      <div
+                        key={index}
+                        className="border-b p-4 py-8 grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4"
+                      >
+                        <div className="flex flex-col-reverse gap-1 md:col-span-2 md:grid md:grid-cols-2 md:gap-4">
+                          <li className="text-xs font-light md:font-normal md:text-sm">
+                            {new Date(order.completedAt).toLocaleDateString()}
+                          </li>
+                          <li className="capitalize">
+                            {order.seller._id === user._id
+                              ? "Earning"
+                              : "Buying"}
+                          </li>
+                        </div>
+                        <li className="hidden sm:inline">
+                          {order.seller._id === user._id
+                            ? order.buyer.name
+                            : order.seller.name}
+                        </li>
+                        <li className="hidden min-[480px]:inline uppercase underline hover:cursor-pointer">
+                          <Link to={`/orders/${order._id}`}>
+                            {order.orderId}
+                          </Link>
+                        </li>
+                        <li
+                          className={`text-right font-semibold ${
+                            order.seller._id === user._id
+                              ? "text-primary"
+                              : "text-warning"
+                          }`}
+                        >
+                          ₹{numberToCurrency(order.amount)}
+                        </li>
+                      </div>
+                    )
+                )}
               </ul>
             </main>
           </div>
