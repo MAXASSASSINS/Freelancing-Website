@@ -48,7 +48,7 @@ router.get(
 
 router.get("/user/:id", getUser);
 
-router.put("/user/update/:id", updateUser);
+router.put("/user/update", isAuthenticated, updateUser);
 
 router.get(
   "/auth/google",
