@@ -113,8 +113,16 @@ const userSchema = new mongoose.Schema({
 
   languages: [
     {
-      type: String,
-      required: true,
+      name: {
+        type: String,
+        required: true,
+      },
+      level: {
+        type: String,
+        enum: ["basic", "conversational", "fluent", "native/bilingual"],
+        required: true,
+        default: "beginner",
+      },
     },
   ],
 
@@ -127,6 +135,7 @@ const userSchema = new mongoose.Schema({
       level: {
         type: String,
         required: true,
+        enum: ['beginner', 'intermediate', 'advance', 'expert'],
         default: "beginner",
       },
     },
