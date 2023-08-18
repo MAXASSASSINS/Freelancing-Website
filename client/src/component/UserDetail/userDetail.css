@@ -37,9 +37,14 @@
 }
 
 .user-detail-tagline {
-  margin: 10px 0;
   color: var(--light-heading);
   font-size: 0.9rem;
+  line-height: 1.4;
+  width: 40ch;
+  margin: auto;
+  margin-bottom: 10px;
+  /* display: flex; */
+  /* justify-content: center; */
 }
 
 .user-info-review-container {
@@ -131,8 +136,8 @@
   line-height: 1.5;
   margin-top: 1rem;
   color: var(--icons);
-  letter-spacing: 0.5px;
   word-spacing: 2px;
+  white-space: pre-line;
   word-break: break-word;
 }
 

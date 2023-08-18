@@ -25,6 +25,7 @@ import {
 import { IoLocationSharp } from "react-icons/io5";
 import { AiOutlineUser } from "react-icons/ai";
 import { gigUserReducer } from "../../reducers/userReducers";
+import { BsPencilSquare } from "react-icons/bs";
 
 export const UserDetail = () => {
   const navigate = useNavigate();
@@ -82,11 +83,19 @@ export const UserDetail = () => {
         <div className="user-details-max-width-container">
           <div className="user-info-div">
             <div className="user-info-large-screen-border first-div">
-              <div className="user-info-wrapper">
+              <div className="user-info-wrapper relative">
                 <div className="user-info-list-icon">
                   {/* <FaBars className="inline" /> */}
                   {/* <FaHeart className="inline" /> */}
                 </div>
+                {gigUser._id === user._id && (
+                  <Link
+                    to={"/update/profile"}
+                    className="absolute right-0 text-xl text-[#3f63c8]"
+                  >
+                    <BsPencilSquare />
+                  </Link>
+                )}
                 <div className="user-detail user-profile-pic">
                   <Avatar
                     avatarUrl={gigUser.avatar.url}
@@ -173,12 +182,12 @@ export const UserDetail = () => {
                     {gigUser.languages.map((language, index) => (
                       <li key={index}>
                         <span className="user-detail-language-name">
-                          {language}
+                          {language.name}
                         </span>
                         &nbsp;&nbsp;–
                         <span className="user-detail-language-fluency">
                           {" "}
-                          Fluent
+                          {language.level}
                         </span>
                       </li>
                     ))}
@@ -294,7 +303,10 @@ export const UserDetail = () => {
                 )}
               </div>
             </div>
-            <div id="user-detail-reviews-section" className="user-detail-review-list-container">
+            <div
+              id="user-detail-reviews-section"
+              className="user-detail-review-list-container"
+            >
               <div className="user-detail-review-list">
                 <h2>
                   <span className="user-detail-review-heading">Reviews</span>{" "}
