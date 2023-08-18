@@ -59,6 +59,7 @@ import { GoLaw } from "react-icons/go";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
 import { GlobalLoadingProvider } from "./context/globalLoadingContext";
 import { FavouriteGigs } from "./component/FavouriteGigs";
+import { UpdateUserProfile } from "./component/UpdateUserProfile";
 
 export const windowContext = createContext();
 
@@ -85,7 +86,7 @@ const App = () => {
   useEffect(() => {
     // i have put .then to resolve the promise and lead us to the page where we come from this is working now
     store.dispatch(loadUser()).then(() => {
-      // 
+      //
       navigate();
     });
   }, []);
@@ -96,7 +97,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    // 
+    //
     resizeWindow();
     window.addEventListener("resize", resizeWindow);
     return () => window.removeEventListener("resize", resizeWindow);
@@ -104,7 +105,7 @@ const App = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      // 
+      //
       socket.emit("new_user", user._id.toString());
     }
   }, [isAuthenticated, user]);
@@ -120,9 +121,15 @@ const App = () => {
     };
   }, [user, isAuthenticated]);
 
-
   // List of paths where footer will be hidden
-  const pathsWithoutFooter = ['/get/all/messages/for/current/user', '/gig/create/new/gig', '/login', '/register', '/orders/']; // Add any other paths here
+  const pathsWithoutFooter = [
+    "/get/all/messages/for/current/user",
+    "/gig/create/new/gig",
+    "/login",
+    "/register",
+    "/orders/",
+    "/update/profile",
+  ]; // Add any other paths here
 
   // Checking if the current location matches any path in pathsWithoutFooter
   const hideFooter = pathsWithoutFooter.some((path) =>
@@ -189,9 +196,23 @@ const App = () => {
               />
               <Route exact path="/balance/detail" element={<BalanceDetail />} />
               <Route
-                exact path="/my/favourite/gigs" element={<FavouriteGigs />} />
+                exact
+                path="/my/favourite/gigs"
+                element={<FavouriteGigs />}
+              />
+              <Route
+                exact
+                path="/update/profile"
+                element={<UpdateUserProfile />}
+              />
             </Routes>
-            <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div>
+            <div
+              style={{ height: height - (width > 600 ? 81 : 143) }}
+              className={
+                "search-bar-dim-background " +
+                (dimBackground ? "visible" : null)
+              }
+            ></div>
             {!hideFooter && <Footer />}
           </SocketContext.Provider>
         </CloudinaryContext>
