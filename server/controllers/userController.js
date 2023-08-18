@@ -216,7 +216,7 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
 
 // Update user data
 export const updateUser = catchAsyncErrors(async (req, res, next) => {
-  let user = await User.findById(req.params.id);
+  let user = await User.findById(req.user.id);
 
   if (!user) {
     return next(
@@ -224,7 +224,13 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  user = await User.findByIdAndUpdate(req.params.id, req.body, {
+  if(user._id != req.user.id){
+    return next(
+      new ErrorHandler(`You are not authorized to update this user`)
+    );
+  }
+
+  user = await User.findByIdAndUpdate(req.user.id, req.body, {
     new: true,
     runValidators: true,
     useFindandModify: false,
