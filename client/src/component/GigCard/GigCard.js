@@ -52,7 +52,7 @@ export const GigCard = ({ gig, lazyLoad }) => {
   return (
     <div className="gig-card">
       <div className="container-wrapper">
-        <Link to={`/user/${gig.user._id}`}>
+        <Link to={`/gig/details/${gig._id}`}>
           <MyCarousel lazyLoad={lazyLoad} gig={gig}></MyCarousel>
         </Link>
         <div className="user-details-container">
