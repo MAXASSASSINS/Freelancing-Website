@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Blurhash } from "react-blurhash";
 
-export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "auto" }) => {
+export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "auto", objectFit = "cover" }) => {
   const { width, height, name, type, url, size, blurhash } = file;
   const defaultBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj";
 
@@ -16,8 +16,8 @@ export const LazyImage = ({ file, maxWidth, lazyLoad = false, aspectRatio = "aut
     <div className="relative">
       <img
         data-src={url}
-        className="w-full object-cover"
-        style={{ aspectRatio: aspectRatio }}
+        className="w-full"
+        style={{ aspectRatio: aspectRatio, objectFit: objectFit }}
         // src={url}
         src={lazyLoad ? "" : url}
         alt={name}
