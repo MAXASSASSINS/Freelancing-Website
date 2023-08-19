@@ -178,7 +178,7 @@ export const UserDetail = () => {
                 </div>
                 <div className="user-detail-language">
                   <h3>Languages</h3>
-                  <ul>
+                  <ul className="flex flex-col gap-2">
                     {gigUser.languages.map((language, index) => (
                       <li key={index}>
                         <span className="user-detail-language-name">
