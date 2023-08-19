@@ -19,6 +19,8 @@ export const MyCarousel = ({ gig, lazyLoad }) => {
     setArrows(false);
   };
 
+  const objectFit = window.location.href.includes('/gig/details') ? "contain" : "cover";
+  console.log(objectFit);
   return (
     <div
       className="slides-preview"
@@ -44,6 +46,7 @@ export const MyCarousel = ({ gig, lazyLoad }) => {
                     file={image}
                     lazyLoad={lazyLoad}
                     aspectRatio={16 / 10}
+                    objectFit={objectFit}
                   />
                 </Carousel.Item>
               )
