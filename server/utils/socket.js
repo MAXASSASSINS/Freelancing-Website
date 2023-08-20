@@ -17,8 +17,7 @@ export const runSocket = (server) => {
   let currentUserId = "";
 
   io.on("connection", (socket) => {
-    // 
-
+    console.log(onlineUserList);
     socket.on("new_user", (userId) => {
       addNewUser(userId, socket.id);
     });
@@ -104,6 +103,8 @@ export const runSocket = (server) => {
       
       const userId = getUserBySocketId(socket.id);
       removeUser(socket.id, userId);
+
+      console.log('user disconnected', userId, socket.id);
 
       if (!onlineUserList.has(userId)) {
         Promise.resolve(updateUserLastSeen(userId, socket)).then(() => {
