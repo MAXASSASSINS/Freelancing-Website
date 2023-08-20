@@ -20,7 +20,6 @@ export const MyCarousel = ({ gig, lazyLoad }) => {
   };
 
   const objectFit = window.location.href.includes('/gig/details') ? "contain" : "cover";
-  console.log(objectFit);
   return (
     <div
       className="slides-preview"
