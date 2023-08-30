@@ -224,10 +224,8 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if(user._id != req.user.id){
-    return next(
-      new ErrorHandler(`You are not authorized to update this user`)
-    );
+  if (user._id != req.user.id) {
+    return next(new ErrorHandler(`You are not authorized to update this user`));
   }
 
   user = await User.findByIdAndUpdate(req.user.id, req.body, {
@@ -243,8 +241,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
-  //
+export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
   if (!req.user.stripeAccountId) {
@@ -269,67 +266,19 @@ export const widthdrawl = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Successfully fetched account link",
-      // redirectUrl: accountLink.url,
       redirectUrl: process.env.accountLink,
     });
   } else {
-    const accountId = req.user.stripeAccountId;
-    const accountDetails = await stripe.accounts.retrieve(accountId);
-
-    // const charge = await stripe.charges.create({
-    //   amount: 10*100,
-    //   currency: "inr",
-    //   source: accountId,
-    // });
-
-    // const charge = await stripe.charges.create({
-    //   customer: 'acct_1MtFFeSAmwdBmm1f',
-    //   source: accountId,
-    //   amount: 1 * 100,
-    //   currency: "inr",
-    //   // application_fee: 1 * 100,
-    //   // destination: accountId,
-    // });
-
-    // await stripe.payouts.create(
-    //   {
-    //     amount: amount,
-    //     currency: currency,
-    //   },
-    //   {
-    //     stripeAccount: accountId,
-    //   }
-    // );
-
-    // const paymentMethod = await stripe.paymentMethods.create({
-    //   type: 'card',
-    //   card: {
-    //     number: '4242424242424242',
-    //     exp_month: 8,
-    //     exp_year: 2024,
-    //     cvc: '314',
-    //   },
-    // });
-
-    // const paymentIntent = await stripe.paymentIntents.create(
-    //   {
-    //     amount: 1000,
-    //     currency: "usd",
-    //     automatic_payment_methods: {
-    //       enabled: true,
-    //     },
-    //     payment_method: 'card',
-    //   },
-    //   {
-    //     stripeAccount: accountId,
-    //   }
-    // );
+    const transfer = await stripe.transfers.create({
+      amount: 10,
+      currency: "inr",
+      destination: req.user.stripeAccountId,
+    });
 
     res.status(200).json({
       success: true,
       message: "You have already created your account",
-      accountDetails,
-      // paymentIntent : paymentIntent ? paymentIntent : "",
+      transfer,
     });
   }
 });
@@ -349,18 +298,17 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
   let isFavourite = false;
   if (user.favouriteGigs.includes(gigId)) {
     user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigId), 1);
-  }
-  else{
+  } else {
     isFavourite = true;
     user.favouriteGigs.push(gigId);
   }
 
   await user.save({
-    validateBeforeSave: false
-  })
+    validateBeforeSave: false,
+  });
   res.status(200).json({
     success: true,
     message: "Favourite list is updated",
     isFavourite,
-  }); 
+  });
 });
