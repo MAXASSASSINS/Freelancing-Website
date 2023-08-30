@@ -10,8 +10,8 @@ import {
   getAllUsers,
   getUser,
   updateUser,
-  widthdrawl,
   updateFavouriteList,
+  withdrawl,
 } from "../controllers/userController.js";
 import "../controllers/authGoogle.js";
 import { googleCallback } from "../controllers/authGoogle.js";
@@ -35,7 +35,7 @@ router.put("/forgotPassword:token", resetPassword);
 
 router.put("/changePassword", isAuthenticated, changePassword);
 
-router.get("/withdrawl", isAuthenticated, widthdrawl);
+router.get("/withdrawl", isAuthenticated, withdrawl);
 
 router.post('/user/favourite/gig/:id', isAuthenticated, updateFavouriteList);
 
