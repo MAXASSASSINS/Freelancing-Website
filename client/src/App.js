@@ -126,7 +126,7 @@ const App = () => {
     "/get/all/messages/for/current/user",
     "/gig/create/new/gig",
     "/login",
-    "/register",
+    "/signUp",
     "/orders/",
     "/update/profile",
   ]; // Add any other paths here
