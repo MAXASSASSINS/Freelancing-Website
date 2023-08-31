@@ -46,6 +46,7 @@ export const Login = () => {
             id="email"
             type="email"
             class="form-control"
+            required
           />
         </div>
         <div className="form-group">
@@ -57,6 +58,7 @@ export const Login = () => {
             id="password"
             type="password"
             class="form-control"
+            required
           />
         </div>
         <p>
