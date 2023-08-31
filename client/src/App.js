@@ -60,6 +60,8 @@ import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLo
 import { GlobalLoadingProvider } from "./context/globalLoadingContext";
 import { FavouriteGigs } from "./component/FavouriteGigs";
 import { UpdateUserProfile } from "./component/UpdateUserProfile";
+import { useGlobalError } from "./context/globalErrorContext";
+
 
 export const windowContext = createContext();
 
@@ -73,6 +75,7 @@ const App = () => {
   );
 
   const globalLoading = useGlobalLoading();
+  const globalError = useGlobalError();
 
   const [windowWidth, setWindowWidth] = useState(0);
   const [windowHeight, setWindowHeight] = useState(0);
@@ -120,6 +123,14 @@ const App = () => {
       clearInterval(interval);
     };
   }, [user, isAuthenticated]);
+
+  useEffect(() => {
+    if (globalError) {
+      toast.error(globalError, {});
+      console.log(globalError);
+    }
+  }, [globalError]);
+
 
   // List of paths where footer will be hidden
   const pathsWithoutFooter = [
