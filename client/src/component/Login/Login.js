@@ -10,7 +10,7 @@ export const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
-  const { user, userLoading, isAuthenticated } = useSelector(
+  const { user, userLoading, isAuthenticated, userError } = useSelector(
     (state) => state.user
   );
 
@@ -24,12 +24,16 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    // 
-    // 
     if (isAuthenticated) {
       navigate(-1);
     }
   }, [dispatch, isAuthenticated]);
+
+  useEffect(() => {
+    if (userError) {
+      toast.error(userError.message);
+    }
+  }, [userError]);
 
   return (
     <div className="p-8 mt-20 md:mt-40 col-md-4 offset-md-4">
