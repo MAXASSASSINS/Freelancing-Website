@@ -6,12 +6,14 @@ import { Link, redirect, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { numberToCurrency } from "../../utility/util";
 import { useGlobalLoading, useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { useGlobalError, useUpdateGlobalError } from "../../context/globalErrorContext";
 
 export const BalanceDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const globalLoading = useGlobalLoading();
   const updateGlobalLoading = useUpdateGlobalLoading();
+  const updateGlobalError = useUpdateGlobalError();
 
   console.log("globalLoading", globalLoading);
 
@@ -67,6 +69,7 @@ export const BalanceDetail = () => {
       if (data.redirectUrl) window.location.href = data.redirectUrl;
     } catch (err) {
       console.log(err.response.data.message);
+      updateGlobalError(err.response.data.message);
     }
   };
 

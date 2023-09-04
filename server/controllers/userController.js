@@ -244,6 +244,10 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
+  if(req.user.balance < 2000){
+    return next(new ErrorHandler("You have not enough balance to withdrawl", 400));
+  }
+
   if (!req.user.stripeAccountId) {
     const account = await stripe.accounts.create({
       type: "standard",
@@ -266,7 +270,8 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Successfully fetched account link",
-      redirectUrl: process.env.accountLink,
+      // redirectUrl: process.env.accountLink,
+      redirectUrl: accountLink.url,
     });
   } else {
     const transfer = await stripe.transfers.create({
