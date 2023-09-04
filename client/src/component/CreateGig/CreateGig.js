@@ -57,7 +57,8 @@ import {
 import { FREE_TEXT } from "../../constants/globalConstants";
 import ReactSelect from "react-select";
 import { tagOptions } from "./tagsData";
-
+import { useUpdateGlobalError } from "../../context/globalErrorContext";
+import {toast} from 'react-toastify'
 export const CreateGig = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ export const CreateGig = () => {
   );
 
   const { gigDetail } = useSelector((state) => state.gigDetail);
+  const updateGlobalError = useUpdateGlobalError();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [stepCompleted, setStepCompleted] = useState([
@@ -877,10 +879,13 @@ export const CreateGig = () => {
       data = await axiosInstance.post("/verify/number", body);
       data = data.data;
     } catch (err) {
-      invalidPhoneNumberRef.current.style.display = "block";
+      if(err.response.status !== 403){
+        invalidPhoneNumberRef.current.style.display = "block";
+      }
+      toast.error("Something went wrong. Please try again later.")
       console.log(err);
     }
-    if (data.success) {
+    if (data?.success) {
       setShowVerifyCodeInput(true);
     }
   };
@@ -1296,7 +1301,7 @@ export const CreateGig = () => {
                         min={5}
                         max={10000}
                       ></input>
-                      <span>$</span>
+                      <span>₹</span>
                     </div>
                     {packagesWarning && (
                       <div className="package-price-required-icon">
