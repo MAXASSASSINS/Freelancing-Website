@@ -546,7 +546,7 @@ export const CreateGig = () => {
               deliveryTimeRefs.current[index].current.currValue,
             revisions:
               deliveryRevisionsRefs.current[index].current.currValue ===
-              "Unlimited"
+              "unlimited"
                 ? Number.MAX_VALUE
                 : Number(
                     deliveryRevisionsRefs.current[index].current.currValue
