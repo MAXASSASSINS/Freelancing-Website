@@ -235,7 +235,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   };
   // 
-  // await sendEmail(options);
+  await sendEmail(options);
 
   res.status(200).json({
     success: true,
@@ -314,7 +314,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
   };
   // 
-  // await sendEmail(options);
+  await sendEmail(options);
 
   res.status(200).json({
     success: true,
@@ -372,7 +372,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
   };
   // 
-  // await sendEmail(options);
+  await sendEmail(options);
 
   res.status(200).json({
     success: true,
