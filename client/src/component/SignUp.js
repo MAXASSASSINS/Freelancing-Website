@@ -12,7 +12,7 @@ export const SignUp = () => {
   const [signUpPassword, setSignUpPassword] = useState("");
   const [signUpUsername, setSignUpUsername] = useState("");
 
-  const { user, userLoading, isAuthenticated } = useSelector(
+  const { user, userLoading, isAuthenticated, userError } = useSelector(
     (state) => state.user
   );
 
@@ -28,17 +28,25 @@ export const SignUp = () => {
       signUpEmailError: false,
       signUpPasswordError: false,
       signUpUsernameError: false,
+    };
+    if (
+      !signUpUsername ||
+      signUpUsername.length < 4 ||
+      signUpUsername.length > 50
+    ) {
+      error = { ...error, signUpUsernameError: true };
     }
-    if(!signUpUsername || signUpUsername.length < 4 || signUpUsername.length > 50) {
-      error = {...error, signUpUsernameError: true}
+    if (!signUpEmail) {
+      error = { ...error, signUpEmailError: true };
     }
-    if(!signUpEmail) {
-      error = {...error, signUpEmailError: true}
+    if (!signUpPassword || signUpPassword.length < 8) {
+      error = { ...error, signUpPasswordError: true };
     }
-    if(!signUpPassword || signUpPassword.length < 8) {
-      error = {...error, signUpPasswordError: true}
-    }
-    if(error) {
+    if (
+      error.signUpEmailError ||
+      error.signUpPasswordError ||
+      error.signUpUsernameError
+    ) {
       setErrors(error);
       return;
     }
@@ -51,6 +59,12 @@ export const SignUp = () => {
     }
   }, [dispatch, isAuthenticated]);
 
+  useEffect(() => {
+    if (userError) {
+      toast.error(userError);
+    }
+  }, [user, userError]);
+
   return (
     <div className="p-8 mt-20 md:mt-[10vh] col-md-4 offset-md-4">
       <div className="text-center">
@@ -60,15 +74,24 @@ export const SignUp = () => {
         <div className="form-group">
           <label className="mb-2 flex gap-2 items-center" for="email">
             Username
-            <span data-tooltip-id="my-tooltip" data-tooltip-content="Username must contain 4 - 50 characters" data-tooltip-place="right">
+            <span
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content="Username must contain 4 - 50 characters"
+              data-tooltip-place="right"
+            >
               <AiFillQuestionCircle className="text-no_focus" />
             </span>
           </label>
           <input
-            onChange={(e) => {setSignUpUsername(e.target.value); setErrors({...errors, signUpUsernameError: false})}}
+            onChange={(e) => {
+              setSignUpUsername(e.target.value);
+              setErrors({ ...errors, signUpUsernameError: false });
+            }}
             id="username"
             type="text"
-            className={`form-control ${errors.signUpUsernameError ? "border border-warning" : ""}`}
+            className={`form-control ${
+              errors.signUpUsernameError ? "border border-warning" : ""
+            }`}
           />
         </div>
         <div className="form-group">
@@ -76,25 +99,38 @@ export const SignUp = () => {
             Email
           </label>
           <input
-            onChange={(e) => {setSignUpEmail(e.target.value); setErrors({...errors, signUpEmailError: false})}}
+            onChange={(e) => {
+              setSignUpEmail(e.target.value);
+              setErrors({ ...errors, signUpEmailError: false });
+            }}
             id="email"
             type="email"
-            className={`form-control ${errors.signUpEmailError ? "border border-warning" : ""}`}
-
+            className={`form-control ${
+              errors.signUpEmailError ? "border border-warning" : ""
+            }`}
           />
         </div>
         <div className="form-group">
           <label className="mb-2 flex items-center gap-2" for="password">
             Password
-            <span data-tooltip-id="my-tooltip" data-tooltip-content="Password must be of 8 characters minimum" data-tooltip-place="right">
+            <span
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content="Password must be of 8 characters minimum"
+              data-tooltip-place="right"
+            >
               <AiFillQuestionCircle className="text-no_focus" />
             </span>
           </label>
           <input
-            onChange={(e) => {setSignUpPassword(e.target.value); setErrors({...errors, signUpPasswordError: false})}}
+            onChange={(e) => {
+              setSignUpPassword(e.target.value);
+              setErrors({ ...errors, signUpPasswordError: false });
+            }}
             id="password"
             type="password"
-            className={`form-control ${errors.signUpPasswordError ? "border border-warning" : ""}`}
+            className={`form-control ${
+              errors.signUpPasswordError ? "border border-warning" : ""
+            }`}
           />
         </div>
         <p className="text-light_heading">
