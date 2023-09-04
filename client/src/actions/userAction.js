@@ -107,7 +107,6 @@ export const loggedUser = (email, password) => async (dispatch) => {
 export const signUpUser = (name, email, password) => async (dispatch) => {
   try {
     dispatch({ type: SIGNUP_USER_REQUEST });
-
     const { data } = await axiosInstance.post("/register", {
       name,
       email,
@@ -121,7 +120,7 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: SIGNUP_USER_FAIL,
-      payload: error.response.data,
+      payload: error.response.data.message,
     });
   }
 };
