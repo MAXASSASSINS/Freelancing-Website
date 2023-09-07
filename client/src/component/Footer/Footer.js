@@ -25,6 +25,27 @@ export const Footer = () => {
           </Link>
         </div>
       </div>
+      <div className="mt-4 flex flex-col gap-4">
+        <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/privacy'>
+          Privacy Policy
+        </a>
+
+        <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/terms'>
+          Terms and Conditions
+        </a>
+
+        <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/refund'>
+          Cancellation and Refund Policy
+        </a>
+
+        <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/shipping'>
+          Shipping and Delivery
+        </a>
+
+        <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/contact_us'>
+          Contact Us
+        </a>
+      </div>
     </footer>
   );
 };
