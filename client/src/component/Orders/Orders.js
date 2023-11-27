@@ -26,7 +26,7 @@ export const Orders = () => {
     if (isAuthenticated) {
       getOrderList();
     } else {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, [user]);
 
@@ -52,7 +52,7 @@ export const Orders = () => {
   };
 
   return (
-    !globalLoading && (
+    !globalLoading && isAuthenticated && (
       <div className="bg-separator">
         <div className="relative min-h-[calc(100vh-176px)] sm:min-h-[calc(100vh-81px)] p-6 py-8 sm:p-8 md:p-12 lg:p-20 max-w-[1350px] mx-auto">
           <h1 className="text-xl mb-1 font-semibold md:text-2xl lg:text-3xl">
