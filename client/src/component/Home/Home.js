@@ -17,6 +17,7 @@ import { SearchTagsBar } from "../SearchTagsBar";
 export const Home = () => {
   const dispatch = useDispatch();
 
+
   const socket = useContext(SocketContext);
 
   let { gigLoading, userError, gigs, gigsCount } = useSelector(
@@ -24,6 +25,12 @@ export const Home = () => {
   );
 
   const { user, isAuthenticated } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if(window.location.pathname === "/") {
+      dispatch(getAllGig());
+    }
+  }, [window.location.pathname]);
 
   useEffect(() => {
     dispatch(getAllGig());
