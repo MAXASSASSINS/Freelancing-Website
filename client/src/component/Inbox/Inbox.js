@@ -61,13 +61,33 @@ export const Inbox = () => {
   const token = Cookies.get("token");
 
   const socket = useContext(SocketContext);
-  // 
+  //
 
   const navigate = useNavigate();
 
   const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
   );
+
+  const [search, setSearch] = useState("");
+  const [searchList, setSearchList] = useState([]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!search) {
+        setSearchList([]);
+        return;
+      }
+      const list = allClientsDetails
+        ? allClientsDetails.filter((client) => {
+            return client.user.name.startsWith(search);
+          })
+        : [];
+      setSearchList(list);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
 
   const [inboxDetails, dispatch] = useReducer(
     inboxReducer,
@@ -125,7 +145,7 @@ export const Inbox = () => {
   //   if (isAuthenticated) {
   //     socket.emit("online", user._id.toString());
   //     const interval = setInterval(() => {
-  //       
+  //
   //       socket.emit("online", user._id.toString());
   //     }, [100000]);
   //     return () => {
@@ -141,7 +161,7 @@ export const Inbox = () => {
         dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: res });
       });
     } else {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, [user]);
 
@@ -182,7 +202,7 @@ export const Inbox = () => {
         temp1.push(data);
         // temp2.push(false);
       }
-      // 
+      //
       // dispatch({ type: FETCH_ONLINE_STATUS_OF_CLIENTS, payload: temp2 });
       return temp1;
     } catch (err) {
@@ -217,8 +237,7 @@ export const Inbox = () => {
       return temp2;
     } catch (err) {
       console.log(err);
-    }
-    finally {
+    } finally {
       updateGlobalLoading(false);
     }
   };
@@ -227,17 +246,17 @@ export const Inbox = () => {
   useEffect(() => {
     const tempFunc = async () => {
       await handleAllClientDetails().then((res) => {
-        // 
+        //
         dispatch({ type: FETCH_ALL_CLIENTS_DETAILS, payload: res });
-        // 
+        //
       });
 
       await handleAllClientUserLastMessage().then((res) => {
-        // 
+        //
         dispatch({ type: FETCH_ALL_CLIENTS_LAST_MESSAGE, payload: res });
       });
     };
-    // 
+    //
     if (listOfAllClients !== null) {
       tempFunc();
     }
@@ -316,11 +335,10 @@ export const Inbox = () => {
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-      
+
       // return;
       // add message to database
       const res = await addMessageToDatabase(message, files);
-      
 
       // send message to socket
       await handleSendMessageSocket(message, files);
@@ -331,12 +349,10 @@ export const Inbox = () => {
     }
   };
 
-  // 
+  //
 
   // client side uploading to cloudinary
   const sendFileClientCloudinary = async (files) => {
-    
-
     if (isFilePicked) {
       const arr = files.map((file) => {
         return file.selectedFile;
@@ -367,7 +383,7 @@ export const Inbox = () => {
       };
 
       const { data } = await axiosInstance.post("/add/message", messageData);
-      // 
+      //
       return data;
     } catch (error) {
       throw error;
@@ -410,21 +426,21 @@ export const Inbox = () => {
     // let temp = [];
     // temp = inboxDetails.allClientUserLastMessage.map((mesgs, i) => {
     //   if (i == index) {
-    //     // 
+    //     //
     //     return { ...mesgs, messages: [messageData] };
     //   }
     //   return mesgs;
     // });
-    // 
+    //
     // dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: temp });
 
     // let temp2 = inboxDetails.inboxMessages;
-    // 
+    //
     // temp2.push(messageData);
     // dispatch({ type: UPDATE_ALL_CHATS_WITH_CLIENT, payload: temp2 });
 
     await socket.emit("send_message", messageData);
-    // 
+    //
   };
 
   // MESSAGE SCROLL DOWN TO BOTTOM EFFECT
@@ -448,7 +464,7 @@ export const Inbox = () => {
     };
     socket.emit("typing_started", data);
     const timeout = setTimeout(() => {
-      // 
+      //
       socket.emit("typing_stopped", data);
     }, 1000);
 
@@ -495,7 +511,7 @@ export const Inbox = () => {
         });
         return data[index].online;
       });
-      // 
+      //
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -504,15 +520,15 @@ export const Inbox = () => {
     };
   }, [socket, listOfAllClients]);
 
-  // 
+  //
 
   useEffect(() => {
     socket.on("online_from_server", async (userId) => {
-      // 
+      //
       const index = listOfAllClients?.findIndex((id) => {
         return id === userId;
       });
-      // 
+      //
       if (index !== -1) {
         // await handleAllClientDetails();
         let temp = onlineStatusOfClients?.map((status, idx) => {
@@ -521,7 +537,7 @@ export const Inbox = () => {
           }
           return status;
         });
-        // 
+        //
         if (
           currentSelectedClient &&
           currentSelectedClient._id.toString() === userId
@@ -532,15 +548,13 @@ export const Inbox = () => {
       }
     });
 
-    // 
+    //
 
     socket.on("offline_from_server", async (userId) => {
-      
       const index = listOfAllClients?.findIndex((id) => {
         return id === userId;
       });
 
-      
       if (index !== -1) {
         // await handleAllClientDetails();
         let temp = onlineStatusOfClients?.map((status, idx) => {
@@ -549,14 +563,14 @@ export const Inbox = () => {
           }
           return status;
         });
-        
+
         if (
           currentSelectedClient &&
           currentSelectedClient._id.toString() === userId.toString()
         ) {
           setCurrentSelectedClientOnline(false);
           setCurrentSelectedClient((prev) => {
-            // 
+            //
             if (prev) return { ...prev, lastSeen: Date.now() };
           });
         }
@@ -578,7 +592,7 @@ export const Inbox = () => {
     if (currentSelectedClient) {
       socket.emit("is_online", currentSelectedClient._id.toString());
       socket.emit("online", isAuthenticated ? user._id.toString() : null);
-      // 
+      //
     }
   }, [currentSelectedClient]);
 
@@ -586,9 +600,9 @@ export const Inbox = () => {
     socket.on("is_online_from_server", (data) => {
       const onlineClientId = data.id.toString();
       if (onlineClientId === currentSelectedClient._id.toString()) {
-        // 
+        //
         setCurrentSelectedClientOnline(data.online);
-        // 
+        //
       }
       const temp = listOfAllClients?.map((id, idx) => {
         if (id === onlineClientId) {
@@ -596,7 +610,7 @@ export const Inbox = () => {
         }
         return onlineStatusOfClients[idx];
       });
-      // 
+      //
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -610,14 +624,14 @@ export const Inbox = () => {
   useEffect(() => {
     socket.on("receive_message", async (data) => {
       if (data.orderId) return;
-      
+
       const messageData = data;
       const { message, sender, receiver } = data;
       const senderId = sender._id.toString();
       const clientId = senderId;
 
-      // 
-      // 
+      //
+      //
 
       const clientIndex = listOfAllClients?.findIndex((id) => {
         return id === clientId;
@@ -626,7 +640,7 @@ export const Inbox = () => {
       let temp = [];
       temp = allClientUserLastMessage?.map((mesgs, i) => {
         if (i == clientIndex) {
-          // 
+          //
           return { ...mesgs, messages: [messageData] };
         }
         return mesgs;
@@ -646,17 +660,17 @@ export const Inbox = () => {
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
-    // 
+    //
     socket.on("receive_message_self", async (data) => {
       if (data.orderId) return;
-      // 
+      //
       const messageData = data;
       const { message, sender, receiver } = data;
       const receiverId = receiver._id.toString();
       const clientId = receiverId;
 
-      // 
-      // 
+      //
+      //
 
       const clientIndex = listOfAllClients?.findIndex((id) => {
         return id === clientId;
@@ -665,7 +679,7 @@ export const Inbox = () => {
       let temp = [];
       temp = allClientUserLastMessage?.map((mesgs, i) => {
         if (i == clientIndex) {
-          // 
+          //
           return { ...mesgs, messages: [messageData] };
         }
         return mesgs;
@@ -793,6 +807,8 @@ export const Inbox = () => {
     }
   };
 
+  console.log(searchList);
+
   return (
     <div className="inbox-main">
       <div
@@ -808,10 +824,34 @@ export const Inbox = () => {
           <input
             type="text"
             spellCheck={false}
+            value={search}
             placeholder="Search for a username"
+            onChange={(e) => setSearch(e.target.value)}
           ></input>
           <FaSearch />
         </div>
+        {searchList.length > 0 && (
+          <div className="bg-separator shadow-lg w-4/5 mx-6 absolute top-20 rounded-sm z-50">
+            <ul>
+              {searchList.map((client, index) => (
+                <div
+                  className="hover:underline flex items-center gap-2 hover:bg-dark_separator p-4 py-3 hover:cursor-pointer"
+                  key={index}
+                  onClick={() => {handleClientSelectionClick(client); setSearchList([]); }}
+                >
+                  <Avatar 
+                    avatarUrl={client.user.avatar.url}
+                    userName={client.user.name}
+                    alt={client.user.name}
+                    width="1.5rem"
+                    fontSize="0.75rem"
+                  />
+                  {client.user.name}
+                </div>
+              ))}
+            </ul>
+          </div>
+        )}
         <ul className="client-list-ul">
           {onlineStatusOfClients &&
             listOfAllClients &&
