@@ -14,7 +14,7 @@ import { Fragment } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { FaRegEnvelope } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-import { BiUserCircle } from "react-icons/bi";
+import { BiSearchAlt, BiUserCircle } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { numberToCurrency } from "../../utility/util";
 import { getAllGig } from "../../actions/gigAction";
@@ -27,6 +27,7 @@ export const Header = () => {
   const searchRef = useRef(null);
   const [search, setSearch] = useState("");
   const [tagList, setTagList] = useState([]);
+  const [inputFocus, setInputFocus] = useState(false);
 
   const { user, userLoading, isAuthenticated } = useSelector(
     (state) => state.user
@@ -50,8 +51,12 @@ export const Header = () => {
     e.preventDefault();
     hideDimBackground();
     const searchQuery = searchRef.current.value;
+    setTagList([]);
     if (searchQuery.trim() === "") {
+      dispatch(getAllGig());
       window.history.pushState("/search", "Search", `/search`);
+      searchRef.current.blur();
+      dispatch(hideDimBackground());
       return;
     }
     const keywords = searchQuery.split(" ");
@@ -65,7 +70,9 @@ export const Header = () => {
     searchRef.current.blur();
   };
 
-  useEffect(() => {
+  const handleSearchChange = (e) => {
+    let search = e.target.value;
+    setSearch(search);
     let tagList = [];
     if (search) {
       tagList = tagOptions.filter((tag) =>
@@ -73,7 +80,15 @@ export const Header = () => {
       );
     }
     setTagList(tagList);
-  }, [search]);
+  };
+
+  const handleTagClick = (e) => {
+    const tag = e.target.innerText;
+    searchRef.current.value = tag;
+    setSearch(tag);
+    handleSubmit(e);
+    setTagList([]);
+  };
 
   return (
     <header className="header">
@@ -94,7 +109,7 @@ export const Header = () => {
             onFocus={show}
             onBlur={hide}
             placeholder="Find services"
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             // autoComplete="off"
           ></input>
           <div onClick={handleSubmit} className="search-icon">
@@ -105,10 +120,15 @@ export const Header = () => {
               <ul className="">
                 {tagList.map((tag, index) => {
                   return (
-                    <li key={index} value={tag.value} className="px-4 py-3 hover:bg-dark_separator hover:cursor-pointer ">
-                      <Link to={`/search?keywords=${tag.value}`}>
-                        {tag.value}
-                      </Link>
+                    <li
+                      onClick={handleTagClick}
+                      key={index}
+                      value={tag.value}
+                      className="px-4 py-3 hover:bg-dark_separator hover:cursor-pointer "
+                    >
+                      {/* <Link to={`/search?keywords=${tag.value}`}> */}
+                      {tag.value}
+                      {/* </Link> */}
                     </li>
                   );
                 })}
