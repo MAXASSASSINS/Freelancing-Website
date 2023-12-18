@@ -21,7 +21,7 @@ export const FavouriteGigs = () => {
     if (isAuthenticated) {
       dispatch(getFavoriteGigs());
     } else {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, []);
 

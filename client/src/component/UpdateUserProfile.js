@@ -70,7 +70,7 @@ export const UpdateUserProfile = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
     else{
       setFormData({
