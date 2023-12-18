@@ -18,12 +18,15 @@ import { BiUserCircle } from "react-icons/bi";
 import { AiOutlineSearch } from "react-icons/ai";
 import { numberToCurrency } from "../../utility/util";
 import { getAllGig } from "../../actions/gigAction";
+import { tagOptions } from "../CreateGig/tagsData";
 
 export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const searchRef = useRef(null);
+  const [search, setSearch] = useState("");
+  const [tagList, setTagList] = useState([]);
 
   const { user, userLoading, isAuthenticated } = useSelector(
     (state) => state.user
@@ -41,28 +44,45 @@ export const Header = () => {
     searchRef.current.value = "";
     dispatch(getAllGig());
     navigate("/");
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     hideDimBackground();
     const searchQuery = searchRef.current.value;
-    if(searchQuery.trim() === ""){
-      window.history.pushState('/search', 'Search', `/search`);
+    if (searchQuery.trim() === "") {
+      window.history.pushState("/search", "Search", `/search`);
       return;
     }
     const keywords = searchQuery.split(" ");
     navigate("/search");
     dispatch(getAllGig(keywords.join(",")));
-    window.history.pushState('/search', 'Search', `/search?keywords=${keywords.join(",")}`);
+    window.history.pushState(
+      "/search",
+      "Search",
+      `/search?keywords=${keywords.join(",")}`
+    );
     searchRef.current.blur();
-  }
+  };
+
+  useEffect(() => {
+    let tagList = [];
+    if (search) {
+      tagList = tagOptions.filter((tag) =>
+        tag.value.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    setTagList(tagList);
+  }, [search]);
 
   return (
     <header className="header">
       <div className="header-container">
         <div className="title-wrapper">
-          <h1 className="heading hover:cursor-pointer" onClick={handleLogoClick}>
+          <h1
+            className="heading hover:cursor-pointer"
+            onClick={handleLogoClick}
+          >
             FreelanceMe
           </h1>
         </div>
@@ -74,11 +94,27 @@ export const Header = () => {
             onFocus={show}
             onBlur={hide}
             placeholder="Find services"
+            onChange={(e) => setSearch(e.target.value)}
             // autoComplete="off"
           ></input>
           <div onClick={handleSubmit} className="search-icon">
             <AiOutlineSearch />
           </div>
+          {tagList.length > 0 && (
+            <div className="w-full bg-separator absolute top-16 z-[1000000] rounded max-h-[60vh] overflow-y-scroll">
+              <ul className="">
+                {tagList.map((tag, index) => {
+                  return (
+                    <li key={index} value={tag.value} className="px-4 py-3 hover:bg-dark_separator hover:cursor-pointer ">
+                      <Link to={`/search?keywords=${tag.value}`}>
+                        {tag.value}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </form>
 
         <div className="navigation-icons">
@@ -87,7 +123,10 @@ export const Header = () => {
               <FaRegEnvelope />
             </Link>
           </div>
-          <div className="my-list-icon" onClick={() => navigate("/my/favourite/gigs")} >
+          <div
+            className="my-list-icon"
+            onClick={() => navigate("/my/favourite/gigs")}
+          >
             <FaRegHeart />
           </div>
           <div className="orders-icon" onClick={() => navigate("/orders")}>
