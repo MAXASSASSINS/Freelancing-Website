@@ -25,7 +25,7 @@ export const Footer = () => {
           </Link>
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-4">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <a className="hover:underline" href='https://merchant.razorpay.com/policy/MZVm52OK1UYuZe/privacy'>
           Privacy Policy
         </a>
