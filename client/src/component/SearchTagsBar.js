@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 import { categoriesData } from "./CreateGig/createGigData";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useDispatch } from "react-redux";
 import { getAllGig } from "../actions/gigAction";
 
 export const SearchTagsBar = () => {
   const categoryContainerRef = useRef(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleScrollLeft = () => {
@@ -29,8 +30,7 @@ export const SearchTagsBar = () => {
     document.querySelector(".search-input").value = "";
     const category = e.target.innerText;
     const encodedCategory = encodeURIComponent(category);
-    window.history.pushState('/search', 'Search', `/search?category=${category}`);
-    dispatch(getAllGig(undefined, encodedCategory));
+    navigate(`/search?category=${encodedCategory}`);
   };
 
   return (
@@ -51,7 +51,7 @@ export const SearchTagsBar = () => {
               onClick={handleCategoryClick}
               className=" min-w-max  capitalize py-3 hover:cursor-pointer hover:border-b-2 border-primary hover:pb-2.5"
             >
-              <Link>{category}</Link>
+              {category}
             </li>
           ))}
         </ul>

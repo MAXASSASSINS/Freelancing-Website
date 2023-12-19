@@ -9,7 +9,7 @@ import {
 } from "../../actions/dimBackgroundAction";
 import { getUser } from "../../actions/userAction";
 import { loggedUser } from "../../actions/userAction";
-import { Outlet, Navigate, Link, useNavigate } from "react-router-dom";
+import { Outlet, Navigate, Link, useNavigate, useLocation } from "react-router-dom";
 import { Fragment } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { FaRegEnvelope } from "react-icons/fa";
@@ -19,10 +19,12 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { numberToCurrency } from "../../utility/util";
 import { getAllGig } from "../../actions/gigAction";
 import { tagOptions } from "../CreateGig/tagsData";
+import { loadStripe } from "@stripe/stripe-js";
 
 export const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const searchRef = useRef(null);
   const [search, setSearch] = useState("");
@@ -50,23 +52,16 @@ export const Header = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     hideDimBackground();
-    const searchQuery = searchRef.current.value;
+    const searchQuery = searchRef.current.value.trim();
     setTagList([]);
-    if (searchQuery.trim() === "") {
-      dispatch(getAllGig());
-      window.history.pushState("/search", "Search", `/search`);
+    if (searchQuery === "") {
+      navigate("/search");
       searchRef.current.blur();
       dispatch(hideDimBackground());
       return;
     }
-    const keywords = searchQuery.split(" ");
-    navigate("/search");
-    dispatch(getAllGig(keywords.join(",")));
-    window.history.pushState(
-      "/search",
-      "Search",
-      `/search?keywords=${keywords.join(",")}`
-    );
+    const keywords = encodeURIComponent(searchQuery);
+    navigate(`/search?keywords=${keywords}`);
     searchRef.current.blur();
   };
 
@@ -89,6 +84,15 @@ export const Header = () => {
     handleSubmit(e);
     setTagList([]);
   };
+
+  useEffect(() => {
+    let params = location.search
+    if(params && params.includes("keywords")){
+      const keywords = new URLSearchParams(params).get("keywords");
+      searchRef.current.value = keywords;
+      setSearch(keywords);
+    }
+  }, [location])
 
   return (
     <header className="header">

@@ -6,7 +6,7 @@ class Features {
 
   search() {
     let query = {};
-    const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(",") : [];
+    const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(' ') : [];
     if (keywords.length > 0) {
       query = {
         $and: keywords.map((kw) => ({

@@ -7,7 +7,7 @@ import { getAllGig } from "../../actions/gigAction";
 
 import { Sidebar } from "../Sidebar/Sidebar";
 import { Header } from "../Header/Header";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 // import { socket } from '../../App'
 import { SocketContext } from "../../context/socket/socket";
@@ -16,6 +16,7 @@ import { SearchTagsBar } from "../SearchTagsBar";
 
 export const Home = () => {
   const dispatch = useDispatch();
+  let location = useLocation();
 
 
   const socket = useContext(SocketContext);
@@ -27,10 +28,29 @@ export const Home = () => {
   const { user, isAuthenticated } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if(window.location.pathname === "/") {
+    let path = location.pathname;
+    let params = new URLSearchParams(location.search);
+    let category = "";
+    let keywords = [];
+    if (params) {
+      category = params.get("category");
+      keywords = params.get("keywords");
+    }
+    if(category) category = encodeURIComponent(category);
+    if(keywords) keywords = encodeURIComponent(keywords);
+
+    if(path === "/") {
       dispatch(getAllGig());
     }
-  }, [window.location.pathname]);
+    else if (path === "/search" && category) {
+      dispatch(getAllGig(undefined, category));
+    } else if (path === "/search" && keywords) {
+      dispatch(getAllGig(keywords));
+    }
+    else{
+      dispatch(getAllGig());
+    }
+  }, [location]);
 
   useEffect(() => {
     dispatch(getAllGig());
