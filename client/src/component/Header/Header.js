@@ -9,7 +9,13 @@ import {
 } from "../../actions/dimBackgroundAction";
 import { getUser } from "../../actions/userAction";
 import { loggedUser } from "../../actions/userAction";
-import { Outlet, Navigate, Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  Outlet,
+  Navigate,
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { Fragment } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { FaRegEnvelope } from "react-icons/fa";
@@ -27,6 +33,7 @@ export const Header = () => {
   const location = useLocation();
 
   const searchRef = useRef(null);
+  const tagListContainerRef = useRef(null);
   const [search, setSearch] = useState("");
   const [tagList, setTagList] = useState([]);
   const [inputFocus, setInputFocus] = useState(false);
@@ -86,13 +93,24 @@ export const Header = () => {
   };
 
   useEffect(() => {
-    let params = location.search
-    if(params && params.includes("keywords")){
+    let params = location.search;
+    if (params && params.includes("keywords")) {
       const keywords = new URLSearchParams(params).get("keywords");
       searchRef.current.value = keywords;
       setSearch(keywords);
     }
-  }, [location])
+  }, [location]);
+
+  useEffect(() => {
+    window.addEventListener("click", (e) => {
+      if (
+        e.target !== searchRef.current &&
+        e.target !== tagListContainerRef.current
+      ) {
+        setTagList([]);
+      }
+    });
+  }, []);
 
   return (
     <header className="header">
@@ -121,7 +139,7 @@ export const Header = () => {
           </div>
           {tagList.length > 0 && (
             <div className="w-full bg-separator absolute top-16 z-[1000000] rounded max-h-[60vh] overflow-y-scroll">
-              <ul className="">
+              <ul className="" ref={tagListContainerRef}>
                 {tagList.map((tag, index) => {
                   return (
                     <li
