@@ -141,28 +141,11 @@ export const Inbox = () => {
     setMessage(message + emoji.native);
   };
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     socket.emit("online", user._id.toString());
-  //     const interval = setInterval(() => {
-  //
-  //       socket.emit("online", user._id.toString());
-  //     }, [100000]);
-  //     return () => {
-  //       clearInterval(interval);
-  //     };
-  //   }
-  // }, []);
-
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN
   useEffect(() => {
-    if (isAuthenticated) {
-      getListOfAllInboxClients().then((res) => {
-        dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: res });
-      });
-    } else {
-      navigate("/login", { replace: true });
-    }
+    getListOfAllInboxClients().then((res) => {
+      dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: res });
+    });
   }, [user]);
 
   const getListOfAllInboxClients = async () => {
@@ -459,7 +442,7 @@ export const Inbox = () => {
   useEffect(() => {
     const data = {
       // senderId: user?._id.toString(),
-      senderId: isAuthenticated ? user._id.toString() : null,
+      senderId: user._id.toString(),
       receiverId: currentSelectedClient?._id.toString(),
     };
     socket.emit("typing_started", data);
@@ -494,9 +477,7 @@ export const Inbox = () => {
 
   // SHOW ONLINE STATUS OF ALL CLIENTS + CURRENTLY SELECTED CLIENT
   useEffect(() => {
-    if (isAuthenticated) {
-      socket.emit("online", user._id.toString());
-    }
+    socket.emit("online", user._id.toString());
   }, [user]);
 
   useEffect(() => {
@@ -591,7 +572,7 @@ export const Inbox = () => {
   useEffect(() => {
     if (currentSelectedClient) {
       socket.emit("is_online", currentSelectedClient._id.toString());
-      socket.emit("online", isAuthenticated ? user._id.toString() : null);
+      socket.emit("online", user._id.toString());
       //
     }
   }, [currentSelectedClient]);
@@ -837,9 +818,12 @@ export const Inbox = () => {
                 <div
                   className="hover:underline flex items-center gap-2 hover:bg-dark_separator p-4 py-3 hover:cursor-pointer"
                   key={index}
-                  onClick={() => {handleClientSelectionClick(client); setSearchList([]); }}
+                  onClick={() => {
+                    handleClientSelectionClick(client);
+                    setSearchList([]);
+                  }}
                 >
-                  <Avatar 
+                  <Avatar
                     avatarUrl={client.user.avatar.url}
                     userName={client.user.name}
                     alt={client.user.name}

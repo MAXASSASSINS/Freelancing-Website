@@ -62,7 +62,7 @@ import { FavouriteGigs } from "./component/FavouriteGigs";
 import { UpdateUserProfile } from "./component/UpdateUserProfile";
 import { useGlobalError } from "./context/globalErrorContext";
 import { BankAccountForm } from "./component/BankAccountForm";
-
+import ProtectedRoute from "./component/ProtectedRoute";
 
 export const windowContext = createContext();
 
@@ -132,7 +132,6 @@ const App = () => {
     }
   }, [globalError]);
 
-
   // List of paths where footer will be hidden
   const pathsWithoutFooter = [
     "/get/all/messages/for/current/user",
@@ -164,11 +163,17 @@ const App = () => {
                 path="/get/client/seller/chat:id"
                 element={<CurrentlySelectedClientChat />}
               ></Route>
+
               <Route
                 exact
                 path="/get/all/messages/for/current/user"
-                element={<Inbox />}
+                element={
+                  <ProtectedRoute>
+                    <Inbox />
+                  </ProtectedRoute>
+                }
               ></Route>
+
               <Route exact path="/" element={<Home />} />
               <Route exact path="/search" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
@@ -217,11 +222,7 @@ const App = () => {
                 path="/update/profile"
                 element={<UpdateUserProfile />}
               />
-              <Route
-                exact
-                path='/bank_account'
-                element={<BankAccountForm />}
-              />
+              <Route exact path="/bank_account" element={<BankAccountForm />} />
             </Routes>
             <div
               style={{ height: height - (width > 600 ? 81 : 143) }}
