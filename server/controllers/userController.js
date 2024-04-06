@@ -9,6 +9,11 @@ import bcrypt from "bcryptjs";
 // import { stripe } from "../utils/stripe.js";
 import Stripe from "stripe";
 import Gig from "../models/gigModel.js";
+import { razorpayInstance } from "../utils/razorpay.js";
+import Razorpay from "razorpay";
+import dotenv from "dotenv";
+import { log } from "console";
+import Order from "../models/orderModel.js";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -242,50 +247,61 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const withdrawl = catchAsyncErrors(async (req, res, next) => {
-  const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+  const { amount } = req.body;
 
-  if(req.user.balance < 2000){
-    return next(new ErrorHandler("You have not enough balance to withdrawl", 400));
+  if (!req.user.withdrawEligibility) {
+    return next(new ErrorHandler("Minimum balance for withdrawl is 2000", 400));
   }
 
-  if (!req.user.stripeAccountId) {
-    const account = await stripe.accounts.create({
-      type: "standard",
-      email: req.user.email,
-      business_type: "individual",
-      individual: {
-        email: req.user.email,
-      },
-      country: "IN",
-      default_currency: "inr",
-    });
-
-    const accountLink = await stripe.accountLinks.create({
-      account: account.id,
-      refresh_url: "http://localhost:3000",
-      return_url: "http://localhost:3000/balance/detail",
-      type: "account_onboarding",
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Successfully fetched account link",
-      // redirectUrl: process.env.accountLink,
-      redirectUrl: accountLink.url,
-    });
-  } else {
-    const transfer = await stripe.transfers.create({
-      amount: 10,
-      currency: "inr",
-      destination: req.user.stripeAccountId,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "You have already created your account",
-      transfer,
-    });
+  if (amount > req.user.balance) {
+    return next(new ErrorHandler("Amount is greater than balance", 400));
   }
+
+  const orders = await Order.find({
+    seller: req.user.id,
+    status: "Completed",
+  });
+
+  let transferAmount = 0;
+  const transfers = []
+  for (let i = 0; i < orders.length && transferAmount < amount; i++) {
+    const order = orders[i];
+    const paymentId = order.paymentDetails.razorpay_payment_id;
+    if (order.transferredAmount < order.amount && transferAmount < amount) {
+      let tfa = Math.min(
+        order.amount - order.transferredAmount,
+        amount - transferAmount
+      );
+      transferAmount += tfa;
+      order.transferredAmount += tfa;
+      const transfer = await razorpayInstance.payments.transfer(paymentId, {
+        transfers: [
+          {
+            account: req.user.razorPayAccountDetails.accountId,
+            amount: tfa * 100,
+            currency: "INR",
+            // on_hold: 1,
+            // on_hold_until: 1671222870,
+          },
+        ],
+      });
+      transfers.push(transfer);
+      await order.save({
+        validateBeforeSave: false,
+      });
+    }
+  }
+
+  req.user.balance -= transferAmount;
+  await req.user.save({
+    validateBeforeSave: false,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Withdrawl request is successful",
+    user: req.user,
+  });
 });
 
 export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
@@ -315,5 +331,322 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
     success: true,
     message: "Favourite list is updated",
     isFavourite,
+  });
+});
+
+export const addAccount = catchAsyncErrors(async (req, res, next) => {
+  const {
+    accountHolderName,
+    accountNumber,
+    ifscCode,
+    beneficiaryName,
+    street1,
+    street2,
+    city,
+    state,
+    postalCode,
+    country,
+    panNumber,
+  } = req.body;
+
+  if (
+    !accountHolderName ||
+    !accountNumber ||
+    !ifscCode ||
+    !beneficiaryName ||
+    !street1 ||
+    !street2 ||
+    !city ||
+    !state ||
+    !postalCode ||
+    !country ||
+    !panNumber
+  ) {
+    return next(new ErrorHandler("Please provide all the details", 400));
+  }
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new ErrorHandler("User does not exist", 404));
+  }
+
+  if (user.razorPayAccountId) {
+    return next(new ErrorHandler("You have already added your account", 400));
+  }
+
+  const email = "a43433342f31332234434493343444343354@gmail.com";
+
+  // creating linked account
+  try {
+    const createAccPayload = {
+      // email: user.email,
+      email,
+      phone: user.phone.number,
+      type: "route",
+      legal_business_name: user.name,
+      business_type: "individual",
+      profile: {
+        category: "services",
+        subcategory: "professional_services",
+        addresses: {
+          registered: {
+            country,
+            street1,
+            street2,
+            city,
+            state,
+            postal_code: postalCode,
+          },
+        },
+      },
+      legal_info: {
+        pan: panNumber,
+      },
+    };
+    const acc = await razorpayInstance.accounts.create(createAccPayload);
+    user.razorPayAccountDetails.accountId = acc.id;
+    await user.save({
+      validateBeforeSave: false,
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.error.description, 400));
+  }
+
+  // creating stakeholder account
+  try {
+    const createStackholderPayload = {
+      email,
+      name: accountHolderName,
+    };
+    const stakeholder = await razorpayInstance.stakeholders.create(
+      user.razorPayAccountDetails.accountId,
+      createStackholderPayload
+    );
+    user.razorPayAccountDetails.stakeholderId = stakeholder.id;
+    user.razorPayAccountDetails.accountHolderName = accountHolderName;
+    await user.save({
+      validateBeforeSave: false,
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.error.description, 400));
+  }
+
+  // request product configuration
+  try {
+    const requestProductPayload = {
+      product_name: "route",
+      tnc_accepted: true,
+    };
+    const product = await razorpayInstance.products.requestProductConfiguration(
+      user.razorPayAccountDetails.accountId,
+      requestProductPayload
+    );
+    user.razorPayAccountDetails.productId = product.id;
+    await user.save({
+      validateBeforeSave: false,
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.error.description, 400));
+  }
+
+  // update product configuration
+  try {
+    const updateProductPayload = {
+      settlements: {
+        account_number: accountNumber,
+        ifsc_code: ifscCode,
+        beneficiary_name: beneficiaryName,
+      },
+    };
+    const productAfter = await razorpayInstance.products.edit(
+      user.razorPayAccountDetails.accountId,
+      user.razorPayAccountDetails.productId,
+      updateProductPayload
+    );
+    user.razorPayAccountDetails.status = productAfter.activation_status;
+    user.razorPayAccountDetails.accou;
+    await user.save({
+      validateBeforeSave: false,
+    });
+  } catch (err) {
+    return next(new ErrorHandler(err.error.description, 400));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Account is under review.",
+    user,
+  });
+});
+
+export const getAccount = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new ErrorHandler("User does not exist", 404));
+  }
+  if (!user.razorPayAccountDetails.accountId) {
+    return next(new ErrorHandler("You have not added your account", 400));
+  }
+  const acc = await razorpayInstance.accounts.fetch(
+    user.razorPayAccountDetails.accountId
+  );
+
+  const configuration = await razorpayInstance.products.fetch(
+    user.razorPayAccountDetails.accountId,
+    user.razorPayAccountDetails.productId
+  );
+
+  const beneficiary_nameRequired = configuration.requirements.filter((req) =>
+    req.field_reference.includes("beneficiary_name")
+  );
+
+  const account_numberRequired = configuration.requirements.filter((req) =>
+    req.field_reference.includes("account_number")
+  );
+
+  const ifsc_codeRequired = configuration.requirements.filter((req) =>
+    req.field_reference.includes("ifsc_code")
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Account is fetched",
+    account: {
+      accountHolderName: user.razorPayAccountDetails.accountHolderName,
+      accountNumber:
+        configuration.active_configuration.settlements.account_number,
+      ifscCode: configuration.active_configuration.settlements.ifsc_code,
+      beneficiaryName:
+        configuration.active_configuration.settlements.beneficiary_name,
+      street1: acc.profile.addresses.registered?.street1,
+      street2: acc.profile.addresses.registered?.street2,
+      city: acc.profile.addresses.registered?.city,
+      state: acc.profile.addresses.registered?.state,
+      postalCode: acc.profile.addresses.registered?.postal_code,
+      country: acc.profile.addresses.registered?.country,
+      panNumber: acc.legal_info?.pan,
+      requirements: {
+        beneficiaryName: beneficiary_nameRequired.length > 0,
+        accountNumber: account_numberRequired.length > 0,
+        ifscCode: ifsc_codeRequired.length > 0,
+      },
+    },
+  });
+});
+
+export const getProductConfig = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new ErrorHandler("User does not exist", 404));
+  }
+  if (!user.razorPayAccountDetails.accountId) {
+    return next(new ErrorHandler("You have not added your account", 400));
+  }
+  if (!user.razorPayAccountDetails.productId) {
+    return next(new ErrorHandler("You have not added your account", 400));
+  }
+  const product = await razorpayInstance.products.fetch(
+    user.razorPayAccountDetails.accountId,
+    user.razorPayAccountDetails.productId
+  );
+  res.status(200).json({
+    success: true,
+    message: "Product configuration is fetched",
+    product,
+  });
+});
+
+export const updateAccount = catchAsyncErrors(async (req, res, next) => {
+  const {
+    accountHolderName,
+    accountNumber,
+    ifscCode,
+    beneficiaryName,
+    street1,
+    street2,
+    city,
+    state,
+    postalCode,
+    country,
+    panNumber,
+  } = req.body;
+
+  if (
+    !accountHolderName ||
+    !accountNumber ||
+    !ifscCode ||
+    !beneficiaryName ||
+    !street1 ||
+    !street2 ||
+    !city ||
+    !state ||
+    !postalCode ||
+    !country ||
+    !panNumber
+  ) {
+    return next(new ErrorHandler("Please provide all the details", 400));
+  }
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return next(new ErrorHandler("User does not exist", 404));
+  }
+  if (!user.razorPayAccountDetails.accountId) {
+    return next(new ErrorHandler("You have not added your account", 400));
+  }
+  if (!user.razorPayAccountDetails.productId) {
+    return next(new ErrorHandler("You have not added your account", 400));
+  }
+
+  const configuration = razorpayInstance.products
+    .edit(
+      user.razorPayAccountDetails.accountId,
+      user.razorPayAccountDetails.productId,
+      {
+        settlements: {
+          account_number: accountNumber,
+          ifsc_code: ifscCode,
+          beneficiary_name: beneficiaryName,
+        },
+        tnc_accepted: true,
+      }
+    )
+    .then((res) => {
+      res.status(200).json({
+        success: true,
+        message: "Your account is under review",
+      });
+    })
+    .catch((err) => {
+      if (err.error?.description.includes("admin")) {
+        user.razorPayAccountDetails.status = "under_review";
+        user.save({
+          validateBeforeSave: false,
+        });
+        return res.status(200).json({
+          success: true,
+          message: "Your account is under review",
+          user,
+        });
+      }
+      return next(new ErrorHandler(err.error.description, 400));
+    });
+});
+
+export const updateAccountStatus = catchAsyncErrors(async (req, res, next) => {
+  const secret = "helloicandothisallday";
+
+  const shasum = crypto.createHmac("sha256", secret);
+  shasum.update(JSON.stringify(req.body));
+  const digest = shasum.digest("hex");
+
+  if (digest !== req.headers["x-razorpay-signature"]) {
+    return next(new ErrorHandler("Invalid signature", 400));
+  } else {
+    console.log("signature matched");
+  }
+
+  console.log(req.body);
+
+  return res.json({
+    status: "ok",
   });
 });

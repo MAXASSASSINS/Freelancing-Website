@@ -10,6 +10,11 @@ const orderSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  transferredAmount: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
   duration: {
     type: Number,
     required: true,
@@ -163,21 +168,26 @@ const orderSchema = new mongoose.Schema({
       default: 0,
     },
   },
+  // paymentDetails: {
+  //   paymentMethod: {
+  //     type: String,
+  //     enum: ["Paypal", "Stripe"],
+  //     default: "Paypal",
+  //   },
+  //   paymentStatus: {
+  //     type: String,
+  //     enum: ["Paid", "Not Paid"],
+  //     default: "Not Paid",
+  //   },
+  //   paymentId: String,
+  //   paymentToken: String,
+  //   payerId: String,
+  //   paymentDate: Date,
+  // },
   paymentDetails: {
-    paymentMethod: {
-      type: String,
-      enum: ["Paypal", "Stripe"],
-      default: "Paypal",
-    },
-    paymentStatus: {
-      type: String,
-      enum: ["Paid", "Not Paid"],
-      default: "Not Paid",
-    },
-    paymentId: String,
-    paymentToken: String,
-    payerId: String,
-    paymentDate: Date,
+    razorpay_payment_id: String,
+    razorpay_order_id: String,
+    razorpay_signature: String,
   },
   image: {
     publicId: {

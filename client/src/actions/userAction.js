@@ -17,6 +17,7 @@ import {
   SIGNUP_USER_FAIL,
   SIGNUP_USER_REQUEST,
   SIGNUP_USER_SUCCESS,
+  UPDATE_USER_SUCCESS,
 } from "../constants/userConstants";
 import { axiosInstance } from "../utility/axiosInstance";
 import { useNavigate } from "react-router-dom";
@@ -163,3 +164,10 @@ export const logoutUser = () => async (dispatch) => {
     });
   }
 };
+
+export const updateUser = (user) => async (dispatch) => {
+  dispatch({
+    type: UPDATE_USER_SUCCESS,
+    payload: user,
+  });
+}

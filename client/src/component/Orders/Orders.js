@@ -33,7 +33,7 @@ export const Orders = () => {
   const getOrderList = async () => {
     try {
       updateGlobalLoading(true);
-      const { data } = await axiosInstance.get("/orders/me");
+      const { data } = await axiosInstance.post("/orders/me");
       
       setOrders(data.orders);
     } catch (err) {

@@ -6,22 +6,31 @@ import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import { stripe } from "../utils/stripe.js";
 import { randomString } from "../utils/utilities.js";
 import sendEmail from "../utils/sendEmail.js";
+import { razorpayInstance } from "../utils/razorpay.js";
+import {
+  validatePaymentVerification,
+  validateWebhookSignature,
+} from "../node_modules/razorpay/dist/utils/razorpay-utils.js";
 
 // Create new order
-export const newOrder = catchAsyncErrors(async (req, res, next) => {
-  const { gigId, packageNumber } = req.body;
-  // if(!gigId){
-  //   return next(new ErrorHandler("Please select a gig", 400));
-  // }
+export const newOrder = async (user, body) => {
+  const {
+    razorpay_payment_id,
+    razorpay_order_id,
+    razorpay_signature,
+    gigId,
+    packageNumber,
+  } = body;
+
   if (!packageNumber || packageNumber < 0 || packageNumber > 2) {
     return next(new ErrorHandler("Please select a package", 400));
   }
 
-  // 
+  //
   const gig = await Gig.findById(gigId);
 
   if (!gig) {
-    return next(new ErrorHandler("Gig not found with this Id", 404));
+    throw new ErrorHandler("Gig not found with this Id", 404);
   }
 
   let rString = randomString(13, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -74,6 +83,12 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     blurhash: gig.images[0].blurhash,
   };
 
+  const paymentDetails = {
+    razorpay_payment_id,
+    razorpay_order_id,
+    razorpay_signature,
+  }
+
   // res.send(requirements);
 
   const order = await Order.create({
@@ -83,20 +98,17 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     deliveryDate,
     gig: gigId,
     seller: gig.user._id,
-    buyer: req.user._id,
+    buyer: user._id,
     requirements,
     packageDetails,
+    paymentDetails,
     image,
     gigTitle: gig.title,
     deliveryDate: Date.now() + duration * 24 * 60 * 60 * 1000,
   });
 
-  res.status(201).json({
-    success: true,
-    message: "Sucessfully created your order",
-    order,
-  });
-});
+  return order;
+};
 
 // Update Order
 export const updateOrder = catchAsyncErrors(async (req, res, next) => {});
@@ -109,7 +121,7 @@ export const updateOrderRequirements = catchAsyncErrors(
 
     const sellerEmail = order.seller.email;
 
-    // 
+    //
 
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
@@ -164,7 +176,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       subject: "New Order",
       message: `You have a new order with order id ${order.orderId}`,
     };
-    // 
+    //
     await sendEmail(options);
 
     res.status(200).json({
@@ -193,8 +205,6 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
-
-  
 
   if (order.seller._id.toString() !== req.user._id.toString()) {
     return next(
@@ -234,7 +244,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     subject: "Order Delivered",
     message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   };
-  // 
+  //
   await sendEmail(options);
 
   res.status(200).json({
@@ -287,7 +297,6 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  
   if (order.revisions.length > order.packageDetails.revisions) {
     return next(
       new ErrorHandler(
@@ -313,7 +322,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     subject: "Revision Requested",
     message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
   };
-  // 
+  //
   await sendEmail(options);
 
   res.status(200).json({
@@ -362,6 +371,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
   // adding balance to seller's account
   const seller = await User.findById(order.seller._id);
   seller.balance += order.amount;
+  if(seller.balance > 2000) seller.withdrawEligibility = true
   seller.lastDelivery = Date.now();
   await seller.save({ validateBeforeSave: false });
 
@@ -371,7 +381,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     subject: "Order Completed",
     message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
   };
-  // 
+  //
   await sendEmail(options);
 
   res.status(200).json({
@@ -427,10 +437,11 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
-  // 
+  const {status} = req.body
   const userId = req.user._id;
-  const orders = await Order.find({ 
-    $or: [{ seller: userId }, { buyer: userId }]
+  const orders = await Order.find({
+    $or: [{ seller: userId }, { buyer: userId }],
+    status: status ? status : { $ne: "Deleted" },
   })
     // .or({ buyer: req.user._id })
     .populate("gig", "title images")
@@ -505,8 +516,7 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
 // add seller feedback
 export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment } = req.body;
-  // 
-  
+  //
 
   let order = await Order.findById(req.params.id)
     .populate("seller buyer", "name email avatar")
@@ -681,12 +691,12 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
 
 // process payment
 export const packagePayment = catchAsyncErrors(async (req, res, next) => {
-  const { id, packageNumber, gigId } = req.body;
-  // 
+  const { id, packageNumber, gigId, orderId } = req.body;
 
   const gig = await Gig.findById(gigId);
 
   if (!gig) {
+    await Order.deleteOne({ _id: orderId });
     return next(new ErrorHandler("Gig not found with this Id", 404));
   }
 
@@ -696,33 +706,91 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
 
   const totalAmount = Number(price + serviceFee).toFixed(2);
 
-  // 
+  //
+  // try {
+  //   const paymentIntent = await stripe.paymentIntents.create({
+  //     amount: totalAmount * 100,
+  //     currency: "inr",
+  //     description: gig.title,
+  //     payment_method: id,
+  //     receipt_email: req.user.email,
+  //     confirm: true,
+  //   });
+
+  //   //
+
+  //   res.status(201).json({
+  //     message: "Payment Intent created Sucessfully",
+  //     success: true,
+  //     clientSecret: paymentIntent.client_secret,
+  //     paymentIntent,
+  //   });
+  // } catch (error) {
+  //   res.status(400).json({
+  //     message: "Payment Intent not created",
+  //     success: false,
+  //     error: { message: error.message },
+  //   });
+  // }
+
+  const options = {
+    amount: Number(totalAmount) * 100,
+    currency: "INR",
+  };
+
+  const order = await razorpayInstance.orders.create(options);
+
+  res.status(201).json({
+    success: true,
+    message: "Payment Intent created Sucessfully",
+    order,
+  });
+});
+
+// payment verification
+export const paymentVerification = catchAsyncErrors(async (req, res, next) => {
+  const {
+    razorpay_payment_id,
+    razorpay_order_id,
+    razorpay_signature,
+  } = req.body;
+
+  const isPaymentAuthentic = validatePaymentVerification(
+    { order_id: razorpay_order_id, payment_id: razorpay_payment_id },
+    razorpay_signature,
+    process.env.RAZORPAY_KEY_SECRET
+  );
+
+  if (!isPaymentAuthentic) {
+    return next(new ErrorHandler("Payment not verified", 400));
+  }
+
   try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalAmount * 100,
-      currency: "inr",
-      description: gig.title,
-      payment_method: id,
-      receipt_email: req.user.email,
-      confirm: true,
-    });
-
-    // 
-
-    res.status(201).json({
-      message: "Payment Intent created Sucessfully",
+    const order = await newOrder(req.user, req.body);
+    res.status(200).json({
       success: true,
-      clientSecret: paymentIntent.client_secret,
-      paymentIntent,
+      order,
     });
   } catch (error) {
-    res.status(400).json({
-      message: "Payment Intent not created",
-      success: false,
-      error: { message: error.message },
-    });
+    return next(new ErrorHandler(error, 400));
   }
 });
+
+export const checkout = async (req, res) => {
+  const { amount } = req.body;
+  const options = {
+    amount: Number(amount) * 100,
+    currency: "INR",
+  };
+
+  const order = await razorpayInstance.orders.create(options);
+
+  res.status(201).json({
+    success: true,
+    message: "Payment Intent created Sucessfully",
+    order,
+  });
+};
 
 export const getStripePublishableKey = catchAsyncErrors(
   async (req, res, next) => {

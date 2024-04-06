@@ -58,7 +58,7 @@ import { FREE_TEXT } from "../../constants/globalConstants";
 import ReactSelect from "react-select";
 import { tagOptions } from "./tagsData";
 import { useUpdateGlobalError } from "../../context/globalErrorContext";
-import {toast} from 'react-toastify'
+import { toast } from "react-toastify";
 export const CreateGig = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -869,20 +869,22 @@ export const CreateGig = () => {
   };
 
   const handleVerifyPhoneNumber = async () => {
-    const to = dialCode.toString() + phoneNumber.toString();
-
+    const phone = {
+      code: dialCode,
+      number: phoneNumber,
+    };
     const body = {
-      to,
+      phone: phone,
     };
     let data;
     try {
       data = await axiosInstance.post("/verify/number", body);
       data = data.data;
     } catch (err) {
-      if(err.response.status !== 403){
+      if (err.response.status !== 403) {
         invalidPhoneNumberRef.current.style.display = "block";
       }
-      toast.error("Something went wrong. Please try again later.")
+      toast.error("Something went wrong. Please try again later.");
       console.log(err);
     }
     if (data?.success) {
@@ -891,10 +893,13 @@ export const CreateGig = () => {
   };
 
   const handleVerifyCode = async () => {
-    const to = dialCode.toString() + phoneNumber.toString();
+    const phone = {
+      code: dialCode,
+      number: phoneNumber,
+    };
     const body = {
       code: verificationCode,
-      to: to,
+      phone: phone,
     };
     const { data } = await axiosInstance.post("/verify/code", body);
 
