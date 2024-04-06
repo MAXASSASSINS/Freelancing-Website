@@ -61,6 +61,7 @@ import { GlobalLoadingProvider } from "./context/globalLoadingContext";
 import { FavouriteGigs } from "./component/FavouriteGigs";
 import { UpdateUserProfile } from "./component/UpdateUserProfile";
 import { useGlobalError } from "./context/globalErrorContext";
+import { BankAccountForm } from "./component/BankAccountForm";
 
 
 export const windowContext = createContext();
@@ -215,6 +216,11 @@ const App = () => {
                 exact
                 path="/update/profile"
                 element={<UpdateUserProfile />}
+              />
+              <Route
+                exact
+                path='/bank_account'
+                element={<BankAccountForm />}
               />
             </Routes>
             <div

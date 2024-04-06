@@ -15,6 +15,8 @@ import {
   markOrderAsCompleted,
   addBuyerFeedback,
   addSellerFeedback,
+  checkout,
+  paymentVerification,
 } from "../controllers/orderContoller.js";
 import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
 
@@ -22,7 +24,7 @@ const router = express.Router();
 
 router.post("/order/new", isAuthenticated, newOrder);
 router.get("/order/details/:id", isAuthenticated, getOrderDetails);
-router.get("/orders/me", isAuthenticated, myOrders);
+router.post("/orders/me", isAuthenticated, myOrders);
 
 router.get(
   "/orders/getAll",
@@ -52,11 +54,14 @@ router.post("/order/:id/seller/feedback", isAuthenticated, addSellerFeedback);
 router.delete("/orders/delete", deleteAllOrders);
 
 router.post("/package/payment", isAuthenticated, packagePayment);
+router.post("/payment/verification", isAuthenticated, paymentVerification);
 
 router.get(
   "/get/stripe/publishable/key",
   isAuthenticated,
   getStripePublishableKey
 );
+
+router.post("/checkout", checkout);
 
 export default router;

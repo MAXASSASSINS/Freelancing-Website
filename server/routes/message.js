@@ -12,7 +12,7 @@ import {
   sendFileUpload,
   updateAllMessages,
 } from "../controllers/messageController.js";
-import { sendSMS, verifyNumber, verifyCode } from "../utils/twilio.js";
+import { sendSMS } from "../utils/twilio.js";
 import { uploadMultipleFiles, uploadSingleFile } from "../utils/multer.js";
 
 const router = express.Router();
@@ -54,9 +54,6 @@ router.post("/add/file", isAuthenticated, uploadSingleFile, (req, res) => {
 router.get("/update/all/messages", updateAllMessages);
 
 router.post("/send/SMS", sendSMS);
-router.post("/verify/number", verifyNumber);
-router.post("/verify/by/call", verifyNumber);
-router.post("/verify/code", verifyCode);
 
 router.get("/message/order/:id", isAuthenticated, getAllOrderMessages);
 

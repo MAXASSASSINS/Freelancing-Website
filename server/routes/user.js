@@ -12,12 +12,18 @@ import {
   updateUser,
   updateFavouriteList,
   withdrawl,
+  addAccount,
+  getProductConfig,
+  getAccount,
+  updateAccount,
+  updateAccountStatus,
 } from "../controllers/userController.js";
 import "../controllers/authGoogle.js";
 import { googleCallback } from "../controllers/authGoogle.js";
 import passport from "passport";
 import User from "../models/userModel.js";
 import { isAuthenticated, authorisedRoles } from "../middleware/auth.js";
+import { verifyCode, verifyNumber } from "../utils/twilio.js";
 
 const router = express.Router();
 
@@ -35,7 +41,7 @@ router.put("/forgotPassword:token", resetPassword);
 
 router.put("/changePassword", isAuthenticated, changePassword);
 
-router.get("/withdrawl", isAuthenticated, withdrawl);
+router.post("/withdrawl", isAuthenticated, withdrawl);
 
 router.post('/user/favourite/gig/:id', isAuthenticated, updateFavouriteList);
 
@@ -61,4 +67,13 @@ router.get(
   googleCallback
 );
 
+router.post("/verify/number", isAuthenticated, verifyNumber);
+router.post("/verify/by/call", isAuthenticated, verifyNumber);
+router.post("/verify/code", isAuthenticated, verifyCode);
+
+router.post('/add/account', isAuthenticated, addAccount);
+router.get('/get/account', isAuthenticated, getAccount);
+router.put('/update/account', isAuthenticated, updateAccount);
+router.get('/get/product/config', isAuthenticated, getProductConfig);
+router.post('/update/account/status', updateAccountStatus);
 export default router;

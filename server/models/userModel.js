@@ -29,11 +29,25 @@ const userSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      default: "myAvatar"
+      default: "myAvatar",
     },
     url: {
       type: String,
-      default: "https://res.cloudinary.com/dyod45bn8/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1691056205/kisspng-computer-icons-user-avatar-woman-avatar-5b0c5b2f6ecaa1.2446433615275364314538_zsiim6.jpg",
+      default:
+        "https://res.cloudinary.com/dyod45bn8/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1691056205/kisspng-computer-icons-user-avatar-woman-avatar-5b0c5b2f6ecaa1.2446433615275364314538_zsiim6.jpg",
+    },
+  },
+
+  phone: {
+    code: {
+      type: String,
+      required: true,
+    },
+    number: {
+      type: String,
+      required: true,
+      minlength: [10, "Phone number should have at least 10 characters"],
+      maxlength: [15, "Phone number cannot exceed 15 characters"],
     },
   },
 
@@ -50,7 +64,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  
+
   reviews: [
     {
       user: {
@@ -135,7 +149,7 @@ const userSchema = new mongoose.Schema({
       level: {
         type: String,
         required: true,
-        enum: ['beginner', 'intermediate', 'advance', 'expert'],
+        enum: ["beginner", "intermediate", "advance", "expert"],
         default: "beginner",
       },
     },
@@ -205,6 +219,43 @@ const userSchema = new mongoose.Schema({
     default: "",
   },
 
+  withdrawEligibility: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
+
+  razorPayAccountDetails: {
+    accountId: {
+      type: String,
+      default: "",
+    },
+    stakeholderId: {
+      type: String,
+      default: "",
+    },
+    productId: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: [
+        "new",
+        "pending",
+        "activated",
+        "under_review",
+        "needs_clarification",
+        "suspended",
+      ],
+      default: "new",
+    },
+    accountHolderName: {
+      type: String,
+      default: "",
+    }
+  },
+
   lastDelivery: {
     type: Date,
   },
@@ -213,7 +264,7 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.ObjectId,
       ref: "Gig",
-    }
+    },
   ],
 
   resetPasswordToken: String,
