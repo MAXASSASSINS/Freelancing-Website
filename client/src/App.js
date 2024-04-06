@@ -161,7 +161,11 @@ const App = () => {
               <Route
                 exact
                 path="/get/client/seller/chat:id"
-                element={<CurrentlySelectedClientChat />}
+                element={
+                  <ProtectedRoute>
+                    <CurrentlySelectedClientChat />
+                  </ProtectedRoute>
+                }
               ></Route>
 
               <Route
@@ -178,51 +182,109 @@ const App = () => {
               <Route exact path="/search" element={<Home />} />
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/signUp" element={<SignUp />} />
-              {/* {
-					gigs && gigs.map(gig => (
-						<Sidebar gig={gig} key={gig._id} />
-					))
-				} */}
-              {/* <div style={{ height: height - (width > 600 ? 81 : 143) }} className={'search-bar-dim-background ' + (dimBackground ? "visible" : null)}></div> */}
 
-              <Route exact path="/user/:id" element={<UserDetail />} />
+              <Route
+                exact
+                path="/user/:id"
+                element={
+                  <ProtectedRoute>
+                    <UserDetail />
+                  </ProtectedRoute>
+                }
+              />
               <Route exact path="/gig/details/:id" element={<GigDetail />} />
               <Route path="*" element={<NotFoundPage />} />
               <Route
                 exact
                 path="/gig/create/new/gig"
-                element={<CreateGig />}
+                element={
+                  <ProtectedRoute>
+                    <CreateGig />
+                  </ProtectedRoute>
+                }
               ></Route>
               <Route
                 exact
                 path="/gig/place/order/:id/:packageNumber"
-                element={<PlaceOrder />}
+                element={
+                  <ProtectedRoute>
+                    <PlaceOrder />
+                  </ProtectedRoute>
+                }
               ></Route>
               <Route exact path="/test" element={<Test />}></Route>
               <Route
                 exact
                 path="/gig/place/order/submit/requirements/:orderId"
-                element={<SubmitRequirements />}
+                element={
+                  <ProtectedRoute>
+                    <SubmitRequirements />
+                  </ProtectedRoute>
+                }
               ></Route>
-              <Route exact path="/orders" element={<Orders />} />
-              <Route exact path="/orders/:id" element={<OrderDetail />} />
+              <Route
+                exact
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                exact
+                path="/orders/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderDetail />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 exact
                 path="/orders/:id/feedback"
-                element={<BuyerFeedback />}
+                element={
+                  <ProtectedRoute>
+                    <BuyerFeedback />
+                  </ProtectedRoute>
+                }
               />
-              <Route exact path="/balance/detail" element={<BalanceDetail />} />
+              <Route
+                exact
+                path="/balance/detail"
+                element={
+                  <ProtectedRoute>
+                    <BalanceDetail />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 exact
                 path="/my/favourite/gigs"
-                element={<FavouriteGigs />}
+                element={
+                  <ProtectedRoute>
+                    <FavouriteGigs />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 exact
                 path="/update/profile"
-                element={<UpdateUserProfile />}
+                element={
+                  <ProtectedRoute>
+                    <UpdateUserProfile />
+                  </ProtectedRoute>
+                }
               />
-              <Route exact path="/bank_account" element={<BankAccountForm />} />
+              <Route
+                exact
+                path="/bank_account"
+                element={
+                  <ProtectedRoute>
+                    <BankAccountForm />
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
             <div
               style={{ height: height - (width > 600 ? 81 : 143) }}
