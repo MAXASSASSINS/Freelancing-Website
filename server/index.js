@@ -19,23 +19,22 @@ app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-const whitelist = [
-  "http://localhost:3000",
-  "https://feelance-me-frontend.vercel.app",
-  "http://192.168.0.103:3000",
+
+const allowedOrigins = [
+  /frontend.*\.vercel\.app$/, // Matches URLs of the specified pattern
+  /localhost:\d+$/, // Matches localhost with any port number
 ];
+
 app.use(
   cors({
-    // origin: function (origin, callback) {
-    //   if (whitelist.indexOf(origin) !== -1 || !origin) {
-    //     callback(null, true);
-    //   } else {
-    //     callback(new Error("Not allowed by CORS"));
-    //   }
-    // },
-    // origin: "http://localhost:3000",
-    // origin: "http://192.168.0.103:3000",
-    origin: whitelist,
+    origin: function (origin, callback) {
+      // Check if the origin matches any of the allowed origins
+      if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
+        callback(null, true); // Allow the request
+      } else {
+        callback(new Error('Not allowed by CORS')); // Deny the request
+      }
+    },
     // allowedHeaders:
     //   "Origin, X-Api-Key, X-Requested-With, Content-Type, Accept, Authorization",
     credentials: true,
