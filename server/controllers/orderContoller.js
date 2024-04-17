@@ -118,15 +118,15 @@ export const updateOrderRequirements = catchAsyncErrors(
   async (req, res, next) => {
     const { requirements: answers } = req.body;
     let order = await Order.findById(req.params.id).populate("seller", "email");
-
+    
     const sellerEmail = order.seller.email;
-
+    
     //
-
+    
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
     }
-
+    
     // if (order.requirementsSubmitted) {
     //   return next(new ErrorHandler("Requirements already submitted", 400));
     // }
@@ -170,6 +170,7 @@ export const updateOrderRequirements = catchAsyncErrors(
       }
     );
 
+
     // send email to seller
     const options = {
       to: sellerEmail,
@@ -177,7 +178,10 @@ export const updateOrderRequirements = catchAsyncErrors(
       message: `You have a new order with order id ${order.orderId}`,
     };
     //
-    await sendEmail(options);
+    // await sendEmail(options);
+
+    console.log('doing something');
+
 
     res.status(200).json({
       success: true,
@@ -245,7 +249,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   };
   //
-  await sendEmail(options);
+  // await sendEmail(options);
 
   res.status(200).json({
     success: true,
@@ -323,7 +327,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
   };
   //
-  await sendEmail(options);
+  // await sendEmail(options);
 
   res.status(200).json({
     success: true,
@@ -382,7 +386,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
   };
   //
-  await sendEmail(options);
+  // await sendEmail(options);
 
   res.status(200).json({
     success: true,
