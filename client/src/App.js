@@ -53,6 +53,7 @@ import { loadStripe } from "@stripe/stripe-js";
 
 import {
   useGlobalLoading,
+  useGlobalLoadingText,
   useUpdateGlobalLoading,
 } from "./context/globalLoadingContext";
 import { GoLaw } from "react-icons/go";
@@ -76,6 +77,7 @@ const App = () => {
   );
 
   const globalLoading = useGlobalLoading();
+  const globalLoadingText = useGlobalLoadingText();
   const globalError = useGlobalError();
 
   const [windowWidth, setWindowWidth] = useState(0);
@@ -152,7 +154,7 @@ const App = () => {
       <windowContext.Provider value={{ windowWidth, windowHeight }}>
         <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
           <SocketContext.Provider value={socket}>
-            <DataSendingLoading show={globalLoading} />
+            <DataSendingLoading show={globalLoading} loadingText={globalLoadingText} />
             <Tooltip id="my-tooltip" place="bottom" />
             {windowWidth < 900 && <Sidebar></Sidebar>}
             <Header></Header>

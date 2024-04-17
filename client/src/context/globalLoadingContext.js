@@ -2,10 +2,15 @@ import React, { createContext, useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 
 const GlobalLoadingContext = createContext();
+const GlobalLoadingTextContext = createContext();
 const UpdateGlobalLoadingContext = createContext();
 
 export const useGlobalLoading = () => {
   return useContext(GlobalLoadingContext);
+};
+
+export const useGlobalLoadingText = () => {
+  return useContext(GlobalLoadingTextContext);
 };
 
 export const useUpdateGlobalLoading = () => {
@@ -14,6 +19,7 @@ export const useUpdateGlobalLoading = () => {
 
 export const GlobalLoadingProvider = ({ children }) => {
   const [globalLoading, setGlobalLoading] = useState(false);
+  const [globalLoadingText, setGlobalLoadingText] = useState("");
 
   const { gigLoading } = useSelector((state) => state.gigs || {});
   const { gigLoading: gigDetailLoading } = useSelector(
@@ -57,15 +63,19 @@ export const GlobalLoadingProvider = ({ children }) => {
     orderDetailLoading,
   ]);
 
-  const updateGlobalLoading = (val) => {
+  const updateGlobalLoading = (val, text = "") => {
+    console.log(text);
     setGlobalLoading(val);
+    setGlobalLoadingText(text);
   };
 
   return (
     <GlobalLoadingContext.Provider value={globalLoading}>
-      <UpdateGlobalLoadingContext.Provider value={updateGlobalLoading}>
-        {children}
-      </UpdateGlobalLoadingContext.Provider>
+      <GlobalLoadingTextContext.Provider value={globalLoadingText}>
+        <UpdateGlobalLoadingContext.Provider value={updateGlobalLoading}>
+          {children}
+        </UpdateGlobalLoadingContext.Provider>
+      </GlobalLoadingTextContext.Provider>
     </GlobalLoadingContext.Provider>
   );
 };
