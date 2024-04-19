@@ -7,7 +7,7 @@ const baseURL =
 
 export const axiosInstance = axios.create({
   // baseURL: "http://localhost:4000",
-  // baseURL: 'https://freelanceme-backend.onrender.com',
-  baseURL,
+  baseURL: 'https://freelanceme-backend.onrender.com',
+//   baseURL,
   withCredentials: true,
 });
