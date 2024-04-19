@@ -7,7 +7,7 @@ import {
   showDimBackground,
   hideDimBackground,
 } from "../../actions/dimBackgroundAction";
-import { getUser } from "../../actions/userAction";
+import { getUser, logoutUser } from "../../actions/userAction";
 import { loggedUser } from "../../actions/userAction";
 import {
   Outlet,
@@ -33,12 +33,15 @@ export const Header = () => {
   const location = useLocation();
 
   const searchRef = useRef(null);
+  const avatarRef = useRef(null);
   const tagListContainerRef = useRef(null);
   const [search, setSearch] = useState("");
   const [tagList, setTagList] = useState([]);
   const [inputFocus, setInputFocus] = useState(false);
 
-  const { user, userLoading, isAuthenticated } = useSelector(
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+
+  const { user, userLoading, isAuthenticated, userError  } = useSelector(
     (state) => state.user
   );
 
@@ -102,15 +105,29 @@ export const Header = () => {
   }, [location]);
 
   useEffect(() => {
-    window.addEventListener("click", (e) => {
+    const handleClick = (e) => {
       if (
         e.target !== searchRef.current &&
         e.target !== tagListContainerRef.current
       ) {
         setTagList([]);
       }
-    });
+      if (!e.target.closest("#avatar-menu")) {
+        setShowAvatarMenu(false);
+      }
+    };
+
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
   }, []);
+
+  const handleLogOut = async () => {
+    dispatch(logoutUser());
+    if (!userError) navigate("/");
+  };
 
   return (
     <header className="header">
@@ -181,8 +198,14 @@ export const Header = () => {
               </div>
             </Link>
           ) : (
-            <div className="profile-icon">
-              <Link to={"/user/" + user._id}>
+            <div className="relative">
+              <div
+                ref={avatarRef}
+                id="avatar-menu"
+                onClick={() => setShowAvatarMenu((prev) => !prev)}
+                className="relative profile-icon"
+              >
+                {/* <Link to={"/user/" + user._id}> */}
                 <Avatar
                   avatarUrl={user.avatar.url}
                   userName={user.name}
@@ -191,7 +214,28 @@ export const Header = () => {
                   alt="user profile"
                   onlineStatusWidth={"0.8rem"}
                 />
-              </Link>
+              </div>
+              {showAvatarMenu && (
+                <div className="absolute z-50 text-light_heading min-w-max right-0 top-10 px-4 py-3 rounded bg-separator shadow-lg leading-5">
+                  <ul className="hover:[&>*]:underline flex flex-col gap-4">
+                    <li className="">
+                      <Link to={"/user/" + user._id}>Profile</Link>
+                    </li>
+                    <li>
+                      <Link to={"/my/favourite/gigs"}>Favourite Gigs</Link>
+                    </li>
+                    <li>
+                      <Link to={"/get/all/messages/for/current/user"}>
+                        Inbox
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to={"/orders"}>Orders</Link>
+                    </li>
+                    <li onClick={handleLogOut} className="hover:cursor-pointer">Logout</li>
+                  </ul>
+                </div>
+              )}
             </div>
           )}
           {isAuthenticated && (

@@ -97,11 +97,11 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const message = `Your password reset token is :- \n\n ${resetPasswordURL} \n\n if you have not requested this email then, please ignore it`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: "Freelance Website by Mohd. Shadab",
-      message: message,
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: "Freelance Website by Mohd. Shadab",
+    //   message: message,
+    // });
 
     res.status(200).json({
       success: true,
