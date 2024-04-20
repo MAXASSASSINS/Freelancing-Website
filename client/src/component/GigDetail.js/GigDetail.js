@@ -268,7 +268,7 @@ export const GigDetail = () => {
                     </div>
                     <div className="package-revisions">
                       <FiRepeat />
-                      <p>{pricePackageInfo.revisions}</p>
+                      <p>{pricePackageInfo.revisions < 1e6 ? pricePackageInfo.revisions : 'Unlimited'}</p>
                     </div>
                   </div>
                   <div className="package-output">
@@ -554,7 +554,7 @@ export const GigDetail = () => {
                   </div>
                   <div className="package-revisions">
                     <FiRepeat />
-                    <p>{pricePackageInfo.revisions}</p>
+                    <p>{pricePackageInfo.revisions < 1e6 ? pricePackageInfo.revisions : 'Unlimited'}</p>
                   </div>
                 </div>
                 <div className="package-output">

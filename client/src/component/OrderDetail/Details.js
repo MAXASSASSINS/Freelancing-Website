@@ -62,7 +62,9 @@ export const Details = ({ orderDetail }) => {
               <p className="font-semibold">{packageTitle}</p>
               <p className="leading-5 max-w-[40ch]">{packageDescription}</p>
               <li className="list-inside list-disc">
-                {revisions === 1 ? "1 revison" : revisions + " revisions"}
+                {revisions < 1e6 ? revisions : "Unlimited"}
+                {' '}
+                {revisions === 1 ? "revison" : "revisions"}
               </li>
               {sourceFile && (
                 <li className="list-inside list-disc">Include source file</li>

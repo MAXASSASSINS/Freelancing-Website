@@ -349,7 +349,7 @@ export const SubmitRequirements = () => {
                     <li className="grid grid-cols-[30px_auto] items-center">
                       <FiCheck className="text-primary font-bold text-xl" />
                       <span>
-                        {packageDetail.revisions}{" "}
+                        {packageDetail.revisions < 1e6 ? packageDetail.revisions : 'Unlimited'}{" "}
                         {packageDetail.revisions === 1
                           ? "revision"
                           : "revisions"}
