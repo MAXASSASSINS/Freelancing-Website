@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
   ALL_GIG_FAIL,
   ALL_GIG_REQUEST,
@@ -38,11 +39,11 @@ export const getAllGig = (keywords, category) => async (dispatch) => {
       payload,
     });
   } catch (error) {
-    console.log(error.response.data);
     dispatch({
       type: ALL_GIG_FAIL,
       payload: error.response.data,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -62,6 +63,7 @@ export const getUserGigs = (id) => async (dispatch) => {
       type: USER_GIGS_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -81,6 +83,7 @@ export const getGigDetail = (id) => async (dispatch) => {
       type: GIG_DETAIL_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -97,6 +100,7 @@ export const getFavoriteGigs = () => async (dispatch) => {
       type: ALL_GIG_FAIL,
       payload: error.response,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 

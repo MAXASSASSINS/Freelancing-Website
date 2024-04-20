@@ -9,10 +9,6 @@ import {
   useGlobalLoading,
   useUpdateGlobalLoading,
 } from "../../context/globalLoadingContext";
-import {
-  useGlobalError,
-  useUpdateGlobalError,
-} from "../../context/globalErrorContext";
 import { IoClose } from "react-icons/io5";
 import { toast } from "react-toastify";
 import AnimatedCheck from "../AnimatedCheck/AnimatedCheck";
@@ -22,7 +18,6 @@ export const BalanceDetail = () => {
   const navigate = useNavigate();
   const globalLoading = useGlobalLoading();
   const updateGlobalLoading = useUpdateGlobalLoading();
-  const updateGlobalError = useUpdateGlobalError();
   const [openWithdrawModal, setOpenWithdrawModal] = useState(false);
   const [openConfirmWithdrawModal, setOpenConfirmWithdrawModal] =
     useState(false);
@@ -90,7 +85,7 @@ export const BalanceDetail = () => {
       dispatch(updateUser(data.user));
     } catch (err) {
       console.log(err.response.data.message);
-      updateGlobalError(err.response.data.message);
+      toast.error(err.response.data.message);
     } finally {
       updateGlobalLoading(false);
     }

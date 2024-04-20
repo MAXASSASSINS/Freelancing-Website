@@ -21,6 +21,7 @@ export const Login = () => {
       toast.error("Please fill all the fields", {});
       return;
     }
+
     dispatch(loggedUser(loginEmail, loginPassword));
   };
 
@@ -31,11 +32,11 @@ export const Login = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  useEffect(() => {
-    if (userError) {
-      toast.error(userError.message);
-    }
-  }, [userError]);
+  // useEffect(() => {
+  //   if (userError) {
+  //     toast.error(userError.message);
+  //   }
+  // }, [userError]);
 
   return (
     <div className="p-8 mt-20 md:mt-40 col-md-4 offset-md-4">
