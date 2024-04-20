@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loggedUser } from "../../actions/userAction";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { getRedirectUrl } from "../../utility/util";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ export const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(-1);
+      const redirectUrl = getRedirectUrl();
+      navigate(redirectUrl);
     }
   }, [dispatch, isAuthenticated]);
 
