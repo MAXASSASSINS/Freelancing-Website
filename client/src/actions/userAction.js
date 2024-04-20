@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
   USER_REQUEST,
   USER_SUCCESS,
@@ -37,6 +38,7 @@ export const getUser = (id) => async (dispatch) => {
       type: USER_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -55,12 +57,12 @@ export const getGigUser = (id) => async (dispatch) => {
       type: GIG_USER_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
 export const loggedUser = (email, password) => async (dispatch) => {
   try {
-    // dispatch({ type: LOGIN_USER_REQUEST });
     dispatch({ type: USER_REQUEST });
 
     const config = {
@@ -74,34 +76,20 @@ export const loggedUser = (email, password) => async (dispatch) => {
       config
     );
 
-    
-    // 
-
-    // localStorage.setItem("loggedInUser", JSON.stringify(data.user));
-
-    // dispatch({
-    //     type: LOGIN_USER_SUCCESS,
-    //     payload: data.user,
-    // })
-
     dispatch({
       type: USER_SUCCESS,
       payload: data.user,
     });
-    // return true;
   } catch (error) {
-    // console.log(error.response);
-    // dispatch({
-    //     type: LOGIN_USER_FAIL,
-    //     payload: error.response.data
-    //     // payload: "failed user login",
-    // });
     dispatch({
       type: USER_FAIL,
       payload: error.response.data,
-      // payload: "failed user login",
     });
-    // return false;
+    toast.error(
+      error.response?.data?.message
+        ? error.response.data.message
+        : "An error occurred while logging in. Please try again later."
+    );
   }
 };
 
@@ -123,6 +111,7 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
       type: SIGNUP_USER_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -130,8 +119,6 @@ export const loadUser = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_USER_REQUEST });
     const { data } = await axiosInstance.get("/me");
-
-    
 
     dispatch({
       type: LOAD_USER_SUCCESS,
@@ -144,6 +131,7 @@ export const loadUser = () => async (dispatch) => {
       payload: error.response.data,
       // payload: "failed user login",
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -162,6 +150,7 @@ export const logoutUser = () => async (dispatch) => {
       type: LOGOUT_USER_FAIL,
       payload: error.response.data,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -170,4 +159,4 @@ export const updateUser = (user) => async (dispatch) => {
     type: UPDATE_USER_SUCCESS,
     payload: user,
   });
-}
+};

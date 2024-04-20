@@ -40,6 +40,10 @@ export const OrderDetailSideModal = ({ orderDetail }) => {
               <li className="grid grid-cols-[30px_auto] items-center">
                 <FiCheck className="text-primary font-bold text-xl" />
                 <span>
+                  {orderDetail.packageDetails.revisions < 1e6
+                    ? orderDetail.packageDetails.revisions
+                    : "Unlimited"}
+                  {" "}
                   {orderDetail.packageDetails.revisions === 1
                     ? "revision"
                     : "revisions"}

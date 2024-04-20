@@ -41,7 +41,7 @@ export const Header = () => {
 
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
 
-  const { user, userLoading, isAuthenticated, userError  } = useSelector(
+  const { user, userLoading, isAuthenticated, userError } = useSelector(
     (state) => state.user
   );
 
@@ -218,21 +218,16 @@ export const Header = () => {
               {showAvatarMenu && (
                 <div className="absolute z-50 text-light_heading min-w-max right-0 top-10 px-4 py-3 rounded bg-separator shadow-lg leading-5">
                   <ul className="hover:[&>*]:underline flex flex-col gap-4">
-                    <li className="">
-                      <Link to={"/user/" + user._id}>Profile</Link>
+                    <Link to={"/user/" + user._id}>Profile</Link>
+
+                    <Link to={"/my/favourite/gigs"}>Favourite Gigs</Link>
+
+                    <Link to={"/get/all/messages/for/current/user"}>Inbox</Link>
+
+                    <Link to={"/orders"}>Orders</Link>
+                    <li onClick={handleLogOut} className="hover:cursor-pointer">
+                      Logout
                     </li>
-                    <li>
-                      <Link to={"/my/favourite/gigs"}>Favourite Gigs</Link>
-                    </li>
-                    <li>
-                      <Link to={"/get/all/messages/for/current/user"}>
-                        Inbox
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to={"/orders"}>Orders</Link>
-                    </li>
-                    <li onClick={handleLogOut} className="hover:cursor-pointer">Logout</li>
                   </ul>
                 </div>
               )}

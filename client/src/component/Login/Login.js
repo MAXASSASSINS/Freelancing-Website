@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loggedUser } from "../../actions/userAction";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { getRedirectUrl } from "../../utility/util";
 
 export const Login = () => {
   const dispatch = useDispatch();
@@ -20,20 +21,22 @@ export const Login = () => {
       toast.error("Please fill all the fields", {});
       return;
     }
+
     dispatch(loggedUser(loginEmail, loginPassword));
   };
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(-1);
+      const redirectUrl = getRedirectUrl();
+      navigate(redirectUrl);
     }
   }, [dispatch, isAuthenticated]);
 
-  useEffect(() => {
-    if (userError) {
-      toast.error(userError.message);
-    }
-  }, [userError]);
+  // useEffect(() => {
+  //   if (userError) {
+  //     toast.error(userError.message);
+  //   }
+  // }, [userError]);
 
   return (
     <div className="p-8 mt-20 md:mt-40 col-md-4 offset-md-4">

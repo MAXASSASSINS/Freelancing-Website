@@ -57,7 +57,6 @@ import {
 import { FREE_TEXT } from "../../constants/globalConstants";
 import ReactSelect from "react-select";
 import { tagOptions } from "./tagsData";
-import { useUpdateGlobalError } from "../../context/globalErrorContext";
 import { toast } from "react-toastify";
 export const CreateGig = () => {
   const navigate = useNavigate();
@@ -72,7 +71,6 @@ export const CreateGig = () => {
   );
 
   const { gigDetail } = useSelector((state) => state.gigDetail);
-  const updateGlobalError = useUpdateGlobalError();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [stepCompleted, setStepCompleted] = useState([

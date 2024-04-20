@@ -1,15 +1,24 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { setRedirectUrl } from "../utility/util";
 
 const ProtectedRoute = ({ children }) => {
   const { user, isAuthenticated, userLoading, error } = useSelector(
     (state) => state.user
   );
-  let location = useLocation();
 
+  const navigate = useNavigate();
+
+
+  const location = useLocation();
+
+
+
+  console.log(location);
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    setRedirectUrl(location.pathname)
+    navigate('/login')
   }
 
   return children;

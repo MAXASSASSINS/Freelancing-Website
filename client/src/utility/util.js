@@ -38,3 +38,12 @@ export const numberToCurrency = (number) => {
     maximumFractionDigits: 2,
   });
 }
+
+export const setRedirectUrl = (url) => {
+  localStorage.setItem('redirectUrl', url)
+}
+
+export const getRedirectUrl = () => {
+  return localStorage.getItem('redirectUrl') ? localStorage.getItem('redirectUrl') : '/'
+}
+

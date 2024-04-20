@@ -60,16 +60,15 @@ export const FavouriteGigs = () => {
 
   return (
     <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
-      {
-        <div className="all-gigs-container">
-          {gigs &&
-            !gigLoading &&
-            gigs.length > 0 &&
-            gigs.map((gig) => (
-              <GigCard lazyLoad={true} gig={gig} key={gig._id} />
-            ))}
-        </div>
-      }
+      <h1 className="all-gigs-container text-2xl font-semibold text-dark_grey underline pt-4 pb-0">Favourite Gigs</h1>
+      <div className="all-gigs-container">
+        {gigs &&
+          !gigLoading &&
+          gigs.length > 0 &&
+          gigs.map((gig) => (
+            <GigCard lazyLoad={true} gig={gig} key={gig._id} />
+          ))}
+      </div>
     </div>
   );
 };

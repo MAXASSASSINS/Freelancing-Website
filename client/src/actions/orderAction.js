@@ -17,6 +17,7 @@ import {
   UPDATE_ALL_ORDERS_FAIL,
   CLEAR_ERRORS,
 } from "../constants/orderConstants";
+import { toast } from "react-toastify";
 
 export const getAllOrder = () => async (dispatch) => {
   try {
@@ -32,6 +33,7 @@ export const getAllOrder = () => async (dispatch) => {
       type: ALL_ORDER_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -50,6 +52,7 @@ export const getUserOrders = (id) => async (dispatch) => {
       type: USER_ORDERS_FAIL,
       payload: error.response.data.message,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 
@@ -68,6 +71,7 @@ export const getOrderDetail = (id) => async (dispatch) => {
       type: ORDER_DETAIL_FAIL,
       payload: error.response.data,
     });
+    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
   }
 };
 

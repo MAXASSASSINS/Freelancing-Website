@@ -180,7 +180,7 @@ export const updateOrderRequirements = catchAsyncErrors(
     //
     // await sendEmail(options);
 
-    console.log('doing something');
+    // console.log('doing something');
 
 
     res.status(200).json({
