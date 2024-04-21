@@ -38,7 +38,11 @@ export const getUser = (id) => async (dispatch) => {
       type: USER_FAIL,
       payload: error.response.data.message,
     });
-    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
+    toast.error(
+      error.response.data.message
+        ? error.response.data.message
+        : "Oops something went wrong"
+    );
   }
 };
 
@@ -57,7 +61,11 @@ export const getGigUser = (id) => async (dispatch) => {
       type: GIG_USER_FAIL,
       payload: error.response.data.message,
     });
-    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
+    toast.error(
+      error.response.data.message
+        ? error.response.data.message
+        : "Oops something went wrong"
+    );
   }
 };
 
@@ -85,6 +93,7 @@ export const loggedUser = (email, password) => async (dispatch) => {
       type: USER_FAIL,
       payload: error.response.data,
     });
+    console.log(window.location.pathname);
     toast.error(
       error.response?.data?.message
         ? error.response.data.message
@@ -111,7 +120,11 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
       type: SIGNUP_USER_FAIL,
       payload: error.response.data.message,
     });
-    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
+    toast.error(
+      error.response.data.message
+        ? error.response.data.message
+        : "Oops something went wrong"
+    );
   }
 };
 
@@ -131,7 +144,12 @@ export const loadUser = () => async (dispatch) => {
       payload: error.response.data,
       // payload: "failed user login",
     });
-    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
+    // if(window.location.pathname !== '/')
+    //   toast.error(
+    //     error.response.data.message
+    //       ? error.response.data.message
+    //       : "Oops something went wrong"
+    //   );
   }
 };
 
@@ -150,7 +168,11 @@ export const logoutUser = () => async (dispatch) => {
       type: LOGOUT_USER_FAIL,
       payload: error.response.data,
     });
-    toast.error(error.response.data.message ? error.response.data.message : "Oops something went wrong");
+    toast.error(
+      error.response.data.message
+        ? error.response.data.message
+        : "Oops something went wrong"
+    );
   }
 };
 
