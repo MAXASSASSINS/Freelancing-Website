@@ -85,8 +85,8 @@ export const UpdateUserProfile = () => {
         certificates: user?.certificates,
         skills: user?.skills,
       });
-      taglineRef.current.value = user?.tagline;
-      descriptionRef.current.setTextComingFromParent(user?.description);
+      taglineRef.current.value = user?.tagline || "";
+      descriptionRef.current.setTextComingFromParent(user?.description || "");
     }
   }, [isAuthenticated, user]);
 
