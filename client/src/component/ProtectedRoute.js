@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { setRedirectUrl } from "../utility/util";
@@ -15,10 +15,12 @@ const ProtectedRoute = ({ children }) => {
 
 
 
-  if (!isAuthenticated) {
-    setRedirectUrl(location.pathname)
-    navigate('/login')
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setRedirectUrl(location.pathname);
+      navigate('/login');
+    }
+  }, []);
 
   return children;
 };

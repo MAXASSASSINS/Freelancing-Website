@@ -180,9 +180,7 @@ const App = () => {
                 exact
                 path="/user/:id"
                 element={
-                  <ProtectedRoute>
                     <UserDetail />
-                  </ProtectedRoute>
                 }
               />
               <Route exact path="/gig/details/:id" element={<GigDetail />} />
