@@ -63,9 +63,6 @@ export const UserDetail = () => {
   //     return count;
   //   });
   // }, [userGigs]);
-  //
-  //
-  //
 
   const getFlag = (flagName) =>
     flags.find((flag) => {
@@ -81,7 +78,7 @@ export const UserDetail = () => {
 
   return (
     userGigs && (
-      <>
+      <div className="min-h-screen">
         {showChatBox && (
           <Chat
             gigDetail={{
@@ -95,14 +92,12 @@ export const UserDetail = () => {
             setShowChatBox={setShowChatBox}
           ></Chat>
         )}
-        {Object.keys(gigUser).length > 0 && (
+        {gigUser && Object.keys(gigUser).length > 0 && (
           <div className="user-details-max-width-container">
             <div className="user-info-div">
               <div className="user-info-large-screen-border first-div">
                 <div className="user-info-wrapper relative">
                   <div className="user-info-list-icon">
-                    {/* <FaBars className="inline" /> */}
-                    {/* <FaHeart className="inline" /> */}
                   </div>
                   {gigUser._id === user?._id && (
                     <Link
@@ -391,8 +386,8 @@ export const UserDetail = () => {
               </div>
             </div>
           </div>
-        )}
-      </>
+        )} 
+      </div>
     )
   );
 };
