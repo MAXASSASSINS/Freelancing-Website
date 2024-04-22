@@ -59,11 +59,6 @@ export const SignUp = () => {
     }
   }, [dispatch, isAuthenticated]);
 
-  useEffect(() => {
-    if (userError) {
-      toast.error(userError);
-    }
-  }, [user, userError]);
 
   return (
     <div className="p-8 mt-20 md:mt-[10vh] col-md-4 offset-md-4">
