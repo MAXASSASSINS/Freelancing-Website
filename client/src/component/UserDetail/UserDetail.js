@@ -140,7 +140,7 @@ export const UserDetail = () => {
                         <IoLocationSharp className="inline" />
                         From
                       </span>
-                      <p>{gigUser.country}</p>
+                      <p className="capitalize">{gigUser.country}</p>
                     </li>
                     <li>
                       <span>
@@ -227,7 +227,7 @@ export const UserDetail = () => {
                           <div className="user-detail-college">
                             <span>{item.collegeName},</span>
                             &nbsp;
-                            <span>{item.country},</span>
+                            <span className="capitalize">{item.country},</span>
                             &nbsp;
                           </div>
                           <div className="user-detail-graduated-year">
