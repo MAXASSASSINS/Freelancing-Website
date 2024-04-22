@@ -15,7 +15,6 @@ const ProtectedRoute = ({ children }) => {
 
 
 
-  console.log(location);
   if (!isAuthenticated) {
     setRedirectUrl(location.pathname)
     navigate('/login')
