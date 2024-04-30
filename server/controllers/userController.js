@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import sendToken from "../utils/jwtToken.js";
-import sendEmail from "../utils/sendEmail.js";
+import sendEmail, { sendSendGridEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import cloudinary from "cloudinary";
 import bcrypt from "bcryptjs";
@@ -82,7 +82,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorHandler("User not found"), 404);
+    return next(new ErrorHandler("You are not registered"), 404);
   }
 
   // Get Reset Password Token
@@ -92,20 +92,26 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
   const resetPasswordURL = `${req.protocol}://${req.get(
     "host"
-  )}/password/${resetToken}`;
+  )}/forgotPassword/${resetToken}`;
+
+  // const resetPasswordURL = `http://localhost:3000/reset/password/${resetToken}`;
 
   const message = `Your password reset token is :- \n\n ${resetPasswordURL} \n\n if you have not requested this email then, please ignore it`;
 
   try {
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: "Freelance Website by Mohd. Shadab",
-    //   message: message,
-    // });
-
+    await sendSendGridEmail({
+      to: user.email,
+      subject: "Reset Password Request",
+      templateId: "resetPassword",
+      data: {
+        username: user.name,
+        resetPasswordURL,
+      },
+      text: message,
+    });
     res.status(200).json({
       success: true,
-      message: `Email send to ${user.email} successfully`,
+      message: `A password reset link has been sent to your email.`,
     });
   } catch (error) {
     user.resetPasswordToken = undefined;
@@ -130,18 +136,14 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(
-      new ErrorHandler(
-        "Reset password token is invalid or has been expired",
-        400
-      )
-    );
+    return res.render("error", {
+      error: "Reset password token is invalid or has been expired",
+    });
   }
-
-  if (req.body.password != req.body.confirmPassword) {
-    return next(
-      new ErrorHandler("Password is not matching with confirm password", 400)
-    );
+  if (req.body.password != req.body.confirm_password) {
+    return res.render("error", {
+      error: "Password is not matching with confirm password",
+    });
   }
 
   user.password = req.body.password;
@@ -150,7 +152,33 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 
   await user.save();
 
-  sendToken(user, 200, res);
+  // return res.render("success", {
+  //   message: "Password reset successfully",
+  // });
+
+  res.clearCookie('token').redirect('http://localhost:3000/login')
+
+  // sendToken(user, 200, res);
+});
+
+export const resetPasswordForm = catchAsyncErrors(async (req, res, next) => {
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.render("error", {
+      error: "Reset password token is invalid or has been expired",
+    });
+  }
+
+  return res.render("changePassword");
 });
 
 // Get my details
@@ -263,7 +291,7 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   });
 
   let transferAmount = 0;
-  const transfers = []
+  const transfers = [];
   for (let i = 0; i < orders.length && transferAmount < amount; i++) {
     const order = orders[i];
     const paymentId = order.paymentDetails.razorpay_payment_id;

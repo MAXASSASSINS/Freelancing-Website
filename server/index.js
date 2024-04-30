@@ -11,6 +11,8 @@ import cloudinary from "cloudinary";
 import { Socket, Server } from "socket.io";
 import http from "http";
 import { runSocket } from "./utils/socket.js";
+import path from "path";
+import { fileURLToPath } from 'url';
 
 const app = express();
 dotenv.config();
@@ -19,6 +21,12 @@ app.use(bodyParser.json({ limit: "5gb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.set("view engine", "ejs");
 
 const allowedOrigins = [
   /frontend.*\.vercel\.app$/, // Matches URLs of the specified pattern

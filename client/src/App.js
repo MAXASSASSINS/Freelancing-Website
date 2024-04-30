@@ -63,6 +63,7 @@ import { FavouriteGigs } from "./component/FavouriteGigs";
 import { UpdateUserProfile } from "./component/UpdateUserProfile";
 import { BankAccountForm } from "./component/BankAccountForm";
 import ProtectedRoute from "./component/ProtectedRoute";
+import { ResetPassword } from "./component/ResetPassword";
 
 export const windowContext = createContext();
 
@@ -133,6 +134,7 @@ const App = () => {
     "/signUp",
     "/orders/",
     "/update/profile",
+    "/reset/password/"
   ]; // Add any other paths here
 
   // Checking if the current location matches any path in pathsWithoutFooter
@@ -145,7 +147,10 @@ const App = () => {
       <windowContext.Provider value={{ windowWidth, windowHeight }}>
         <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
           <SocketContext.Provider value={socket}>
-            <DataSendingLoading show={globalLoading} loadingText={globalLoadingText} />
+            <DataSendingLoading
+              show={globalLoading}
+              loadingText={globalLoadingText}
+            />
             <Tooltip id="my-tooltip" place="bottom" />
             {windowWidth < 900 && <Sidebar></Sidebar>}
             <Header></Header>
@@ -163,6 +168,11 @@ const App = () => {
 
               <Route
                 exact
+                path="/reset/password/:token"
+                element={<ResetPassword />}
+              ></Route>
+              <Route
+                exact
                 path="/get/all/messages/for/current/user"
                 element={
                   <ProtectedRoute>
@@ -176,13 +186,7 @@ const App = () => {
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/signUp" element={<SignUp />} />
 
-              <Route
-                exact
-                path="/user/:id"
-                element={
-                    <UserDetail />
-                }
-              />
+              <Route exact path="/user/:id" element={<UserDetail />} />
               <Route exact path="/gig/details/:id" element={<GigDetail />} />
               <Route path="*" element={<NotFoundPage />} />
               <Route
