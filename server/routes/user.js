@@ -18,6 +18,7 @@ import {
   updateAccount,
   updateAccountStatus,
   resetPasswordForm,
+  verifyEmail,
 } from "../controllers/userController.js";
 import "../controllers/authGoogle.js";
 import { googleCallback } from "../controllers/authGoogle.js";
@@ -100,5 +101,7 @@ router.get('/test', (req, res) => {
     error: 'Page not found'
   })
 })
+
+router.get('/verifyEmail/:token/:userId', verifyEmail);
 
 export default router;

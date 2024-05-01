@@ -113,7 +113,9 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
 
     dispatch({
       type: SIGNUP_USER_SUCCESS,
-      payload: data.user,
+    });
+    toast.success(data.message, {
+      timeout: 10000,
     });
   } catch (error) {
     dispatch({

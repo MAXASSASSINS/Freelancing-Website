@@ -10,19 +10,16 @@ const ProtectedRoute = ({ children }) => {
 
   const navigate = useNavigate();
 
-
   const location = useLocation();
-
-
 
   useEffect(() => {
     if (!isAuthenticated) {
       setRedirectUrl(location.pathname);
-      navigate('/login');
+      navigate("/login");
     }
-  }, []);
+  }, [user, isAuthenticated]);
 
-  return children;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

@@ -50,14 +50,17 @@ export const SignUp = () => {
       setErrors(error);
       return;
     }
-    dispatch(signUpUser(signUpUsername, signUpEmail, signUpPassword));
+    dispatch(signUpUser(signUpUsername, signUpEmail, signUpPassword)).then((data) => {
+      console.log(data)
+      navigate('/')
+    })
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(-1);
-    }
-  }, [dispatch, isAuthenticated]);
+  // useEffect(() => {
+  //   if (isAuthenticated && user.isEmailVerified) {
+  //     navigate(-1);
+  //   }
+  // }, [dispatch, isAuthenticated]);
 
 
   return (

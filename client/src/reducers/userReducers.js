@@ -105,14 +105,19 @@ export const userReducer = (state = { user: {} }, action) => {
       };
     case USER_SUCCESS:
     case LOAD_USER_SUCCESS:
-    case SIGNUP_USER_SUCCESS:
       return {
         ...state,
         userLoading: false,
         isAuthenticated: true,
         user: action.payload,
       };
-
+    case SIGNUP_USER_SUCCESS:
+      return {
+        ...state, 
+        userLoading: false,
+        isAuthenticated: false,
+        user: {}
+      }
     case USER_FAIL:
     case SIGNUP_USER_FAIL:
       return {
