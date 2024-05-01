@@ -17,24 +17,50 @@ import Order from "../models/orderModel.js";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
-  // const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-  //   folder: "avatars",
-  //   width: 150,
-  //   crop: "scale",
-  // });
-
   const { name, email, password } = req.body;
-  const user = await User.create({
-    name,
-    email,
-    password,
-    // avatar: {
-    //   public_id: myCloud.public_id,
-    //   url: myCloud.secure_url,
-    // },
+
+  let user = await User.findOne({ email });
+  if (!user) {
+    user = await User.create({
+      name,
+      email,
+      password,
+    });
+  }
+  const emailVerificationToken = user.getEmailVerifyToken();
+  await user.save({
+    validateBeforeSave: false,
   });
 
-  sendToken(user, 201, res);
+  const emailVerificationURL = `${req.protocol}://${req.get(
+    "host"
+  )}/verifyEmail/${emailVerificationToken}/${user.id}`;
+
+  const message = `Your verify email token is :- \n\n ${emailVerificationURL} \n\n if you have not requested this email then, please ignore it`;
+
+  try {
+    await sendSendGridEmail({
+      to: user.email,
+      subject: "Email Verification Request",
+      templateId: "verifyEmail",
+      data: {
+        username: user.name,
+        verifyEmailURL: emailVerificationURL,
+      },
+      text: message,
+    });
+    res.status(200).json({
+      success: true,
+      message: `Verification email has been sent to your email.`,
+    });
+  } catch (error) {
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(new ErrorHandler("error.message", 500));
+  }
+
+  // sendToken(user, 201, res);
 });
 
 // Login our User
@@ -59,6 +85,12 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
+  }
+
+  if (!user.isEmailVerified) {
+    return next(
+      new ErrorHandler("Please verify your email to activate your account", 401)
+    );
   }
 
   sendToken(user, 200, res);
@@ -156,7 +188,7 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   //   message: "Password reset successfully",
   // });
 
-  res.clearCookie('token').redirect('http://localhost:3000/login')
+  res.clearCookie("token").redirect("http://localhost:3000/login");
 
   // sendToken(user, 200, res);
 });
@@ -676,5 +708,40 @@ export const updateAccountStatus = catchAsyncErrors(async (req, res, next) => {
 
   return res.json({
     status: "ok",
+  });
+});
+
+export const verifyEmail = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findOne({
+    _id: req.params.userId,
+    emailVerificationExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.render("error", {
+      error: "Link is invalid or has been expired",
+    });
+  }
+
+  const token = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const emailVerificationToken = user.emailVerificationToken.toString();
+  console.log("emailVerificationToken", emailVerificationToken);
+
+  if (emailVerificationToken !== token) {
+    return res.render("error", {
+      error: "Link is invalid or has been expired",
+    });
+  }
+
+  user.isEmailVerified = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpire = undefined;
+  await user.save({ validateBeforeSave: false });
+  return res.render("success", {
+    message: "Your email has been verified successfully",
   });
 });
