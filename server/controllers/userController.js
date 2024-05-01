@@ -26,6 +26,8 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
       email,
       password,
     });
+  } else if (user.isEmailVerified) {
+    return next(new ErrorHandler("User already exists", 400));
   }
   const emailVerificationToken = user.getEmailVerifyToken();
   await user.save({
