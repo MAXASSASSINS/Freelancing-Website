@@ -6,6 +6,7 @@ import { LazyImage } from "../LazyImage/LazyImage";
 import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { getFileSize, downloadFile } from "../../utility/util";
 import { windowContext } from "../../App";
+import { MULTIPLE_CHOICE } from "../CreateGig/createGigConstants";
 
 export const Requirements = ({ orderDetail }) => {
   const { requirements } = orderDetail;
@@ -26,7 +27,23 @@ export const Requirements = ({ orderDetail }) => {
               </h6>
             </div>
             <div className="pl-8">
-              {requirement.answerText || requirement.files?.length > 0 ? (
+              {requirement.questionType === MULTIPLE_CHOICE &&
+              requirement.options.filter((option) => option.selected).length >
+                0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {requirement.options.map(
+                    (option, index) =>
+                      option.selected && (
+                        <div
+                          key={index}
+                          className="p-2 bg-separator text-light_heading rounded"
+                        >
+                          {option.title}
+                        </div>
+                      )
+                  )}
+                </div>
+              ) : requirement.answerText || requirement.files?.length > 0 ? (
                 <>
                   <p className="text-light_heading">{requirement.answerText}</p>
                   {requirement.files?.length > 0 && (
@@ -35,7 +52,11 @@ export const Requirements = ({ orderDetail }) => {
                         <div key={index} className="">
                           <p className="flex flex-col justify-end max-w-[8rem] max-h-48 min-h-[5rem] min-w-[5rem] min-[500px]:max-w-[10rem] min-[1000px]:max-w-[12rem]">
                             {file.type.includes("video") ? (
-                              <a href={file.url} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 <LazyVideo
                                   file={file}
                                   maxWidth={windowWidth > 1024 ? 240 : 160}
@@ -43,7 +64,11 @@ export const Requirements = ({ orderDetail }) => {
                                 />
                               </a>
                             ) : file.type.includes("image") ? (
-                              <a href={file.url} target="_blank" rel="noopener noreferrer">
+                              <a
+                                href={file.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                 <LazyImage
                                   file={file}
                                   maxWidth={windowWidth > 1024 ? 240 : 160}
