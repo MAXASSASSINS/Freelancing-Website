@@ -5,12 +5,14 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
 import { stripe } from "../utils/stripe.js";
 import { randomString } from "../utils/utilities.js";
-import sendEmail from "../utils/sendEmail.js";
+import sendEmail, { sendSendGridEmail } from "../utils/sendEmail.js";
 import { razorpayInstance } from "../utils/razorpay.js";
 import {
   validatePaymentVerification,
   validateWebhookSignature,
 } from "../node_modules/razorpay/dist/utils/razorpay-utils.js";
+import { frontendHomeUrl } from "../index.js";
+import error from "../middleware/error.js";
 
 // Create new order
 export const newOrder = async (user, body) => {
@@ -23,14 +25,13 @@ export const newOrder = async (user, body) => {
   } = body;
 
   if (!packageNumber || packageNumber < 0 || packageNumber > 2) {
-    return next(new ErrorHandler("Please select a package", 400));
+    throw new Error("Please select a package");
   }
 
-  //
-  const gig = await Gig.findById(gigId);
+  const gig = await Gig.findById(gigId).populate("user");
 
   if (!gig) {
-    throw new ErrorHandler("Gig not found with this Id", 404);
+    throw new Error("Gig not found with this Id");
   }
 
   let rString = randomString(13, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -87,7 +88,7 @@ export const newOrder = async (user, body) => {
     razorpay_payment_id,
     razorpay_order_id,
     razorpay_signature,
-  }
+  };
 
   // res.send(requirements);
 
@@ -117,19 +118,15 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {});
 export const updateOrderRequirements = catchAsyncErrors(
   async (req, res, next) => {
     const { requirements: answers } = req.body;
-    let order = await Order.findById(req.params.id).populate("seller", "email");
-    
-    const sellerEmail = order.seller.email;
-    
-    //
-    
+    let order = await Order.findById(req.params.id).populate("seller buyer", "name email");
+
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
     }
-    
-    // if (order.requirementsSubmitted) {
-    //   return next(new ErrorHandler("Requirements already submitted", 400));
-    // }
+
+    if (order.requirementsSubmitted) {
+      return next(new ErrorHandler("Requirements already submitted", 400));
+    }
 
     const requirements = order.requirements.map((requirement, index) => {
       const temp = {
@@ -150,7 +147,6 @@ export const updateOrderRequirements = catchAsyncErrors(
           };
         });
       }
-
       return temp;
     });
 
@@ -168,20 +164,28 @@ export const updateOrderRequirements = catchAsyncErrors(
         runValidators: true,
         useFindAndModify: false,
       }
-    );
-
+    ).populate("seller buyer", "name email");
 
     // send email to seller
-    const options = {
-      to: sellerEmail,
-      subject: "New Order",
-      message: `You have a new order with order id ${order.orderId}`,
-    };
-    //
-    // await sendEmail(options);
-
-    // console.log('doing something');
-
+    try {
+      await sendSendGridEmail({
+        to: order.seller.email,
+        subject: "New Order",
+        templateId: "newOrder",
+        data: {
+          sellerName: order.seller.name,
+          buyerName: order.buyer.name,
+          gigTitle: order.gigTitle,
+          orderId: order.orderId,
+          orderAmount: order.amount,
+          link: `${frontendHomeUrl}/orders/${order._id}`,
+          deliveryDate: order.deliveryDate.toDateString(),
+        },
+        text: `You have a new order with order id ${order.orderId}`,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
 
     res.status(200).json({
       success: true,
@@ -375,7 +379,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
   // adding balance to seller's account
   const seller = await User.findById(order.seller._id);
   seller.balance += order.amount;
-  if(seller.balance > 2000) seller.withdrawEligibility = true
+  if (seller.balance > 2000) seller.withdrawEligibility = true;
   seller.lastDelivery = Date.now();
   await seller.save({ validateBeforeSave: false });
 
@@ -404,6 +408,10 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
     );
 
   const { buyer, seller } = order;
+
+  if(req.user._id.toString() !== buyer._id.toString() && req.user._id.toString() !== seller._id.toString()) {
+    return next(new ErrorHandler("You are not authorized to view this order", 401));
+  }
 
   if (order.status !== "Completed") {
     order = {
@@ -441,7 +449,7 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
-  const {status} = req.body
+  const { status } = req.body;
   const userId = req.user._id;
   const orders = await Order.find({
     $or: [{ seller: userId }, { buyer: userId }],
@@ -753,11 +761,8 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
 
 // payment verification
 export const paymentVerification = catchAsyncErrors(async (req, res, next) => {
-  const {
-    razorpay_payment_id,
-    razorpay_order_id,
-    razorpay_signature,
-  } = req.body;
+  const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
+    req.body;
 
   const isPaymentAuthentic = validatePaymentVerification(
     { order_id: razorpay_order_id, payment_id: razorpay_payment_id },
