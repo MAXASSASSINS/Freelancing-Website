@@ -26,6 +26,7 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import { Rating } from "@mui/material";
 import { TextArea } from "../TextArea/TextArea";
 import { SellerFeedback } from "../Feedback/SellerFeedback";
+import { useGlobalLoadingText, useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const { user, isAuthenticated, userLoading, userError } = useSelector(
     (state) => state.user
   );
+
+  const updateGlobalLoading = useUpdateGlobalLoading();
 
   // const {orderDetail} = useSelector((state) => state.orderDetail);
 
@@ -200,6 +203,17 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     });
   }, [fileLoading, socket]);
 
+
+  // set global loading to true if file loading is true
+  useEffect(() => {
+    if (fileLoading) {
+      updateGlobalLoading(true, "sending message");
+    } else {
+      updateGlobalLoading(false);
+    }
+  }, [fileLoading]);
+      
+
   const getOrderMessages = async () => {
     try {
       const { data } = await axiosInstance.get(`/message/order/${params.id}`);
@@ -330,10 +344,10 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
       {orderDetail && (
         <div className="bg-white relative py-8 text-sm sm:text-base">
-          <DataSendingLoading
+          {/* <DataSendingLoading
             show={fileLoading}
             loadingText={"sending message"}
-          />
+          /> */}
 
           <section className="relative pl-6 flex flex-col gap-4 pb-12">
             <DateTag
