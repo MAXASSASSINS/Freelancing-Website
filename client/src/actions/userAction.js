@@ -127,6 +127,7 @@ export const signUpUser = (name, email, password) => async (dispatch) => {
         ? error.response.data.message
         : "Oops something went wrong"
     );
+    throw error;
   }
 };
 

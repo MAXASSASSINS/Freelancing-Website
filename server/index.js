@@ -94,6 +94,8 @@ app.use("/", messageRoutes);
 // Middleware for Errors
 app.use(errorMiddleware);
 
+export const frontendHomeUrl = process.env.MODE === 'DEV' ? process.env.FRONTEND_URL_DEV : process.env.FRONTEND_URL_PROD;
+
 // Cloudinary Config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

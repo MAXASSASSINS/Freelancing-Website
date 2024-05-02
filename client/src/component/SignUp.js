@@ -50,10 +50,13 @@ export const SignUp = () => {
       setErrors(error);
       return;
     }
-    dispatch(signUpUser(signUpUsername, signUpEmail, signUpPassword)).then((data) => {
-      console.log(data)
-      navigate('/')
-    })
+    dispatch(signUpUser(signUpUsername, signUpEmail, signUpPassword))
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   // useEffect(() => {
@@ -61,7 +64,6 @@ export const SignUp = () => {
   //     navigate(-1);
   //   }
   // }, [dispatch, isAuthenticated]);
-
 
   return (
     <div className="p-8 mt-20 md:mt-[10vh] col-md-4 offset-md-4">

@@ -14,6 +14,7 @@ import Razorpay from "razorpay";
 import dotenv from "dotenv";
 import { log } from "console";
 import Order from "../models/orderModel.js";
+import { frontendHomeUrl } from "../index.js";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -26,6 +27,8 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
       email,
       password,
     });
+  } else if (user.isEmailVerified) {
+    return next(new ErrorHandler("User already exists", 400));
   }
   const emailVerificationToken = user.getEmailVerifyToken();
   await user.save({
@@ -187,8 +190,8 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   // return res.render("success", {
   //   message: "Password reset successfully",
   // });
-
-  res.clearCookie("token").redirect("http://localhost:3000/login");
+  
+  res.clearCookie("token").redirect(frontendHomeUrl);
 
   // sendToken(user, 200, res);
 });

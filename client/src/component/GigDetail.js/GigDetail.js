@@ -169,13 +169,8 @@ export const GigDetail = () => {
   }, [user]);
 
   const handleContinueBuyClick = () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
     if (checkUserOpenItsOwnGig())
       return toast.error("You can not buy your own gig");
-    // 
     navigate(
       `/gig/place/order/${gigDetail._id}/${currentlySelectedPackageNumber}`
     );
