@@ -94,6 +94,7 @@ const App = () => {
       //
       navigate();
     });
+    localStorage.setItem("redirectUrl", "/");
   }, []);
 
   let resizeWindow = () => {

@@ -166,6 +166,7 @@ export const logoutUser = () => async (dispatch) => {
       type: LOGOUT_USER_SUCCESS,
       payload: data.success,
     });
+    localStorage.setItem("redirectUrl", "/");
   } catch (error) {
     dispatch({
       type: LOGOUT_USER_FAIL,
