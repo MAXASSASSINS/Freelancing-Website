@@ -62,6 +62,6 @@ router.get(
   getStripePublishableKey
 );
 
-router.post("/checkout", checkout);
+// router.post("/checkout", checkout);
 
 export default router;
