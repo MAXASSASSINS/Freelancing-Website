@@ -246,14 +246,20 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
-  // send email to buyer
-  const options = {
-    to: buyerEmail,
+  // send email to buyer about the delivery
+  await sendSendGridEmail({
+    to: order.buyer.email,
     subject: "Order Delivered",
-    message: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
-  };
-  //
-  // await sendEmail(options);
+    templateId: "orderDelivered",
+    data: {
+      buyerName: order.buyer.name,
+      sellerName: order.seller.name,
+      orderId: order.orderId,
+      link: `${frontendHomeUrl}/orders/${order._id}`,
+    },
+    text: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
+  });
+
 
   res.status(200).json({
     success: true,
@@ -324,14 +330,19 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
-  // send email to buyer
-  const options = {
-    to: sellerEmail,
+  // send email to seller about the revision
+  await sendSendGridEmail({
+    to: order.seller.email,
     subject: "Revision Requested",
-    message: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
-  };
-  //
-  // await sendEmail(options);
+    templateId: "revisionRequested",
+    data: {
+      sellerName: order.seller.name,
+      buyerName: order.buyer.name,
+      orderId: order.orderId,
+      link: `${frontendHomeUrl}/orders/${order._id}`,
+    },
+    text: `${order.buyer.name} has requested a revision for order with order id ${order.orderId}`,
+  });
 
   res.status(200).json({
     success: true,
@@ -383,14 +394,19 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
   seller.lastDelivery = Date.now();
   await seller.save({ validateBeforeSave: false });
 
-  // send email to buyer
-  const options = {
-    to: sellerEmail,
+  // send email to seller
+  await sendSendGridEmail({
+    to: order.seller.email,
     subject: "Order Completed",
-    message: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
-  };
-  //
-  // await sendEmail(options);
+    templateId: "orderCompleted",
+    data: {
+      sellerName: order.seller.name,
+      buyerName: order.buyer.name,
+      orderId: order.orderId,
+      link: `${frontendHomeUrl}/orders/${order._id}`,
+    },
+    text: `${order.buyer.name} has marked your order with order id ${order.orderId} as completed`,
+  });
 
   res.status(200).json({
     success: true,
