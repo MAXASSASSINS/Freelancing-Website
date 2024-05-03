@@ -58,12 +58,16 @@ import { FREE_TEXT } from "../../constants/globalConstants";
 import ReactSelect from "react-select";
 import { tagOptions } from "./tagsData";
 import { toast } from "react-toastify";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+
 export const CreateGig = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   let [searchParams, setSearchParams] = useSearchParams();
   let gigId = searchParams.get("id");
   if (!gigId) navigate("/404");
+
+  const updateGlobalLoading = useUpdateGlobalLoading();
 
   const { windowWidth, windowHeight } = useContext(windowContext);
   const { user, isAuthenticated, userLoading, userError } = useSelector(
@@ -336,6 +340,16 @@ export const CreateGig = () => {
   useEffect(() => {
     setCategoryWarning("");
   }, [selectedSubCategory, selectedCategory]);
+
+  useEffect(() => {
+    if (showDataSendingLoadingScreen) {
+      console.log("showing data sending loading screen");
+      updateGlobalLoading(true, "Saving Gig");
+    }
+    else{
+      updateGlobalLoading(false, "");
+    }
+  }, [showDataSendingLoadingScreen]);
 
   const getGigTitleInput = (val) => {
     if (val.trim().length < 15) {
@@ -1112,11 +1126,11 @@ export const CreateGig = () => {
         className="overview"
         style={{ display: currentStep === 1 ? "" : "none" }}
       >
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
           loadingText={"Saving Gig"}
-        />
+        /> */}
         <div className="overview-wrapper">
           <div className="left-side">
             <div>
@@ -1217,11 +1231,11 @@ export const CreateGig = () => {
         className="pricing"
         style={{ display: currentStep === 2 ? "" : "none" }}
       >
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
           loadingText={"Saving Gig"}
-        />
+        /> */}
         <div className="pricing-wrapper">
           <h2>Scope & Pricing</h2>
           <h3>Packages</h3>
@@ -1343,11 +1357,11 @@ export const CreateGig = () => {
         className="description"
         style={{ display: currentStep === 3 ? "" : "none" }}
       >
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
           loadingText={"Saving Gig"}
-        />
+        /> */}
         <div className="description-wrapper">
           <h1>Description</h1>
           <h3>Briefly Describe Your Gig</h3>
@@ -1364,11 +1378,11 @@ export const CreateGig = () => {
         className="requirements"
         style={{ display: currentStep === 4 ? "" : "none" }}
       >
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
           loadingText={"Saving Gig"}
-        />
+        /> */}
         <div className="requirements-wrapper">
           <header>
             Get all the information you need from buyers to get started
@@ -1501,11 +1515,11 @@ export const CreateGig = () => {
         className="gallery"
         style={{ display: currentStep === 5 ? "" : "none" }}
       >
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={showDataSendingLoadingScreen}
           finishedLoading={!showDataSendingLoadingScreen}
           loadingText={"Saving Gig"}
-        />
+        /> */}
 
         <div className="gallery-wrapper">
           <h3>Showcase Your Services In A Gig Gallery</h3>
