@@ -18,7 +18,11 @@ import { frontendHomeUrl } from "../index.js";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
+
+  if(password && confirmPassword && password !== confirmPassword){
+    return next(new ErrorHandler("Password and confirm passowrd does not match", 400));
+  }
 
   let user = await User.findOne({ email });
   if (!user) {

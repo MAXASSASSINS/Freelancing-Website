@@ -102,13 +102,14 @@ export const loggedUser = (email, password) => async (dispatch) => {
   }
 };
 
-export const signUpUser = (name, email, password) => async (dispatch) => {
+export const signUpUser = (name, email, password, confirmPassowrd) => async (dispatch) => {
   try {
     dispatch({ type: SIGNUP_USER_REQUEST });
     const { data } = await axiosInstance.post("/register", {
       name,
       email,
       password,
+      confirmPassowrd,
     });
 
     dispatch({
