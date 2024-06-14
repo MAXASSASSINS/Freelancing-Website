@@ -31,7 +31,7 @@ app.set("view engine", "ejs");
 const allowedOrigins = [
   /frontend.*\.vercel\.app$/, // Matches URLs of the specified pattern
   /localhost:\d+$/, // Matches localhost with any port number
-  'https://freelanceme-backend.onrender.com'
+  '/https:\/\/freelanceme-backend\.onrender\.com/'
 ];
 
 app.use(
