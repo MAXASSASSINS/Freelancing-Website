@@ -34,8 +34,6 @@ const allowedOrigins = [
   /https:\/\/freelanceme-backend\.onrender\.com/
 ];
 
-const origin = 'https://freelanceme-backend.onrender.com/forgotPassword/35b4bff15962f8a23a9563d82f5359dec346159e'
-console.log(allowedOrigins.some(pattern => pattern.test(origin)))
 
 app.use(
   cors({
