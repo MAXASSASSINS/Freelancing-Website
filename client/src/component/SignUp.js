@@ -4,13 +4,17 @@ import { signUpUser } from "../actions/userAction";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillQuestionCircle } from "react-icons/ai";
+import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 
 export const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState("");
   const [signUpUsername, setSignUpUsername] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { user, userLoading, isAuthenticated, userError } = useSelector(
     (state) => state.user
@@ -20,6 +24,7 @@ export const SignUp = () => {
     signUpEmailError: false,
     signUpPasswordError: false,
     signUpUsernameError: false,
+    signUpConfirmPasswordError: false,
   });
 
   const handleSignUpSubmit = async (e) => {
@@ -28,6 +33,7 @@ export const SignUp = () => {
       signUpEmailError: false,
       signUpPasswordError: false,
       signUpUsernameError: false,
+      signUpConfirmPasswordError: false,
     };
     if (
       !signUpUsername ||
@@ -42,15 +48,26 @@ export const SignUp = () => {
     if (!signUpPassword || signUpPassword.length < 8) {
       error = { ...error, signUpPasswordError: true };
     }
+    if (!signUpConfirmPassword || signUpPassword !== signUpConfirmPassword) {
+      error = { ...error, signUpConfirmPasswordError: true };
+    }
     if (
       error.signUpEmailError ||
       error.signUpPasswordError ||
-      error.signUpUsernameError
+      error.signUpUsernameError ||
+      error.signUpConfirmPasswordError
     ) {
       setErrors(error);
       return;
     }
-    dispatch(signUpUser(signUpUsername, signUpEmail, signUpPassword))
+    dispatch(
+      signUpUser(
+        signUpUsername,
+        signUpEmail,
+        signUpPassword,
+        signUpConfirmPassword
+      )
+    )
       .then(() => {
         navigate("/");
       })
@@ -121,17 +138,69 @@ export const SignUp = () => {
               <AiFillQuestionCircle className="text-no_focus" />
             </span>
           </label>
-          <input
-            onChange={(e) => {
-              setSignUpPassword(e.target.value);
-              setErrors({ ...errors, signUpPasswordError: false });
-            }}
-            id="password"
-            type="password"
-            className={`form-control ${
-              errors.signUpPasswordError ? "border border-warning" : ""
-            }`}
-          />
+          <div className="relative flex items-center">
+            <input
+              onChange={(e) => {
+                setSignUpPassword(e.target.value);
+                setErrors({ ...errors, signUpPasswordError: false });
+              }}
+              id="password"
+              type={showPassword ? "text" : "password"}
+              className={`form-control pr-10 ${
+                errors.signUpPasswordError ? "border border-warning" : ""
+              }`}
+            />
+            {showPassword ? (
+              <FaEyeSlash
+                className="absolute right-4 text-light_heading cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            ) : (
+              <FaRegEye
+                className="absolute right-4 text-light_heading cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            )}
+          </div>
+        </div>
+        <div className="form-group">
+          <label
+            className="mb-2 flex items-center gap-2"
+            for="confirm_password"
+          >
+            Confirm Password
+            <span
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content="Confrim Password must match password"
+              data-tooltip-place="right"
+            >
+              <AiFillQuestionCircle className="text-no_focus" />
+            </span>
+          </label>
+          <div className="flex items-center relative">
+            <input
+              onChange={(e) => {
+                setSignUpConfirmPassword(e.target.value);
+                setErrors({ ...errors, signUpConfirmPasswordError: false });
+              }}
+              id="confirm_password"
+              type={showConfirmPassword ? "text" : "password"}
+              className={`form-control ${
+                errors.signUpConfirmPasswordError ? "border border-warning" : ""
+              }`}
+            />
+            {showConfirmPassword ? (
+              <FaEyeSlash
+                className="absolute right-4 text-light_heading cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              />
+            ) : (
+              <FaRegEye
+                className="absolute right-4 text-light_heading cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              />
+            )}
+          </div>
         </div>
         <p className="text-light_heading">
           Already have an account?{" "}
