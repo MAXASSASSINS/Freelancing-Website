@@ -31,8 +31,11 @@ app.set("view engine", "ejs");
 const allowedOrigins = [
   /frontend.*\.vercel\.app$/, // Matches URLs of the specified pattern
   /localhost:\d+$/, // Matches localhost with any port number
-  '/https:\/\/freelanceme-backend\.onrender\.com/'
+  /https:\/\/freelanceme-backend\.onrender\.com/
 ];
+
+const origin = 'https://freelanceme-backend.onrender.com/forgotPassword/35b4bff15962f8a23a9563d82f5359dec346159e'
+console.log(allowedOrigins.some(pattern => pattern.test(origin)))
 
 app.use(
   cors({
