@@ -62,7 +62,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       navigate("/login");
     } else {
       socket.emit("is_online", gigDetail.user._id.toString());
-      
     }
   }, [user]);
 
@@ -165,7 +164,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   };
 
   const handleSelectionOfFiles = (event) => {
-    
     const files = event.target.files;
     let arr = [];
     if (selectedFiles) {
@@ -173,7 +171,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         arr.push(selectedFiles[i]);
       }
     }
-    // 
+    //
     for (let i = 0; i < files.length; i++) {
       let index = 0;
       if (selectedFiles != null) {
@@ -185,8 +183,8 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         selectedFile: files[i],
         id: index,
       };
-      // 
-      // 
+      //
+      //
       arr.push(file);
     }
     document.getElementById("chat-input-file").value = "";
@@ -196,10 +194,10 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
 
       return;
     }
-    // 
+    //
     setIsFilePicked(true);
     setSelectedFiles(arr);
-    
+
     scrollToBottomDivRef.current?.scrollIntoView();
   };
 
@@ -219,17 +217,17 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
 
   const sendChat = async (e) => {
     e.preventDefault();
-    setFileLoading(true);
+    if (selectedFiles?.length) {
+      setFileLoading(true);
+    }
 
     let files = [];
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-      
 
       // add message to database
       const res = await addMessageToDatabase(message, files);
-      
 
       // send message to socket
       await handleSendMessageSocket(message, files);
@@ -242,8 +240,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
 
   // client side uploading to cloudinary
   const sendFileClientCloudinary = async (files) => {
-    
-
     if (isFilePicked) {
       const arr = files.map((file) => {
         return file.selectedFile;
@@ -274,7 +270,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       };
 
       const { data } = await axiosInstance.post("/add/message", messageData);
-      // 
+      //
       return data;
     } catch (error) {
       throw error;
@@ -314,7 +310,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   useEffect(() => {
     socket.on("receive_message", async (data) => {
       if (data.orderId) return;
-      
+
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);
     });
@@ -328,7 +324,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   useEffect(() => {
     socket.on("receive_message_self", async (data) => {
       if (data.orderId) return;
-      
+
       const messageData = data;
       setAllMessages((prev) => [...prev, messageData]);
     });
@@ -346,7 +342,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     };
     socket.emit("typing_started", data);
     const timeout = setTimeout(() => {
-      // 
+      //
       socket.emit("typing_stopped", data);
     }, 1000);
 
@@ -392,7 +388,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   };
 
   const handleChatSuggestion = (e) => {
-    // 
+    //
     const suggestion = e.target.textContent;
     e.target.style.display = "none";
     let newMsg = message.length !== 0 ? message + "\n" : message;
@@ -423,27 +419,24 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     }
   }, [message]);
 
-  // 
-  // 
+  //
+  //
 
   const handleEmojiClick = (emoji) => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
 
-  // 
+  //
 
   window.onclick = (event) => {
     if (
       event.target !== document.querySelector("em-emoji-picker") &&
       !emojiPickerOpenerIconRef.current.contains(event.target)
     ) {
-      
       setShowEmojiPicker(false);
     }
   };
-
-  
 
   return (
     <div
@@ -689,9 +682,8 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
           <button
             type="submit"
             form="chat-form"
-            style={{
-              opacity: message.length > 0 || isFilePicked ? "1" : "0.4",
-            }}
+            className="disabled:opacity-40"
+            disabled={message.length > 0 || isFilePicked ? false : true}
           >
             <FaRegPaperPlane style={{ display: "inline" }} />
             &nbsp; Send Message
