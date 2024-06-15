@@ -26,10 +26,12 @@ import { Avatar } from "../Avatar/Avatar";
 import { ImAttachment } from "react-icons/im";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { FiPaperclip } from "react-icons/fi";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const updateGlobalLoading = useUpdateGlobalLoading();
 
   const socket = useContext(SocketContext);
   const { windowWidth, windowHeight } = useContext(windowContext);
@@ -216,10 +218,9 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   };
 
   const sendChat = async (e) => {
+    updateGlobalLoading(true, "Sending message...");
     e.preventDefault();
-    if (selectedFiles?.length) {
-      setFileLoading(true);
-    }
+    setFileLoading(true);
 
     let files = [];
     try {
@@ -233,8 +234,10 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       await handleSendMessageSocket(message, files);
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message)
     } finally {
       setFileLoading(false);
+      updateGlobalLoading(false);
     }
   };
 
@@ -444,11 +447,11 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       style={{ display: showChatBox ? "block" : "none" }}
     >
       <div className="chat-content">
-        <DataSendingLoading
+        {/* <DataSendingLoading
           show={fileLoading}
           finishedLoading={!fileLoading}
           loadingText={"Sending message..."}
-        />
+        /> */}
         <header>
           <div className="chat-header-img">
             <Avatar
