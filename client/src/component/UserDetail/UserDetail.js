@@ -374,7 +374,7 @@ export const UserDetail = () => {
                         </div>
                       )
                   )}
-                  {isAuthenticated && user.reviews.length > reviewCount && (
+                  {gigUser.reviews.length > reviewCount && (
                     <div
                       className="user-review-see-more"
                       onClick={increaseReviewCount}
