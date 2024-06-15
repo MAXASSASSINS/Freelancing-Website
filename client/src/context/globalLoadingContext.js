@@ -49,9 +49,11 @@ export const GlobalLoadingProvider = ({ children }) => {
       gigUserLoading ||
       orderDetailLoading
     ) {
-      setGlobalLoading(true);
+      // setGlobalLoading(true);
+      updateGlobalLoading(true);
     } else {
-      setGlobalLoading(false);
+      // setGlobalLoading(false);
+      updateGlobalLoading(false);
     }
   }, [
     gigLoading,
