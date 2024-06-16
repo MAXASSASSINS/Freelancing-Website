@@ -1318,7 +1318,7 @@ export const CreateGig = () => {
                         min={5}
                         max={10000}
                       ></input>
-                      <span>₹</span>
+                      <span className="right-4">₹</span>
                     </div>
                     {packagesWarning && (
                       <div className="package-price-required-icon">
