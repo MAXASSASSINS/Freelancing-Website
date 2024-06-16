@@ -91,7 +91,7 @@ export const PlaceOrder = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative min-h-[500px]">
       <DataSendingLoading finishedLoading={!loading} show={loading} />
       <div className="px-8 py-12 md:px-32 flex flex-col items-center gap-16 min-[1050px]:px-12 min-[1050px]:flex-row min-[1050px]:justify-between min-[1050px]:items-start xl:px-24 xl:justify-center xl:gap-32">
         {/* <div className="xl:flex-1 2xl:flex-none">
