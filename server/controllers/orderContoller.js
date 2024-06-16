@@ -468,8 +468,14 @@ export const myOrders = catchAsyncErrors(async (req, res, next) => {
   const { status } = req.body;
   const userId = req.user._id;
   const orders = await Order.find({
-    $or: [{ seller: userId }, { buyer: userId }],
-    status: status ? status : { $ne: "Deleted" },
+    $or: [
+      { buyer: userId },
+      { 
+        seller: userId, 
+        status: { $ne: "Pending" } 
+      }
+    ],
+    status: status ? status : { $ne: "Deleted" }
   })
     // .or({ buyer: req.user._id })
     .populate("gig", "title images")
