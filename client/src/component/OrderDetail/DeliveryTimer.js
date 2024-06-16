@@ -4,14 +4,16 @@ import { DeliveryModal as Del, DeliveryModal } from "./DeliveryModal";
 
 export const DeliveryTimer = ({ orderDetail }) => {
   const [deliveryTimeLeft, setDeliveryTimeLeft] = useState(
-    new Date(orderDetail.deliveryDate) - Date.now()
+    new Date(orderDetail.deliveryDate) - Date.now() < 0 ? 0 : new Date(orderDetail.deliveryDate) - Date.now()
   );
 
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setDeliveryTimeLeft(new Date(orderDetail.deliveryDate) - Date.now());
+      if (new Date(orderDetail.deliveryDate) - Date.now() < 0)
+        setDeliveryTimeLeft(0);
+      else setDeliveryTimeLeft(new Date(orderDetail.deliveryDate) - Date.now());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
