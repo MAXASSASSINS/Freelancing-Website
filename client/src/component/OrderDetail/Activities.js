@@ -343,7 +343,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
         )}
 
       {orderDetail && (
-        <div className="bg-white relative py-8 text-sm sm:text-base">
+        <div className="bg-white rounded relative py-8 text-sm sm:text-base">
           {/* <DataSendingLoading
             show={fileLoading}
             loadingText={"sending message"}
