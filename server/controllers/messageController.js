@@ -203,8 +203,8 @@ export const getListOfAllInboxClients = catchAsyncErrors(
     // 
     let list = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
+      .and([{ orderId: null }])
       .select("sender receiver");
-
     let set = new Set();
     list.forEach((message) => {
       set.add(message.sender.toString());
