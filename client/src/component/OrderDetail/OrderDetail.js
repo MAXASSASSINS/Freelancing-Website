@@ -42,7 +42,7 @@ export const OrderDetail = () => {
     }
   }, [user]);
 
-  // 
+  //
 
   if (orderError) {
     navigate("/404");
@@ -100,6 +100,18 @@ export const OrderDetail = () => {
           </nav>
         </header>
 
+        {orderDetail && Date.now() > new Date(orderDetail.deliveryDate) && (
+          <div className="p-8 my-8 bg-red-100 rounded">
+            <p>
+              <span className="text-red-600">
+                {user._id === orderDetail.seller._id
+                  ? "This order is marked as late but you can still deliver it."
+                  : "This order is marked as late."}
+              </span>
+            </p>
+          </div>
+        )}
+
         {orderDetail && (
           <main className="rounded flex flex-col-reverse min-[900px]:flex-row justify-between gap-8 lg:gap-16">
             <div className="flex-grow">
@@ -119,7 +131,8 @@ export const OrderDetail = () => {
 
             <div className="flex flex-col gap-8">
               {orderDetail.seller._id === user._id &&
-                (orderDetail.status === "In Progress" || orderDetail.status === "In Revision") &&
+                (orderDetail.status === "In Progress" ||
+                  orderDetail.status === "In Revision") &&
                 windowWidth > 900 && (
                   <DeliveryTimer orderDetail={orderDetail} />
                 )}
@@ -130,5 +143,4 @@ export const OrderDetail = () => {
       </div>
     </div>
   );
-
 };
