@@ -38,7 +38,7 @@ export const DeliveryTimer = ({ orderDetail }) => {
         <div className="font-semibold text-light_heading">
           Time left to deliver
         </div>
-        <div className="flex items-center justify-center gap-3 text-center">
+        <div className={`flex ${new Date(orderDetail.deliveryDate) - Date.now() < 24 * 60 * 60 * 1000 && 'text-warning'} items-center justify-center gap-3 text-center`}>
           <div>
             <div className="pb-1 font-bold">
               {parseInt(deliveryTimeLeft / (1000 * 60 * 60 * 24))}
