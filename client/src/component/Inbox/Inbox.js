@@ -312,6 +312,7 @@ export const Inbox = () => {
 
   const sendChat = async () => {
     setFileLoading(true);
+    // updateGlobalLoading(true, 'Sending message...');
     // setIsFilePicked(false);
 
     let files = [];
@@ -329,6 +330,7 @@ export const Inbox = () => {
       console.log(error);
     } finally {
       setFileLoading(false);
+      // updateGlobalLoading(false);
     }
   };
 
@@ -1004,12 +1006,14 @@ export const Inbox = () => {
                     </div>
                   </header>
                 </div>
-                <DataSendingLoading
-                  show={fileLoading}
-                  finishedLoading={!fileLoading}
-                  loadingText={"Sending message..."}
-                />
+
                 <div className="inbox-message-list-section-2">
+                  <DataSendingLoading
+                    pos="absolute"
+                    show={fileLoading}
+                    finishedLoading={!fileLoading}
+                    loadingText={"Sending message..."}
+                  />
                   <ul id="inbox-message-ul-id">
                     {inboxMessages.map((item, index) => (
                       <li
