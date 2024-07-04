@@ -1007,13 +1007,14 @@ export const Inbox = () => {
                   </header>
                 </div>
 
+                <DataSendingLoading
+                  pos="absolute"
+                  show={true}
+                  // show={fileLoading}
+                  // finishedLoading={!fileLoading}
+                  loadingText={"Sending message..."}
+                />
                 <div className="inbox-message-list-section-2">
-                  <DataSendingLoading
-                    pos="absolute"
-                    show={fileLoading}
-                    finishedLoading={!fileLoading}
-                    loadingText={"Sending message..."}
-                  />
                   <ul id="inbox-message-ul-id">
                     {inboxMessages.map((item, index) => (
                       <li

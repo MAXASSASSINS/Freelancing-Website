@@ -223,9 +223,9 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.deliveryDate < Date.now()) {
-    return next(new ErrorHandler("Delivery date has passed", 400));
-  }
+  // if (order.deliveryDate < Date.now()) {
+  //   return next(new ErrorHandler("Delivery date has passed", 400));
+  // }
 
   if (order.status !== "In Progress" && order.status !== "In Revision") {
     return next(
