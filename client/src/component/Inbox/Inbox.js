@@ -1009,9 +1009,8 @@ export const Inbox = () => {
 
                 <DataSendingLoading
                   pos="absolute"
-                  show={true}
-                  // show={fileLoading}
-                  // finishedLoading={!fileLoading}
+                  show={fileLoading}
+                  finishedLoading={!fileLoading}
                   loadingText={"Sending message..."}
                 />
                 <div className="inbox-message-list-section-2">
