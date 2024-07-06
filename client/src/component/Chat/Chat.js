@@ -218,7 +218,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   };
 
   const sendChat = async (e) => {
-    updateGlobalLoading(true, "Sending message...");
+    // updateGlobalLoading(true, "Sending message...");
     e.preventDefault();
     setFileLoading(true);
 
@@ -234,10 +234,10 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       await handleSendMessageSocket(message, files);
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message);
     } finally {
       setFileLoading(false);
-      updateGlobalLoading(false);
+      // updateGlobalLoading(false);
     }
   };
 
@@ -447,11 +447,6 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       style={{ display: showChatBox ? "block" : "none" }}
     >
       <div className="chat-content">
-        {/* <DataSendingLoading
-          show={fileLoading}
-          finishedLoading={!fileLoading}
-          loadingText={"Sending message..."}
-        /> */}
         <header>
           <div className="chat-header-img">
             <Avatar
@@ -476,6 +471,13 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
             <IoClose />
           </span>
         </header>
+
+        <DataSendingLoading
+          pos="absolute"
+          show={fileLoading}
+          finishedLoading={!fileLoading}
+          loadingText={"Sending message..."}
+        />
         <main>
           {!allMessages?.length || checkUserOpenItsOwnGig() ? (
             <div className="chat-suggestion-div">
