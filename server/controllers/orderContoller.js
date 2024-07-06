@@ -227,7 +227,7 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
   //   return next(new ErrorHandler("Delivery date has passed", 400));
   // }
 
-  if (order.status !== "In Progress" && order.status !== "In Revision") {
+  if (order.status !== "In Progress" && order.status !== "In Revision" && order.status !== "Delivered") {
     return next(
       new ErrorHandler(
         "You can only deliver an order which is in progress or in revision",
