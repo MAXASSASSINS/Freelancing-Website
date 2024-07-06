@@ -111,7 +111,7 @@ export const BuyerFeedback = () => {
             <TextArea
               maxLength={700}
               placeholder="What did you like or didn't like about this Seller? Share as many details as you can to help other buyers make the right decision for their needs."
-              style={{ height: "12rem" }}
+              style={{ height: "12rem", lineHeight: "1.4rem"}}
               ref={commentRef}
             />
           </div>

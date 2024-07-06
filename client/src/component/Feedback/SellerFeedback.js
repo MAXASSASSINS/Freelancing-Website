@@ -57,7 +57,7 @@ export const SellerFeedback = () => {
         <p className="font-semibold mb-3">Share some details (public)</p>
         <TextArea
           maxLength={700}
-          style={{ height: "10rem" }}
+          style={{ height: "10rem", lineHeight: "1.4rem" }}
           ref={commentRef}
           placeholder="You'll be able to view the buyer's feedback after you leave your feedback."
         />
