@@ -1,15 +1,29 @@
 import nodeMailer from "nodemailer";
-import sgMail from "@sendgrid/mail";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
+import sgMail, {MailDataRequired} from "@sendgrid/mail";
 import dotenv from "dotenv";
 import ejs from "ejs";
 import path from "path";
 import { fileURLToPath } from "url";
 
 dotenv.config();
+
+if(!process.env.SENDGRID_API_KEY) {
+  throw new Error("Please add SENDGRID_API_KEY in your .env file");
+}
+
+if(!process.env.SENDGRID_EMAIL) {
+  throw new Error("Please add SENDGRID_EMAIL in your .env file");
+}
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendEmail = async (options) => {
+type Options = {
+  to: string;
+  subject: string;
+  message: string;
+};
+
+const sendEmail = async (options: Options) => {
   const transporter = nodeMailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -31,26 +45,33 @@ const sendEmail = async (options) => {
   await transporter.sendMail(mailOptions);
 };
 
+
+type sendSendGridEmailParams = {
+  to: string
+  subject: string
+  templateId: string
+  data: any
+  text: string
+}
+
 export const sendSendGridEmail = async ({
   to,
   subject,
   templateId,
   data,
   text
-}) => {
-  try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+}: sendSendGridEmailParams) => {
 
+  try {
     const template = await ejs.renderFile(
       path.join(__dirname, "../templates/" + templateId + ".ejs"),
       data,
       { async: true }
     );
-    const msg = {
+    const msg: MailDataRequired = {
       to,
       from: {
-        email: process.env.SENDGRID_EMAIL,
+        email: process.env.SENDGRID_EMAIL!,
         name: "Mohd Shadab",
       },
       subject,

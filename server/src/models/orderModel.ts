@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import { Document, Types } from "mongoose";
+import { IOrder } from "../types/order.types";
 
-const orderSchema = new mongoose.Schema({
+
+const orderSchema = new mongoose.Schema<IOrder>({
   orderId: {
     type: String,
     required: true,
@@ -20,17 +23,17 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   gig: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Gig",
     required: true,
   },
   seller: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
   buyer: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

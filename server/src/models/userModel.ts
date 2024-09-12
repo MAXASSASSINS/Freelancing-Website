@@ -3,8 +3,27 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import {IUser, IPhone } from "../types/user.types";
 
-const userSchema = new mongoose.Schema({
+
+const phoneSchema = new mongoose.Schema<IPhone>({
+  code: {
+    type: String,
+    required: function (this: IPhone) {
+      return !!(this as IPhone).number;
+    }
+  },
+  number: {
+    type: String,
+    required: function (this: IPhone) {
+      return !!(this as IPhone).code;
+    },
+    minlength: [10, "Phone number should have at least 10 characters"],
+    maxlength: [15, "Phone number cannot exceed 15 characters"]
+  },
+});
+
+const userSchema = new mongoose.Schema<IUser>({
   name: {
     type: String,
     required: [true, "Please enter your name"],
@@ -38,22 +57,7 @@ const userSchema = new mongoose.Schema({
     },
   },
 
-  phone: {
-    code: {
-      type: String,
-      required: function (){
-        return !!this.phone.number;
-      }
-    },
-    number: {
-      type: String,
-      required: function () {
-        return !!this.code;
-      },
-      minlength: [10, "Phone number should have at least 10 characters"],
-      maxlength: [15, "Phone number cannot exceed 15 characters"],
-    },
-  },
+  phone: phoneSchema,
 
   ratings: {
     type: Number,
@@ -72,7 +76,7 @@ const userSchema = new mongoose.Schema({
   reviews: [
     {
       user: {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
@@ -266,7 +270,7 @@ const userSchema = new mongoose.Schema({
 
   favouriteGigs: [
     {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Gig",
     },
   ],
@@ -291,13 +295,17 @@ userSchema.pre("save", async function (next) {
 
 //JWT Token
 userSchema.methods.getJWTToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT Secret not found");
+  }
+  return jwt.sign({ id: this._id }, secret, {
     expiresIn: process.env.JWT_EXPIRE,
   });
 };
 
 // Compare Password
-userSchema.methods.comparePassword = async function (enteredPassword) {
+userSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
@@ -332,4 +340,6 @@ userSchema.methods.getEmailVerifyToken = function () {
   return emailVerifyToken;
 };
 
-export default mongoose.model("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
+
+export default User;

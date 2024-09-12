@@ -1,5 +1,8 @@
 class Features {
-  constructor(query, queryStr) {
+  query: any;
+  queryStr: any;
+
+  constructor(query: any, queryStr: any) {
     this.query = query;
     this.queryStr = queryStr;
   }
@@ -9,7 +12,7 @@ class Features {
     const keywords = this.queryStr.keywords ?  this.queryStr.keywords.split(' ') : [];
     if (keywords.length > 0) {
       query = {
-        $and: keywords.map((kw) => ({
+        $and: keywords.map((kw: string) => ({
           $or: [
             { title: { $regex: kw, $options: "i" } },
             { searchTags: { $regex: kw, $options: "i" } },
@@ -46,7 +49,7 @@ class Features {
     return this;
   }
 
-  pagination(resultPerPage) {
+  pagination(resultPerPage: number) {
     const currentPage = Number(this.queryStr.page) || 1;
 
     const skip = resultPerPage * (currentPage - 1);

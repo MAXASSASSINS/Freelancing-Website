@@ -1,6 +1,7 @@
-
 import mongoose from "mongoose";
-const gigSchema = new mongoose.Schema({
+import { IGig } from "../types/gig.types";
+
+const gigSchema = new mongoose.Schema<IGig>({
   title: {
     type: String,
     // required: [true, "Please enter you gig title"],
@@ -112,7 +113,7 @@ const gigSchema = new mongoose.Schema({
   reviews: [
     {
       user: {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
@@ -154,7 +155,7 @@ const gigSchema = new mongoose.Schema({
     default: Date.now,
   },
   user: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

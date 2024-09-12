@@ -1,12 +1,14 @@
 import twilio from "twilio";
-import User from "../models/userModel.js";
+import User from "../models/userModel";
+import { Request, Response } from "express";
+import { IUser } from "../types/user.types";
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 const twilioClient = twilio(accountSid, authToken);
 
-export const sendSMS = (req, res) => {
+export const sendSMS = (req: Request, res: Response) => {
   res.header("Content-Type", "application/json");
   twilioClient.messages
     .create({
@@ -23,7 +25,7 @@ export const sendSMS = (req, res) => {
     });
 };
 
-export const verifyNumber = (req, res) => {
+export const verifyNumber = (req: Request, res: Response) => {
   twilioClient.verify.v2
     .services("VA571fee7d19f3e28ef9a285e861a341b1")
     .verifications.create({ to: req.body.phone.code + req.body.phone.number, channel: "sms" })
@@ -36,17 +38,16 @@ export const verifyNumber = (req, res) => {
     });
 };
 
-export const verifyCode = (req, res) => {
-  console.log(req.body);
+export const verifyCode = (req: Request, res: Response) => {
   try {
     twilioClient.verify.v2
       .services("VA571fee7d19f3e28ef9a285e861a341b1")
       .verificationChecks.create({ to: req.body.phone.code + req.body.phone.number, code: req.body.code })
       .then((verification_check) => {
         if (verification_check.status === "approved") {
-          User.findById(req.user.id).then((user) => {
+          User.findById((req.user as IUser).id).then((user) => {
+            if(!user) return res.status(404).json({ success: false, error: "User not found" });
             user.phone = req.body.phone;
-            console.log(user);
             user
               .save({
                 validateBeforeSave: false,
@@ -67,7 +68,7 @@ export const verifyCode = (req, res) => {
   }
 };
 
-export const verifyByCall = (req, res) => {
+export const verifyByCall = (req: Request, res: Response) => {
   twilioClient.verify.v2
     .services("VA571fee7d19f3e28ef9a285e861a341b1")
     .verifications.create({ to: req.body.to, channel: "voice" })

@@ -1,11 +1,10 @@
-import { Socket, Server } from "socket.io";
-import Message from "../models/messageModel.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import User from "../models/userModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
+import { Server as SocketIOServer } from "socket.io";
+import User from "../models/userModel";
+import ErrorHandler from "./errorHandler";
+import { Server as HTTPServer } from 'http';
 
-export const runSocket = (server) => {
-  const io = new Server(server, {
+const runSocket = (server: HTTPServer) => {
+  const io = new SocketIOServer(server, {
     // pingTimeout: 60000,
     cors: {
       origin: "*",
@@ -31,11 +30,11 @@ export const runSocket = (server) => {
       const receiverSocketIds = onlineUserList.get(receiver._id.toString());
       const senderSocketIds = onlineUserList.get(sender._id.toString());
 
-      receiverSocketIds?.forEach((receiverSocketId) => {
+      receiverSocketIds?.forEach((receiverSocketId: string) => {
         io.to(receiverSocketId).emit("receive_message", data);
       });
 
-      senderSocketIds?.forEach((senderSocketId) => {
+      senderSocketIds?.forEach((senderSocketId: string) => {
         io.to(senderSocketId).emit("receive_message_self", data);
       });
     });
@@ -43,14 +42,14 @@ export const runSocket = (server) => {
     socket.on("typing_started", (data) => {
       const receiverSocketIds = onlineUserList.get(data.receiverId);
 
-      receiverSocketIds?.forEach((receiverSocketId) => {
+      receiverSocketIds?.forEach((receiverSocketId: string) => {
         socket.to(receiverSocketId).emit("typing_started_from_server", data);
       });
     });
     socket.on("typing_stopped", (data) => {
       const receiverSocketIds = onlineUserList.get(data.receiverId);
 
-      receiverSocketIds?.forEach((receiverSocketId) => {
+      receiverSocketIds?.forEach((receiverSocketId: string) => {
         socket.to(receiverSocketId).emit("typing_stopped_from_server", data);
       });
     });
@@ -90,11 +89,11 @@ export const runSocket = (server) => {
       const receiverSocketIds = onlineUserList.get(data.seller._id.toString());
       const senderSocketIds = onlineUserList.get(data.buyer._id.toString());
 
-      receiverSocketIds?.forEach((receiverSocketId) => {
+      receiverSocketIds?.forEach((receiverSocketId: string) => {
         io.to(receiverSocketId).emit("update_order_detail_server", data);
       });
 
-      senderSocketIds?.forEach((senderSocketId) => {
+      senderSocketIds?.forEach((senderSocketId: string) => {
         io.to(senderSocketId).emit("update_order_detail_server", data);
       });
     });
@@ -107,14 +106,14 @@ export const runSocket = (server) => {
       console.log('user disconnected', userId, socket.id);
 
       if (!onlineUserList.has(userId)) {
-        Promise.resolve(updateUserLastSeen(userId, socket)).then(() => {
+        Promise.resolve(updateUserLastSeen(userId)).then(() => {
           io.emit("offline_from_server", userId);
         });
       }
     });
   });
 
-  const addNewUser = (userId, socketId) => {
+  const addNewUser = (userId: string, socketId: string) => {
     if (!onlineUserList.has(userId)) {
       const set = new Set();
       set.add(socketId);
@@ -126,7 +125,7 @@ export const runSocket = (server) => {
     }
   };
 
-  const removeUser = async (socketId, userId) => {
+  const removeUser = async (socketId: string, userId: string) => {
     const set = onlineUserList.get(userId);
     
     if (!set) return;
@@ -138,7 +137,7 @@ export const runSocket = (server) => {
     }
   };
 
-  const getUserBySocketId = (socketId) => {
+  const getUserBySocketId = (socketId: string) => {
     // 
     // 
     for (let [key, value] of onlineUserList.entries()) {
@@ -148,7 +147,7 @@ export const runSocket = (server) => {
     }
   };
 
-  const updateUserLastSeen = async (userId, socket, next) => {
+  const updateUserLastSeen = async (userId: string) => {
     try {
       let user = await User.findById(userId);
       // 
@@ -169,12 +168,12 @@ export const runSocket = (server) => {
     }
   };
 
-  const joinRoom = async (senderId, receiverId) => {
+  const joinRoom = async (senderId: string, receiverId: string) => {
     const r = await createRoom(senderId, receiverId);
-    socket.join(r);
+    // socket.join(r);
   };
 
-  const createRoom = async (senderId, receiverId) => {
+  const createRoom = async (senderId: string, receiverId: string) => {
     if (senderId.toString() > receiverId.toString()) {
       return senderId.toString() + "|" + receiverId.toString();
     } else {
@@ -182,3 +181,5 @@ export const runSocket = (server) => {
     }
   };
 };
+
+export default runSocket;

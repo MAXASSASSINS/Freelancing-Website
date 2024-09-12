@@ -1,6 +1,15 @@
-import ErrorHandler from "../utils/errorHandler.js";
+import ErrorHandler from "../utils/errorHandler";
+import { Request, Response, NextFunction } from "express";
 
-export default (err, req, res, next) => {
+type CustomError = Error & {
+  statusCode?: number;
+  code?: number;
+  keyValue?: any;
+  path?: string;
+}
+
+
+export default (err:CustomError, req:Request, res:Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
   err.message = err.message || "Internal Server Error";
 
@@ -28,7 +37,7 @@ export default (err, req, res, next) => {
     err = new ErrorHandler(message, 400);
   }
 
-  res.status(err.statusCode).json({
+  res.status(err.statusCode!).json({
     success: false,
     message: err.message,
   });
