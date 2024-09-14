@@ -9,8 +9,8 @@ import {
   getGig,
   getUserGigs,
   updateGig,
-} from "../controllers/gigController.js";
-import { isAuthenticated } from "../middleware/auth.js";
+} from "../controllers/gigController";
+import { isAuthenticated } from "../middleware/auth";
 
 const router = express.Router();
 

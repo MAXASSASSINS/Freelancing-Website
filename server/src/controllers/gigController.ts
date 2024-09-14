@@ -1,12 +1,22 @@
-import Gig from "../models/gigModel.js";
-import User from "../models/userModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import Features from "../utils/features.js";
+import Gig from "../models/gigModel";
+import User from "../models/userModel";
+import ErrorHandler from "../utils/errorHandler";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
+import Features from "../utils/features";
 import cloudinary from "cloudinary";
-import { tagOptions } from "../Data/tagsData.js";
+import { tagOptions } from "../Data/tagsData";
+import { Multer } from "multer";
+import { IGig, IReview } from "../types/gig.types";
 
-const checkForErrors = (body, currentStep) => {
+type CheckForErrorsBody = {
+  title: string;
+  category: string;
+  subCategory: string;
+  searchTags: string[];
+  description: string;
+};
+
+const checkForErrors = (body: CheckForErrorsBody, currentStep: number) => {
   let error = "";
   const { title, category, subCategory, searchTags, description } = body;
   switch (currentStep) {
@@ -39,16 +49,15 @@ const checkForErrors = (body, currentStep) => {
       }
       break;
     case 3:
-      const { contentState, desc } = body;
-      if (!desc) {
+      if (!description) {
         error = "Please enter your gig description";
         return error;
       }
-      if (desc.trim().length < 15) {
+      if (description.trim().length < 15) {
         error = "Description should be more than 15 characters";
         return error;
       }
-      if (desc.trim().length > 1200) {
+      if (description.trim().length > 1200) {
         error = "Description should be less than 1200 characters";
         return error;
       }
@@ -59,10 +68,10 @@ const checkForErrors = (body, currentStep) => {
 
 // Create gig
 export const createGig = catchAsyncErrors(async (req, res, next) => {
-  req.body.user = req.user.id;
+  req.body.user = req.user?.id;
   const { data } = req.body;
 
-  const newData = { ...data, user: req.user.id };
+  const newData = { ...data, user: req.user?.id };
   const error = checkForErrors(newData, 1);
 
   newData.category = newData.category.toLowerCase();
@@ -94,19 +103,19 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
     .populate()
     .select();
 
-  let gigs = await feature.query;
+  let gigs: (IGig & {matchingStatus:number})[] = await feature.query;
 
-  let keywords = req.query.keywords ? req.query.keywords.split(",") : [];
+  let keywords = typeof req.query.keywords === 'string' ? req.query.keywords.split(",") : [];
 
   if (keywords.length > 0) {
     gigs.forEach((gig) => {
       gig.matchingStatus = keywords.reduce((count, kw) => {
-        if (gig.title.toLowerCase().includes(kw.toLowerCase())) {
+        if (gig.title?.toLowerCase().includes(kw.toLowerCase())) {
           return count + 1;
         }
-        const gigTags = gig.searchTags.map((tag) => tag.toLowerCase());
+        const gigTags = gig.searchTags?.map((tag) => tag.toLowerCase());
         if (
-          gigTags.some((tag) => tag.toLowerCase().includes(kw.toLowerCase()))
+          gigTags?.some((tag) => tag.toLowerCase().includes(kw.toLowerCase()))
         ) {
           return count + 1;
         }
@@ -126,7 +135,7 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
 
 // Get Favorite gigs
 export const getFavoriteGigs = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
@@ -179,7 +188,7 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Gig not found", 404));
   }
 
-  if (gig.user.toString() !== req.user.id) {
+  if (gig.user.toString() !== req.user?.id) {
     return next(
       new ErrorHandler("You are not authorized to update this gig", 401)
     );
@@ -220,60 +229,6 @@ export const updateGig = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-const fileUpload = catchAsyncErrors(async (req, res, next) => {
-  const files = req.files;
-  //
-
-  let fileUrls = [];
-  const p = await Promise.all(
-    files.map(async (file, index) => {
-      if (!file) return;
-
-      const fileType = file.mimetype;
-      let fileUrl;
-
-      if (fileType.includes("application/json")) {
-        fileUrls.push(null);
-        return;
-      } else if (fileType.includes("video")) {
-        cloudinary.v2.uploader
-          .upload(file.path, {
-            folder: "FreelanceMe",
-            resource_type: "video",
-            chunk_size: 6000000,
-          })
-          .then((result) => {
-            fileUrl = {
-              public_id: result.public_id,
-              url: result.secure_url,
-            };
-            fileUrls.push(fileUrl);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        cloudinary.v2.uploader
-          .upload(file.path, {
-            folder: "FreelanceMe",
-          })
-          .then((result) => {
-            fileUrl = {
-              public_id: result.public_id,
-              url: result.secure_url,
-            };
-            fileUrls.push(fileUrl);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    })
-  );
-
-  return fileUrls;
-});
-
 // Delete gig
 export const deleteGig = catchAsyncErrors(async (req, res, next) => {
   const gig = await Gig.findById(req.params.id);
@@ -294,23 +249,35 @@ export const deleteGig = catchAsyncErrors(async (req, res, next) => {
 export const createGigReview = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment, gigId } = req.body;
 
-  const review = {
-    user: req.user._id,
-    name: req.user.name,
-    avatar: req.user.avatar,
-    country: req.user.country,
+
+  const review: IReview = {
+    user: req.user?._id,
+    name: req.user?.name!,
+    avatar: req.user?.avatar!,
+    country: req.user?.country!,
     rating: Number(rating),
     comment,
   };
 
   const gig = await Gig.findById(gigId);
-  const gigUser = await User.findById(gig.user._id);
 
-  gig.reviews.push(review);
-  gig.numOfReviews = gig.reviews.length;
-  gig.numOfRatings += 1;
-  gigUser.numOfRatings += 1;
-  gigUser.numOfReviews += 1;
+  if(!gig) {
+    return next(new ErrorHandler("Gig not found", 404));
+  }
+
+  const gigUser = await User.findById(gig.user);
+
+  if(!gigUser) {
+    return next(new ErrorHandler("Gig User not found", 404));
+  }
+
+  gig.reviews?.push(review);
+  gig.numOfReviews = gig.reviews?.length;
+  gig.numOfRatings = (gig.numOfRatings ?? 0) + 1;
+  gigUser.numOfRatings = (gigUser.numOfRatings ?? 0)  + 1;
+  gigUser.numOfReviews  = (gigUser.numOfReviews ?? 0) + 1;
+
+  gig.ratings = gig.ratings || 0;
 
   const newRatingsGig =
     (gig.ratings * (gig.numOfRatings - 1) + review.rating) / gig.numOfRatings;
@@ -362,3 +329,56 @@ export const getUserGigs = catchAsyncErrors(async (req, res, next) => {
     userGigs,
   });
 });
+
+// const fileUpload = catchAsyncErrors(async (req, res, next) => {
+//   const files = req.files;
+
+//   let fileUrls: string[] = [];
+//   const p = await Promise.all(
+//     Array.from(files).map(async (file , index) => {
+//       if (!file) return;
+
+//       const fileType = file.mimetype;
+//       let fileUrl;
+
+//       if (fileType.includes("application/json")) {
+//         fileUrls.push(null);
+//         return;
+//       } else if (fileType.includes("video")) {
+//         cloudinary.v2.uploader
+//           .upload(file.path, {
+//             folder: "FreelanceMe",
+//             resource_type: "video",
+//             chunk_size: 6000000,
+//           })
+//           .then((result) => {
+//             fileUrl = {
+//               public_id: result.public_id,
+//               url: result.secure_url,
+//             };
+//             fileUrls.push(fileUrl);
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//           });
+//       } else {
+//         cloudinary.v2.uploader
+//           .upload(file.path, {
+//             folder: "FreelanceMe",
+//           })
+//           .then((result) => {
+//             fileUrl = {
+//               public_id: result.public_id,
+//               url: result.secure_url,
+//             };
+//             fileUrls.push(fileUrl);
+//           })
+//           .catch((err) => {
+//             console.log(err);
+//           });
+//       }
+//     })
+//   );
+
+//   return fileUrls;
+// });

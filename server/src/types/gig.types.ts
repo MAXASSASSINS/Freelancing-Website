@@ -24,7 +24,7 @@ export interface IReview {
   country: string;
   rating: number;
   comment: string;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface IPricing {

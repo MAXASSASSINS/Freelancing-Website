@@ -194,4 +194,4 @@ const gigSchema = new mongoose.Schema<IGig>({
 
 gigSchema.index({ title: "text", searchTags: "text" });
 
-export default mongoose.model("Gig", gigSchema);
+export default mongoose.model<IGig>("Gig", gigSchema);

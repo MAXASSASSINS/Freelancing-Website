@@ -73,12 +73,12 @@ process.on("uncaughtException", (err) => {
 
 // Route Imports
 import userRoutes from "./routes/user";
-// import gigRoutes from "./routes/gig.js";
+import gigRoutes from "./routes/gig";
 // import orderRoutes from "./routes/order.js";
 // import messageRoutes from "./routes/message.js";
 
 app.use("/", userRoutes);
-// app.use("/", gigRoutes);
+app.use("/", gigRoutes);
 // app.use("/", orderRoutes);
 // app.use("/", messageRoutes);
 
