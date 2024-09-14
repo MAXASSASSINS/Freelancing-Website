@@ -12,22 +12,21 @@ import {
   updateUser,
   updateFavouriteList,
   withdrawl,
+  resetPasswordForm,
   addAccount,
   getProductConfig,
   getAccount,
   updateAccount,
   updateAccountStatus,
-  resetPasswordForm,
   verifyEmail,
-} from "../controllers/userController.js";
-import "../controllers/authGoogle.js";
-import { googleCallback } from "../controllers/authGoogle.js";
+} from "../controllers/userController";
+// import { googleCallback } from "../controllers/authGoogle";
 import passport from "passport";
-import User from "../models/userModel.js";
-import { isAuthenticated, authorisedRoles } from "../middleware/auth.js";
-import { verifyCode, verifyNumber } from "../utils/twilio.js";
-import { sendSendGridEmail } from "../utils/sendEmail.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
+import User from "../models/userModel";
+import { isAuthenticated, authorisedRoles } from "../middleware/auth";
+import { verifyCode, verifyNumber } from "../utils/twilio";
+import { sendSendGridEmail } from "../utils/sendEmail";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
 
 const router = express.Router();
 
@@ -57,7 +56,7 @@ router.post("/user/favourite/gig/:id", isAuthenticated, updateFavouriteList);
 router.get(
   "/admin/allUsers",
   isAuthenticated,
-  authorisedRoles("admin"),
+  authorisedRoles(["admin"]),
   getAllUsers
 );
 
@@ -70,11 +69,11 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  googleCallback
-);
+// router.get(
+//   "/auth/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/login" }),
+//   googleCallback
+// );
 
 router.post("/verify/number", isAuthenticated, verifyNumber);
 router.post("/verify/by/call", isAuthenticated, verifyNumber);
@@ -96,7 +95,6 @@ router.post(
 );
 
 router.get('/test', (req, res) => {
-  // res.send('Hello World!')
   res.render('error', {
     error: 'Page not found'
   })

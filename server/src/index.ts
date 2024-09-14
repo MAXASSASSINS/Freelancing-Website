@@ -1,20 +1,17 @@
-import express, { Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import errorMiddleware from "./middleware/error";
-import cookieParser from "cookie-parser";
-import passport from "passport";
+import express, { Request, Response } from "express";
 import session from "express-session";
-import { v2 as cloudinary } from "cloudinary";
-import { Socket, Server } from "socket.io";
 import http from "http";
-import runSocket from "./utils/socket";
+import mongoose from "mongoose";
+import passport from "passport";
 import path from "path";
-import { fileURLToPath } from "url";
-import { sendSendGridEmail } from "./utils/sendEmail";
 import { isAuthenticated } from "./middleware/auth";
+import errorMiddleware from "./middleware/error";
+import runSocket from "./utils/socket";
 
 const app = express();
 dotenv.config();
@@ -75,12 +72,12 @@ process.on("uncaughtException", (err) => {
 });
 
 // Route Imports
-// import userRoutes from "./routes/user";
+import userRoutes from "./routes/user";
 // import gigRoutes from "./routes/gig.js";
 // import orderRoutes from "./routes/order.js";
 // import messageRoutes from "./routes/message.js";
 
-// app.use("/", userRoutes);
+app.use("/", userRoutes);
 // app.use("/", gigRoutes);
 // app.use("/", orderRoutes);
 // app.use("/", messageRoutes);
@@ -134,6 +131,10 @@ process.on("unhandledRejection", (err: Error) => {
   });
 });
 
-app.get("/", isAuthenticated, (req, res) => {
-  res.send("Hello World");
-});
+app.get(
+  '/',
+  isAuthenticated,
+  (req: Request, res: Response) => {
+    res.send('Hello World');
+  }
+);

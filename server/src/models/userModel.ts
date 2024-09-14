@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {Document} from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -122,6 +122,7 @@ const userSchema = new mongoose.Schema<IUser>({
 
   role: {
     type: String,
+    enum: ["user", "admin"],
     default: "user",
   },
 
@@ -340,6 +341,6 @@ userSchema.methods.getEmailVerifyToken = function () {
   return emailVerifyToken;
 };
 
-const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUser & Document>("User", userSchema);
 
 export default User;

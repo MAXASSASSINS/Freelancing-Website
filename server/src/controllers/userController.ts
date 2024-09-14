@@ -1,27 +1,27 @@
-import User from "../models/userModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import sendToken from "../utils/jwtToken.js";
-import sendEmail, { sendSendGridEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
-import cloudinary from "cloudinary";
-import bcrypt from "bcryptjs";
-// import { stripe } from "../utils/stripe.js";
-import Stripe from "stripe";
-import Gig from "../models/gigModel.js";
-import { razorpayInstance } from "../utils/razorpay.js";
-import Razorpay from "razorpay";
-import dotenv from "dotenv";
-import { log } from "console";
-import Order from "../models/orderModel.js";
-import { frontendHomeUrl } from "../index.js";
+import mongoose from "mongoose";
+import { Accounts } from "razorpay/dist/types/accounts";
+import { Products } from "razorpay/dist/types/products";
+import { Stakeholders } from "razorpay/dist/types/stakeholders";
+import { frontendHomeUrl } from "../index";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
+import Gig from "../models/gigModel";
+import Order from "../models/orderModel";
+import User from "../models/userModel";
+import { IRazorPayAccountDetails } from "../types/user.types";
+import ErrorHandler from "../utils/errorHandler";
+import sendToken from "../utils/jwtToken";
+import { razorpayInstance } from "../utils/razorpay";
+import { sendSendGridEmail } from "../utils/sendEmail";
 
 // Register our user
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  if(password && confirmPassword && password !== confirmPassword){
-    return next(new ErrorHandler("Password and confirm passowrd does not match", 400));
+  if (password && confirmPassword && password !== confirmPassword) {
+    return next(
+      new ErrorHandler("Password and confirm passowrd does not match", 400)
+    );
   }
 
   let user = await User.findOne({ email });
@@ -87,9 +87,6 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 
   const isPasswordMatched = await user.comparePassword(password);
 
-  // const temp = await bcrypt.hash('3', 10);
-  //
-
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
@@ -121,7 +118,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorHandler("You are not registered"), 404);
+    return next(new ErrorHandler("You are not registered", 404));
   }
 
   // Get Reset Password Token
@@ -193,11 +190,7 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
     validateBeforeSave: false,
   });
 
-  // return res.render("success", {
-  //   message: "Password reset successfully",
-  // });
-  
-  res.clearCookie("token").redirect(frontendHomeUrl);
+  res.clearCookie("token").redirect(frontendHomeUrl!);
 
   // sendToken(user, 200, res);
 });
@@ -224,10 +217,8 @@ export const resetPasswordForm = catchAsyncErrors(async (req, res, next) => {
 
 // Get my details
 export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
-  const userId = await req.user.id;
-  // const userId = "62c4882c0648ff3db722b3da";
+  const userId = await req.user?.id;
   const user = await User.findById(userId);
-  // const user = await User.findById(req.params.id);
 
   res.status(200).json({
     success: true,
@@ -238,19 +229,20 @@ export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Change password
 export const changePassword = catchAsyncErrors(async (req, res, next) => {
-  const userId = req.user.id;
+  const userId = req.user?.id;
   const user = await User.findById(userId).select("+password");
-
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
   const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Old password is incorrect"), 400);
+    return next(new ErrorHandler("Old password is incorrect", 400));
   }
 
   if (req.body.newPassword !== req.body.confirmPassword) {
     return next(
-      new ErrorHandler("password does not match with confirm password"),
-      400
+      new ErrorHandler("password does not match with confirm password", 400)
     );
   }
 
@@ -278,7 +270,7 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHandler(`user does not exist with id: ${req.params.id}`)
+      new ErrorHandler(`user does not exist with id: ${req.params.id}`, 400)
     );
   }
   res.status(200).json({
@@ -290,19 +282,17 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
 
 // Update user data
 export const updateUser = catchAsyncErrors(async (req, res, next) => {
-  let user = await User.findById(req.user.id);
+  let user = await User.findById(req.user?.id);
 
   if (!user) {
     return next(
-      new ErrorHandler(`user does not exist with id: ${req.params.id}`)
-    );
+      new ErrorHandler(`user does not exist with id: ${req.params.id}`, 400))}
+
+  if (user._id != req.user?.id) {
+    return next(new ErrorHandler(`You are not authorized to update this user`, 401));
   }
 
-  if (user._id != req.user.id) {
-    return next(new ErrorHandler(`You are not authorized to update this user`));
-  }
-
-  user = await User.findByIdAndUpdate(req.user.id, req.body, {
+  user = await User.findByIdAndUpdate(req.user?.id, req.body, {
     new: true,
     runValidators: true,
     useFindandModify: false,
@@ -318,7 +308,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   const { amount } = req.body;
 
-  if (!req.user.withdrawEligibility) {
+  if (!req.user?.withdrawEligibility) {
     return next(new ErrorHandler("Minimum balance for withdrawl is 2000", 400));
   }
 
@@ -336,6 +326,9 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   for (let i = 0; i < orders.length && transferAmount < amount; i++) {
     const order = orders[i];
     const paymentId = order.paymentDetails.razorpay_payment_id;
+    if(!paymentId) {
+      return next(new ErrorHandler("Payment id is not found", 400));
+    }
     if (order.transferredAmount < order.amount && transferAmount < amount) {
       let tfa = Math.min(
         order.amount - order.transferredAmount,
@@ -375,7 +368,7 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
 
 export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
   const gigId = req.params.id;
-  const userId = req.user.id;
+  const userId = req.user?.id;
 
   const gig = await Gig.findById(gigId);
 
@@ -386,14 +379,16 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(userId);
 
   let isFavourite = false;
-  if (user.favouriteGigs.includes(gigId)) {
-    user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigId), 1);
+  const gigObjectId = new mongoose.Types.ObjectId(gigId);
+  
+  if (user?.favouriteGigs.includes(gigObjectId)) {
+    user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigObjectId), 1);
   } else {
     isFavourite = true;
-    user.favouriteGigs.push(gigId);
+    user?.favouriteGigs.push(gigObjectId);
   }
 
-  await user.save({
+  await user?.save({
     validateBeforeSave: false,
   });
   res.status(200).json({
@@ -433,12 +428,12 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please provide all the details", 400));
   }
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
 
-  if (user.razorPayAccountId) {
+  if (user.razorPayAccountDetails.accountId) {
     return next(new ErrorHandler("You have already added your account", 400));
   }
 
@@ -446,24 +441,24 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
 
   // creating linked account
   try {
-    const createAccPayload = {
-      // email: user.email,
+    const createAccPayload: Accounts.RazorpayAccountCreateRequestBody = {
       email,
-      phone: user.phone.number,
+      phone: user.phone!.number!,
       type: "route",
       legal_business_name: user.name,
+      contact_name: user.name,
       business_type: "individual",
       profile: {
         category: "services",
         subcategory: "professional_services",
         addresses: {
           registered: {
-            country,
             street1,
             street2,
             city,
             state,
-            postal_code: postalCode,
+            country,
+            postal_code: postalCode.to_string(),
           },
         },
       },
@@ -476,15 +471,21 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
     await user.save({
       validateBeforeSave: false,
     });
-  } catch (err) {
+  } catch (err: any) {
     return next(new ErrorHandler(err.error.description, 400));
   }
 
   // creating stakeholder account
   try {
-    const createStackholderPayload = {
+    const createStackholderPayload: Stakeholders.RazorpayStakeholderCreateRequestBody = {
       email,
-      name: accountHolderName,
+      name: accountHolderName.to_string(),
+      phone: {
+        primary: user.phone!.number!,
+      },
+      kyc: {
+        pan: panNumber,
+      },
     };
     const stakeholder = await razorpayInstance.stakeholders.create(
       user.razorPayAccountDetails.accountId,
@@ -495,15 +496,16 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
     await user.save({
       validateBeforeSave: false,
     });
-  } catch (err) {
+  } catch (err: any) {
     return next(new ErrorHandler(err.error.description, 400));
   }
 
   // request product configuration
   try {
-    const requestProductPayload = {
+    const requestProductPayload: Products.RazorpayProductCreateRequestBody = {
       product_name: "route",
       tnc_accepted: true,
+      ip: req.socket.remoteAddress!
     };
     const product = await razorpayInstance.products.requestProductConfiguration(
       user.razorPayAccountDetails.accountId,
@@ -513,7 +515,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
     await user.save({
       validateBeforeSave: false,
     });
-  } catch (err) {
+  } catch (err: any) {
     return next(new ErrorHandler(err.error.description, 400));
   }
 
@@ -531,12 +533,11 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       user.razorPayAccountDetails.productId,
       updateProductPayload
     );
-    user.razorPayAccountDetails.status = productAfter.activation_status;
-    user.razorPayAccountDetails.accou;
+    user.razorPayAccountDetails.status = productAfter.activation_status as IRazorPayAccountDetails["status"];
     await user.save({
       validateBeforeSave: false,
     });
-  } catch (err) {
+  } catch (err: any) {
     return next(new ErrorHandler(err.error.description, 400));
   }
 
@@ -548,7 +549,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getAccount = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -586,12 +587,12 @@ export const getAccount = catchAsyncErrors(async (req, res, next) => {
       ifscCode: configuration.active_configuration.settlements.ifsc_code,
       beneficiaryName:
         configuration.active_configuration.settlements.beneficiary_name,
-      street1: acc.profile.addresses.registered?.street1,
-      street2: acc.profile.addresses.registered?.street2,
-      city: acc.profile.addresses.registered?.city,
-      state: acc.profile.addresses.registered?.state,
-      postalCode: acc.profile.addresses.registered?.postal_code,
-      country: acc.profile.addresses.registered?.country,
+      street1: acc.profile.addresses?.registered?.street1,
+      street2: acc.profile.addresses?.registered?.street2,
+      city: acc.profile.addresses?.registered?.city,
+      state: acc.profile.addresses?.registered?.state,
+      postalCode: acc.profile.addresses?.registered?.postal_code,
+      country: acc.profile.addresses?.registered?.country,
       panNumber: acc.legal_info?.pan,
       requirements: {
         beneficiaryName: beneficiary_nameRequired.length > 0,
@@ -603,7 +604,7 @@ export const getAccount = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getProductConfig = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -654,7 +655,7 @@ export const updateAccount = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please provide all the details", 400));
   }
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user?.id);
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -678,7 +679,7 @@ export const updateAccount = catchAsyncErrors(async (req, res, next) => {
         tnc_accepted: true,
       }
     )
-    .then((res) => {
+    .then(() => {
       res.status(200).json({
         success: true,
         message: "Your account is under review",
@@ -737,8 +738,13 @@ export const verifyEmail = catchAsyncErrors(async (req, res, next) => {
     .update(req.params.token)
     .digest("hex");
 
-  const emailVerificationToken = user.emailVerificationToken.toString();
-  console.log("emailVerificationToken", emailVerificationToken);
+  const emailVerificationToken = user.emailVerificationToken?.toString();
+
+  if(!emailVerificationToken) {
+    return res.render("error", {
+      error: "No email verification token found",
+    });
+  }
 
   if (emailVerificationToken !== token) {
     return res.render("error", {

@@ -67,7 +67,7 @@ export interface IUser extends Document {
   numOfReviews: number;
   reviews: IReview[];
   country: string;
-  role: string;
+  role: 'user' | 'admin';
   tagline?: string;
   description?: string;
   languages: ILanguage[];

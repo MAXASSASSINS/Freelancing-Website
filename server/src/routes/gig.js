@@ -10,7 +10,7 @@ import {
   getUserGigs,
   updateGig,
 } from "../controllers/gigController.js";
-import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
+import { isAuthenticated } from "../middleware/auth.js";
 
 const router = express.Router();
 

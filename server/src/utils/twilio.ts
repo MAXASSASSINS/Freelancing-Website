@@ -45,7 +45,8 @@ export const verifyCode = (req: Request, res: Response) => {
       .verificationChecks.create({ to: req.body.phone.code + req.body.phone.number, code: req.body.code })
       .then((verification_check) => {
         if (verification_check.status === "approved") {
-          User.findById((req.user as IUser).id).then((user) => {
+          if(!req.user) return res.status(404).json({ success: false, error: "User not found" });
+          User.findById(req.user.id).then((user) => {
             if(!user) return res.status(404).json({ success: false, error: "User not found" });
             user.phone = req.body.phone;
             user
