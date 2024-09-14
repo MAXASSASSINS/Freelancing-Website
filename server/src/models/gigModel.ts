@@ -98,16 +98,19 @@ const gigSchema = new mongoose.Schema<IGig>({
   ratings: {
     type: Number,
     default: 0,
+    required: true,
   },
 
   numOfRatings: {
     type: Number,
     default: 0,
+    required: true,
   },
 
   numOfReviews: {
     type: Number,
     default: 0,
+    required: true,
   },
 
   reviews: [

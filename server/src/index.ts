@@ -72,14 +72,14 @@ process.on("uncaughtException", (err) => {
 });
 
 // Route Imports
-import userRoutes from "./routes/user";
 import gigRoutes from "./routes/gig";
-// import orderRoutes from "./routes/order.js";
+import orderRoutes from "./routes/order";
+import userRoutes from "./routes/user";
 // import messageRoutes from "./routes/message.js";
 
 app.use("/", userRoutes);
 app.use("/", gigRoutes);
-// app.use("/", orderRoutes);
+app.use("/", orderRoutes);
 // app.use("/", messageRoutes);
 
 // Middleware for Errors

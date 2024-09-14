@@ -1,4 +1,5 @@
-import { Document, Types } from 'mongoose';
+import { Document, Types, PopulatedDoc } from 'mongoose';
+import { IGig } from './gig.types';
 
 export interface IPhone {
   code?: string;
@@ -16,13 +17,13 @@ export interface ILanguage {
 }
 
 export interface IReview {
-  user: Types.ObjectId;
+  user: PopulatedDoc<IUser & Document>;
   name: string;
   avatar: IAvatar;
   country: string;
   rating: number;
   comment: string;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface ISkill {
@@ -52,10 +53,6 @@ export interface IRazorPayAccountDetails {
   accountHolderName: string;
 }
 
-export interface IFavouriteGigs {
-  type: Types.ObjectId;
-}
-
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -81,7 +78,7 @@ export interface IUser extends Document {
   withdrawEligibility: boolean;
   razorPayAccountDetails: IRazorPayAccountDetails;
   lastDelivery?: Date;
-  favouriteGigs: Types.ObjectId[];
+  favouriteGigs: PopulatedDoc<IGig & Document>[];
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   emailVerificationToken?: string;

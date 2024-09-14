@@ -1,5 +1,7 @@
 import { IFile } from "./file.types";
-import { Document, Schema } from "mongoose";
+import { Document, Schema, Types, PopulatedDoc } from "mongoose";
+import { IGig } from "./gig.types";
+import { IUser } from "./user.types";
 
 export interface IOrderRequirement {
   questionTitle: string;
@@ -36,24 +38,31 @@ export interface IRevision {
   requestedAt: Date;
 }
 
-export interface IFeedback {
-  communication?: number;
-  service?: number;
-  recommend?: number;
+export interface IBuyerFeedback {
+  communication: number;
+  service: number;
+  recommend: number;
   comment?: string;
   createdAt?: Date;
 }
+
+export interface ISellerFeedback {
+  rating: number;
+  comment?: string;
+  createdAt?: Date;
+}
+
 
 export interface IOrder extends Document {
   orderId: string;
   amount: number;
   transferredAmount: number;
   duration: number;
-  gig: Schema.Types.ObjectId;
-  seller: Schema.Types.ObjectId;
-  buyer: Schema.Types.ObjectId;
+  gig: PopulatedDoc<IGig & Document>;
+  seller: PopulatedDoc<IUser & Document>;
+  buyer: PopulatedDoc<IUser & Document>;
   status: 'Pending' | 'In Progress' | 'Completed' | 'Cancelled' | 'Delivered' | 'In Revision';
-  createdAt: Date;
+  createdAt?: Date;
   requirements: IOrderRequirement[];
   requirementsSubmitted: boolean;
   requirementsSubmittedAt: Date;
@@ -74,6 +83,7 @@ export interface IOrder extends Document {
   deliveryDate: Date;
   completedAt?: Date;
   cancelledAt?: Date;
-  buyerFeedback?: IFeedback;
-  sellerFeedback?: IFeedback;
+  buyerFeedback?: IBuyerFeedback;
+  sellerFeedback?: ISellerFeedback;
+  askSellerFeedback: boolean;
 }

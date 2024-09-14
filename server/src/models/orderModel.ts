@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Document, Types } from "mongoose";
 import { IOrder } from "../types/order.types";
 
 
@@ -53,6 +52,7 @@ const orderSchema = new mongoose.Schema<IOrder>({
   createdAt: {
     type: Date,
     default: Date.now,
+    required: true,
   },
   requirements: [
     {
@@ -313,19 +313,25 @@ const orderSchema = new mongoose.Schema<IOrder>({
       type: Number,
       min: 0,
       max: 5,
-      select: false
+      select: false,
+      default: 0,
+      required: true,
     },
     service: {
       type: Number,
       min: 0,
       max: 5,
-      select: false
+      select: false,
+      default: 0,
+      required: true,
     },
     recommend: {
       type: Number,
       min: 0,
       max: 5,
-      select: false
+      select: false,
+      default: 0,
+      required: true,
     },
     comment: {
       type: String,
@@ -333,6 +339,8 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     createdAt: {
       type: Date,
+      default: Date.now,
+      required: true,
     },
   },
   sellerFeedback: {
@@ -341,6 +349,8 @@ const orderSchema = new mongoose.Schema<IOrder>({
       min: 0,
       max: 5,
       select: false,
+      default: 0,
+      required: true,
     },
     comment: {
       type: String,
@@ -348,8 +358,14 @@ const orderSchema = new mongoose.Schema<IOrder>({
     },
     createdAt: {
       type: Date,
+      default: Date.now,
+      required: true,
     },
   },
+  askSellerFeedback: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 export default mongoose.model("Order", orderSchema);

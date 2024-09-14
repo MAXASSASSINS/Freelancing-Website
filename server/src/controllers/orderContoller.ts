@@ -1,21 +1,19 @@
-import Order from "../models/orderModel.js";
-import Gig from "../models/gigModel.js";
-import User from "../models/userModel.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import { stripe } from "../utils/stripe.js";
-import { randomString } from "../utils/utilities.js";
-import sendEmail, { sendSendGridEmail } from "../utils/sendEmail.js";
-import { razorpayInstance } from "../utils/razorpay.js";
-import {
-  validatePaymentVerification,
-  validateWebhookSignature,
-} from "../node_modules/razorpay/dist/utils/razorpay-utils.js";
-import { frontendHomeUrl } from "../index.js";
-import error from "../middleware/error.js";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
+import Gig from "../models/gigModel";
+import Order from "../models/orderModel";
+import User from "../models/userModel";
+import ErrorHandler from "../utils/errorHandler";
+import { razorpayInstance } from "../utils/razorpay";
+import { sendSendGridEmail } from "../utils/sendEmail";
+import { randomString } from "../utils/utilities";
+import crypto from "crypto";
+import { Request, Response } from "express";
+import { frontendHomeUrl } from "../index";
+import { IOrderRequirement } from "../types/order.types";
+import { IReview, IUser } from "../types/user.types";
 
 // Create new order
-export const newOrder = async (user, body) => {
+export const newOrder = async (user: IUser, body: any) => {
   const {
     razorpay_payment_id,
     razorpay_order_id,
@@ -36,52 +34,51 @@ export const newOrder = async (user, body) => {
 
   let rString = randomString(13, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-  const price = gig.pricing[packageNumber].packagePrice;
+  const price = gig.pricing![packageNumber].packagePrice;
   const totalAmount = Number(price).toFixed(2);
 
-  let duration = gig.pricing[packageNumber].packageDeliveryTime
-    .toString()
-    .split(" ");
-  duration = Number(duration[0]);
+  let duration = Number(
+    gig.pricing![packageNumber].packageDeliveryTime.toString().split(" ")[0]
+  );
 
   let deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + duration);
 
-  const options = gig.requirements.map((requirement) => {
+  const options = gig.requirements?.map((requirement) => {
     if (requirement.questionType == "Free Text") {
       return;
     }
-    return requirement.options.map((option) => {
+    return requirement.options?.map((option) => {
       return {
         title: option,
       };
     });
   });
 
-  const requirements = gig.requirements.map((requirement, index) => {
+  const requirements = gig.requirements?.map((requirement, index) => {
     return {
       questionTitle: requirement.questionTitle,
       questionType: requirement.questionType,
       answerRequired: requirement.answerRequired,
       multipleOptionSelect: requirement.multipleOptionSelect,
-      options: options[index],
+      options: options![index],
     };
   });
 
   const packageDetails = {
-    packageTitle: gig.pricing[packageNumber].packageTitle,
-    packageDescription: gig.pricing[packageNumber].packageDescription,
-    packageDeliveryTime: gig.pricing[packageNumber].packageDeliveryTime,
-    revisions: gig.pricing[packageNumber].revisions,
-    sourceFile: gig.pricing[packageNumber].sourceFile,
-    commercialUse: gig.pricing[packageNumber].commercialUse,
-    packagePrice: gig.pricing[packageNumber].packagePrice,
+    packageTitle: gig.pricing![packageNumber].packageTitle,
+    packageDescription: gig.pricing![packageNumber].packageDescription,
+    packageDeliveryTime: gig.pricing![packageNumber].packageDeliveryTime,
+    revisions: gig.pricing![packageNumber].revisions,
+    sourceFile: gig.pricing![packageNumber].sourceFile,
+    commercialUse: gig.pricing![packageNumber].commercialUse,
+    packagePrice: gig.pricing![packageNumber].packagePrice,
   };
 
   const image = {
-    publicId: gig.images[0].publicId,
-    url: gig.images[0].url,
-    blurhash: gig.images[0].blurhash,
+    publicId: gig.images![0].publicId,
+    url: gig.images![0].url,
+    blurhash: gig.images![0].blurhash,
   };
 
   const paymentDetails = {
@@ -90,13 +87,10 @@ export const newOrder = async (user, body) => {
     razorpay_signature,
   };
 
-  // res.send(requirements);
-
   const order = await Order.create({
     orderId: rString,
     amount: totalAmount,
     duration,
-    deliveryDate,
     gig: gigId,
     seller: gig.user._id,
     buyer: user._id,
@@ -118,7 +112,10 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {});
 export const updateOrderRequirements = catchAsyncErrors(
   async (req, res, next) => {
     const { requirements: answers } = req.body;
-    let order = await Order.findById(req.params.id).populate("seller buyer", "name email");
+    let order = await Order.findById(req.params.id).populate(
+      "seller buyer",
+      "name email"
+    );
 
     if (!order) {
       return next(new ErrorHandler("Order not found with this Id", 404));
@@ -129,7 +126,7 @@ export const updateOrderRequirements = catchAsyncErrors(
     }
 
     const requirements = order.requirements.map((requirement, index) => {
-      const temp = {
+      const temp: IOrderRequirement = {
         questionTitle: requirement.questionTitle,
         questionType: requirement.questionType,
         answerRequired: requirement.answerRequired,
@@ -140,12 +137,14 @@ export const updateOrderRequirements = catchAsyncErrors(
         temp.answerText = answers[index].answer;
         temp.files = answers[index].files;
       } else {
-        temp.options = answers[index].answer.map((option, idx) => {
-          return {
-            title: requirement.options[idx].title,
-            selected: option,
-          };
-        });
+        temp.options = answers[index].answer.map(
+          (option: string, idx: number) => {
+            return {
+              title: requirement.options![idx].title,
+              selected: option,
+            };
+          }
+        );
       }
       return temp;
     });
@@ -164,7 +163,13 @@ export const updateOrderRequirements = catchAsyncErrors(
         runValidators: true,
         useFindAndModify: false,
       }
-    ).populate("seller buyer", "name email");
+    )
+      .populate("seller buyer", "name email")
+      .exec();
+
+    if (!order) {
+      return next(new ErrorHandler("Order not found with this Id", 404));
+    }
 
     // send email to seller
     try {
@@ -183,7 +188,7 @@ export const updateOrderRequirements = catchAsyncErrors(
         },
         text: `You have a new order with order id ${order.orderId}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       return next(new ErrorHandler(error, 400));
     }
 
@@ -208,13 +213,13 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     "name email"
   );
 
-  const buyerEmail = order.buyer.email;
+  const buyerEmail = order?.buyer.email;
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if (order.seller._id.toString() !== req.user._id.toString()) {
+  if (order.seller._id.toString() !== req.user?._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add delivery to this order",
@@ -227,7 +232,11 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
   //   return next(new ErrorHandler("Delivery date has passed", 400));
   // }
 
-  if (order.status !== "In Progress" && order.status !== "In Revision" && order.status !== "Delivered") {
+  if (
+    order.status !== "In Progress" &&
+    order.status !== "In Revision" &&
+    order.status !== "Delivered"
+  ) {
     return next(
       new ErrorHandler(
         "You can only deliver an order which is in progress or in revision",
@@ -246,6 +255,10 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   // send email to buyer about the delivery
   await sendSendGridEmail({
     to: order.buyer.email,
@@ -259,7 +272,6 @@ export const addOrderDelivery = catchAsyncErrors(async (req, res, next) => {
     },
     text: `${order.seller.name} has delivered your order with order id ${order.orderId}`,
   });
-
 
   res.status(200).json({
     success: true,
@@ -281,13 +293,17 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     "name email"
   );
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   const sellerEmail = order.seller.email;
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if (order.buyer._id.toString() !== req.user._id.toString()) {
+  if (order.buyer._id.toString() !== req.user?._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add revision to this order",
@@ -296,7 +312,7 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.deliveryDate < Date.now()) {
+  if (order.deliveryDate.getTime() < Date.now()) {
     return next(
       new ErrorHandler("Order already passed its expected delivery date", 400)
     );
@@ -330,6 +346,10 @@ export const addOrderRevision = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   // send email to seller about the revision
   await sendSendGridEmail({
     to: order.seller.email,
@@ -358,6 +378,10 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     "name email avatar"
   );
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   const buyerEmail = order.buyer.email;
   const sellerEmail = order.seller.email;
 
@@ -365,7 +389,7 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if (order.buyer._id.toString() !== req.user._id.toString()) {
+  if (order.buyer._id.toString() !== req.user?._id.toString()) {
     return next(
       new ErrorHandler("You are not authorized to complete this order", 401)
     );
@@ -387,11 +411,20 @@ export const markOrderAsCompleted = catchAsyncErrors(async (req, res, next) => {
     }
   ).populate("seller buyer", "name email avatar");
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   // adding balance to seller's account
   const seller = await User.findById(order.seller._id);
+
+  if (!seller) {
+    return next(new ErrorHandler("Seller not found with this Id", 404));
+  }
+
   seller.balance += order.amount;
   if (seller.balance > 2000) seller.withdrawEligibility = true;
-  seller.lastDelivery = Date.now();
+  seller.lastDelivery = new Date();
   await seller.save({ validateBeforeSave: false });
 
   // send email to seller
@@ -423,38 +456,43 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
       "+buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.comment +sellerFeedback.rating"
     );
 
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
   const { buyer, seller } = order;
 
-  if(req.user._id.toString() !== buyer._id.toString() && req.user._id.toString() !== seller._id.toString()) {
-    return next(new ErrorHandler("You are not authorized to view this order", 401));
+  if (
+    req.user?._id.toString() !== buyer._id.toString() &&
+    req.user?.id.toString() !== seller._id.toString()
+  ) {
+    return next(
+      new ErrorHandler("You are not authorized to view this order", 401)
+    );
   }
 
   if (order.status !== "Completed") {
-    order = {
-      ...order._doc,
-      buyerFeedback: undefined,
-      sellerFeedback: undefined,
-      askSellerFeedback: false,
-    };
+    order.buyerFeedback = undefined;
+    order.sellerFeedback = undefined;
+    order.askSellerFeedback = false;
   }
 
   if (
     order.status === "Completed" &&
-    seller._id.toString() === req.user._id.toString()
+    seller._id.toString() === req.user!._id.toString()
   ) {
-    if (order.buyerFeedback.createdAt && !order.sellerFeedback.createdAt) {
-      order = {
-        ...order._doc,
-        buyerFeedback: undefined,
-        sellerFeedback: undefined,
-        askSellerFeedback: true,
-      };
+    if (order.buyerFeedback?.createdAt && !order.sellerFeedback?.createdAt) {
+      order.buyerFeedback = undefined;
+      order.sellerFeedback = undefined;
+      order.askSellerFeedback = true;
     }
   }
 
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
+
+  await order.save({ validateBeforeSave: false });
 
   res.status(200).json({
     success: true,
@@ -466,16 +504,16 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 // Get logged in user orders
 export const myOrders = catchAsyncErrors(async (req, res, next) => {
   const { status } = req.body;
-  const userId = req.user._id;
+  const userId = req.user!._id;
   const orders = await Order.find({
     $or: [
       { buyer: userId },
-      { 
-        seller: userId, 
-        status: { $ne: "Pending" } 
-      }
+      {
+        seller: userId,
+        status: { $ne: "Pending" },
+      },
     ],
-    status: status ? status : { $ne: "Deleted" }
+    status: status ? status : { $ne: "Deleted" },
   })
     // .or({ buyer: req.user._id })
     .populate("gig", "title images")
@@ -502,7 +540,7 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
 
-  if (order.buyer._id.toString() !== req.user._id.toString()) {
+  if (order.buyer._id.toString() !== req.user!._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add feedback to this order",
@@ -520,7 +558,7 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.buyerFeedback.createdAt) {
+  if (order.buyerFeedback?.createdAt) {
     return next(
       new ErrorHandler("You have already added feedback to this order", 400)
     );
@@ -550,7 +588,6 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
 // add seller feedback
 export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment } = req.body;
-  //
 
   let order = await Order.findById(req.params.id)
     .populate("seller buyer", "name email avatar")
@@ -561,7 +598,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
-  if (order.seller._id.toString() !== req.user._id.toString()) {
+  if (order.seller._id.toString() !== req.user!._id.toString()) {
     return next(
       new ErrorHandler(
         "You are not authorized to add feedback as a seller to this order",
@@ -579,7 +616,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (!order.buyerFeedback.createdAt) {
+  if (!order.buyerFeedback?.createdAt) {
     return next(
       new ErrorHandler(
         "You can only add feedback after the buyer has added feedback",
@@ -588,7 +625,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.sellerFeedback.createdAt) {
+  if (order.sellerFeedback?.createdAt) {
     return next(
       new ErrorHandler("You have already added feedback to this order", 400)
     );
@@ -610,32 +647,45 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
       "+buyerFeedback.comment +buyerFeedback.communication +buyerFeedback.recommend +buyerFeedback.service +sellerFeedback.comment +sellerFeedback.rating"
     );
 
-  order = {
-    ...order._doc,
-    askSellerFeedback: false,
-  };
+  if (!order) {
+    return next(new ErrorHandler("Order not found with this Id", 404));
+  }
+
+  order.askSellerFeedback = false;
 
   const buyer = await User.findById(order.buyer._id);
   const seller = await User.findById(order.seller._id);
   const gig = await Gig.findById(order.gig);
 
-  const reviewForSeller = {
+  if (!buyer) {
+    return next(new ErrorHandler("Buyer not found with this Id", 404));
+  }
+
+  if (!seller) {
+    return next(new ErrorHandler("Seller not found with this Id", 404));
+  }
+
+  if (!gig) {
+    return next(new ErrorHandler("Gig not found with this Id", 404));
+  }
+
+  const reviewForSeller: IReview = {
     user: order.buyer._id,
     name: order.buyer.name,
     avatar: order.buyer.avatar,
     country: order.buyer.country,
     rating: Math.round(
       Number(
-        (order.buyerFeedback.communication +
-          order.buyerFeedback.service +
-          order.buyerFeedback.recommend) /
+        (Number(order.buyerFeedback?.communication) +
+          Number(order.buyerFeedback?.service) +
+          Number(order.buyerFeedback?.recommend)) /
           3
       )
     ),
-    comment: order.buyerFeedback.comment,
+    comment: order.buyerFeedback?.comment!,
   };
 
-  const reviewForBuyer = {
+  const reviewForBuyer: IReview = {
     user: order.seller._id,
     name: order.seller.name,
     avatar: order.seller.avatar,
@@ -644,9 +694,9 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     comment: comment,
   };
 
-  if (reviewForSeller.comment) gig.reviews.push(reviewForSeller);
-  gig.numOfReviews = gig.reviews.length;
-  gig.numOfRatings += 1;
+  if (reviewForSeller.comment) gig.reviews?.push(reviewForSeller);
+  gig.numOfReviews = gig.reviews?.length ?? 0;
+  gig.numOfRatings = gig.numOfRatings + 1;
 
   if (reviewForSeller.comment) seller.reviews.push(reviewForSeller);
   seller.numOfRatings += 1;
@@ -734,38 +784,11 @@ export const packagePayment = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Gig not found with this Id", 404));
   }
 
-  const price = gig.pricing[packageNumber].packagePrice;
+  const price = gig.pricing![packageNumber].packagePrice;
 
-  const serviceFee = Number(price) * (0.21).toFixed(2);
+  const serviceFee = Number(price * 0.21).toFixed(2);
 
   const totalAmount = Number(price + serviceFee).toFixed(2);
-
-  //
-  // try {
-  //   const paymentIntent = await stripe.paymentIntents.create({
-  //     amount: totalAmount * 100,
-  //     currency: "inr",
-  //     description: gig.title,
-  //     payment_method: id,
-  //     receipt_email: req.user.email,
-  //     confirm: true,
-  //   });
-
-  //   //
-
-  //   res.status(201).json({
-  //     message: "Payment Intent created Sucessfully",
-  //     success: true,
-  //     clientSecret: paymentIntent.client_secret,
-  //     paymentIntent,
-  //   });
-  // } catch (error) {
-  //   res.status(400).json({
-  //     message: "Payment Intent not created",
-  //     success: false,
-  //     error: { message: error.message },
-  //   });
-  // }
 
   const options = {
     amount: Number(totalAmount) * 100,
@@ -786,28 +809,37 @@ export const paymentVerification = catchAsyncErrors(async (req, res, next) => {
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
     req.body;
 
-  const isPaymentAuthentic = validatePaymentVerification(
-    { order_id: razorpay_order_id, payment_id: razorpay_payment_id },
-    razorpay_signature,
-    process.env.RAZORPAY_KEY_SECRET
+  if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+    return next(
+      new ErrorHandler("Please provide payment id, order id and signature", 400)
+    );
+  }
+
+  const hmac_sha256 = (message: string, key: string) => {
+    return crypto.createHmac("sha256", key).update(message).digest("hex");
+  };
+
+  const generated_signature = hmac_sha256(
+    razorpay_order_id + "|" + razorpay_payment_id,
+    process.env.RAZORPAY_KEY_SECRET!
   );
 
-  if (!isPaymentAuthentic) {
+  if (generated_signature !== razorpay_signature) {
     return next(new ErrorHandler("Payment not verified", 400));
   }
 
   try {
-    const order = await newOrder(req.user, req.body);
+    const order = await newOrder(req.user!, req.body);
     res.status(200).json({
       success: true,
       order,
     });
-  } catch (error) {
+  } catch (error: any) {
     return next(new ErrorHandler(error, 400));
   }
 });
 
-export const checkout = async (req, res) => {
+export const checkout = async (req: Request, res: Response) => {
   const { amount } = req.body;
   const options = {
     amount: Number(amount) * 100,

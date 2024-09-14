@@ -1,4 +1,5 @@
-import { Document, Schema } from 'mongoose';
+import { Document, PopulatedDoc, Schema } from 'mongoose';
+import { IUser } from './user.types';
 
 export interface IImage {
   publicId: string;
@@ -15,7 +16,7 @@ export interface IVideo {
 }
 
 export interface IReview {
-  user: Schema.Types.ObjectId;
+  user: PopulatedDoc<IUser & Document>;
   name: string;
   avatar: {
     public_id: string;
@@ -54,12 +55,12 @@ export interface IGig extends Document {
   description?: string;
   images?: IImage[];
   video?: IVideo;
-  ratings?: number;
-  numOfRatings?: number;
-  numOfReviews?: number;
+  ratings: number;
+  numOfRatings: number;
+  numOfReviews: number;
   reviews?: IReview[];
   createdAt?: Date;
-  user: Schema.Types.ObjectId;
+  user: PopulatedDoc<IUser & Document>;
   active?: boolean;
   requirements?: IGigRequirement[];
 }

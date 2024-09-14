@@ -1,12 +1,10 @@
+import { tagOptions } from "../Data/tagsData";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
 import Gig from "../models/gigModel";
 import User from "../models/userModel";
-import ErrorHandler from "../utils/errorHandler";
-import catchAsyncErrors from "../middleware/catchAsyncErrors";
-import Features from "../utils/features";
-import cloudinary from "cloudinary";
-import { tagOptions } from "../Data/tagsData";
-import { Multer } from "multer";
 import { IGig, IReview } from "../types/gig.types";
+import ErrorHandler from "../utils/errorHandler";
+import Features from "../utils/features";
 
 type CheckForErrorsBody = {
   title: string;
@@ -272,7 +270,7 @@ export const createGigReview = catchAsyncErrors(async (req, res, next) => {
   }
 
   gig.reviews?.push(review);
-  gig.numOfReviews = gig.reviews?.length;
+  gig.numOfReviews = gig.reviews?.length ?? 0;
   gig.numOfRatings = (gig.numOfRatings ?? 0) + 1;
   gigUser.numOfRatings = (gigUser.numOfRatings ?? 0)  + 1;
   gigUser.numOfReviews  = (gigUser.numOfReviews ?? 0) + 1;

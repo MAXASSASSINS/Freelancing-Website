@@ -1,24 +1,24 @@
 import express from "express";
 import {
+  addBuyerFeedback,
+  addOrderDelivery,
+  addOrderRevision,
+  addSellerFeedback,
+  checkout,
+  deleteAllOrders,
   getAllOrders,
   getOrderDetails,
   getStripePublishableKey,
+  markOrderAsCompleted,
   myOrders,
   newOrder,
   packagePayment,
-  updateOrderStatus,
-  updateOrder,
-  deleteAllOrders,
-  updateOrderRequirements,
-  addOrderDelivery,
-  addOrderRevision,
-  markOrderAsCompleted,
-  addBuyerFeedback,
-  addSellerFeedback,
-  checkout,
   paymentVerification,
-} from "../controllers/orderContoller.js";
-import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
+  updateOrder,
+  updateOrderRequirements,
+  updateOrderStatus,
+} from "../controllers/orderContoller";
+import { authorisedRoles, isAuthenticated } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -29,13 +29,13 @@ router.post("/orders/me", isAuthenticated, myOrders);
 router.get(
   "/orders/getAll",
   isAuthenticated,
-  authorisedRoles("admin"),
+  authorisedRoles(["admin"]),
   getAllOrders
 );
 router.put(
   "/orders/updateOrderStatus/:id",
   isAuthenticated,
-  authorisedRoles("admin"),
+  authorisedRoles(["admin"]),
   updateOrderStatus
 );
 
@@ -62,6 +62,6 @@ router.get(
   getStripePublishableKey
 );
 
-// router.post("/checkout", checkout);
+router.post("/checkout", checkout);
 
 export default router;

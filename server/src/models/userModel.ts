@@ -110,6 +110,7 @@ const userSchema = new mongoose.Schema<IUser>({
       createdAt: {
         type: Date,
         default: Date.now,
+        required: true,
       },
     },
   ],
