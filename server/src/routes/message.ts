@@ -1,5 +1,5 @@
 import express from "express";
-import { authorisedRoles, isAuthenticated } from "../middleware/auth.js";
+import { isAuthenticated } from "../middleware/auth";
 import {
   addMessage,
   addOrderMessage,
@@ -10,10 +10,10 @@ import {
   getLastMessageBetweenTwoUser,
   getListOfAllInboxClients,
   sendFileUpload,
-  updateAllMessages,
-} from "../controllers/messageController.js";
-import { sendSMS } from "../utils/twilio.js";
-import { uploadMultipleFiles, uploadSingleFile } from "../utils/multer.js";
+  updateAllMessages
+} from "../controllers/messageController";
+import { sendSMS } from "../utils/twilio";
+import { uploadSingleFile } from "../utils/multer";
 
 const router = express.Router();
 

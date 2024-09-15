@@ -8,6 +8,10 @@ const messageSchema = new mongoose.Schema<IMessage>(
         type: String,
       },
     },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order",
+    },
     files: [
       {
         publicId: {
@@ -41,7 +45,6 @@ const messageSchema = new mongoose.Schema<IMessage>(
         },
       },
     ],
-    users: Array,
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -57,10 +60,6 @@ const messageSchema = new mongoose.Schema<IMessage>(
     //     default: "text",
     //     required: true,
     // },
-    orderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-    },
     markAsRead: {
       type: Boolean,
       default: false,
@@ -71,4 +70,4 @@ const messageSchema = new mongoose.Schema<IMessage>(
   }
 );
 
-export default mongoose.model("Message", messageSchema);
+export default mongoose.model<IMessage>("Message", messageSchema);

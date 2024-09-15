@@ -1,5 +1,5 @@
+import { Document, PopulatedDoc } from "mongoose";
 import { IFile } from "./file.types";
-import { Document, Schema, Types, PopulatedDoc } from "mongoose";
 import { IGig } from "./gig.types";
 import { IUser } from "./user.types";
 

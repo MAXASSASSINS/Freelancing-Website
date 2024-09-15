@@ -1,15 +1,13 @@
-import Gig from "../models/gigModel.js";
-import User from "../models/userModel.js";
-import Message from "../models/messageModel.js";
-import ErrorHandler from "../../utils/errorHandler.js";
-import catchAsyncErrors from "../middleware/catchAsyncErrors.js";
-import Features from "../../utils/features.js";
-import axios from "axios";
 import cloudinary from "cloudinary";
 import fs from "fs";
-import Order from "../models/orderModel.js";
-
 import multer from "multer";
+import catchAsyncErrors from "../middleware/catchAsyncErrors";
+import Message from "../models/messageModel";
+import Order from "../models/orderModel";
+import ErrorHandler from "../utils/errorHandler";
+import { IUser } from "../types/user.types";
+import mongoose from "mongoose";
+import { IMessage } from "../types/message.types";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,8 +22,6 @@ const upload = multer({ storage: storage }).single("file");
 
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
-  // 
-  // return;
 
   if (message?.length == 0 && files?.length === 0) {
     return next(
@@ -41,7 +37,6 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
     message: {
       text: message,
     },
-    users: [from, to],
     sender: from,
     receiver: to,
     files,
@@ -60,9 +55,20 @@ export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
 
   const order = await Order.findById(orderId);
 
-  if (order.status === "Completed" || order.status === "Pending" || order.status === "Cancelled") {
+  if (!order) {
+    return next(new ErrorHandler("Order not found", 404));
+  }
+
+  if (
+    order.status === "Completed" ||
+    order.status === "Pending" ||
+    order.status === "Cancelled"
+  ) {
     return next(
-      new ErrorHandler("Order is either not started or completed or cancelled", 400)
+      new ErrorHandler(
+        "Order is either not started or completed or cancelled",
+        400
+      )
     );
   }
 
@@ -80,7 +86,6 @@ export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
     message: {
       text: message,
     },
-    users: [from, to],
     sender: from,
     receiver: to,
     files,
@@ -107,7 +112,7 @@ export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
       .populate("sender", "name avatar")
       .populate("receiver", "name avatar")
       .sort({ updatedAt: 1 });
-    // 
+    //
     res.status(200).json({
       success: true,
       message: "successfully fetched all messages",
@@ -118,8 +123,7 @@ export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
 
 export const getAllMessagesForCurrentUser = catchAsyncErrors(
   async (req, res, next) => {
-    // const userId = req.user._id;
-    const userId = "62c1cb91cba98afc7f33f9a4";
+    const userId = req.user!._id;
 
     const messages = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
@@ -141,41 +145,16 @@ export const getAllMessagesForCurrentUser = catchAsyncErrors(
       };
       return newObj;
     });
-    // 
 
-    // const groups = [...new Set(messages.map(message => message.sender._id))];
+    interface GroupedMessages {
+      [key: string]: {
+        message: IMessage;
+        from: string;
+        to: string;
+      }[];
+    }
 
-    // newMessages.sort((a, b) => {
-    //     const id1 = a.to.toString();
-    //     const id2 = b.to.toString();
-    //     if (id1 < id2) {
-    //         return -1;
-    //     }
-    //     if (id1 > id2) {
-    //         return 1;
-    //     }
-    //     return 0;
-    // })
-
-    const temp = newMessages.map((message) => {
-      return {
-        from: message.from,
-        to: message.to,
-      };
-    });
-
-    const temp2 = messages.map((message) => {
-      return {
-        from: message.sender._id,
-        to: message.receiver._id,
-      };
-    });
-
-    // const m = newMessages.groupBy(message => {
-    //     return message.sender._id;
-    // })
-
-    const m = newMessages.reduce((group, message) => {
+    const m = newMessages.reduce<GroupedMessages>((group, message) => {
       const { to } = message;
       group[to] = group[to] ?? [];
       group[to].push(message);
@@ -185,42 +164,32 @@ export const getAllMessagesForCurrentUser = catchAsyncErrors(
     res.status(200).json({
       success: true,
       message: "successfully fetched all messages",
-      // messages,
-      // newMessages,
-      // temp,
       m,
-      // temp2,
-      // groups,
-      // obj,
     });
   }
 );
 
 export const getListOfAllInboxClients = catchAsyncErrors(
   async (req, res, next) => {
-    // const userId = "62c1cb91cba98afc7f33f9a4";
-    const userId = req.user._id;
-    // 
+    const userId = req.user!._id;
+
     let list = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
       .and([{ orderId: null }])
       .select("sender receiver");
-    let set = new Set();
+    let set = new Set<mongoose.Types.ObjectId>();
     list.forEach((message) => {
       set.add(message.sender.toString());
       set.add(message.receiver.toString());
     });
 
-    list = [...set];
+    let list2 = [...set];
 
-    list = list.filter((id) => {
+    list2 = list2.filter((id) => {
       return id.toString() != userId.toString();
     });
 
-    // 
-
-    const length = list.length;
-    // 
+    const length = list2.length;
 
     res.status(200).json({
       success: true,
@@ -245,7 +214,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
       .limit(1)
       .lean();
 
-    // 
+    //
     res.status(200).json({
       success: true,
       message: "successfully fetched all messages",
@@ -256,14 +225,14 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
 
 export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   const file = req.file;
-  // 
+  //
 
-  const fileType = req.file.mimetype;
+  const fileType = req.file?.mimetype;
 
   let fileUrl;
   if (file) {
     let result;
-    if (fileType.includes("video")) {
+    if (fileType?.includes("video")) {
       result = await cloudinary.v2.uploader.upload_large(
         file.path,
         {
@@ -275,7 +244,6 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
           if (err) {
             console.log(err);
           }
-          
         }
       );
     } else {
@@ -292,11 +260,11 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
     //   public_id: result.public_id,
     //   url: result.secure_url,
     // };
-    // 
+    //
   }
 
-  // 
-  fs.unlink(file.path, (err) => {
+  //
+  fs.unlink(file?.path!, (err) => {
     if (err)
       return new ErrorHandler("error in deleting a file from uploads", 500);
   });
@@ -311,7 +279,6 @@ export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
 
 export const updateAllMessages = catchAsyncErrors(async (req, res, next) => {
   const messages = await Message.find();
-  
 
   await Message.updateMany(
     {},

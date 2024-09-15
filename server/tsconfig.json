@@ -100,7 +100,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*.ts", "src/controllers/userController.ts", "src/routes/user.ts", "src/utils/jwtToken.ts", "src/middleware/auth.ts", "src/types/*.d.ts", "src/controllers/authGoogle.js"],
+  "include": ["src/**/*.ts", "src/controllers/userController.ts", "src/routes/user.ts", "src/utils/jwtToken.ts", "src/middleware/auth.ts", "src/types/*.d.ts", "src/controllers/authGoogle.js", "src/controllers/messageController.ts"],
   "exclude": ["node_modules"],
   "files": ["src/types/express.d.ts"]
 }

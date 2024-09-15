@@ -1,15 +1,16 @@
-import { Document, Schema } from 'mongoose';
+import { Document, PopulatedDoc } from 'mongoose';
 import { IFile } from './file.types';
+import { IOrder } from './order.types';
+import { IUser } from './user.types';
 
 export interface IMessage extends Document {
   message: {
     text?: string;
   };
   files?: IFile[];
-  users?: Schema.Types.ObjectId[]; // Adjust type if users is an array of user objects
-  sender: Schema.Types.ObjectId;
-  receiver: Schema.Types.ObjectId;
-  orderId?: Schema.Types.ObjectId;
+  sender: PopulatedDoc<IUser & Document>;
+  receiver: PopulatedDoc<IUser & Document>;
+  orderId?: PopulatedDoc<IOrder & Document>;
   markAsRead?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
