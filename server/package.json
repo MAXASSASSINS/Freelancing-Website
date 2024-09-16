@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "start": "node dist/index.js",
+    "start": "tsc && node dist/index.js",
     "dev:build": "nodemon --watch '**/*.ts' --exec 'tsc'",
     "style": "npx tailwindcss -i ./public/styles/input.css -o ./public/styles/output.css --watch",
     "tailwind:css": "postcss public/styles/tailwind.css -o public/styles/style.css"
