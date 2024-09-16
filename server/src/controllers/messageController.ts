@@ -23,6 +23,14 @@ const upload = multer({ storage: storage }).single("file");
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
 
+  if(!from || !to || !orderId) {
+    return next(new ErrorHandler("Please provide all the fields", 400));
+  }
+
+  if(!message && !files) {
+    return next(new ErrorHandler("Please provide a message or a file", 400));
+  }
+
   if (message?.length == 0 && files?.length === 0) {
     return next(
       new ErrorHandler("Please enter a message or upload a file", 400)
@@ -52,6 +60,14 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
 
 export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
+
+  if(!from || !to || !orderId) {
+    return next(new ErrorHandler("Please provide all the fields", 400));
+  }
+
+  if(!message && !files) {
+    return next(new ErrorHandler("Please provide a message or a file", 400));
+  }
 
   const order = await Order.findById(orderId);
 
@@ -102,6 +118,10 @@ export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
 export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
   async (req, res, next) => {
     const { from, to } = req.body;
+
+    if(!from || !to) {
+      return next(new ErrorHandler("Please provide both from and to", 400));
+    }
 
     const messages = await Message.find()
       .or([
@@ -202,6 +222,10 @@ export const getListOfAllInboxClients = catchAsyncErrors(
 export const getLastMessageBetweenTwoUser = catchAsyncErrors(
   async (req, res, next) => {
     const { from, to } = req.body;
+
+    if(!from || !to) {
+      return next(new ErrorHandler("Please provide both from and to", 400));
+    }
 
     const messages = await Message.find()
       .or([

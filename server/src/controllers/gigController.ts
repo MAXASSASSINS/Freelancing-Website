@@ -247,6 +247,10 @@ export const deleteGig = catchAsyncErrors(async (req, res, next) => {
 export const createGigReview = catchAsyncErrors(async (req, res, next) => {
   const { rating, comment, gigId } = req.body;
 
+  if(!rating || !comment || !gigId) {
+    return next(new ErrorHandler("Please provide all the fields", 400));
+  }
+
 
   const review: IReview = {
     user: req.user?._id,

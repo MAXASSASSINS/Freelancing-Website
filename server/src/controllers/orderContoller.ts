@@ -775,7 +775,15 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
 
 // process payment
 export const packagePayment = catchAsyncErrors(async (req, res, next) => {
-  const { id, packageNumber, gigId, orderId } = req.body;
+  const { packageNumber, gigId, orderId } = req.body;
+
+  if(!packageNumber || packageNumber < 0 || packageNumber > 2) {
+    return next(new ErrorHandler("Please select a package", 400));
+  }
+
+  if(!gigId || !orderId) {
+    return next(new ErrorHandler("Please provide gigId and orderId", 400));
+  }
 
   const gig = await Gig.findById(gigId);
 
@@ -841,6 +849,14 @@ export const paymentVerification = catchAsyncErrors(async (req, res, next) => {
 
 export const checkout = async (req: Request, res: Response) => {
   const { amount } = req.body;
+
+  if(!amount) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide amount",
+    });
+  }
+
   const options = {
     amount: Number(amount) * 100,
     currency: "INR",

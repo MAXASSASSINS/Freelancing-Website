@@ -18,6 +18,10 @@ import { sendSendGridEmail } from "../utils/sendEmail";
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
 
+  if(!name || !email || !password || !confirmPassword) {
+    return next(new ErrorHandler("Please provide all the details", 400));
+  }
+
   if (password && confirmPassword && password !== confirmPassword) {
     return next(
       new ErrorHandler("Password and confirm passowrd does not match", 400)
@@ -66,8 +70,6 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
     return next(new ErrorHandler("error.message", 500));
   }
-
-  // sendToken(user, 201, res);
 });
 
 // Login our User
@@ -115,6 +117,9 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
 
 // Forgot Password
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
+  if(!req.body.email) {
+    return next(new ErrorHandler("Please provide your email", 400));
+  }
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
@@ -129,8 +134,6 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const resetPasswordURL = `${req.protocol}://${req.get(
     "host"
   )}/forgotPassword/${resetToken}`;
-
-  // const resetPasswordURL = `http://localhost:3000/reset/password/${resetToken}`;
 
   const message = `Your password reset token is :- \n\n ${resetPasswordURL} \n\n if you have not requested this email then, please ignore it`;
 
@@ -160,6 +163,11 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
 // Reset Password
 export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+  if(!req.body.password || !req.body.confirm_password) {
+    return res.render("error", {
+      error: "Please provide password and confirm password",
+    });
+  }
   // Creating token hash
   const resetPasswordToken = crypto
     .createHash("sha256")
@@ -170,12 +178,17 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   });
+  
 
   if (!user) {
     return res.render("error", {
       error: "Reset password token is invalid or has been expired",
     });
   }
+
+  console.log(user);
+  
+
   if (req.body.password != req.body.confirm_password) {
     return res.render("error", {
       error: "Password is not matching with confirm password",
@@ -191,8 +204,6 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   });
 
   res.clearCookie("token").redirect(frontendHomeUrl!);
-
-  // sendToken(user, 200, res);
 });
 
 export const resetPasswordForm = catchAsyncErrors(async (req, res, next) => {
@@ -307,6 +318,10 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 
 export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   const { amount } = req.body;
+
+  if(!amount) {
+    return next(new ErrorHandler("Please provide amount", 400));
+  }
 
   if (!req.user?.withdrawEligibility) {
     return next(new ErrorHandler("Minimum balance for withdrawl is 2000", 400));
@@ -702,9 +717,9 @@ export const updateAccount = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateAccountStatus = catchAsyncErrors(async (req, res, next) => {
-  const secret = "helloicandothisallday";
+  const secret = process.env.RAZORPAY_KEY_SECRET;
 
-  const shasum = crypto.createHmac("sha256", secret);
+  const shasum = crypto.createHmac("sha256", secret!);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest("hex");
 
@@ -713,8 +728,6 @@ export const updateAccountStatus = catchAsyncErrors(async (req, res, next) => {
   } else {
     console.log("signature matched");
   }
-
-  console.log(req.body);
 
   return res.json({
     status: "ok",
