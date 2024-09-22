@@ -1,5 +1,5 @@
-import { Document, Types, PopulatedDoc } from 'mongoose';
-import { IGig } from './gig.types';
+import { Document, Types, PopulatedDoc } from "mongoose";
+import { IGig } from "./gig.types";
 
 export interface IPhone {
   code?: string;
@@ -13,7 +13,7 @@ export interface IAvatar {
 
 export interface ILanguage {
   name: string;
-  level: 'basic' | 'conversational' | 'fluent' | 'native/bilingual';
+  level: "basic" | "conversational" | "fluent" | "native/bilingual";
 }
 
 export interface IReview {
@@ -28,7 +28,7 @@ export interface IReview {
 
 export interface ISkill {
   name: string;
-  level: 'beginner' | 'intermediate' | 'advance' | 'expert';
+  level: "beginner" | "intermediate" | "advance" | "expert";
 }
 
 export interface IEducation {
@@ -49,7 +49,13 @@ export interface IRazorPayAccountDetails {
   accountId: string;
   stakeholderId: string;
   productId: string;
-  status: 'new' | 'pending' | 'activated' | 'under_review' | 'needs_clarification' | 'suspended';
+  status:
+    | "new"
+    | "pending"
+    | "activated"
+    | "under_review"
+    | "needs_clarification"
+    | "suspended";
   accountHolderName: string;
 }
 
@@ -64,7 +70,7 @@ export interface IUser extends Document {
   numOfReviews: number;
   reviews: IReview[];
   country: string;
-  role: 'user' | 'admin';
+  role: "user" | "admin";
   tagline?: string;
   description?: string;
   languages: ILanguage[];
