@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.css";
-import React, {
+import {
   createContext,
   useEffect,
   useState
@@ -22,7 +22,7 @@ import { Footer } from "./component/Footer/Footer";
 import { GigDetail } from "./component/GigDetail.js/GigDetail";
 import { Header } from "./component/Header/Header";
 import { Home } from "./component/Home/Home";
-import { Inbox } from "./component/Inbox/Inbox2.js";
+import { Inbox } from "./component/Inbox/Inbox2";
 import { Login } from "./component/Login/Login";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { PlaceOrder } from "./component/PlaceOrder/PlaceOrder";
@@ -36,7 +36,7 @@ import { SocketContext, socket } from "./context/socket/socket";
 
 import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
-import "./utility/color.js";
+import "./utility/color";
 
 import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
@@ -101,12 +101,32 @@ const App = () => {
     return () => window.removeEventListener("resize", resizeWindow);
   }, [resizeWindow]);
 
+  // useEffect(() => {
+  //   if (isAuthenticated && user?._id) {
+  //     socket.emit("new_user", user._id.toString());
+  //   }
+  // }, [isAuthenticated, user]);
+
   useEffect(() => {
-    if (isAuthenticated) {
-      //
+    const handleNewUser = () => {
+      console.log("handle new user is called");
+      if (isAuthenticated && user?._id) {
+        socket.emit("new_user", user._id.toString());
+      }
+    };
+    
+    // Emit on connect
+    socket.on("connect", handleNewUser);
+
+    if (isAuthenticated && user?._id) {
       socket.emit("new_user", user._id.toString());
     }
-  }, [isAuthenticated, user]);
+    
+    // Clean up
+    return () => {
+      socket.off("connect", handleNewUser);
+    };
+  }, [isAuthenticated, user, userLoading]);
 
   // SHOW ONLINE STATUS OF THE USER
   useEffect(() => {
