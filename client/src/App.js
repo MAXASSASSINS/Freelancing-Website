@@ -1,69 +1,61 @@
+import "bootstrap/dist/css/bootstrap.css";
 import React, {
-  Fragment,
-  useEffect,
   createContext,
-  useContext,
-  useState,
+  useEffect,
+  useState
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "bootstrap/dist/css/bootstrap.css";
-import "./app.css";
-import { Footer } from "./component/Footer/Footer";
-import { Header } from "./component/Header/Header";
-import { Sidebar } from "./component/Sidebar/Sidebar";
-import { Home } from "./component/Home/Home";
 import {
-  Routes,
   Route,
-  useParams,
-  Navigate,
-  useNavigate,
+  Routes,
   useLocation,
+  useNavigate,
+  useParams
 } from "react-router-dom";
-import { UserDetail } from "./component/UserDetail/UserDetail";
-import { GigDetail } from "./component/GigDetail.js/GigDetail";
-import { io } from "socket.io-client";
-import { Login } from "./component/Login/Login";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Inbox } from "./component/Inbox/Inbox";
-import { Test } from "./component/Test/Test";
-import { CurrentlySelectedClientChat } from "./component/CurrentlySelectedClientChat/CurrentlySelectedClientChat";
 import { loadUser } from "./actions/userAction";
-import store from "./store";
-import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
+import "./app.css";
 import { CreateGig } from "./component/CreateGig/CreateGig";
+import { CurrentlySelectedClientChat } from "./component/CurrentlySelectedClientChat/CurrentlySelectedClientChat";
+import { Footer } from "./component/Footer/Footer";
+import { GigDetail } from "./component/GigDetail.js/GigDetail";
+import { Header } from "./component/Header/Header";
+import { Home } from "./component/Home/Home";
+import { Inbox } from "./component/Inbox/Inbox2.js";
+import { Login } from "./component/Login/Login";
+import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { PlaceOrder } from "./component/PlaceOrder/PlaceOrder";
+import { Sidebar } from "./component/Sidebar/Sidebar";
 import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequirements";
+import { Test } from "./component/Test/Test";
+import { UserDetail } from "./component/UserDetail/UserDetail";
+import store from "./store";
 
 import { SocketContext, socket } from "./context/socket/socket";
 
-import "./utility/color.js";
-import { CloudinaryContext, Image } from "cloudinary-react";
+import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
+import "./utility/color.js";
 
 import "react-tooltip/dist/react-tooltip.css";
-import { Orders } from "./component/Orders/Orders";
-import { OrderDetail } from "./component/OrderDetail/OrderDetail";
-import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
 import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
+import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
+import { OrderDetail } from "./component/OrderDetail/OrderDetail";
+import { Orders } from "./component/Orders/Orders";
 import { SignUp } from "./component/SignUp";
 
-import { loadStripe } from "@stripe/stripe-js";
 
-import {
-  useGlobalLoading,
-  useGlobalLoadingText,
-  useUpdateGlobalLoading,
-} from "./context/globalLoadingContext";
-import { GoLaw } from "react-icons/go";
-import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
-import { GlobalLoadingProvider } from "./context/globalLoadingContext";
-import { FavouriteGigs } from "./component/FavouriteGigs";
-import { UpdateUserProfile } from "./component/UpdateUserProfile";
 import { BankAccountForm } from "./component/BankAccountForm";
+import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
+import { FavouriteGigs } from "./component/FavouriteGigs";
 import ProtectedRoute from "./component/ProtectedRoute";
 import { ResetPassword } from "./component/ResetPassword";
+import { UpdateUserProfile } from "./component/UpdateUserProfile";
+import {
+  useGlobalLoading,
+  useGlobalLoadingText
+} from "./context/globalLoadingContext";
 
 export const windowContext = createContext();
 
