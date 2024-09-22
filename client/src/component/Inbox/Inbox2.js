@@ -1,14 +1,7 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import moment from "moment";
 import "moment-timezone";
-import {
-  useContext,
-  useEffect,
-  useReducer,
-  useRef,
-  useState
-} from "react";
+import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import Moment from "react-moment";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -26,7 +19,7 @@ import {
   FETCH_ALL_CLIENTS_LIST,
   UPDATE_ALL_CHATS_WITH_CLIENT,
   UPDATE_CLIENT_LAST_MESSAGE,
-  UPDATE_ONLINE_STATUS_OF_CLIENTS
+  UPDATE_ONLINE_STATUS_OF_CLIENTS,
 } from "./inboxConstant";
 import { INBOX_DETAILS_INITIAL_STATE, inboxReducer } from "./inboxReducer";
 
@@ -48,10 +41,9 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 
 export const Inbox = () => {
   const { windowWidth } = useContext(windowContext);
-  const updateGlobalLoading = useUpdateGlobalLoading();
   const socket = useContext(SocketContext);
 
-  const { user } = useSelector((state) => state.user);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
 
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState([]);
@@ -63,10 +55,12 @@ export const Inbox = () => {
         return;
       }
       const list = allClientsDetails
-        ? allClientsDetails.filter((client) => {
-            return client.user.name.startsWith(search);
+        ? Object.keys(allClientsDetails).filter((key) => {
+            const client = allClientsDetails[key];
+            return client.name.startsWith(search);
           })
         : [];
+      console.log(list);
       setSearchList(list);
     }, 300);
 
@@ -110,8 +104,6 @@ export const Inbox = () => {
 
   const inboxChatFormRef = useRef(null);
 
-  const [room, setRoom] = useState("");
-
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerOpenerIconRef = useRef(null);
 
@@ -124,100 +116,24 @@ export const Inbox = () => {
 
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN
   useEffect(() => {
-    getListOfAllInboxClients().then((res) => {
-      dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: res });
+    if (isAuthenticated && user) getInitialInboxMessages();
+  }, [isAuthenticated, user]);
+
+  const getInitialInboxMessages = async () => {
+    const { data } = await axiosInstance.get("/get/initial/messages");
+    console.log(data);
+    dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: data.inboxClients });
+    dispatch({
+      type: FETCH_ALL_CLIENTS_DETAILS,
+      payload: data.inboxClientsDetails,
     });
-  }, [user]);
-
-  const getListOfAllInboxClients = async () => {
-    try {
-      updateGlobalLoading(true);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const { data } = await axiosInstance.get(
-        "/list/of/all/inbox/clients/for/current/user",
-        config
-      );
-      return data.listOfInboxClients;
-    } catch (err) {
-      console.log(err);
-    } finally {
-      updateGlobalLoading(false);
-    }
-  };
-
-  const handleAllClientDetails = async () => {
-    try {
-      updateGlobalLoading(true);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const temp1 = [];
-      console.log(listOfAllClients);
-      for (let i = 0; i < listOfAllClients?.length; i++) {
-        const userId = listOfAllClients[i].toString();
-        const { data } = await axiosInstance.get(`/user/${userId}`, config);
-        temp1.push(data);
-      }
-      return temp1;
-    } catch (err) {
-      console.log(err);
-    } finally {
-      updateGlobalLoading(false);
-    }
-  };
-
-  const handleAllClientUserLastMessage = async () => {
-    try {
-      updateGlobalLoading(true);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const temp2 = [];
-      for (let i = 0; i < listOfAllClients?.length; i++) {
-        const userId = listOfAllClients[i].toString();
-
-        const { data } = await axiosInstance.post(
-          `/get/last/message/between/two/user`,
-          {
-            from: userId,
-            to: user._id,
-          },
-          config
-        );
-        temp2.push(data);
-      }
-      return temp2;
-    } catch (err) {
-      console.log(err);
-    } finally {
-      updateGlobalLoading(false);
-    }
-  };
-
-  const tempFunc = async () => {
-    await handleAllClientDetails().then((res) => {
-      dispatch({ type: FETCH_ALL_CLIENTS_DETAILS, payload: res });
-    });
-
-    await handleAllClientUserLastMessage().then((res) => {
-      dispatch({ type: FETCH_ALL_CLIENTS_LAST_MESSAGE, payload: res });
+    dispatch({
+      type: FETCH_ALL_CLIENTS_LAST_MESSAGE,
+      payload: data.lastMessages,
     });
   };
 
-  // GET CLIENT DETAILS ALONG WITH LAST CHAT
-  useEffect(() => {
-    if (listOfAllClients && listOfAllClients.length > 0) {
-      tempFunc();
-    }
-  }, [listOfAllClients, listOfAllClients?.length]);
+  // console.log(inboxDetails);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
   useEffect(() => {
@@ -251,6 +167,10 @@ export const Inbox = () => {
     videoImages.forEach((image) => {
       observer.observe(image);
     });
+
+    return () => {
+      observer.disconnect();
+    };
   }, [fileLoading, inboxMessages]);
 
   const getAllMessagesBetweenTwoUser = async (clientId) => {
@@ -287,7 +207,6 @@ export const Inbox = () => {
   const sendChat = async () => {
     setFileLoading(true);
     // updateGlobalLoading(true, 'Sending message...');
-    // setIsFilePicked(false);
 
     let files = [];
     try {
@@ -307,8 +226,6 @@ export const Inbox = () => {
       // updateGlobalLoading(false);
     }
   };
-
-  //
 
   // client side uploading to cloudinary
   const sendFileClientCloudinary = async (files) => {
@@ -332,7 +249,7 @@ export const Inbox = () => {
   };
 
   // add message to database
-  const addMessageToDatabase = async (messageData, files = []) => {
+  const addMessageToDatabase = async (message, files = []) => {
     try {
       const messageData = {
         message,
@@ -342,7 +259,7 @@ export const Inbox = () => {
       };
 
       const { data } = await axiosInstance.post("/add/message", messageData);
-      //
+      console.log(data);
       return data;
     } catch (error) {
       throw error;
@@ -374,7 +291,6 @@ export const Inbox = () => {
       createdAt: new Date().getTime(),
       files,
     };
-
     await socket.emit("send_message", messageData);
   };
 
@@ -393,13 +309,11 @@ export const Inbox = () => {
   // SHOW TYPING STATUS
   useEffect(() => {
     const data = {
-      // senderId: user?._id.toString(),
       senderId: user._id.toString(),
       receiverId: currentSelectedClient?._id.toString(),
     };
     socket.emit("typing_started", data);
     const timeout = setTimeout(() => {
-      //
       socket.emit("typing_stopped", data);
     }, 1000);
 
@@ -429,8 +343,8 @@ export const Inbox = () => {
 
   // SHOW ONLINE STATUS OF ALL CLIENTS + CURRENTLY SELECTED CLIENT
   useEffect(() => {
-    socket.emit("online", user._id.toString());
-  }, [user]);
+    if (isAuthenticated && user._id) socket.emit("online", user._id.toString());
+  }, [user, isAuthenticated]);
 
   useEffect(() => {
     socket.emit("get_online_status_of_all_clients", listOfAllClients || []);
@@ -438,13 +352,10 @@ export const Inbox = () => {
 
   useEffect(() => {
     socket.on("online_status_of_all_clients_from_server", (data) => {
-      const temp = listOfAllClients?.map((id) => {
-        const index = data.findIndex((d) => {
-          return d.id.toString() === id.toString();
-        });
-        return data[index].online;
+      const temp = new Map();
+      data.forEach(({ id, online }) => {
+        temp.set(id, online);
       });
-      //
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
@@ -453,60 +364,32 @@ export const Inbox = () => {
     };
   }, [socket, listOfAllClients]);
 
-  
   useEffect(() => {
     socket.on("online_from_server", async (userId) => {
-      //
-      const index = listOfAllClients?.findIndex((id) => {
-        return id === userId;
-      });
-      //
-      if (index !== -1) {
-        // await handleAllClientDetails();
-        let temp = onlineStatusOfClients?.map((status, idx) => {
-          if (idx === index) {
-            return true;
-          }
-          return status;
-        });
-        //
-        if (
-          currentSelectedClient &&
-          currentSelectedClient._id.toString() === userId
-        ) {
-          setCurrentSelectedClientOnline(true);
-        }
-        dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
+      if (
+        currentSelectedClient &&
+        currentSelectedClient._id.toString() === userId
+      ) {
+        setCurrentSelectedClientOnline(true);
+      }
+      const map = new Map(onlineStatusOfClients);
+      if (map.has(userId)) {
+        map[userId] = true;
+        dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: map });
       }
     });
 
-    //
-
     socket.on("offline_from_server", async (userId) => {
-      const index = listOfAllClients?.findIndex((id) => {
-        return id === userId;
-      });
-
-      if (index !== -1) {
-        // await handleAllClientDetails();
-        let temp = onlineStatusOfClients?.map((status, idx) => {
-          if (idx === index) {
-            return false;
-          }
-          return status;
-        });
-
-        if (
-          currentSelectedClient &&
-          currentSelectedClient._id.toString() === userId.toString()
-        ) {
-          setCurrentSelectedClientOnline(false);
-          setCurrentSelectedClient((prev) => {
-            //
-            if (prev) return { ...prev, lastSeen: Date.now() };
-          });
-        }
-        dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
+      if (
+        currentSelectedClient &&
+        currentSelectedClient._id.toString() === userId
+      ) {
+        setCurrentSelectedClientOnline(false);
+      }
+      const map = new Map(onlineStatusOfClients);
+      if (map.has(userId)) {
+        map[userId] = false;
+        dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: map });
       }
     });
     return () => {
@@ -521,114 +404,80 @@ export const Inbox = () => {
   ]);
 
   useEffect(() => {
-    if (currentSelectedClient) {
-      socket.emit("is_online", currentSelectedClient._id.toString());
-      socket.emit("online", user._id.toString());
-      //
-    }
-  }, [currentSelectedClient]);
-
-  useEffect(() => {
     socket.on("is_online_from_server", (data) => {
       const onlineClientId = data.id.toString();
       if (onlineClientId === currentSelectedClient._id.toString()) {
-        //
         setCurrentSelectedClientOnline(data.online);
-        //
       }
-      const temp = listOfAllClients?.map((id, idx) => {
+      const temp = new Map();
+      listOfAllClients?.map((id) => {
         if (id === onlineClientId) {
-          return data.online;
+          temp.set(id, data.online);
+        } else {
+          temp.set(id, onlineStatusOfClients[id] || false);
         }
-        return onlineStatusOfClients[idx];
       });
-      //
       dispatch({ type: UPDATE_ONLINE_STATUS_OF_CLIENTS, payload: temp });
     });
 
     return () => {
       socket.off("is_online_from_server");
-      // setCurrentSelectedClientOnline(false);
     };
   }, [currentSelectedClient, socket, currentSelectedClientOnline]);
 
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
-    socket.on("receive_message", async (data) => {
+    socket.on("receive_message", async (messageData) => {
       if (data.orderId) return;
+      const { sender } = messageData;
+      const clientId = sender._id.toString();
 
-      const messageData = data;
-      const { message, sender, receiver } = data;
-      const senderId = sender._id.toString();
-      const clientId = senderId;
+      if (listOfAllClients.includes(clientId)) {
+        const map = { ...allClientUserLastMessage };
+        map[clientId] = messageData;
+        dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: map });
+      }
 
-      //
-      //
-
-      const clientIndex = listOfAllClients?.findIndex((id) => {
-        return id === clientId;
-      });
-
-      let temp = [];
-      temp = allClientUserLastMessage?.map((mesgs, i) => {
-        if (i == clientIndex) {
-          //
-          return { ...mesgs, messages: [messageData] };
-        }
-        return mesgs;
-      });
-      dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: temp });
-
-      if (currentSelectedClient?._id === senderId) {
-        const temp2 = [...inboxMessages, messageData];
-        dispatch({ type: UPDATE_ALL_CHATS_WITH_CLIENT, payload: temp2 });
+      if (currentSelectedClient?._id === clientId) {
+        const newInboxMessages = [...inboxMessages, messageData];
+        dispatch({
+          type: UPDATE_ALL_CHATS_WITH_CLIENT,
+          payload: newInboxMessages,
+        });
       }
     });
 
     return () => {
       socket.off("receive_message");
     };
-  }, [socket, inboxDetails, currentSelectedClientOnline]);
+  }, [socket, listOfAllClients, currentSelectedClientOnline]);
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
-    //
-    socket.on("receive_message_self", async (data) => {
+    socket.on("receive_message_self", async (messageData) => {
       if (data.orderId) return;
-      //
-      const messageData = data;
-      const { message, sender, receiver } = data;
-      const receiverId = receiver._id.toString();
-      const clientId = receiverId;
+      const { receiver } = messageData;
+      const clientId = receiver._id;
 
-      //
-      //
+      if (listOfAllClients.includes(clientId)) {
+        const map = { ...allClientUserLastMessage };
+        map[clientId] = messageData;
+        dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: map });
+      }
 
-      const clientIndex = listOfAllClients?.findIndex((id) => {
-        return id === clientId;
-      });
-
-      let temp = [];
-      temp = allClientUserLastMessage?.map((mesgs, i) => {
-        if (i == clientIndex) {
-          //
-          return { ...mesgs, messages: [messageData] };
-        }
-        return mesgs;
-      });
-      dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: temp });
-
-      if (currentSelectedClient?._id === receiverId) {
-        const temp2 = [...inboxMessages, messageData];
-        dispatch({ type: UPDATE_ALL_CHATS_WITH_CLIENT, payload: temp2 });
+      if (currentSelectedClient?._id === clientId) {
+        const newInboxMessages = [...inboxMessages, messageData];
+        dispatch({
+          type: UPDATE_ALL_CHATS_WITH_CLIENT,
+          payload: newInboxMessages,
+        });
       }
     });
 
     return () => {
       socket.off("receive_message_self");
     };
-  }, [socket, inboxDetails, currentSelectedClientOnline]);
-
+  }, [listOfAllClients, currentSelectedClient]);
 
   const handleSelectionOfFiles = (event) => {
     const files = event.target.files;
@@ -677,56 +526,41 @@ export const Inbox = () => {
     setSelectedFiles(arr);
   };
 
-  const handleDateFormat = (date) => {
-    const dateFormatString = "";
-    const A = moment(date);
-    const B = moment.now();
-    if (A.diff(B, "years") < 0) {
-      return moment(date).format("DD MMM YYYY, HH:mm");
-    } else {
-      return moment(date).format("DD MMM, HH:mm");
-    }
-  };
-
   useEffect(() => {
     if (windowWidth < 600) setShowMessageListOnDevices(false);
     else setShowMessageListOnDevices(true);
-  }, [windowContext]);
+  }, [windowWidth]);
 
   const handleClientSelectionClick = async (detail) => {
-    setCurrentSelectedClient(detail.user);
-    setHideMessageListOnSmallDevices(false);
-    if (currentSelectedClient?._id.toString() !== detail.user._id.toString()) {
+    if (currentSelectedClient?._id.toString() !== detail._id.toString()) {
       setIsFilePicked(false);
       setSelectedFiles(null);
       setShowEmojiPicker(false);
-      await getAllMessagesBetweenTwoUser(detail.user._id);
+      await getAllMessagesBetweenTwoUser(detail._id);
     }
+    setHideMessageListOnSmallDevices(false);
+    setCurrentSelectedClient(detail);
+    setCurrentSelectedClientOnline(onlineStatusOfClients[detail._id]);
   };
 
-  const getFileName = (file) => {
-    const name = file.name;
-    const type = file.type.split("/")[1];
-    const len = name.length;
-    if (len > 25) {
-      return (
-        name.slice(0, 10) + "..." + name.slice(len - 13, len - 1) + "." + type
-      );
-    }
-    return name;
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        event.target !== document.querySelector("em-emoji-picker") &&
+        !emojiPickerOpenerIconRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
 
-  // closing emoji picker when clicked outside
-  window.onclick = (event) => {
-    if (
-      event.target !== document.querySelector("em-emoji-picker") &&
-      !emojiPickerOpenerIconRef.current.contains(event.target)
-    ) {
-      setShowEmojiPicker(false);
-    }
-  };
+    // Add event listener
+    window.addEventListener("click", handleClickOutside);
 
-  console.log(searchList);
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="inbox-main">
@@ -752,77 +586,71 @@ export const Inbox = () => {
         {searchList.length > 0 && (
           <div className="bg-separator shadow-lg w-4/5 mx-6 absolute top-20 rounded-sm z-50">
             <ul>
-              {searchList.map((client, index) => (
-                <div
-                  className="hover:underline flex items-center gap-2 hover:bg-dark_separator p-4 py-3 hover:cursor-pointer"
-                  key={index}
-                  onClick={() => {
-                    handleClientSelectionClick(client);
-                    setSearchList([]);
-                  }}
-                >
-                  <Avatar
-                    avatarUrl={client.user.avatar.url}
-                    userName={client.user.name}
-                    alt={client.user.name}
-                    width="1.5rem"
-                    fontSize="0.75rem"
-                  />
-                  {client.user.name}
-                </div>
-              ))}
+              {searchList.map((key) => {
+                const client = allClientsDetails[key];
+                return (
+                  <div
+                    className="hover:underline flex items-center gap-2 hover:bg-dark_separator p-4 py-3 hover:cursor-pointer"
+                    key={key}
+                    onClick={() => {
+                      handleClientSelectionClick(client);
+                      setSearchList([]);
+                    }}
+                  >
+                    <Avatar
+                      avatarUrl={client.avatar.url}
+                      userName={client.name}
+                      alt={client.name}
+                      width="1.5rem"
+                      fontSize="0.75rem"
+                    />
+                    {client.name}
+                  </div>
+                );
+              })}
             </ul>
           </div>
         )}
         <ul className="client-list-ul">
-          {onlineStatusOfClients &&
-            listOfAllClients &&
-            allClientsDetails &&
-            allClientUserLastMessage &&
-            allClientsDetails.map((detail, index) => (
+          {listOfAllClients?.map((key) => {
+            const detail = allClientsDetails[key];
+            return (
               <li
                 onClick={() => handleClientSelectionClick(detail)}
                 className="inbox-user-client"
-                key={detail.user._id}
+                key={key}
               >
                 <div className="client-list-client-profile-image">
                   <Avatar
-                    userName={detail.user.name}
-                    onlineStatus={onlineStatusOfClients[index]}
-                    avatarUrl={detail.user.avatar.url}
+                    userName={detail.name}
+                    onlineStatus={onlineStatusOfClients[key] || false}
+                    avatarUrl={detail.avatar.url}
                     width="2.75rem"
                     onlineStatusWidth="1rem"
                   />
                 </div>
                 <div className="client-list-detail-plus-last-message">
-                  <div className="client-list-client-name">
-                    {detail.user.name}
-                  </div>
+                  <div className="client-list-client-name">{detail.name}</div>
                   <div className="client-list-last-message">
-                    {allClientUserLastMessage[index].messages[0].files?.length >
-                    0 ? (
+                    {allClientUserLastMessage[key].files?.length > 0 ? (
                       <PermMediaIcon
                         fontSize="small"
                         style={{ color: "#74767e" }}
                       />
                     ) : (
-                      <p>
-                        {
-                          allClientUserLastMessage[index].messages[0].message
-                            .text
-                        }
-                      </p>
+                      <p>{allClientUserLastMessage[key].message.text}</p>
                     )}
                   </div>
                   {/* <div>{onlineStatusOfClients[index] ? "online" : "xxxxxx"}</div> */}
                 </div>
                 <div className="client-list-last-message-time">
                   <Moment fromNow ago>
-                    {allClientUserLastMessage[index].messages[0].createdAt}
+                    {allClientUserLastMessage[key].createdAt}
                   </Moment>
                 </div>
               </li>
-            ))}
+            );
+          })}
         </ul>
       </div>
       <div

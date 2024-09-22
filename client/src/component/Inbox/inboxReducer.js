@@ -40,9 +40,14 @@ export const inboxReducer = (state, action) => {
       };
     }
     case FETCH_ALL_CLIENTS_LIST: {
+      const onlineStatuses = new Map();
+      action.payload.map((id) => {
+        onlineStatuses.set(id, false);
+      })
       return {
         ...state,
         listOfAllClients: action.payload,
+        onlineStatusOfClients: onlineStatuses
       };
     }
     case FETCH_ALL_CLIENTS_LAST_MESSAGE: {

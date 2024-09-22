@@ -23,7 +23,7 @@ const upload = multer({ storage: storage }).single("file");
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
 
-  if(!from || !to || !orderId) {
+  if(!from || !to) {
     return next(new ErrorHandler("Please provide all the fields", 400));
   }
 
@@ -203,18 +203,20 @@ export const getListOfAllInboxClients = catchAsyncErrors(
       set.add(message.receiver.toString());
     });
 
-    let list2 = [...set];
+    console.log(set.size);
 
-    list2 = list2.filter((id) => {
+    let listOfInboxClients = [...set];
+
+    listOfInboxClients = listOfInboxClients.filter((id) => {
       return id.toString() != userId.toString();
     });
 
-    const length = list2.length;
+    const length = listOfInboxClients.length;
 
     res.status(200).json({
       success: true,
       length,
-      list,
+      listOfInboxClients,
     });
   }
 );
@@ -246,6 +248,49 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
     });
   }
 );
+
+export const getInitialMessagesForInbox = catchAsyncErrors(async (req, res, next) => {
+  const userId = req.user?.id;
+
+  let list = await Message.find()
+      .or([{ sender: userId }, { receiver: userId }])
+      .and([{ orderId: null }])
+      .populate("sender receiver", "name avatar lastSeen")
+  
+  let set = new Set<string>();
+  list.forEach((message) => {
+    set.add(message.sender._id.toString());
+    set.add(message.receiver._id.toString());
+  });
+  set.delete(userId);
+
+  const lastMessages: Record<string, IMessage> = {};
+  for (let clientId of set) {
+    for (let message of list) {
+      if(message.sender._id.toString() !== clientId && message.receiver._id.toString() !== clientId) continue;
+      if(!lastMessages[clientId] || message.createdAt > lastMessages[clientId].createdAt) {
+        lastMessages[clientId] = message;
+      }
+    }
+  }
+  const inboxClientsDetails: Record<string, IUser> = {};
+  Object.keys(lastMessages).forEach((key) => {
+    const message = lastMessages[key];
+    if(message.sender._id.toString() === key) {
+      inboxClientsDetails[key] = message.sender;
+    } else {
+      inboxClientsDetails[key] = message.receiver;
+    }
+  });
+
+  res.status(200).json({
+    success: true,
+    inboxClients: [...set],
+    lastMessages,
+    inboxClientsDetails,
+    // list,
+  });
+})
 
 export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   const file = req.file;

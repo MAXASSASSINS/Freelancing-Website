@@ -131,6 +131,8 @@ export const updateOrderRequirements = catchAsyncErrors(
         questionType: requirement.questionType,
         answerRequired: requirement.answerRequired,
         multipleOptionSelect: requirement.multipleOptionSelect,
+        options: [],
+        files: [],
       };
 
       if (requirement.questionType == "Free Text") {

@@ -9,11 +9,11 @@ export interface IOrderRequirement {
   answerRequired?: boolean;
   multipleOptionSelect?: boolean;
   answerText?: string;
-  options?: {
+  options: {
     title: string;
     selected: boolean;
   }[];
-  files?: IFile[];
+  files: IFile[];
 }
 
 export interface IPackageDetails {
@@ -28,13 +28,13 @@ export interface IPackageDetails {
 
 export interface IDelivery {
   message?: string;
-  files?: IFile[];
+  files: IFile[];
   deliveredAt: Date;
 }
 
 export interface IRevision {
   message?: string;
-  files?: IFile[];
+  files: IFile[];
   requestedAt: Date;
 }
 

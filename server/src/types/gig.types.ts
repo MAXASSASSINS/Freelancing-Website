@@ -43,24 +43,24 @@ export interface IGigRequirement {
   questionType?: 'Free Text' | 'Multiple Choice';
   answerRequired?: boolean;
   multipleOptionSelect?: boolean;
-  options?: string[];
+  options: string[];
 }
 
 export interface IGig extends Document {
   title?: string;
   category?: string;
   subCategory?: string;
-  searchTags?: string[];
-  pricing?: IPricing[];
+  searchTags: string[];
+  pricing: IPricing[];
   description?: string;
-  images?: IImage[];
+  images: IImage[];
   video?: IVideo;
   ratings: number;
   numOfRatings: number;
   numOfReviews: number;
-  reviews?: IReview[];
+  reviews: IReview[];
   createdAt?: Date;
   user: PopulatedDoc<IUser & Document>;
   active?: boolean;
-  requirements?: IGigRequirement[];
+  requirements: IGigRequirement[];
 }

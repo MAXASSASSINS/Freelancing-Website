@@ -2,6 +2,7 @@ import { Server as SocketIOServer } from "socket.io";
 import User from "../models/userModel";
 import ErrorHandler from "./errorHandler";
 import { Server as HTTPServer } from 'http';
+import { log } from "console";
 
 const runSocket = (server: HTTPServer) => {
   const io = new SocketIOServer(server, {
@@ -13,10 +14,8 @@ const runSocket = (server: HTTPServer) => {
   });
 
   let onlineUserList = new Map();
-  let currentUserId = "";
 
   io.on("connection", (socket) => {
-    console.log(onlineUserList);
     socket.on("new_user", (userId) => {
       addNewUser(userId, socket.id);
     });
@@ -26,7 +25,8 @@ const runSocket = (server: HTTPServer) => {
     });
 
     socket.on("send_message", async (data) => {
-      const { message, sender, receiver, messageType } = data;
+      const { sender, receiver } = data;
+      
       const receiverSocketIds = onlineUserList.get(receiver._id.toString());
       const senderSocketIds = onlineUserList.get(sender._id.toString());
 
@@ -35,6 +35,7 @@ const runSocket = (server: HTTPServer) => {
       });
 
       senderSocketIds?.forEach((senderSocketId: string) => {
+        log('senderSocketId', senderSocketId);
         io.to(senderSocketId).emit("receive_message_self", data);
       });
     });
@@ -80,7 +81,6 @@ const runSocket = (server: HTTPServer) => {
         });
       }
 
-      // 
       socket.emit("online_status_of_all_clients_from_server", onlineStatusList);
     });
 
@@ -99,11 +99,9 @@ const runSocket = (server: HTTPServer) => {
     });
 
     socket.on("disconnect", () => {
-      
       const userId = getUserBySocketId(socket.id);
-      removeUser(socket.id, userId);
-
       console.log('user disconnected', userId, socket.id);
+      removeUser(socket.id, userId);
 
       if (!onlineUserList.has(userId)) {
         Promise.resolve(updateUserLastSeen(userId)).then(() => {
@@ -138,8 +136,6 @@ const runSocket = (server: HTTPServer) => {
   };
 
   const getUserBySocketId = (socketId: string) => {
-    // 
-    // 
     for (let [key, value] of onlineUserList.entries()) {
       if (value.has(socketId)) {
         return key;
