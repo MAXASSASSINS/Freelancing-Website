@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IGig } from "../types/gig.types";
+import { FREE_TEXT, MULTIPLE_CHOICE } from "../constants/globalConstants";
 
 const gigSchema = new mongoose.Schema<IGig>({
   title: {
@@ -175,8 +176,8 @@ const gigSchema = new mongoose.Schema<IGig>({
       },
       questionType: {
         type: String,
-        enum: ["Free Text", "Multiple Choice"],
-        default: "Free Text",
+        enum: [FREE_TEXT, MULTIPLE_CHOICE],
+        default: FREE_TEXT,
       },
       answerRequired: {
         type: Boolean,

@@ -9,8 +9,13 @@ import { randomString } from "../utils/utilities";
 import crypto from "crypto";
 import { Request, Response } from "express";
 import { frontendHomeUrl } from "../index";
-import { IOrderRequirement } from "../types/order.types";
+import {
+  IBuyerFeedback,
+  IOrderRequirement,
+  ISellerFeedback,
+} from "../types/order.types";
 import { IReview, IUser } from "../types/user.types";
+import { FREE_TEXT } from "../constants/globalConstants";
 
 // Create new order
 export const newOrder = async (user: IUser, body: any) => {
@@ -22,7 +27,7 @@ export const newOrder = async (user: IUser, body: any) => {
     packageNumber,
   } = body;
 
-  if (!packageNumber || packageNumber < 0 || packageNumber > 2) {
+  if (packageNumber === undefined || packageNumber < 0 || packageNumber > 2) {
     throw new Error("Please select a package");
   }
 
@@ -45,7 +50,7 @@ export const newOrder = async (user: IUser, body: any) => {
   deliveryDate.setDate(deliveryDate.getDate() + duration);
 
   const options = gig.requirements?.map((requirement) => {
-    if (requirement.questionType == "Free Text") {
+    if (requirement.questionType === FREE_TEXT) {
       return;
     }
     return requirement.options?.map((option) => {
@@ -135,7 +140,7 @@ export const updateOrderRequirements = catchAsyncErrors(
         files: [],
       };
 
-      if (requirement.questionType == "Free Text") {
+      if (requirement.questionType === FREE_TEXT) {
         temp.answerText = answers[index].answer;
         temp.files = answers[index].files;
       } else {
@@ -476,25 +481,26 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
   if (order.status !== "Completed") {
     order.buyerFeedback = undefined;
     order.sellerFeedback = undefined;
-    order.askSellerFeedback = false;
   }
 
   if (
     order.status === "Completed" &&
     seller._id.toString() === req.user!._id.toString()
   ) {
-    if (order.buyerFeedback?.createdAt && !order.sellerFeedback?.createdAt) {
+    if (order.buyerFeedbackSubmitted && !order.sellerFeedbackSubmitted) {
       order.buyerFeedback = undefined;
       order.sellerFeedback = undefined;
-      order.askSellerFeedback = true;
     }
   }
 
-  if (!order) {
-    return next(new ErrorHandler("Order not found with this Id", 404));
+  if (
+    order.status === "Completed" &&
+    buyer._id.toString() === req.user!._id.toString()
+  ) {
+    if (!order.sellerFeedbackSubmitted) {
+      order.sellerFeedback = undefined;
+    }
   }
-
-  await order.save({ validateBeforeSave: false });
 
   res.status(200).json({
     success: true,
@@ -560,23 +566,23 @@ export const addBuyerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.buyerFeedback?.createdAt) {
+  if (order.buyerFeedbackSubmitted) {
     return next(
       new ErrorHandler("You have already added feedback to this order", 400)
     );
   }
 
-  const buyerFeedback = {
+  const buyerFeedback: IBuyerFeedback = {
     communication,
     service,
     recommend,
     comment,
-    createdAt: Date.now(),
+    createdAt: new Date(),
   };
 
   const updatedOrder = await Order.findByIdAndUpdate(
     req.params.id,
-    { buyerFeedback },
+    { buyerFeedback, buyerFeedbackSubmitted: true },
     { new: true, runValidators: true, useFindAndModify: false }
   ).populate("seller buyer", "name email avatar");
 
@@ -618,7 +624,7 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (!order.buyerFeedback?.createdAt) {
+  if (!order.buyerFeedbackSubmitted) {
     return next(
       new ErrorHandler(
         "You can only add feedback after the buyer has added feedback",
@@ -627,21 +633,21 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (order.sellerFeedback?.createdAt) {
+  if (order.sellerFeedbackSubmitted) {
     return next(
       new ErrorHandler("You have already added feedback to this order", 400)
     );
   }
 
-  const sellerFeedback = {
+  const sellerFeedback: ISellerFeedback = {
     rating,
     comment,
-    createdAt: Date.now(),
+    createdAt: new Date(),
   };
 
   order = await Order.findByIdAndUpdate(
     req.params.id,
-    { sellerFeedback },
+    { sellerFeedback, sellerFeedbackSubmitted: true },
     { new: true, runValidators: true, useFindAndModify: false }
   )
     .populate("seller buyer", "name email avatar country ")
@@ -652,8 +658,6 @@ export const addSellerFeedback = catchAsyncErrors(async (req, res, next) => {
   if (!order) {
     return next(new ErrorHandler("Order not found with this Id", 404));
   }
-
-  order.askSellerFeedback = false;
 
   const buyer = await User.findById(order.buyer._id);
   const seller = await User.findById(order.seller._id);
@@ -777,28 +781,23 @@ export const updateOrderStatus = catchAsyncErrors(async (req, res, next) => {
 
 // process payment
 export const packagePayment = catchAsyncErrors(async (req, res, next) => {
-  const { packageNumber, gigId, orderId } = req.body;
+  const { packageNumber, gigId } = req.body;
 
-  if(!packageNumber || packageNumber < 0 || packageNumber > 2) {
+  if (packageNumber === undefined || packageNumber < 0 || packageNumber > 2) {
     return next(new ErrorHandler("Please select a package", 400));
-  }
-
-  if(!gigId || !orderId) {
-    return next(new ErrorHandler("Please provide gigId and orderId", 400));
   }
 
   const gig = await Gig.findById(gigId);
 
   if (!gig) {
-    await Order.deleteOne({ _id: orderId });
     return next(new ErrorHandler("Gig not found with this Id", 404));
   }
 
-  const price = gig.pricing![packageNumber].packagePrice;
+  const price = Number(gig.pricing![packageNumber].packagePrice);
 
-  const serviceFee = Number(price * 0.21).toFixed(2);
+  const serviceFee = Number(Number(price * 0.21).toFixed(2));
 
-  const totalAmount = Number(price + serviceFee).toFixed(2);
+  const totalAmount = (price + serviceFee).toFixed(2);
 
   const options = {
     amount: Number(totalAmount) * 100,
@@ -852,7 +851,7 @@ export const paymentVerification = catchAsyncErrors(async (req, res, next) => {
 export const checkout = async (req: Request, res: Response) => {
   const { amount } = req.body;
 
-  if(!amount) {
+  if (!amount) {
     return res.status(400).json({
       success: false,
       message: "Please provide amount",

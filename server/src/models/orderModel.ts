@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IOrder } from "../types/order.types";
+import { FREE_TEXT, MULTIPLE_CHOICE } from "../constants/globalConstants";
 
 
 const orderSchema = new mongoose.Schema<IOrder>({
@@ -62,8 +63,8 @@ const orderSchema = new mongoose.Schema<IOrder>({
       },
       questionType: {
         type: String,
-        enum: ["Free Text", "Multiple Choice"],
-        default: "Free Text",
+        enum: [FREE_TEXT, MULTIPLE_CHOICE],
+        default: FREE_TEXT,
       },
       answerRequired: {
         type: Boolean,
@@ -311,26 +312,26 @@ const orderSchema = new mongoose.Schema<IOrder>({
   buyerFeedback: {
     communication: {
       type: Number,
-      min: 0,
+      min: 1,
       max: 5,
       select: false,
-      default: 0,
+      default: 1,
       required: true,
     },
     service: {
       type: Number,
-      min: 0,
+      min: 1,
       max: 5,
       select: false,
-      default: 0,
+      default: 1,
       required: true,
     },
     recommend: {
       type: Number,
-      min: 0,
+      min: 1,
       max: 5,
       select: false,
-      default: 0,
+      default: 1,
       required: true,
     },
     comment: {
@@ -346,10 +347,10 @@ const orderSchema = new mongoose.Schema<IOrder>({
   sellerFeedback: {
     rating: {
       type: Number,
-      min: 0,
+      min: 1,
       max: 5,
       select: false,
-      default: 0,
+      default: 1,
       required: true,
     },
     comment: {
@@ -362,10 +363,16 @@ const orderSchema = new mongoose.Schema<IOrder>({
       required: true,
     },
   },
-  askSellerFeedback: {
+  sellerFeedbackSubmitted: {
     type: Boolean,
     default: false,
-  }
+    required: true,
+  },
+  buyerFeedbackSubmitted: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
 });
 
 export default mongoose.model("Order", orderSchema);

@@ -451,13 +451,14 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
   if (user.razorPayAccountDetails.accountId) {
     return next(new ErrorHandler("You have already added your account", 400));
   }
+  
 
-  const email = "a43433342f31332234434493343444343354@gmail.com";
+  // const email = "a43433342f31332234434493343444343354@gmail.com";
 
   // creating linked account
   try {
     const createAccPayload: Accounts.RazorpayAccountCreateRequestBody = {
-      email,
+      email: req.user?.email!,
       phone: user.phone!.number!,
       type: "route",
       legal_business_name: user.name,
@@ -487,13 +488,13 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       validateBeforeSave: false,
     });
   } catch (err: any) {
-    return next(new ErrorHandler(err.error.description, 400));
+    return next(new ErrorHandler(err.error, 400));
   }
 
   // creating stakeholder account
   try {
     const createStackholderPayload: Stakeholders.RazorpayStakeholderCreateRequestBody = {
-      email,
+      email: req.user?.email!,
       name: accountHolderName.to_string(),
       phone: {
         primary: user.phone!.number!,
@@ -512,7 +513,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       validateBeforeSave: false,
     });
   } catch (err: any) {
-    return next(new ErrorHandler(err.error.description, 400));
+    return next(new ErrorHandler(err.error, 400));
   }
 
   // request product configuration
@@ -531,7 +532,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       validateBeforeSave: false,
     });
   } catch (err: any) {
-    return next(new ErrorHandler(err.error.description, 400));
+    return next(new ErrorHandler(err.error, 400));
   }
 
   // update product configuration
@@ -553,7 +554,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       validateBeforeSave: false,
     });
   } catch (err: any) {
-    return next(new ErrorHandler(err.error.description, 400));
+    return next(new ErrorHandler(err.error, 400));
   }
 
   res.status(200).json({

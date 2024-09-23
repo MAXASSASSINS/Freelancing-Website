@@ -8,7 +8,7 @@ const loadImage = async (src) =>
     img.onerror = (...args) => reject(args);
     img.src = src;
   });
-
+  
 const getImageData = (image) => {
   const canvas = document.createElement("canvas");
   canvas.width = image.width;

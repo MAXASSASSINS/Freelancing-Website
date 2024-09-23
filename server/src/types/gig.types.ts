@@ -1,5 +1,6 @@
 import { Document, PopulatedDoc, Schema } from 'mongoose';
 import { IUser } from './user.types';
+import { QuestionType } from '../constants/globalConstants';
 
 export interface IImage {
   publicId: string;
@@ -40,9 +41,9 @@ export interface IPricing {
 
 export interface IGigRequirement {
   questionTitle: string;
-  questionType?: 'Free Text' | 'Multiple Choice';
-  answerRequired?: boolean;
-  multipleOptionSelect?: boolean;
+  questionType: QuestionType;
+  answerRequired: boolean;
+  multipleOptionSelect: boolean;
   options: string[];
 }
 

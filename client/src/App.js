@@ -10,7 +10,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
-  useParams
+  useParams,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,21 +31,16 @@ import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequire
 import { Test } from "./component/Test/Test";
 import { UserDetail } from "./component/UserDetail/UserDetail";
 import store from "./store";
-
 import { SocketContext, socket } from "./context/socket/socket";
-
 import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
 import "./utility/color";
-
 import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
 import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 import { Orders } from "./component/Orders/Orders";
 import { SignUp } from "./component/SignUp";
-
-
 import { BankAccountForm } from "./component/BankAccountForm";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
 import { FavouriteGigs } from "./component/FavouriteGigs";
@@ -54,8 +49,10 @@ import { ResetPassword } from "./component/ResetPassword";
 import { UpdateUserProfile } from "./component/UpdateUserProfile";
 import {
   useGlobalLoading,
-  useGlobalLoadingText
+  useGlobalLoadingText,
 } from "./context/globalLoadingContext";
+import ScrollToTop from "./component/ScrollToTop";
+
 
 export const windowContext = createContext();
 
@@ -89,13 +86,13 @@ const App = () => {
     localStorage.setItem("redirectUrl", "/");
   }, []);
 
+
   let resizeWindow = () => {
     setWindowWidth(window.innerWidth);
     setWindowHeight(window.innerHeight);
   };
 
   useEffect(() => {
-    //
     resizeWindow();
     window.addEventListener("resize", resizeWindow);
     return () => window.removeEventListener("resize", resizeWindow);
@@ -114,14 +111,12 @@ const App = () => {
         socket.emit("new_user", user._id.toString());
       }
     };
-    
     // Emit on connect
     socket.on("connect", handleNewUser);
 
     if (isAuthenticated && user?._id) {
       socket.emit("new_user", user._id.toString());
     }
-    
     // Clean up
     return () => {
       socket.off("connect", handleNewUser);
@@ -147,7 +142,7 @@ const App = () => {
     "/signUp",
     "/orders/",
     "/update/profile",
-    "/reset/password/"
+    "/reset/password/",
   ]; // Add any other paths here
 
   // Checking if the current location matches any path in pathsWithoutFooter
@@ -157,154 +152,156 @@ const App = () => {
 
   return (
     <>
-      <windowContext.Provider value={{ windowWidth, windowHeight }}>
-        <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
-          <SocketContext.Provider value={socket}>
-            <DataSendingLoading
-              show={globalLoading}
-              loadingText={globalLoadingText}
-            />
-            <Tooltip id="my-tooltip" place="bottom" />
-            {windowWidth < 900 && <Sidebar></Sidebar>}
-            <Header></Header>
-            <ToastContainer />
-            <Routes>
-              <Route
-                exact
-                path="/get/client/seller/chat:id"
-                element={
-                  <ProtectedRoute>
-                    <CurrentlySelectedClientChat />
-                  </ProtectedRoute>
-                }
-              ></Route>
+      <ScrollToTop>
+        <windowContext.Provider value={{ windowWidth, windowHeight }}>
+          <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
+            <SocketContext.Provider value={socket}>
+              <DataSendingLoading
+                show={globalLoading}
+                loadingText={globalLoadingText}
+              />
+              <Tooltip id="my-tooltip" place="bottom" />
+              {windowWidth < 900 && <Sidebar></Sidebar>}
+              <Header></Header>
+              <ToastContainer />
+              <Routes>
+                <Route
+                  exact
+                  path="/get/client/seller/chat:id"
+                  element={
+                    <ProtectedRoute>
+                      <CurrentlySelectedClientChat />
+                    </ProtectedRoute>
+                  }
+                ></Route>
 
-              <Route
-                exact
-                path="/reset/password/:token"
-                element={<ResetPassword />}
-              ></Route>
-              <Route
-                exact
-                path="/get/all/messages/for/current/user"
-                element={
-                  <ProtectedRoute>
-                    <Inbox />
-                  </ProtectedRoute>
-                }
-              ></Route>
+                <Route
+                  exact
+                  path="/reset/password/:token"
+                  element={<ResetPassword />}
+                ></Route>
+                <Route
+                  exact
+                  path="/get/all/messages/for/current/user"
+                  element={
+                    <ProtectedRoute>
+                      <Inbox />
+                    </ProtectedRoute>
+                  }
+                ></Route>
 
-              <Route exact path="/" element={<Home />} />
-              <Route exact path="/search" element={<Home />} />
-              <Route exact path="/login" element={<Login />} />
-              <Route exact path="/signUp" element={<SignUp />} />
+                <Route exact path="/" element={<Home />} />
+                <Route exact path="/search" element={<Home />} />
+                <Route exact path="/login" element={<Login />} />
+                <Route exact path="/signUp" element={<SignUp />} />
 
-              <Route exact path="/user/:id" element={<UserDetail />} />
-              <Route exact path="/gig/details/:id" element={<GigDetail />} />
-              <Route path="*" element={<NotFoundPage />} />
-              <Route
-                exact
-                path="/gig/create/new/gig"
-                element={
-                  <ProtectedRoute>
-                    <CreateGig />
-                  </ProtectedRoute>
+                <Route exact path="/user/:id" element={<UserDetail />} />
+                <Route exact path="/gig/details/:id" element={<GigDetail />} />
+                <Route path="*" element={<NotFoundPage />} />
+                <Route
+                  exact
+                  path="/gig/create/new/gig"
+                  element={
+                    <ProtectedRoute>
+                      <CreateGig />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  exact
+                  path="/gig/place/order/:id/:packageNumber"
+                  element={
+                    <ProtectedRoute>
+                      <PlaceOrder />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route exact path="/test" element={<Test />}></Route>
+                <Route
+                  exact
+                  path="/gig/place/order/submit/requirements/:orderId"
+                  element={
+                    <ProtectedRoute>
+                      <SubmitRequirements />
+                    </ProtectedRoute>
+                  }
+                ></Route>
+                <Route
+                  exact
+                  path="/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/orders/:id"
+                  element={
+                    <ProtectedRoute>
+                      <OrderDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/orders/:id/feedback"
+                  element={
+                    <ProtectedRoute>
+                      <BuyerFeedback />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/balance/detail"
+                  element={
+                    <ProtectedRoute>
+                      <BalanceDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/my/favourite/gigs"
+                  element={
+                    <ProtectedRoute>
+                      <FavouriteGigs />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/update/profile"
+                  element={
+                    <ProtectedRoute>
+                      <UpdateUserProfile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  exact
+                  path="/bank_account"
+                  element={
+                    <ProtectedRoute>
+                      <BankAccountForm />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+              <div
+                style={{ height: height - (width > 600 ? 81 : 143) }}
+                className={
+                  "search-bar-dim-background " +
+                  (dimBackground ? "visible" : null)
                 }
-              ></Route>
-              <Route
-                exact
-                path="/gig/place/order/:id/:packageNumber"
-                element={
-                  <ProtectedRoute>
-                    <PlaceOrder />
-                  </ProtectedRoute>
-                }
-              ></Route>
-              <Route exact path="/test" element={<Test />}></Route>
-              <Route
-                exact
-                path="/gig/place/order/submit/requirements/:orderId"
-                element={
-                  <ProtectedRoute>
-                    <SubmitRequirements />
-                  </ProtectedRoute>
-                }
-              ></Route>
-              <Route
-                exact
-                path="/orders"
-                element={
-                  <ProtectedRoute>
-                    <Orders />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/orders/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/orders/:id/feedback"
-                element={
-                  <ProtectedRoute>
-                    <BuyerFeedback />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/balance/detail"
-                element={
-                  <ProtectedRoute>
-                    <BalanceDetail />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/my/favourite/gigs"
-                element={
-                  <ProtectedRoute>
-                    <FavouriteGigs />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/update/profile"
-                element={
-                  <ProtectedRoute>
-                    <UpdateUserProfile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                exact
-                path="/bank_account"
-                element={
-                  <ProtectedRoute>
-                    <BankAccountForm />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            <div
-              style={{ height: height - (width > 600 ? 81 : 143) }}
-              className={
-                "search-bar-dim-background " +
-                (dimBackground ? "visible" : null)
-              }
-            ></div>
-            {!hideFooter && <Footer />}
-          </SocketContext.Provider>
-        </CloudinaryContext>
-      </windowContext.Provider>
+              ></div>
+              {!hideFooter && <Footer />}
+            </SocketContext.Provider>
+          </CloudinaryContext>
+        </windowContext.Provider>
+      </ScrollToTop>
     </>
   );
 };

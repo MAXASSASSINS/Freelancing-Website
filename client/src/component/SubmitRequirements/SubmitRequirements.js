@@ -1,35 +1,27 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
+import {
   createRef,
+  useEffect,
+  useRef,
+  useState
 } from "react";
-import { HiOutlineCheckCircle } from "react-icons/hi";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getGigDetail } from "../../actions/gigAction";
-import { FiCheck } from "react-icons/fi";
-import { IoClose } from "react-icons/io5";
-import { TextEditor } from "../TextEditor/TextEditor";
-import { TextArea } from "../TextArea/TextArea";
-import { MultipleOptionSelect } from "../MultipleOptionSelect/MultipleOptionSelect";
-import { Tooltip } from "../Tooltip/Tooltip";
 import { AiFillInfoCircle } from "react-icons/ai";
-import { IoMdAttach } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
-import { CheckInput } from "../CheckInput/CheckInput";
-import { getOrderDetail } from "../../actions/orderAction";
+import { FiCheck } from "react-icons/fi";
+import { HiOutlineCheckCircle } from "react-icons/hi";
+import { IoMdAttach } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 import Moment from "react-moment";
-import { getFileSize, numberToCurrency } from "../../utility/util";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { getOrderDetail } from "../../actions/orderAction";
+import { FREE_TEXT } from "../../constants/globalConstants";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
-import { FREE_TEXT } from "../../constants/globalConstants";
-import { fetchData } from "../../utility/fetchData";
-import { useNavigate } from "react-router-dom";
-import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { getFileSize, numberToCurrency } from "../../utility/util";
+import { CheckInput } from "../CheckInput/CheckInput";
+import { MultipleOptionSelect } from "../MultipleOptionSelect/MultipleOptionSelect";
+import { TextArea } from "../TextArea/TextArea";
 
 export const SubmitRequirements = () => {
   const dispatch = useDispatch();
@@ -420,7 +412,7 @@ export const SubmitRequirements = () => {
         <div className="order-5 flex items-center justify-end gap-4 col-start-2 col-span-5 mt-8 md:col-start-6">
           <button
             className="capitalize text-icons col-span-2 rounded hover:cursor-pointer hover:text-light_grey min-[450px]:col-start-3"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/orders")}
           >
             Remind me later
           </button>
