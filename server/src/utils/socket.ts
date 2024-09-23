@@ -16,7 +16,9 @@ const runSocket = (server: HTTPServer) => {
   let onlineUserList = new Map();
 
   io.on("connection", (socket) => {
+    console.log(onlineUserList);
     socket.on("new_user", (userId) => {
+      console.log('new user connected', userId, socket.id);
       addNewUser(userId, socket.id);
     });
 

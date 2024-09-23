@@ -1,23 +1,18 @@
-import React, { useEffect, useContext } from "react";
-import "./home.css";
-import "../../component/common.css";
-import { GigCard } from "../GigCard/GigCard";
+import { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllGig } from "../../actions/gigAction";
-
-import { Sidebar } from "../Sidebar/Sidebar";
-import { Header } from "../Header/Header";
-import { Navigate, useLocation } from "react-router-dom";
-import { io } from "socket.io-client";
+import "../../component/common.css";
+import { GigCard } from "../GigCard/GigCard";
+import "./home.css";
+import { useLocation } from "react-router-dom";
 // import { socket } from '../../App'
-import { SocketContext } from "../../context/socket/socket";
 import { updateAllGigs } from "../../actions/gigAction";
+import { SocketContext } from "../../context/socket/socket";
 import { SearchTagsBar } from "../SearchTagsBar";
 
 export const Home = () => {
   const dispatch = useDispatch();
   let location = useLocation();
-
 
   const socket = useContext(SocketContext);
 
@@ -36,18 +31,16 @@ export const Home = () => {
       category = params.get("category");
       keywords = params.get("keywords");
     }
-    if(category) category = encodeURIComponent(category);
-    if(keywords) keywords = encodeURIComponent(keywords);
+    if (category) category = encodeURIComponent(category);
+    if (keywords) keywords = encodeURIComponent(keywords);
 
-    if(path === "/") {
+    if (path === "/") {
       dispatch(getAllGig());
-    }
-    else if (path === "/search" && category) {
+    } else if (path === "/search" && category) {
       dispatch(getAllGig(undefined, category));
     } else if (path === "/search" && keywords) {
       dispatch(getAllGig(keywords));
-    }
-    else{
+    } else {
       dispatch(getAllGig());
     }
   }, [location]);
@@ -82,7 +75,7 @@ export const Home = () => {
     });
 
     socket.on("offline_from_server", async (userId) => {
-      // 
+      //
       if (gigs) {
         const temp = gigs.map((gig) => {
           if (gig.user._id.toString() === userId.toString()) {
@@ -100,9 +93,7 @@ export const Home = () => {
     };
   }, [socket, gigs, dispatch]);
 
-  useEffect(() => {
-    
-  }, [gigs]);
+  useEffect(() => {}, [gigs]);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
   useEffect(() => {
@@ -147,20 +138,23 @@ export const Home = () => {
               <GigCard lazyLoad={true} gig={gig} key={gig._id} />
             ))}
         </div>
-      ) : !gigLoading && (
-        <div className="h-[calc(100vh-146.5px)] sm:h-[calc(100vh-81px)] mx-6 text-dark_grey flex flex-col items-center justify-center">
-          <img
-            className="max-w-sm sm:max-w-lg object-contain"
-            src="/images/confused-man-with-question-mark-concept-flat-illustration-free-vector.jpg"
-          ></img>
-          <h1 className="text-center text-xl sm:text-3xl capitalize font-semibold">
-            No Services Found For Your Search
-          </h1>
-          <p className="max-w-[40ch] text-center mt-2 leading-5 sm:leading-normal sm:text-lg text-light_heading">
-            Try a new search or select from the categories above for better
-            results.
-          </p>
-        </div>
+      ) : (
+        !gigLoading && (
+          <div className="h-[calc(100vh-146.5px)] sm:h-[calc(100vh-81px)] mx-6 text-dark_grey flex flex-col items-center justify-center">
+            <img
+              className="max-w-sm sm:max-w-lg object-contain"
+              src="/images/confused-man-with-question-mark-concept-flat-illustration-free-vector.jpg"
+              alt="confused man with question mark"
+            ></img>
+            <h1 className="text-center text-xl sm:text-3xl capitalize font-semibold">
+              No Services Found For Your Search
+            </h1>
+            <p className="max-w-[40ch] text-center mt-2 leading-5 sm:leading-normal sm:text-lg text-light_heading">
+              Try a new search or select from the categories above for better
+              results.
+            </p>
+          </div>
+        )
       )}
     </div>
   );

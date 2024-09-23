@@ -2,12 +2,13 @@ import { Document, PopulatedDoc } from "mongoose";
 import { IFile } from "./file.types";
 import { IGig } from "./gig.types";
 import { IUser } from "./user.types";
+import { QuestionType } from "../constants/globalConstants";
 
 export interface IOrderRequirement {
   questionTitle: string;
-  questionType?: 'Free Text' | 'Multiple Choice';
-  answerRequired?: boolean;
-  multipleOptionSelect?: boolean;
+  questionType: QuestionType;
+  answerRequired: boolean;
+  multipleOptionSelect: boolean;
   answerText?: string;
   options: {
     title: string;
@@ -85,5 +86,6 @@ export interface IOrder extends Document {
   cancelledAt?: Date;
   buyerFeedback?: IBuyerFeedback;
   sellerFeedback?: ISellerFeedback;
-  askSellerFeedback: boolean;
+  sellerFeedbackSubmitted: boolean;
+  buyerFeedbackSubmitted: boolean;
 }

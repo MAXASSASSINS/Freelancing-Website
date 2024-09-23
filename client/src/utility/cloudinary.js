@@ -25,7 +25,7 @@ export const uploadToCloudinary = async (arr) => {
         },
       }
     );
-    // 
+    //
     const obj = {};
     if (item.type.includes("video")) {
       obj.videoPublicId = data.data.public_id;
@@ -48,11 +48,8 @@ export const uploadToCloudinary = async (arr) => {
 };
 
 const uploadToCloudinarySingle = async (item, maxSize) => {
-
-  // if item is already uploaded
-  
-  if(item.url) {
-    
+  console.log(item);
+  if (item.url) {
     return item;
   }
 
@@ -67,17 +64,8 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
 
   try {
     const data = await processFile(item);
-    
-
-    // creating blur hash
     const blurhash = await generateBlurHash(item, data.data.secure_url);
-    
-    // const url = URL.createObjectURL(item);
-    // 
-    // const blurhash = await encodeImageToBlurhash(url);
-    // 
 
-    
     const obj = {
       publicId: data.data.public_id,
       url: data.data.secure_url,
@@ -143,11 +131,7 @@ const processFile = async (file) => {
 };
 
 const send = async (piece, start, end, size) => {
-  
-  
-
   const formData = new FormData();
-  
 
   formData.append("file", piece);
   formData.append("cloud_name", "dyod45bn8");
@@ -161,10 +145,8 @@ const send = async (piece, start, end, size) => {
 
   try {
     const res = await axios.post(POST_URL, formData, { headers });
-    
     return res;
   } catch (error) {
-    
     return Promise.reject(error);
   }
 };

@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Requirements } from "./Requirements";
-import { Details } from "./Details";
+import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { getOrderDetail } from "../../actions/orderAction";
+import { windowContext } from "../../App";
+import { green_color } from "../../utility/color";
 import { Activities } from "./Activities";
 import { Delivery } from "./Delivery";
-import { colors, green_color } from "../../utility/color";
-import { windowContext } from "../../App";
-import { axiosInstance } from "../../utility/axiosInstance";
-import { useNavigate, useParams } from "react-router-dom";
-import { FiCheck } from "react-icons/fi";
-import { IoClose } from "react-icons/io5";
-import { AiFillQuestionCircle } from "react-icons/ai";
-import { OrderDetailSideModal } from "./OrderDetailSideModal";
-import { useDispatch, useSelector } from "react-redux";
 import { DeliveryTimer } from "./DeliveryTimer";
-import { socket } from "../../context/socket/socket";
-import { getOrderDetail } from "../../actions/orderAction";
+import { Details } from "./Details";
+import { OrderDetailSideModal } from "./OrderDetailSideModal";
+import { Requirements } from "./Requirements";
 
 export const OrderDetail = () => {
   const { windowWidth, windowHeight } = useContext(windowContext);

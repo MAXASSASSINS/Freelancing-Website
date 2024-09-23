@@ -1,34 +1,31 @@
-import React, { useState, useEffect, useContext } from "react";
-import { DateTag } from "../DateTag";
-import { axiosInstance } from "../../utility/axiosInstance";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Moment from "react-moment";
-import { GrDocument } from "react-icons/gr";
+import { Rating } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import { BiTimeFive } from "react-icons/bi";
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { FiPackage } from "react-icons/fi";
+import { GoPencil } from "react-icons/go";
+import { HiDownload } from "react-icons/hi";
 import { IoDocumentOutline } from "react-icons/io5";
 import { RiRocket2Line } from "react-icons/ri";
+import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
-import { GoPencil } from "react-icons/go";
-import { BiTimeFive } from "react-icons/bi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { updateOrderDetail } from "../../actions/orderAction";
+import { windowContext } from "../../App";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { SocketContext } from "../../context/socket/socket";
+import { axiosInstance } from "../../utility/axiosInstance";
+import { downloadFile, getFileSize } from "../../utility/util";
 import { Avatar } from "../Avatar/Avatar";
-import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
+import { DateTag } from "../DateTag";
+import { SellerFeedback } from "../Feedback/SellerFeedback";
 import { LazyImage } from "../LazyImage/LazyImage";
 import { LazyVideo } from "../LazyVideo.js/LazyVideo";
-import { windowContext } from "../../App";
-import { HiDownload } from "react-icons/hi";
-import { getFileSize, downloadFile } from "../../utility/util";
-import { SocketContext } from "../../context/socket/socket";
-import { DeliveryTimer } from "./DeliveryTimer";
 import { ChatBox } from "./ChatBox";
-import { FiPackage } from "react-icons/fi";
 import DeliveryApproval from "./DeliveryApproval";
-import { updateOrderDetail } from "../../actions/orderAction";
-import { FaRegStar, FaStar } from "react-icons/fa";
-import { Rating } from "@mui/material";
-import { TextArea } from "../TextArea/TextArea";
-import { SellerFeedback } from "../Feedback/SellerFeedback";
-import { useGlobalLoadingText, useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { DeliveryTimer } from "./DeliveryTimer";
 
-export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
+export const Activities = ({ orderDetail }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
@@ -47,10 +44,10 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
 
-  // 
+  //
   const [orderMessages, setOrderMessages] = useState([]);
 
-  // 
+  //
 
   useEffect(() => {
     getOrderMessages();
@@ -58,7 +55,6 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
   // online status of seller or buyer
   useEffect(() => {
-    
     const userToCheck =
       user._id.toString() === orderDetail.buyer._id.toString()
         ? orderDetail.seller._id
@@ -68,7 +64,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
 
   useEffect(() => {
     socket.on("is_online_from_server", (data) => {
-      // 
+      //
       const onlineClientId = data.id.toString();
       const userToCheck =
         user._id.toString() === orderDetail.buyer._id.toString()
@@ -91,14 +87,13 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     });
 
     socket.on("offline_from_server", (data) => {
-      
       const onlineClientId = data?.toString();
 
       const userToCheck =
         user._id.toString() === orderDetail.buyer._id.toString()
           ? orderDetail.seller._id
           : orderDetail.buyer._id;
-      if (onlineClientId.toString() === userToCheck.toString()) {
+      if (onlineClientId.toString() === userToCheck?.toString()) {
         setOnline(false);
       }
     });
@@ -113,15 +108,11 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
     socket.on("receive_message", async (data) => {
-      
-      
-
       if (data.orderId !== params.id) {
         return;
       }
 
       if (data.forDelivery) {
-        
         data = { ...data, deliveryNumber: orderDetail.deliveries.length + 1 };
       }
 
@@ -132,7 +123,6 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
         let found = false;
         prev.forEach((message) => {
           if (message.date === date) {
-            
             found = true;
             message.dateWiseMessages.push(data);
           }
@@ -157,14 +147,11 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     socket.on(
       "receive_message_self",
       async (data) => {
-        
-
         if (data.orderId !== params.id) {
           return;
         }
 
         if (data.forDelivery) {
-          
           data = { ...data, deliveryNumber: orderDetail.deliveries.length };
         }
 
@@ -203,7 +190,6 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
     });
   }, [fileLoading, socket]);
 
-
   // set global loading to true if file loading is true
   useEffect(() => {
     if (fileLoading) {
@@ -212,12 +198,10 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
       updateGlobalLoading(false);
     }
   }, [fileLoading]);
-      
 
   const getOrderMessages = async () => {
     try {
       const { data } = await axiosInstance.get(`/message/order/${params.id}`);
-      
 
       const messages = buildDateWiseMessages(
         data.messages,
@@ -305,12 +289,10 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
       dateWiseMessages,
     }));
 
-    map.map((dateWiseMessage) => {
-      
-    });
+    map.map((dateWiseMessage) => {});
 
     setOrderMessages(map);
-    // 
+    //
     return map;
   };
 
@@ -1058,7 +1040,7 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
               </section>
 
               {orderDetail.buyer._id === user._id &&
-                !orderDetail.buyerFeedback?.createdAt && (
+                !orderDetail.buyerFeedbackSubmitted && (
                   <Link to={`/orders/${orderDetail._id}/feedback`}>
                     <div className="flex justify-end mx-6">
                       <button className="p-3 px-4 relative bg-primary hover:cursor-pointer hover:bg-primary_hover text-white rounded-sm">
@@ -1068,39 +1050,67 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                   </Link>
                 )}
 
-              {orderDetail.buyerFeedback && (
-                <section
-                  className="relative pl-6 flex flex-col gap-4 pb-16"
-                  style={{
-                    marginTop:
-                      new Date(orderDetail.completedAt).toLocaleDateString() ===
+              {orderDetail.buyerFeedbackSubmitted &&
+                (user._id === orderDetail.buyer._id ||
+                  (user._id === orderDetail.seller_id &&
+                    orderDetail.sellerFeedbackSubmitted)) && (
+                  <section
+                    className="relative pl-6 flex flex-col gap-4 pb-16"
+                    style={{
+                      marginTop:
+                        new Date(
+                          orderDetail.completedAt
+                        ).toLocaleDateString() ===
+                        new Date(
+                          orderDetail.buyerFeedback.createdAt
+                        ).toLocaleDateString()
+                          ? "-2rem"
+                          : "0rem",
+                    }}
+                  >
+                    {new Date(orderDetail.completedAt).toLocaleDateString() !==
                       new Date(
                         orderDetail.buyerFeedback.createdAt
-                      ).toLocaleDateString()
-                        ? "-2rem"
-                        : "0rem",
-                  }}
-                >
-                  {new Date(orderDetail.completedAt).toLocaleDateString() !==
-                    new Date(
-                      orderDetail.buyerFeedback.createdAt
-                    ).toLocaleDateString() && (
-                    <DateTag
-                      left={"-1.5rem"}
-                      date={new Date(
-                        orderDetail.buyerFeedback.createdAt
-                      ).toLocaleDateString()}
-                    />
-                  )}
-                  <div className="border-b pb-6">
-                    <div className="flex items-center gap-4 font-semibold text-light_heading">
-                      <div className="p-2 aspect-square bg-orange-100 text-gold rounded-full">
-                        <FaStar />
+                      ).toLocaleDateString() && (
+                      <DateTag
+                        left={"-1.5rem"}
+                        date={new Date(
+                          orderDetail.buyerFeedback.createdAt
+                        ).toLocaleDateString()}
+                      />
+                    )}
+                    <div className="border-b pb-6">
+                      <div className="flex items-center gap-4 font-semibold text-light_heading">
+                        <div className="p-2 aspect-square bg-orange-100 text-gold rounded-full">
+                          <FaStar />
+                        </div>
+                        <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                          <span className="mr-2">
+                            {orderDetail.buyer._id === user._id ? (
+                              "You left a review"
+                            ) : (
+                              <>
+                                <Link
+                                  to={`/user/${orderDetail.buyer._id}`}
+                                  className="text-primary hover:underline"
+                                >
+                                  {orderDetail.buyer.name}
+                                </Link>
+                                &nbsp; gave you a review
+                              </>
+                            )}
+                          </span>
+                          <span className="text-icons font-normal text-xs">
+                            <Moment format="MMM DD, H:mm A">
+                              {orderDetail.buyerFeedback.createdAt}
+                            </Moment>
+                          </span>
+                        </div>
                       </div>
-                      <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
-                        <span className="mr-2">
+                      <div className="border mr-6 rounded mt-4">
+                        <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
                           {orderDetail.buyer._id === user._id ? (
-                            "You left a review"
+                            "Your review"
                           ) : (
                             <>
                               <Link
@@ -1109,100 +1119,79 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                               >
                                 {orderDetail.buyer.name}
                               </Link>
-                              &nbsp; gave you a review
+                              's review
                             </>
                           )}
-                        </span>
-                        <span className="text-icons font-normal text-xs">
-                          <Moment format="MMM DD, H:mm A">
-                            {orderDetail.buyerFeedback.createdAt}
-                          </Moment>
-                        </span>
-                      </div>
-                    </div>
-                    <div className="border mr-6 rounded mt-4">
-                      <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
-                        {orderDetail.buyer._id === user._id ? (
-                          "Your review"
-                        ) : (
-                          <>
-                            <Link
-                              to={`/user/${orderDetail.buyer._id}`}
-                              className="text-primary hover:underline"
-                            >
-                              {orderDetail.buyer.name}
-                            </Link>
-                            's review
-                          </>
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <div className="flex items-center gap-4 font-semibold text-light_heading">
-                          <div className="aspect-square rounded-full">
-                            <Avatar
-                              avatarUrl={orderDetail.seller.avatar.url}
-                              userName={orderDetail.seller.name}
-                              width="2rem"
-                              fontSize="1rem"
-                              alt={orderDetail.seller.name}
-                            />
-                          </div>
-                          <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
-                            <span className="mr-2">
-                              {orderDetail.buyer._id === user._id ? (
-                                "Me"
-                              ) : (
-                                <>
-                                  <Link
-                                    to={`/user/${orderDetail.buyer._id}`}
-                                    className="text-primary hover:underline"
-                                  >
-                                    {orderDetail.buyer.name}
-                                  </Link>
-                                  's message
-                                </>
-                              )}
-                            </span>
-                          </div>
                         </div>
-                        <div className="ml-12 pb-4">
-                          <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
-                            {orderDetail.buyerFeedback.comment}
-                          </p>
-                          <div className="pt-6 max-w-max">
-                            {buyerFeedback.map((feedback, index) => (
-                              <div
-                                key={index}
-                                className="flex flex-col sm:flex-row gap-1 mb-4 sm:mb-0 sm:gap-8 sm:justify-between"
-                              >
-                                <h3 className=" text-light_grey font-semibold sm:mb-4">
-                                  {feedback.title}
-                                </h3>
-                                <Rating
-                                  size="small"
-                                  value={feedback.value}
-                                  icon={<FaStar className="text-gold" />}
-                                  emptyIcon={
-                                    <FaRegStar className="text-gold" />
-                                  }
-                                  readOnly
-                                />
-                              </div>
-                            ))}
+                        <div className="p-4">
+                          <div className="flex items-center gap-4 font-semibold text-light_heading">
+                            <div className="aspect-square rounded-full">
+                              <Avatar
+                                avatarUrl={orderDetail.seller.avatar.url}
+                                userName={orderDetail.seller.name}
+                                width="2rem"
+                                fontSize="1rem"
+                                alt={orderDetail.seller.name}
+                              />
+                            </div>
+                            <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
+                              <span className="mr-2">
+                                {orderDetail.buyer._id === user._id ? (
+                                  "Me"
+                                ) : (
+                                  <>
+                                    <Link
+                                      to={`/user/${orderDetail.buyer._id}`}
+                                      className="text-primary hover:underline"
+                                    >
+                                      {orderDetail.buyer.name}
+                                    </Link>
+                                    's message
+                                  </>
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="ml-12 pb-4">
+                            <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
+                              {orderDetail.buyerFeedback.comment}
+                            </p>
+                            <div className="pt-6 max-w-max">
+                              {buyerFeedback.map((feedback, index) => (
+                                <div
+                                  key={index}
+                                  className="flex flex-col sm:flex-row gap-1 mb-4 sm:mb-0 sm:gap-8 sm:justify-between"
+                                >
+                                  <h3 className=" text-light_grey font-semibold sm:mb-4">
+                                    {feedback.title}
+                                  </h3>
+                                  <Rating
+                                    size="small"
+                                    value={feedback.value}
+                                    icon={<FaStar className="text-gold" />}
+                                    emptyIcon={
+                                      <FaRegStar className="text-gold" />
+                                    }
+                                    readOnly
+                                  />
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </section>
-              )}
+                  </section>
+                )}
 
-              {orderDetail.sellerFeedback && (
+              {orderDetail.sellerFeedbackSubmitted && (
                 <section
                   className="relative pl-6 flex flex-col gap-4 pb-12"
                   style={{
                     marginTop:
-                      new Date(orderDetail.sellerFeedback.createdAt).toLocaleDateString() ===
+                      new Date(
+                        orderDetail.sellerFeedback.createdAt
+                      ).toLocaleDateString() ===
                       new Date(
                         orderDetail.buyerFeedback.createdAt
                       ).toLocaleDateString()
@@ -1210,7 +1199,9 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                         : "0rem",
                   }}
                 >
-                  {new Date(orderDetail.sellerFeedback.createdAt).toLocaleDateString() !==
+                  {new Date(
+                    orderDetail.sellerFeedback.createdAt
+                  ).toLocaleDateString() !==
                     new Date(
                       orderDetail.buyerFeedback.createdAt
                     ).toLocaleDateString() && (
@@ -1292,13 +1283,11 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
                                 </>
                               )}
                             </span>
-                            <Rating 
+                            <Rating
                               size="small"
                               value={orderDetail.sellerFeedback.rating}
                               icon={<FaStar className="text-gold" />}
-                              emptyIcon={
-                                <FaRegStar className="text-gold" />
-                              }
+                              emptyIcon={<FaRegStar className="text-gold" />}
                               readOnly
                             />
                           </div>
@@ -1315,7 +1304,8 @@ export const Activities = ({ orderDetail, askSellerFeedback = false }) => {
               )}
 
               {orderDetail.seller._id === user._id &&
-                orderDetail.askSellerFeedback && (
+                orderDetail.buyerFeedbackSubmitted &&
+                !orderDetail.sellerFeedbackSubmitted && (
                   <section className="relative px-6 flex flex-col gap-4 pb-12">
                     <SellerFeedback />
                   </section>

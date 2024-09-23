@@ -24,8 +24,8 @@ export const SellerFeedback = () => {
         comment: commentRef.current.currValue,
       } 
       const { data } = await axiosInstance.post(`/order/${params.id}/seller/feedback`, feedback);
+      console.log(data);
       dispatch(updateOrderDetail(data.order));
-      
     }
     catch(err){
       console.log(err);
