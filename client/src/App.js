@@ -1,5 +1,9 @@
 import "bootstrap/dist/css/bootstrap.css";
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Route,
@@ -27,20 +31,16 @@ import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequire
 import { Test } from "./component/Test/Test";
 import { UserDetail } from "./component/UserDetail/UserDetail";
 import store from "./store";
-
 import { SocketContext, socket } from "./context/socket/socket";
-
 import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
 import "./utility/color";
-
 import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./component/BalanceDetail/BalanceDetail";
 import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 import { Orders } from "./component/Orders/Orders";
 import { SignUp } from "./component/SignUp";
-
 import { BankAccountForm } from "./component/BankAccountForm";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
 import { FavouriteGigs } from "./component/FavouriteGigs";
@@ -52,6 +52,7 @@ import {
   useGlobalLoadingText,
 } from "./context/globalLoadingContext";
 import ScrollToTop from "./component/ScrollToTop";
+
 
 export const windowContext = createContext();
 
@@ -97,6 +98,12 @@ const App = () => {
     return () => window.removeEventListener("resize", resizeWindow);
   }, [resizeWindow]);
 
+  // useEffect(() => {
+  //   if (isAuthenticated && user?._id) {
+  //     socket.emit("new_user", user._id.toString());
+  //   }
+  // }, [isAuthenticated, user]);
+
   useEffect(() => {
     const handleNewUser = () => {
       console.log("handle new user is called");
@@ -104,14 +111,12 @@ const App = () => {
         socket.emit("new_user", user._id.toString());
       }
     };
-
     // Emit on connect
     socket.on("connect", handleNewUser);
 
     if (isAuthenticated && user?._id) {
       socket.emit("new_user", user._id.toString());
     }
-
     // Clean up
     return () => {
       socket.off("connect", handleNewUser);
