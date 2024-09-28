@@ -3,13 +3,11 @@ import { colors } from "../../utility/color";
 import "./Tooltip.css";
 
 type TooltipProps = {
-  id: string;
   place: PlacesType;
-  content: string;
-  variant: string;
+  variant?: string;
 };
 
-export const Tooltip = ({ id, place, content, variant }: TooltipProps) => {
+export const Tooltip = ({ place, variant }: TooltipProps) => {
   return (
     <ReactTooltip
       style={{

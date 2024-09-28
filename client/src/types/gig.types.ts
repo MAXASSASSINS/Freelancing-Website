@@ -1,29 +1,11 @@
+import { QuestionType } from "./../constants/globalConstants";
+import { IFile } from "./file.types";
 import { IUser } from "./user.types";
-import { FREE_TEXT, MULTIPLE_CHOICE, QuestionType } from "./../constants/globalConstants";
-
-export interface IImage {
-  _id: string;
-  publicId: string;
-  url: string;
-  blurhash: string;
-}
-
-export interface IVideo {
-  _id: string;
-  publicId?: string;
-  url?: string;
-  blurhash?: string;
-  name?: string;
-  type?: string;
-}
 
 export interface IReview {
   user: IUser | string;
   name: string;
-  avatar: {
-    public_id: string;
-    url: string;
-  };
+  avatar: IFile,
   country: string;
   rating: number;
   comment: string;
@@ -56,8 +38,8 @@ export interface IGig {
   searchTags: string[];
   pricing: IPricing[];
   description?: string;
-  images: IImage[];
-  video?: IVideo;
+  images: IFile[];
+  video?: IFile;
   ratings: number;
   numOfRatings: number;
   numOfReviews: number;

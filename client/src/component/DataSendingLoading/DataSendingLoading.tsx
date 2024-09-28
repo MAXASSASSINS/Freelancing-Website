@@ -2,7 +2,7 @@ import { BsCheckCircle } from "react-icons/bs";
 import "./DataSendingLoading.css";
 
 type DataSendingLoadingProps = {
-  finishedLoading: boolean;
+  finishedLoading?: boolean;
   show: boolean;
   loadingText?: string;
   pos?: 'static' | 'relative' | 'absolute' | 'sticky' | 'fixed';

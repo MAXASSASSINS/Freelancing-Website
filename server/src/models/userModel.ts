@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import {IUser, IPhone } from "../types/user.types";
+import fileSchema from "./fileSchema";
 
 
 const phoneSchema = new mongoose.Schema<IPhone>({
@@ -45,17 +46,7 @@ const userSchema = new mongoose.Schema<IUser>({
     select: false,
   },
 
-  avatar: {
-    public_id: {
-      type: String,
-      default: "myAvatar",
-    },
-    url: {
-      type: String,
-      default:
-        "https://res.cloudinary.com/dyod45bn8/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1691056205/kisspng-computer-icons-user-avatar-woman-avatar-5b0c5b2f6ecaa1.2446433615275364314538_zsiim6.jpg",
-    },
-  },
+  avatar: fileSchema,
 
   phone: phoneSchema,
 
@@ -84,16 +75,7 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         required: true,
       },
-      avatar: {
-        public_id: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
-      },
+      avatar: fileSchema,
       country: {
         type: String,
         required: true,

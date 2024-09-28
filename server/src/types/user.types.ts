@@ -1,14 +1,10 @@
 import { Document, Types, PopulatedDoc } from "mongoose";
 import { IGig } from "./gig.types";
+import { IFile } from "./file.types";
 
 export interface IPhone {
   code?: string;
   number?: string;
-}
-
-export interface IAvatar {
-  public_id: string;
-  url: string;
 }
 
 export interface ILanguage {
@@ -19,7 +15,7 @@ export interface ILanguage {
 export interface IReview {
   user: PopulatedDoc<IUser & Document>;
   name: string;
-  avatar: IAvatar;
+  avatar: IFile;
   country: string;
   rating: number;
   comment: string;
@@ -63,7 +59,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  avatar: IAvatar;
+  avatar: IFile;
   phone?: IPhone;
   ratings: number;
   numOfRatings: number;

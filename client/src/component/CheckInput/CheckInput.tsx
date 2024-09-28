@@ -4,16 +4,16 @@ import { GoCheck } from "react-icons/go";
 import "../../utility/color";
 
 type CheckInputProps = {
-  label: string;
+  label?: string;
   labelColor?: string;
   defaultValue?: boolean;
   getInputCheckedVal?: (val: boolean) => void;
 };
 
-export type CheckInputRef =  {
+export type CheckInputRef = {
   setIsCheckedComingFromParent: (isChecked: boolean) => void;
   currValue: boolean;
-}
+};
 
 export const CheckInput = forwardRef(
   (
@@ -45,11 +45,7 @@ export const CheckInput = forwardRef(
 
     return (
       <label className="check-input-main noSelect">
-        <input
-          type="checkbox"
-          onChange={handleChange}
-          checked={isChecked}
-        />
+        <input type="checkbox" onChange={handleChange} checked={isChecked} />
         <span
           className={`checkbox ${isChecked ? "checkbox--active" : ""}`}
           aria-hidden="true"
@@ -58,9 +54,11 @@ export const CheckInput = forwardRef(
             <GoCheck style={{ color: "#62646a", fontWeight: "700" }} />
           )}
         </span>
-        <div style={{ color: labelColor ? labelColor : "inherit" }}>
-          {label}
-        </div>
+        {label && (
+          <div style={{ color: labelColor ? labelColor : "inherit" }}>
+            {label}
+          </div>
+        )}
       </label>
     );
   }

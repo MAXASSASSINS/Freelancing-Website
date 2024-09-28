@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Blurhash } from "react-blurhash";
-import { IVideo } from "../../types/gig.types";
 import { getPosterForVideo } from "../../utility/util";
+import { IFile } from "../../types/file.types";
 
 type LazyVideoProps = {
-  file: IVideo;
+  file: IFile;
   lazyLoad?: boolean;
   aspectRatio?: string | number;
 };

@@ -3,7 +3,8 @@ import {
   forwardRef,
   useImperativeHandle,
   useRef,
-  useState
+  useState,
+  Ref
 } from "react";
 import { CheckInput, CheckInputRef } from "../CheckInput/CheckInput";
 
@@ -13,7 +14,11 @@ type MultipleOptionSelectProps = {
   multiple: boolean;
 };
 
-export const MultipleOptionSelect = forwardRef(({ options, multiple }: MultipleOptionSelectProps, ref) => {
+export type MultipleOptionSelectRef = {
+  currValue: boolean[];
+};
+
+export const MultipleOptionSelect = forwardRef(({ options, multiple }: MultipleOptionSelectProps, ref:  Ref<MultipleOptionSelectRef>) => {
   const optionsRefs = useRef<React.RefObject<CheckInputRef>[]>(options.map(() => createRef<CheckInputRef>()));
   const [selectedOptions, setSelectedOptions] = useState<boolean[]>(
     options.map(() => false)

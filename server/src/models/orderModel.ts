@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { IOrder } from "../types/order.types";
 import { FREE_TEXT, MULTIPLE_CHOICE } from "../constants/globalConstants";
+import fileSchema from "./fileSchema";
 
 
 const orderSchema = new mongoose.Schema<IOrder>({
@@ -172,41 +173,12 @@ const orderSchema = new mongoose.Schema<IOrder>({
       default: 0,
     },
   },
-  // paymentDetails: {
-  //   paymentMethod: {
-  //     type: String,
-  //     enum: ["Paypal", "Stripe"],
-  //     default: "Paypal",
-  //   },
-  //   paymentStatus: {
-  //     type: String,
-  //     enum: ["Paid", "Not Paid"],
-  //     default: "Not Paid",
-  //   },
-  //   paymentId: String,
-  //   paymentToken: String,
-  //   payerId: String,
-  //   paymentDate: Date,
-  // },
   paymentDetails: {
     razorpay_payment_id: String,
     razorpay_order_id: String,
     razorpay_signature: String,
   },
-  image: {
-    publicId: {
-      type: String,
-      required: [true, "Please provide public id for your image"],
-    },
-    url: {
-      type: String,
-      required: [true, "Please provide image url"],
-    },
-    blurhash: {
-      type: String,
-      required: [true, "Please provide blurhash for your image"],
-    },
-  },
+  image: fileSchema,
   gigTitle: {
     type: String,
     required: [true, "Please provide the title of your gig"],

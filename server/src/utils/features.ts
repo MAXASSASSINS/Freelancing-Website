@@ -64,7 +64,7 @@ class Features {
   }
 
   select() {
-    this.query = this.query.select("title pricing images ratings numOfRatings searchTags");
+    this.query = this.query.select("title pricing images ratings numOfRatings searchTags video");
     return this;
   }
 

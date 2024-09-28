@@ -9,9 +9,10 @@ import "./myCarousel.css";
 type MyCarouselProps = {
   gig: IGig;
   lazyLoad: boolean;
+  useWebp?: boolean;
 };
 
-export const MyCarousel = ({ gig, lazyLoad }: MyCarouselProps) => {
+export const MyCarousel = ({ gig, lazyLoad, useWebp = false }: MyCarouselProps) => {
   const [arrows, setArrows] = useState<boolean>(false);
 
   const showArrows = () => {
@@ -21,6 +22,8 @@ export const MyCarousel = ({ gig, lazyLoad }: MyCarouselProps) => {
   const hideArrows = () => {
     setArrows(false);
   };
+
+  const len = (gig.images?.length || 0) + (gig.video ? 1 : 0);
 
   const objectFit = window.location.href.includes("/gig/details")
     ? "contain"
@@ -40,17 +43,18 @@ export const MyCarousel = ({ gig, lazyLoad }: MyCarouselProps) => {
           interval={null}
           touch={true}
           indicators={false}
-          controls={arrows}
+          controls={len > 1 && arrows}
         >
           {gig.images?.map(
             (image) =>
               image && (
-                <Carousel.Item key={image._id}>
+                <Carousel.Item key={image._id} >
                   <LazyImage
                     file={image}
                     lazyLoad={lazyLoad}
                     aspectRatio={16 / 10}
                     objectFit={objectFit}
+                    useWebp={useWebp}
                   />
                 </Carousel.Item>
               )
