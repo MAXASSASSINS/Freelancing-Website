@@ -1,16 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Blurhash } from "react-blurhash";
-import { IImage } from "../../types/gig.types";
+import { IFile } from "../../types/file.types";
 
 type LazyImageProps = {
-  file: IImage;
+  file: IFile;
   lazyLoad?: boolean;
   aspectRatio?: string | number;
   objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
-}
+  useWebp?: boolean;
+};
 
-export const LazyImage = ({ file, lazyLoad = false, aspectRatio = "auto", objectFit = "cover" }: LazyImageProps) => {
-  const { url, blurhash } = file;
+export const LazyImage = ({
+  file,
+  lazyLoad = false,
+  aspectRatio = "auto",
+  objectFit = "cover",
+  useWebp = false,
+}: LazyImageProps) => {
+  let { url, blurhash } = file;
   const defaultBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj";
 
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -19,6 +26,10 @@ export const LazyImage = ({ file, lazyLoad = false, aspectRatio = "auto", object
     setLoaded(true);
   };
 
+  if (useWebp) {
+    url =  url.replace(/\.[^.]+$/, ".webp");
+  }
+
   return (
     <div className="relative">
       <img
@@ -26,7 +37,7 @@ export const LazyImage = ({ file, lazyLoad = false, aspectRatio = "auto", object
         className="w-full"
         style={{ aspectRatio: aspectRatio, objectFit: objectFit }}
         src={lazyLoad ? "" : url}
-        alt='gig'
+        alt="gig"
         onLoad={handleOnLoad}
       />
       <Blurhash

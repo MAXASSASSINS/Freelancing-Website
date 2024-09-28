@@ -1,43 +1,62 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
-import { io } from "socket.io-client";
-import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-import "./chat.css";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../../actions/userAction";
-import Moment from "react-moment";
+import {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  MouseEvent,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+// @ts-ignore
+import Picker from "@emoji-mart/react";
 import "moment-timezone";
-
-import { Navigate, useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../utility/axiosInstance";
-import { ToastContainer, toast } from "react-toastify";
-import { SocketContext } from "../../context/socket/socket";
-import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
-import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-import { LazyImage } from "../LazyImage/LazyImage";
-import { LazyVideo } from "../LazyVideo.js/LazyVideo";
-import { windowContext } from "../../App";
-import { HiDownload } from "react-icons/hi";
-import { getFileSize } from "../../utility/util";
-import { IoClose, IoDocumentOutline } from "react-icons/io5";
-import { downloadFile } from "../../utility/util";
 import { BsEmojiSmile } from "react-icons/bs";
-import { Avatar } from "../Avatar/Avatar";
-import { ImAttachment } from "react-icons/im";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { FiPaperclip } from "react-icons/fi";
+import { HiDownload } from "react-icons/hi";
+import { IoClose, IoDocumentOutline } from "react-icons/io5";
+import Moment from "react-moment";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../utility/axiosInstance";
+import "./chat.css";
+// @ts-ignore
+import { toast } from "react-toastify";
+import { windowContext } from "../../App";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { SocketContext } from "../../context/socket/socket";
+import { AppDispatch, RootState } from "../../store";
+import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
+import { downloadFile, getFileSize } from "../../utility/util";
+import { Avatar } from "../Avatar/Avatar";
+import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
+import { LazyImage } from "../LazyImage/LazyImage";
+import { LazyVideo } from "../LazyVideo.js/LazyVideo";
+import { IMessage } from "../../types/message.types";
+import { IFile } from "../../types/file.types";
+import { IUser } from "../../types/user.types";
 
-export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
-  const dispatch = useDispatch();
+type ChatProps = {
+  gigDetail: any;
+  showChatBox: boolean;
+  setShowChatBox: Dispatch<SetStateAction<boolean>>;
+};
+
+type SelectedFile = {
+  selectedFile: File;
+  id: number;
+};
+
+export const Chat = ({ gigDetail, showChatBox, setShowChatBox }: ChatProps) => {
   const navigate = useNavigate();
-  const updateGlobalLoading = useUpdateGlobalLoading();
-
   const socket = useContext(SocketContext);
-  const { windowWidth, windowHeight } = useContext(windowContext);
+  const { windowWidth } = useContext(windowContext);
 
-  const { user, userLoading, isAuthenticated } = useSelector(
-    (state) => state.user
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
   );
 
   new Picker({ data });
@@ -45,19 +64,19 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [isFilePicked, setIsFilePicked] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState(null);
-  const [allMessages, setAllMessages] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
+  const [allMessages, setAllMessages] = useState<IMessage[]>([]);
   const [fileLoading, setFileLoading] = useState(false);
   const [online, setOnline] = useState(false);
   const [typing, setTyping] = useState(false);
 
   // All References
-  const chatTextAreaRef = useRef(null);
-  const suggestionRef1 = useRef(null);
-  const suggestionRef2 = useRef(null);
-  const suggestionRef3 = useRef(null);
-  const scrollToBottomDivRef = useRef(null);
-  const emojiPickerOpenerIconRef = useRef(null);
+  const chatTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const suggestionRef1 = useRef<HTMLLIElement>(null);
+  const suggestionRef2 = useRef<HTMLLIElement>(null);
+  const suggestionRef3 = useRef<HTMLLIElement>(null);
+  const scrollToBottomDivRef = useRef<HTMLDivElement>(null);
+  const emojiPickerOpenerIconRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -72,13 +91,18 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   }, [user]);
 
   useEffect(() => {
-    chatTextAreaRef.current.style.height = "32px";
-    const scrollHeight = chatTextAreaRef.current.scrollHeight;
-    chatTextAreaRef.current.style.height = scrollHeight + "px";
+    if (chatTextAreaRef.current) {
+      chatTextAreaRef.current.style.height = "32px";
+      const scrollHeight = chatTextAreaRef.current.scrollHeight;
+      chatTextAreaRef.current.style.height = scrollHeight + "px";
+    }
     if (user && !allMessages && message.length === 0) {
-      suggestionRef1.current.style.display = "inline-flex";
-      suggestionRef2.current.style.display = "inline-flex";
-      suggestionRef3.current.style.display = "inline-flex";
+      if (suggestionRef1.current)
+        suggestionRef1.current.style.display = "inline-flex";
+      if (suggestionRef2.current)
+        suggestionRef2.current.style.display = "inline-flex";
+      if (suggestionRef3.current)
+        suggestionRef3.current.style.display = "inline-flex";
     }
   }, [message]);
 
@@ -104,11 +128,11 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           if (entry.target.attributes.getNamedItem("poster")) {
-            entry.target.attributes.getNamedItem("poster").value =
-              entry.target.attributes.getNamedItem("data-poster").value;
+            entry.target.attributes.getNamedItem("poster")!.value =
+              entry.target.attributes.getNamedItem("data-poster")!.value;
           } else {
-            entry.target.attributes.getNamedItem("src").value =
-              entry.target.attributes.getNamedItem("data-src").value;
+            entry.target.attributes.getNamedItem("src")!.value =
+              entry.target.attributes.getNamedItem("data-src")!.value;
           }
           observer.unobserve(entry.target);
         });
@@ -165,15 +189,12 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const handleSelectionOfFiles = (event) => {
-    const files = event.target.files;
-    let arr = [];
-    if (selectedFiles) {
-      for (let i = 0; i < selectedFiles.length; i++) {
-        arr.push(selectedFiles[i]);
-      }
+  const handleSelectionOfFiles = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files || [];
+    let arr: SelectedFile[] = [];
+    for (let i = 0; i < selectedFiles.length; i++) {
+      arr.push(selectedFiles[i]);
     }
-    //
     for (let i = 0; i < files.length; i++) {
       let index = 0;
       if (selectedFiles != null) {
@@ -185,64 +206,58 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         selectedFile: files[i],
         id: index,
       };
-      //
-      //
       arr.push(file);
     }
-    document.getElementById("chat-input-file").value = "";
+    (document.getElementById("chat-input-file") as HTMLInputElement).value = "";
     if (arr.length === 0) {
-      setSelectedFiles(null);
+      setSelectedFiles([]);
       setIsFilePicked(false);
-
       return;
     }
-    //
     setIsFilePicked(true);
     setSelectedFiles(arr);
 
     scrollToBottomDivRef.current?.scrollIntoView();
   };
 
-  const handleFileClickedRemoval = (id) => () => {
+  const handleFileClickedRemoval = (id: number) => () => {
     let arr = selectedFiles;
     arr = arr.filter((file) => {
       return file.id !== id;
     });
     if (arr.length === 0) {
       setIsFilePicked(false);
-      setSelectedFiles(null);
-      document.getElementById("chat-input-file").value = "";
+      setSelectedFiles([]);
+      (document.getElementById("chat-input-file") as HTMLInputElement).value =
+        "";
       return;
     }
     setSelectedFiles(arr);
   };
 
-  const sendChat = async (e) => {
-    // updateGlobalLoading(true, "Sending message...");
+  const sendChat = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFileLoading(true);
 
-    let files = [];
     try {
       // upload files to cloudinary
-      files = await sendFileClientCloudinary(selectedFiles);
+      let files = await sendFileClientCloudinary(selectedFiles);
 
       // add message to database
       const res = await addMessageToDatabase(message, files);
 
       // send message to socket
       await handleSendMessageSocket(message, files);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       toast.error(error.response.data.message);
     } finally {
       setFileLoading(false);
-      // updateGlobalLoading(false);
     }
   };
 
   // client side uploading to cloudinary
-  const sendFileClientCloudinary = async (files) => {
+  const sendFileClientCloudinary = async (files: SelectedFile[]) => {
     if (isFilePicked) {
       const arr = files.map((file) => {
         return file.selectedFile;
@@ -256,24 +271,23 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
         throw error;
       } finally {
         setIsFilePicked(false);
-        setSelectedFiles(null);
+        setSelectedFiles([]);
       }
     }
     return [];
   };
 
   // add message to database
-  const addMessageToDatabase = async (messageData, files = []) => {
+  const addMessageToDatabase = async (message: string, files: IFile[] = []) => {
     try {
       const messageData = {
         message,
-        from: user._id,
+        from: user!._id,
         to: gigDetail.user._id,
         files,
       };
 
       const { data } = await axiosInstance.post("/add/message", messageData);
-      //
       return data;
     } catch (error) {
       throw error;
@@ -282,11 +296,11 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     }
   };
 
-  const handleSendMessageSocket = async (message, files) => {
+  const handleSendMessageSocket = async (message: string, files: IFile[]) => {
     const sender = {
-      avatar: user.avatar,
-      name: user.name,
-      _id: user._id,
+      avatar: user!.avatar,
+      name: user!.name,
+      _id: user!._id,
     };
     const receiver = {
       avatar: gigDetail.user.avatar,
@@ -340,19 +354,18 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
   // SHOW TYPING STATUS
   useEffect(() => {
     const data = {
-      senderId: isAuthenticated ? user._id.toString() : null,
+      senderId: user!._id.toString(),
       receiverId: gigDetail.user._id.toString(),
     };
     socket.emit("typing_started", data);
     const timeout = setTimeout(() => {
-      //
       socket.emit("typing_stopped", data);
     }, 1000);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [message]);
+  }, [message, socket, user, gigDetail]);
 
   useEffect(() => {
     socket.on("typing_started_from_server", (data) => {
@@ -368,11 +381,11 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
       socket.off("typing_started_from_server");
       socket.off("typing_stopped_from_server");
     };
-  }, [socket]);
+  }, [socket, gigDetail.user._id]);
 
   const getAllMessagesBetweenTwoUser = async () => {
     const postData = {
-      from: user._id,
+      from: user!._id,
       to: gigDetail.user._id,
     };
     const config = {
@@ -390,13 +403,13 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
     scrollToBottomDivRef.current?.scrollIntoView();
   };
 
-  const handleChatSuggestion = (e) => {
-    //
-    const suggestion = e.target.textContent;
-    e.target.style.display = "none";
+  const handleChatSuggestion = (e: MouseEvent<HTMLLIElement>) => {
+    const target = e.target as HTMLLIElement;
+    const suggestion = target.textContent!;
+    target.style.display = "none";
     let newMsg = message.length !== 0 ? message + "\n" : message;
     newMsg += suggestion.substr(0, suggestion.length - 3) + " ";
-    chatTextAreaRef.current.focus();
+    chatTextAreaRef.current?.focus();
     setMessage(newMsg);
   };
 
@@ -416,30 +429,32 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
 
   useEffect(() => {
     if (allMessages?.length === 0 && message?.length === 0) {
-      suggestionRef1.current.style.display = "";
-      suggestionRef2.current.style.display = "";
-      suggestionRef3.current.style.display = "";
+      if (suggestionRef1.current) suggestionRef1.current.style.display = "";
+      if (suggestionRef2.current) suggestionRef2.current.style.display = "";
+      if (suggestionRef3.current) suggestionRef3.current.style.display = "";
     }
   }, [message]);
 
-  //
-  //
-
-  const handleEmojiClick = (emoji) => {
+  const handleEmojiClick = (emoji: any) => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
 
-  //
-
-  window.onclick = (event) => {
-    if (
-      event.target !== document.querySelector("em-emoji-picker") &&
-      !emojiPickerOpenerIconRef.current.contains(event.target)
-    ) {
-      setShowEmojiPicker(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: WindowEventMap["click"]) => {
+      const target = event.target as HTMLElement;
+      if (
+        target !== document.querySelector("em-emoji-picker") &&
+        !emojiPickerOpenerIconRef.current?.contains(target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -506,101 +521,98 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
             <div className="chat-show-div">
               <ul id="chat-list-id" className="chat-box">
                 {allMessages &&
-                  allMessages.map((message) => (
-                    <li key={message._id}>
-                      <Avatar
-                        avatarUrl={message.sender.avatar.url}
-                        userName={message.sender.name}
-                        width="2.5rem"
-                        fontSize="1.3rem"
-                      />
-                      <div>
-                        <div className="chat-message-owner-time-div">
-                          <span className="chat-message-owner">
-                            {message.sender._id === user._id
-                              ? "Me"
-                              : message.sender.name}
-                          </span>
-                          &nbsp;
-                          <span className="chat-message-time">
-                            <Moment format="D MMM,  H:mm">
-                              {message.updatedAt}
-                            </Moment>
-                          </span>
-                        </div>
-                        <div className="chat-message-text">
-                          {message.message.text}
-                        </div>
-                        <div className="chat-messages-list-sender-files">
-                          {message.files?.map((file, index) => (
-                            <div
-                              key={index}
-                              className="chat-messages-list-sender-file"
-                            >
-                              <p>
-                                {file.type.includes("video") ? (
-                                  <a
-                                    href={file.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    <LazyVideo
-                                      file={file}
-                                      maxWidth={windowWidth > 1024 ? 240 : 160}
+                  allMessages.map((message) => {
+                    message.sender = message.sender as IUser;
+                    return (
+                      <li key={message._id}>
+                        <Avatar
+                          avatarUrl={message.sender.avatar.url}
+                          userName={message.sender.name}
+                          width="2.5rem"
+                          fontSize="1.3rem"
+                        />
+                        <div>
+                          <div className="chat-message-owner-time-div">
+                            <span className="chat-message-owner">
+                              {message.sender._id === user!._id
+                                ? "Me"
+                                : message.sender.name}
+                            </span>
+                            &nbsp;
+                            <span className="chat-message-time">
+                              <Moment format="D MMM,  H:mm">
+                                {message.updatedAt}
+                              </Moment>
+                            </span>
+                          </div>
+                          <div className="chat-message-text">
+                            {message.message.text}
+                          </div>
+                          <div className="chat-messages-list-sender-files">
+                            {message.files?.map((file, index) => (
+                              <div
+                                key={index}
+                                className="chat-messages-list-sender-file"
+                              >
+                                <p>
+                                  {file.type.includes("video") ? (
+                                    <a
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <LazyVideo file={file} />
+                                    </a>
+                                  ) : file.type.includes("image") ? (
+                                    <a
+                                      href={file.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <LazyImage file={file} />
+                                    </a>
+                                  ) : file.type.includes("audio") ? (
+                                    <audio
+                                      className="chat-messages-list-sender-file-audio"
+                                      preload="none"
+                                      controls
+                                      src={file.url}
                                     />
-                                  </a>
-                                ) : file.type.includes("image") ? (
-                                  <a
-                                    href={file.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                  ) : (
+                                    <div className="chat-messages-list-sender-file-document">
+                                      <div>
+                                        <IoDocumentOutline />
+                                      </div>
+                                    </div>
+                                  )}
+                                </p>
+                                <div
+                                  onClick={() =>
+                                    downloadFile(file.url, file.name)
+                                  }
+                                  className="chat-messages-list-sender-file-info"
+                                >
+                                  <div
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content={file.name}
+                                    data-tooltip-place="bottom"
                                   >
-                                    <LazyImage
-                                      file={file}
-                                      maxWidth={windowWidth > 1024 ? 240 : 160}
-                                    />
-                                  </a>
-                                ) : file.type.includes("audio") ? (
-                                  <audio
-                                    className="chat-messages-list-sender-file-audio"
-                                    preload="none"
-                                    controls
-                                    src={file.url}
-                                  />
-                                ) : (
-                                  <div className="chat-messages-list-sender-file-document">
-                                    <div>
-                                      <IoDocumentOutline />
+                                    <HiDownload />
+                                    <div className="chat-messages-list-sender-file-name">
+                                      {file.name}
                                     </div>
                                   </div>
-                                )}
-                              </p>
-                              <div
-                                onClick={() =>
-                                  downloadFile(file.url, file.name)
-                                }
-                                className="chat-messages-list-sender-file-info"
-                              >
-                                <div
-                                  data-tooltip-id="my-tooltip"
-                                  data-tooltip-content={file.name}
-                                  data-tooltip-place="bottom"
-                                >
-                                  <HiDownload />
-                                  <div className="chat-messages-list-sender-file-name">
-                                    {file.name}
-                                  </div>
+                                  <p className="chat-messages-list-sender-file-size">
+                                    ({getFileSize(file.size ? file.size : 0)})
+                                  </p>
                                 </div>
-                                <p className="chat-messages-list-sender-file-size">
-                                  ({getFileSize(file.size ? file.size : 0)})
-                                </p>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
                 <div ref={scrollToBottomDivRef}></div>
               </ul>
             </div>
@@ -612,8 +624,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
                   ATTACHED FILES ({selectedFiles.length})
                 </div>
                 <ul>
-                  {selectedFiles &&
-                    selectedFiles.length > 0 &&
+                  {selectedFiles.length > 0 &&
                     selectedFiles.map((file, index) => (
                       <li key={index}>
                         <div>{file.selectedFile.name}</div>
@@ -632,7 +643,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               ref={chatTextAreaRef}
               rows={1}
               onFocus={(e) =>
-                (e.target.parentElement.style.borderColor = "#222831")
+                (e.target!.parentElement!.style.borderColor = "#222831")
               }
               maxLength={2500}
               onChange={(e) => setMessage(e.target.value)}
@@ -640,7 +651,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }) => {
               placeholder="Type your message here..."
               spellCheck={false}
               onBlur={(e) =>
-                (e.target.parentElement.style.borderColor = "#a6a5a5")
+                (e.target!.parentElement!.style.borderColor = "#a6a5a5")
               }
             />
           </form>

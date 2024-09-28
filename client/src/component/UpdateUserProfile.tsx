@@ -1,35 +1,65 @@
-import React, { useState, useEffect, useRef, useReducer } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, {
+  useEffect,
+  useRef,
+  useState
+} from "react";
+import { BiTrash } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Avatar } from "./Avatar/Avatar";
-import {
-  uploadToCloudinary,
-  uploadToCloudinaryV2,
-} from "../utility/cloudinary";
-import { Loader } from "./Loader/Loader";
-import { TextEditor } from "./TextEditor/TextEditor";
-import { TextArea } from "./TextArea/TextArea";
-import { languagesData, languageFluencyLevelData } from "../data/languages";
 import { countryList } from "../data/countries";
-import SelectInput2 from "./SelectInput/SelectInput2";
-import { BiColorFill, BiTrash } from "react-icons/bi";
+import { languageFluencyLevelData, languagesData } from "../data/languages";
 import { skillLevels } from "../data/skills";
+import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
+import {
+  uploadToCloudinaryV2
+} from "../utility/cloudinary";
+import SelectInput2, { SelectInput2Ref } from "./SelectInput/SelectInput2";
+import { TextArea, TextAreaRef } from "./TextArea/TextArea";
+import { IFile } from "../types/file.types";
 
-const yearsList = [];
+const yearsList: string[] = [];
 for (let i = new Date().getFullYear(); i >= 1960; i--) {
   yearsList.push(i.toString());
 }
 
+type FormData = {
+  avatar: IFile;
+  tagline: string | undefined;
+  description: string | undefined;
+  languages: { name: string; level: string }[];
+  education: {
+    country: string;
+    collegeName: string;
+    degree: string;
+    major: string;
+    yearOfGraduation: string;
+  }[];
+  certificates: {
+    name: string;
+    certifiedFrom: string;
+    year: string;
+  }[];
+  skills: {
+    name: string;
+    level: string;
+  }[];
+};
+
 export const UpdateUserProfile = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { user, isAuthenticated } = useSelector((state) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     avatar: {
       publicId: "",
       url: "",
+      name: "",
+      size: 0,
+      type: "",
     },
     tagline: "",
     description: "",
@@ -39,7 +69,7 @@ export const UpdateUserProfile = () => {
     skills: [],
   });
 
-  const [imageLoading, setImageLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
 
   const SELECT_LANGUAGE = "Select language";
   const SELECT_FLUENCY_LEVEL = "Select fluency level";
@@ -48,51 +78,54 @@ export const UpdateUserProfile = () => {
   const YEAR_OF_CERTIFICATION = "Year";
   const SELECT_SKILL_LEVEL = "Experience level";
 
-  const taglineRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const currLanguageRef = useRef(null);
-  const currLanguageFluencyLevelRef = useRef(null);
-  const countryRef = useRef(null);
-  const collegeRef = useRef(null);
-  const degreeTitleRef = useRef(null);
-  const degreeMajorRef = useRef(null);
-  const yearOfGraduationRef = useRef(null);
-  const certificationTitleRef = useRef(null);
-  const certificationAuthorityRef = useRef(null);
-  const certificationYearRef = useRef(null);
-  const skillTitleRef = useRef(null);
-  const skillLevelRef = useRef(null);
+  const taglineRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<TextAreaRef>(null);
+  const currLanguageRef = useRef<SelectInput2Ref>(null);
+  const currLanguageFluencyLevelRef = useRef<SelectInput2Ref>(null);
+  const countryRef = useRef<SelectInput2Ref>(null);
+  const collegeRef = useRef<HTMLInputElement>(null);
+  const degreeTitleRef = useRef<HTMLInputElement>(null);
+  const degreeMajorRef = useRef<HTMLInputElement>(null);
+  const yearOfGraduationRef = useRef<SelectInput2Ref>(null);
+  const certificationTitleRef = useRef<HTMLInputElement>(null);
+  const certificationAuthorityRef = useRef<HTMLInputElement>(null);
+  const certificationYearRef = useRef<SelectInput2Ref>(null);
+  const skillTitleRef = useRef<HTMLInputElement>(null);
+  const skillLevelRef = useRef<SelectInput2Ref>(null);
 
-  const [openEducationAdder, setOpenEducationAdder] = useState(false);
-  const [openCertificationAdder, setOpenCertificationAdder] = useState(false);
-  const [openLanguageAdder, setOpenLanguageAdder] = useState(false);
-  const [openSkillsAdder, setOpenSkillsAdder] = useState(false);
+  const [openEducationAdder, setOpenEducationAdder] = useState<boolean>(false);
+  const [openCertificationAdder, setOpenCertificationAdder] =
+    useState<boolean>(false);
+  const [openLanguageAdder, setOpenLanguageAdder] = useState<boolean>(false);
+  const [openSkillsAdder, setOpenSkillsAdder] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login", { replace: true });
-    }
-    else{
+    } else {
       setFormData({
         avatar: {
-          publicId: user?.avatar?.publicId,
-          url: user?.avatar?.url,
+          publicId: user?.avatar?.publicId!,
+          url: user?.avatar?.url!,
+          name: user?.avatar?.name!,
+          size: user?.avatar?.size!,
+          type: user?.avatar?.type!,
         },
         tagline: user?.tagline,
         description: user?.description,
-        languages: user?.languages,
-        education: user?.education,
-        certificates: user?.certificates,
-        skills: user?.skills,
+        languages: user?.languages || [],
+        education: user?.education || [],
+        certificates: user?.certificates || [],
+        skills: user?.skills || [],
       });
-      taglineRef.current.value = user?.tagline || "";
-      descriptionRef.current.setTextComingFromParent(user?.description || "");
+      if (taglineRef.current) taglineRef.current.value = user?.tagline || "";
+      descriptionRef.current?.setTextComingFromParent(user?.description || "");
     }
   }, [isAuthenticated, user]);
 
-  const handleAvatarChange = async (e) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      if (!e.target.files[0]) return;
+      if (!e.target.files || !e.target.files[0]) return;
       setImageLoading(true);
       const arr = [e.target.files[0]];
       const res = await uploadToCloudinaryV2(arr);
@@ -101,6 +134,9 @@ export const UpdateUserProfile = () => {
         avatar: {
           url: res[0].url,
           publicId: "mypublicId",
+          name: res[0].name,
+          size: res[0].size,
+          type: res[0].type,
         },
       });
     } catch (err) {
@@ -108,30 +144,36 @@ export const UpdateUserProfile = () => {
     }
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const payload = {...formData, tagline: taglineRef.current.value, description: descriptionRef.current.currValue}
+    const payload = {
+      ...formData,
+      tagline: taglineRef.current?.value,
+      description: descriptionRef.current?.currValue,
+    };
     try {
-      const {data} = await axiosInstance.put("/user/update", payload);  
+      const { data } = await axiosInstance.put("/user/update", payload);
       console.log(data.user);
-      dispatch({type: "UPDATE_USER_SUCCESS", payload: data.user});
+      dispatch({ type: "UPDATE_USER_SUCCESS", payload: data.user });
       navigate(`/user/${data.user._id}`);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleCurrLanguageChange = (val) => {
-    currLanguageFluencyLevelRef.current.setChoosedOptionComingFromParent(
+  const handleCurrLanguageChange = () => {
+    currLanguageFluencyLevelRef.current?.setChoosedOptionComingFromParent(
       SELECT_FLUENCY_LEVEL
     );
   };
 
   const handleAddLanguage = () => {
-    const currLanguage = currLanguageRef.current.currValue;
+    const currLanguage = currLanguageRef.current?.currValue;
     const currLanguageFluencyLevel =
-      currLanguageFluencyLevelRef.current.currValue;
+      currLanguageFluencyLevelRef.current?.currValue;
     if (
+      !currLanguage ||
+      !currLanguageFluencyLevel ||
       currLanguage.toLowerCase() === SELECT_LANGUAGE.toLowerCase() ||
       currLanguageFluencyLevel.toLowerCase() ===
         SELECT_FLUENCY_LEVEL.toLowerCase()
@@ -148,22 +190,22 @@ export const UpdateUserProfile = () => {
       ],
     });
 
-    currLanguageRef.current.setChoosedOptionComingFromParent(SELECT_LANGUAGE);
-    currLanguageFluencyLevelRef.current.setChoosedOptionComingFromParent(
+    currLanguageRef.current?.setChoosedOptionComingFromParent(SELECT_LANGUAGE);
+    currLanguageFluencyLevelRef.current?.setChoosedOptionComingFromParent(
       "Select fluency level"
     );
     setOpenLanguageAdder(false);
   };
 
-  const handleCancelLanguage = (index) => {
-    currLanguageRef.current.setChoosedOptionComingFromParent(SELECT_LANGUAGE);
-    currLanguageFluencyLevelRef.current.setChoosedOptionComingFromParent(
+  const handleCancelLanguage = () => {
+    currLanguageRef.current?.setChoosedOptionComingFromParent(SELECT_LANGUAGE);
+    currLanguageFluencyLevelRef.current?.setChoosedOptionComingFromParent(
       "Select fluency level"
     );
     setOpenLanguageAdder(false);
   };
 
-  const handleRemoveLanguage = (index) => {
+  const handleRemoveLanguage = (index: number) => {
     setFormData({
       ...formData,
       languages: formData.languages.filter((_, i) => i !== index),
@@ -171,13 +213,15 @@ export const UpdateUserProfile = () => {
   };
 
   const handleAddEducation = () => {
-    const country = countryRef.current.currValue;
-    const collegeName = collegeRef.current.value;
-    const degree = degreeTitleRef.current.value;
-    const major = degreeMajorRef.current.value;
-    const yearOfGraduation = yearOfGraduationRef.current.currValue;
+    const country = countryRef.current?.currValue;
+    const collegeName = collegeRef.current?.value;
+    const degree = degreeTitleRef.current?.value;
+    const major = degreeMajorRef.current?.value;
+    const yearOfGraduation = yearOfGraduationRef.current?.currValue;
 
     if (
+      !country ||
+      !yearOfGraduation ||
       country === SELECT_COUNTRY ||
       !collegeName ||
       !degree ||
@@ -213,17 +257,17 @@ export const UpdateUserProfile = () => {
   };
 
   const handleCancelEducation = () => {
-    countryRef.current.setChoosedOptionComingFromParent(SELECT_COUNTRY);
-    collegeRef.current.value = "";
-    degreeTitleRef.current.value = "";
-    degreeMajorRef.current.value = "";
-    yearOfGraduationRef.current.setChoosedOptionComingFromParent(
+    countryRef.current?.setChoosedOptionComingFromParent(SELECT_COUNTRY);
+    if (collegeRef.current) collegeRef.current.value = "";
+    if (degreeTitleRef.current) degreeTitleRef.current.value = "";
+    if (degreeMajorRef.current) degreeMajorRef.current.value = "";
+    yearOfGraduationRef.current?.setChoosedOptionComingFromParent(
       YEAR_OF_GRADUATION
     );
     setOpenEducationAdder(false);
   };
 
-  const handleRemoveEducation = (index) => {
+  const handleRemoveEducation = (index: number) => {
     setFormData({
       ...formData,
       education: formData.education.filter((_, i) => i !== index),
@@ -231,10 +275,10 @@ export const UpdateUserProfile = () => {
   };
 
   const handleAddCertification = () => {
-    const name = certificationTitleRef.current.value;
-    const certifiedFrom = certificationAuthorityRef.current.value;
-    const year = certificationYearRef.current.currValue;
-    if (!name || !certifiedFrom || year === YEAR_OF_CERTIFICATION) {
+    const name = certificationTitleRef.current?.value;
+    const certifiedFrom = certificationAuthorityRef.current?.value;
+    const year = certificationYearRef.current?.currValue;
+    if (!name || !certifiedFrom || !year || year === YEAR_OF_CERTIFICATION) {
       return;
     }
     setFormData({
@@ -257,15 +301,17 @@ export const UpdateUserProfile = () => {
   };
 
   const handleCancelCertification = () => {
-    certificationTitleRef.current.value = "";
-    certificationAuthorityRef.current.value = "";
-    certificationYearRef.current.setChoosedOptionComingFromParent(
-      YEAR_OF_CERTIFICATION
-    );
+    if (certificationTitleRef.current) certificationTitleRef.current.value = "";
+    if (certificationAuthorityRef.current)
+      certificationAuthorityRef.current.value = "";
+    if (certificationYearRef.current)
+      certificationYearRef.current.setChoosedOptionComingFromParent(
+        YEAR_OF_CERTIFICATION
+      );
     setOpenCertificationAdder(false);
   };
 
-  const handleRemoveCertification = (index) => {
+  const handleRemoveCertification = (index: number) => {
     setFormData({
       ...formData,
       certificates: formData.certificates.filter((_, i) => i !== index),
@@ -273,9 +319,9 @@ export const UpdateUserProfile = () => {
   };
 
   const handleAddSkill = () => {
-    const name = skillTitleRef.current.value;
-    const level = skillLevelRef.current.currValue;
-    if (!name || level === SELECT_SKILL_LEVEL) {
+    const name = skillTitleRef.current?.value;
+    const level = skillLevelRef.current?.currValue;
+    if (!name || !level || level === SELECT_SKILL_LEVEL) {
       return;
     }
     setFormData({
@@ -294,12 +340,12 @@ export const UpdateUserProfile = () => {
   };
 
   const handleCancelSkill = () => {
-    skillTitleRef.current.value = "";
-    skillLevelRef.current.setChoosedOptionComingFromParent(SELECT_SKILL_LEVEL);
+    if (skillTitleRef.current) skillTitleRef.current.value = "";
+    skillLevelRef.current?.setChoosedOptionComingFromParent(SELECT_SKILL_LEVEL);
     setOpenSkillsAdder(false);
   };
 
-  const handleRemoveSkill = (index) => {
+  const handleRemoveSkill = (index: number) => {
     setFormData({
       ...formData,
       skills: formData.skills.filter((_, i) => i !== index),
@@ -309,7 +355,7 @@ export const UpdateUserProfile = () => {
   return (
     isAuthenticated && (
       <div className="p-8 sm:px-12 md:px-20  md:py-12 lg:px-40 text-dark_grey leading-5">
-        <h1 className="text-2xl sm:text-3xl font-semibold">Hi {user.name}</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold">Hi {user?.name}</h1>
         <p className="leading-5 text-light_heading mt-2 sm:mt-4">
           Please fill out the below form to update your profile.
         </p>
@@ -338,7 +384,7 @@ export const UpdateUserProfile = () => {
                   <div role="status">
                     <svg
                       aria-hidden="true"
-                      class="w-8 h-8 mr-2  animate-spin text-white fill-black"
+                      className="w-8 h-8 mr-2  animate-spin text-white fill-black"
                       viewBox="0 0 100 101"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -352,7 +398,7 @@ export const UpdateUserProfile = () => {
                         fill="currentFill"
                       />
                     </svg>
-                    <span class="sr-only">Loading...</span>
+                    <span className="sr-only">Loading...</span>
                   </div>
                 </div>
               )}
@@ -374,7 +420,9 @@ export const UpdateUserProfile = () => {
             <input
               maxLength={60}
               type="text"
-              onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
+              onKeyDown={(e) => {
+                e.key === "Enter" && e.preventDefault();
+              }}
               className="outline-none w-full py-2 px-4 text-light_heading rounded border border-no_focus focus:outline-none focus:border-light_grey"
               ref={taglineRef}
             />
@@ -410,7 +458,6 @@ export const UpdateUserProfile = () => {
                 <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
                   <SelectInput2
                     data={languagesData}
-                    placeholder={SELECT_LANGUAGE}
                     defaultOption={SELECT_LANGUAGE}
                     getChoosenOption={handleCurrLanguageChange}
                     ref={currLanguageRef}
@@ -418,7 +465,6 @@ export const UpdateUserProfile = () => {
                   />
                   <SelectInput2
                     data={languageFluencyLevelData}
-                    placeholder={SELECT_FLUENCY_LEVEL}
                     defaultOption={SELECT_FLUENCY_LEVEL}
                     ref={currLanguageFluencyLevelRef}
                     style={{ borderRadius: "2px" }}
@@ -474,7 +520,7 @@ export const UpdateUserProfile = () => {
               </p>
             </div>
 
-            {formData.education.length == 0 && !openEducationAdder && (
+            {formData.education.length === 0 && !openEducationAdder && (
               <p className="text-light_heading">Add your education</p>
             )}
 
@@ -483,7 +529,6 @@ export const UpdateUserProfile = () => {
                 <div className="flex flex-col gap-4">
                   <SelectInput2
                     data={countryList}
-                    placeholder="Select Country"
                     defaultOption={SELECT_COUNTRY}
                     style={{ borderRadius: "2px" }}
                     ref={countryRef}
@@ -492,22 +537,25 @@ export const UpdateUserProfile = () => {
                     className="placeholder:text-icons text-sm outline-none w-full py-2 px-4 text-light_heading rounded-sm border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="College/University name"
                     ref={collegeRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <input
                     className="placeholder:text-icons text-sm outline-none w-full rounded-sm py-2 px-4 text-light_heading border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="Title"
                     ref={degreeTitleRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <input
                     className="placeholder:text-icons text-sm outline-none w-full rounded-sm py-2 px-4 text-light_heading border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="Major"
                     ref={degreeMajorRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <SelectInput2
                     data={yearsList}
@@ -584,15 +632,17 @@ export const UpdateUserProfile = () => {
                     className="placeholder:text-icons text-sm outline-none w-full py-2 px-4 text-light_heading rounded-sm border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="Certificate Or Award"
                     ref={certificationTitleRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <input
                     className="placeholder:text-icons text-sm outline-none w-full rounded-sm py-2 px-4 text-light_heading border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="Certified from (e.g. Google)"
                     ref={certificationAuthorityRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <SelectInput2
                     data={yearsList}
@@ -666,8 +716,9 @@ export const UpdateUserProfile = () => {
                     className="placeholder:text-icons text-sm outline-none w-full py-2 px-4 text-light_heading rounded-sm border border-no_focus focus:outline-none focus:border-light_grey"
                     placeholder="Add Skill (e.g. Graphic Design)"
                     ref={skillTitleRef}
-                    onKeyDown={(e) => {e.key === "Enter" && e.preventDefault()}}
-
+                    onKeyDown={(e) => {
+                      e.key === "Enter" && e.preventDefault();
+                    }}
                   />
                   <SelectInput2
                     data={skillLevels}

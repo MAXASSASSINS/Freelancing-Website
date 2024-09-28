@@ -1,17 +1,17 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
 import { HiDownload } from "react-icons/hi";
 import { IoDocumentOutline } from "react-icons/io5";
+import { MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { IOrder } from "../../types/order.types";
+import { downloadFile, getFileSize } from "../../utility/util";
 import { LazyImage } from "../LazyImage/LazyImage";
 import { LazyVideo } from "../LazyVideo.js/LazyVideo";
-import { getFileSize, downloadFile } from "../../utility/util";
-import { windowContext } from "../../App";
-import { MULTIPLE_CHOICE } from "../CreateGig/createGigConstants";
 
-export const Requirements = ({ orderDetail }) => {
+type RequirementsProps = {
+  orderDetail: IOrder;
+};
+
+export const Requirements = ({ orderDetail }: RequirementsProps) => {
   const { requirements } = orderDetail;
-
-  const { windowWidth, windowHeight } = useContext(windowContext);
 
   return (
     <div className="bg-white p-8 text-dark_grey rounded shadow-md">
@@ -43,7 +43,7 @@ export const Requirements = ({ orderDetail }) => {
                       )
                   )}
                 </div>
-              ) : requirement.answerText || requirement.files?.length > 0 ? (
+              ) : requirement.answerText || requirement.files.length > 0 ? (
                 <>
                   <p className="text-light_heading">{requirement.answerText}</p>
                   {requirement.files?.length > 0 && (
@@ -59,7 +59,6 @@ export const Requirements = ({ orderDetail }) => {
                               >
                                 <LazyVideo
                                   file={file}
-                                  maxWidth={windowWidth > 1024 ? 240 : 160}
                                   aspectRatio="16/9"
                                 />
                               </a>
@@ -71,7 +70,6 @@ export const Requirements = ({ orderDetail }) => {
                               >
                                 <LazyImage
                                   file={file}
-                                  maxWidth={windowWidth > 1024 ? 240 : 160}
                                   aspectRatio="16/9"
                                 />
                               </a>

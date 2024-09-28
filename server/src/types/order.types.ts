@@ -73,11 +73,7 @@ export interface IOrder extends Document {
     razorpay_order_id?: string;
     razorpay_signature?: string;
   };
-  image: {
-    publicId: string;
-    url: string;
-    blurhash: string;
-  };
+  image: IFile;
   gigTitle: string;
   deliveries: IDelivery[];
   revisions: IRevision[];

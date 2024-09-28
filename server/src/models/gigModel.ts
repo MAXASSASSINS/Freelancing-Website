@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { IGig } from "../types/gig.types";
 import { FREE_TEXT, MULTIPLE_CHOICE } from "../constants/globalConstants";
+import fileSchema from "./fileSchema";
 
 const gigSchema = new mongoose.Schema<IGig>({
   title: {
@@ -63,39 +64,8 @@ const gigSchema = new mongoose.Schema<IGig>({
     type: String,
     // required: [true, "Please enter the description of your gig"]
   },
-  images: [
-    {
-      publicId: {
-        type: String,
-        required: [true, "Please provide public id for your image"],
-      },
-      url: {
-        type: String,
-        required: [true, "Please provide image url"],
-      },
-      blurhash: {
-        type: String,
-        required: [true, "Please provide blur hash"],
-      },
-    },
-  ],
-  video: {
-    publicId: {
-      type: String,
-    },
-    url: {
-      type: String,
-    },
-    blurhash: {
-      type: String,
-    },
-    name: {
-      type: String,
-    },
-    type: {
-      type: String,
-    },
-  },
+  images: [fileSchema],
+  video: fileSchema,
   ratings: {
     type: Number,
     default: 0,
@@ -125,16 +95,7 @@ const gigSchema = new mongoose.Schema<IGig>({
         type: String,
         required: true,
       },
-      avatar: {
-        public_id: {
-          type: String,
-          required: true,
-        },
-        url: {
-          type: String,
-          required: true,
-        },
-      },
+      avatar: fileSchema,
       country: {
         type: String,
         required: true,

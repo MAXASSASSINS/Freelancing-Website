@@ -1,19 +1,20 @@
 import { Rating } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
-import { TextArea } from "../TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../TextArea/TextArea";
 import { updateOrderDetail } from "../../actions/orderAction";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import { AppDispatch } from "../../store";
 
 export const SellerFeedback = () => {
-  const commentRef = useRef();
-  const dispatch = useDispatch();
+  const commentRef = useRef<TextAreaRef>(null);
+  const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const [rating, setRating] = useState(0);
 
-  const handleRatingChanged = (e, val) => {
+  const handleRatingChanged = (e: React.SyntheticEvent, val: number) => {
     setRating(val);
   };
 
@@ -21,7 +22,7 @@ export const SellerFeedback = () => {
     try{
       const feedback = {
         rating,
-        comment: commentRef.current.currValue,
+        comment: commentRef.current?.currValue,
       } 
       const { data } = await axiosInstance.post(`/order/${params.id}/seller/feedback`, feedback);
       console.log(data);
@@ -48,7 +49,7 @@ export const SellerFeedback = () => {
         <Rating
           size="medium"
           value={rating}
-          onChange={(e, val) => handleRatingChanged(e, val)}
+          onChange={(e, val) => handleRatingChanged(e, val || 1)}
           icon={<FaStar className="text-gold" />}
           emptyIcon={<FaRegStar className="text-gold" />}
         />

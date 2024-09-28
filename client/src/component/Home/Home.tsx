@@ -9,27 +9,28 @@ import { useLocation } from "react-router-dom";
 import { updateAllGigs } from "../../actions/gigAction";
 import { SocketContext } from "../../context/socket/socket";
 import { SearchTagsBar } from "../SearchTagsBar";
+import { AppDispatch, RootState } from "../../store";
+import { IUser } from "../../types/user.types";
 
 export const Home = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   let location = useLocation();
 
   const socket = useContext(SocketContext);
 
-  let { gigLoading, userError, gigs, gigsCount } = useSelector(
-    (state) => state.gigs
+  let { gigLoading, gigs } = useSelector(
+    (state: RootState) => state.gigs
   );
-
-  const { user, isAuthenticated } = useSelector((state) => state.user);
 
   useEffect(() => {
     let path = location.pathname;
+    
     let params = new URLSearchParams(location.search);
     let category = "";
-    let keywords = [];
+    let keywords = "";
     if (params) {
-      category = params.get("category");
-      keywords = params.get("keywords");
+      category = params.get("category") || "";
+      keywords = params.get("keywords") || "";
     }
     if (category) category = encodeURIComponent(category);
     if (keywords) keywords = encodeURIComponent(keywords);
@@ -43,7 +44,7 @@ export const Home = () => {
     } else {
       dispatch(getAllGig());
     }
-  }, [location]);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     dispatch(getAllGig());
@@ -65,6 +66,7 @@ export const Home = () => {
     socket.on("online_from_server", async (userId) => {
       if (gigs) {
         const temp = gigs.map((gig) => {
+          gig.user = gig.user as IUser;
           if (gig.user._id.toString() === userId.toString()) {
             return { ...gig, user: { ...gig.user, online: true } };
           }
@@ -78,6 +80,7 @@ export const Home = () => {
       //
       if (gigs) {
         const temp = gigs.map((gig) => {
+          gig.user = gig.user as IUser;
           if (gig.user._id.toString() === userId.toString()) {
             return { ...gig, user: { ...gig.user, online: false } };
           }
@@ -105,11 +108,11 @@ export const Home = () => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           if (entry.target.attributes.getNamedItem("poster")) {
-            entry.target.attributes.getNamedItem("poster").value =
-              entry.target.attributes.getNamedItem("data-poster").value;
+            entry.target.attributes.getNamedItem("poster")!.value =
+              entry.target.attributes.getNamedItem("data-poster")!.value;
           } else {
-            entry.target.attributes.getNamedItem("src").value =
-              entry.target.attributes.getNamedItem("data-src").value;
+            entry.target.attributes.getNamedItem("src")!.value =
+              entry.target.attributes.getNamedItem("data-src")!.value;
           }
           observer.unobserve(entry.target);
         });
@@ -131,7 +134,7 @@ export const Home = () => {
   return (
     <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
       <SearchTagsBar />
-      {gigs?.length > 0 ? (
+      {gigs?.length && gigs.length > 0 ? (
         <div className="all-gigs-container">
           {gigs &&
             gigs.map((gig) => (

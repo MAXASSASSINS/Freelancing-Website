@@ -6,7 +6,6 @@ import { RiImage2Line } from "react-icons/ri";
 import { VscFilePdf } from "react-icons/vsc";
 import { IFile } from "../../types/file.types";
 import "./fileDropIcon.css";
-import { IImage, IVideo } from "../../types/gig.types";
 
 type FileDropIconProps = {
   type: "image" | "video";
@@ -19,7 +18,7 @@ type FileDropIconProps = {
 };
 
 export type FileDropIconRef = {
-  setFileComingFromParent: (file: IFile | IImage | IVideo) => void;
+  setFileComingFromParent: (file: IFile) => void;
 };
 
 export const FileDropIcon = forwardRef(
@@ -36,7 +35,7 @@ export const FileDropIcon = forwardRef(
     ref: React.Ref<FileDropIconRef>
   ) => {
     const [selectedFile, setSelectedFile] = useState<
-      IFile | File | IImage | IVideo | null
+      IFile | File | null
     >(null);
     const [previewUrl, setPreviewUrL] = useState<string>("");
 

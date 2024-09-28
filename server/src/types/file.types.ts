@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export interface IFile {
   publicId: string;
   url: string;

@@ -1,19 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { DeliveryModal as Del, DeliveryModal } from "./DeliveryModal";
+import { useEffect, useState } from "react";
+import { IOrder } from "../../types/order.types";
+import { DeliveryModal } from "./DeliveryModal";
 
-export const DeliveryTimer = ({ orderDetail }) => {
+type DeliveryTimerProps = {
+  orderDetail: IOrder;
+};
+
+export const DeliveryTimer = ({ orderDetail }: DeliveryTimerProps) => {
   const [deliveryTimeLeft, setDeliveryTimeLeft] = useState(
-    new Date(orderDetail.deliveryDate) - Date.now() < 0 ? 0 : new Date(orderDetail.deliveryDate) - Date.now()
+    new Date(orderDetail.deliveryDate).getTime() - Date.now() < 0
+      ? 0
+      : new Date(orderDetail.deliveryDate).getTime() - Date.now()
   );
 
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (new Date(orderDetail.deliveryDate) - Date.now() < 0)
+      if (new Date(orderDetail.deliveryDate).getTime() - Date.now() < 0)
         setDeliveryTimeLeft(0);
-      else setDeliveryTimeLeft(new Date(orderDetail.deliveryDate) - Date.now());
+      else
+        setDeliveryTimeLeft(
+          new Date(orderDetail.deliveryDate).getTime() - Date.now()
+        );
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -30,7 +39,6 @@ export const DeliveryTimer = ({ orderDetail }) => {
     <>
       {showDeliveryModal && (
         <DeliveryModal
-          orderDetail={orderDetail}
           closeDeliveryModal={closeDeliveryModal}
         />
       )}
@@ -38,10 +46,15 @@ export const DeliveryTimer = ({ orderDetail }) => {
         <div className="font-semibold text-light_heading">
           Time left to deliver
         </div>
-        <div className={`flex ${new Date(orderDetail.deliveryDate) - Date.now() < 24 * 60 * 60 * 1000 && 'text-warning'} items-center justify-center gap-3 text-center`}>
+        <div
+          className={`flex ${
+            new Date(orderDetail.deliveryDate).getTime() - Date.now() <
+              24 * 60 * 60 * 1000 && "text-warning"
+          } items-center justify-center gap-3 text-center`}
+        >
           <div>
             <div className="pb-1 font-bold">
-              {parseInt(deliveryTimeLeft / (1000 * 60 * 60 * 24))}
+              {parseInt((deliveryTimeLeft / (1000 * 60 * 60 * 24)).toString())}
             </div>
             <div>Days</div>
           </div>
@@ -67,12 +80,12 @@ export const DeliveryTimer = ({ orderDetail }) => {
             <div>Seconds</div>
           </div>
         </div>
-        <Link
+        <div
           onClick={handleClickOnDelivery}
           className="px-4 py-3 rounded bg-primary text-white font-semibold text-center hover:bg-primary_hover"
         >
           <button className="capitalize">deliver now</button>
-        </Link>
+        </div>
       </div>
     </>
   );

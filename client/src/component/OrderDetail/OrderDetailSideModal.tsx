@@ -4,8 +4,13 @@ import { IoClose } from "react-icons/io5";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
 import { LazyImage } from "../LazyImage/LazyImage";
+import { IOrder } from "../../types/order.types";
 
-export const OrderDetailSideModal = ({ orderDetail }) => {
+type OrderDetailSideModalProps = {
+  orderDetail: IOrder;
+};
+
+export const OrderDetailSideModal = ({ orderDetail }:  OrderDetailSideModalProps) => {
 
   const statusColor = () => {
     switch (orderDetail.status) {

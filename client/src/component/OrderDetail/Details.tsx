@@ -1,20 +1,27 @@
-import React from "react";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import { IOrder } from "../../types/order.types";
+import { IUser } from "../../types/user.types";
 
-export const Details = ({ orderDetail }) => {
-  const { packageDetails, gigTitle, orderId, buyer, createdAt, duration } =
+type DetailsProps = {
+  orderDetail: IOrder;
+};
+
+export const Details = ({ orderDetail }: DetailsProps) => {
+  const { packageDetails, gigTitle, orderId, createdAt, duration } =
     orderDetail;
 
   const {
     packageTitle,
     packageDescription,
-    packageDeliveryTime,
     revisions,
     sourceFile,
     commercialUse,
     packagePrice,
   } = packageDetails;
+
+  orderDetail.buyer = orderDetail.buyer as IUser;
+  
 
   return (
     <div className="bg-white p-8 text-dark_grey rounded shadow-md">

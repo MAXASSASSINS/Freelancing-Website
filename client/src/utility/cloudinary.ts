@@ -1,57 +1,19 @@
 import axios from "axios";
 import { generateBlurHash } from "./blurHash";
+import { IFile } from "../types/file.types";
 
 const cloudName = "dyod45bn8";
 const unsignedUploadPreset = "syxrot1t";
 
-export const uploadToCloudinary = async (arr) => {
-  const urls = [];
-
-  for (const item of arr) {
-    if (!item.type) {
-      urls.push(item);
-      continue;
-    }
-    const formData = new FormData();
-    formData.append("file", item);
-    formData.append("upload_preset", unsignedUploadPreset);
-    formData.append("cloud_name", cloudName);
-    const data = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      formData,
-      {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      }
-    );
-    //
-    const obj = {};
-    if (item.type.includes("video")) {
-      obj.videoPublicId = data.data.public_id;
-      obj.videoUrl = data.data.secure_url;
-      obj.videoName = data.data.original_filename;
-      obj.mimeType = data.data.format;
-    } else if (item.type.includes("image")) {
-      obj.imgPublicId = data.data.public_id;
-      obj.imgUrl = data.data.secure_url;
-      obj.imgName = data.data.original_filename;
-    } else {
-      obj.public_id = data.data.public_id;
-      obj.url = data.data.secure_url;
-      obj.name = data.data.original_filename;
-    }
-
-    urls.push(obj);
+const uploadToCloudinarySingle = async (
+  item: File | IFile,
+  maxSize?: number
+) => {
+  if ((item as IFile).url) {
+    return item as IFile;
   }
-  return urls;
-};
 
-const uploadToCloudinarySingle = async (item, maxSize) => {
-  console.log(item);
-  if (item.url) {
-    return item;
-  }
+  item = item as File;
 
   const formData = new FormData();
   formData.append("file", item);
@@ -64,17 +26,17 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
 
   try {
     const data = await processFile(item);
-    const blurhash = await generateBlurHash(item, data.data.secure_url);
+    const blurhash = await generateBlurHash(item, data?.data.secure_url);
 
-    const obj = {
-      publicId: data.data.public_id,
-      url: data.data.secure_url,
+    const obj: IFile = {
+      publicId: data?.data.public_id,
+      url: data?.data.secure_url,
       name: item.name,
       type: item.type,
-      size: data.data.bytes,
+      size: data?.data.bytes,
       blurhash: blurhash,
-      height: data.data.height ? data.data.height : 0,
-      width: data.data.width ? data.data.width : 0,
+      height: data?.data.height ? data.data.height : 0,
+      width: data?.data.width ? data.data.width : 0,
     };
 
     return obj;
@@ -83,7 +45,10 @@ const uploadToCloudinarySingle = async (item, maxSize) => {
   }
 };
 
-export const uploadToCloudinaryV2 = async (arr, maxSize) => {
+export const uploadToCloudinaryV2 = async (
+  arr: (File | IFile)[],
+  maxSize?: number
+) => {
   const requests = arr.map((item) => {
     return uploadToCloudinarySingle(item, maxSize);
   });
@@ -97,14 +62,12 @@ export const uploadToCloudinaryV2 = async (arr, maxSize) => {
   }
 };
 
-let XUniqueUploadId = +new Date();
-
 let POST_URL =
   "https://api.cloudinary.com/v1_1/" + "dyod45bn8" + "/auto/upload";
 
 const delay = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
 
-const processFile = async (file) => {
+const processFile = async (file: File) => {
   let size = file.size;
   let sliceSize = 6000000;
   let start = 0;
@@ -130,13 +93,15 @@ const processFile = async (file) => {
   return data;
 };
 
-const send = async (piece, start, end, size) => {
+const send = async (piece: Blob, start: number, end: number, size: number) => {
   const formData = new FormData();
 
   formData.append("file", piece);
   formData.append("cloud_name", "dyod45bn8");
   formData.append("upload_preset", "syxrot1t");
   formData.append("folder", "FreelanceMe");
+
+  let XUniqueUploadId = +new Date();
 
   const headers = {
     "Content-Range": `bytes ${start}-${end}/${size}`,

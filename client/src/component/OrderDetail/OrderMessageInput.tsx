@@ -1,31 +1,37 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+// @ts-ignore
 import Picker from "@emoji-mart/react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
-import { useSelector } from "react-redux";
-import { SocketContext } from "../../context/socket/socket";
-import { IoClose } from "react-icons/io5";
 import { FaRegPaperPlane } from "react-icons/fa";
-import { GrAttachment } from "react-icons/gr";
-import { RiAttachment2 } from "react-icons/ri";
 import { FiPaperclip } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
 
+type OrderMessageInputProps = {
+  handleSubmissionOfForm: (message: string, files: File[]) => void;
+  placeholder?: string;
+};
 
+type SelectFile = {
+  selectedFile: File;
+  id: number;
+};
 
-export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeholder }) => {
-  
+export const OrderMessageInput = ({
+  handleSubmissionOfForm,
+  placeholder,
+}: OrderMessageInputProps) => {
   const defaultPlaceholder = "Type your message here...";
 
-  const inputFileRef = useRef(null);
-  const emojiPickerOpenerIconRef = useRef(null);
-  const scrollToBottomDivRefInbox = useRef(null);
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const emojiPickerOpenerIconRef = useRef<HTMLDivElement>(null);
+  const scrollToBottomDivRefInbox = useRef<HTMLDivElement>(null);
 
   const [message, setMessage] = useState("");
   const [isFilePicked, setIsFilePicked] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState<SelectFile[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const handleEmojiClick = (emoji) => {
-    // 
+  const handleEmojiClick = (emoji: any) => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
@@ -34,13 +40,11 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const handleSelectionOfFiles = (event) => {
-    const files = event.target.files;
-    let arr = [];
-    if (selectedFiles) {
-      for (let i = 0; i < selectedFiles.length; i++) {
-        arr.push(selectedFiles[i]);
-      }
+  const handleSelectionOfFiles = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files || [];
+    let arr: SelectFile[] = [];
+    for (let i = 0; i < selectedFiles.length; i++) {
+      arr.push(selectedFiles[i]);
     }
     for (let i = 0; i < files.length; i++) {
       let index = 0;
@@ -55,9 +59,9 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
       };
       arr.push(file);
     }
-    inputFileRef.current.value = "";
+    if(inputFileRef.current) inputFileRef.current.value = "";
     if (arr.length === 0) {
-      setSelectedFiles(null);
+      setSelectedFiles([]);
       setIsFilePicked(false);
       return;
     }
@@ -66,28 +70,28 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
     scrollToBottomDivRefInbox.current?.scrollIntoView();
   };
 
-  const handleFileClickedRemoval = (id) => () => {
+  const handleFileClickedRemoval = (id: number) => () => {
     let arr = selectedFiles;
     arr = arr.filter((file) => {
       return file.id !== id;
     });
     if (arr.length === 0) {
       setIsFilePicked(false);
-      setSelectedFiles(null);
-      inputFileRef.current.value = "";
+      setSelectedFiles([]);
+      if(inputFileRef.current) inputFileRef.current.value = "";
       return;
     }
     setSelectedFiles(arr);
   };
 
-  const handleTextAreaChange = (e) => {
+  const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement> ) => {
     setMessage(e.target.value);
     e.target.style.height = "auto";
     e.target.style.height = e.target.scrollHeight + "px";
   };
 
   const handleSendClick = () => {
-    let files = [];
+    let files: File[] = [];
     if (isFilePicked) {
       files = selectedFiles.map((file) => {
         return file.selectedFile;
@@ -96,17 +100,24 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
     handleSubmissionOfForm(message, files);
     setMessage("");
     setIsFilePicked(false);
-    setSelectedFiles(null);
+    setSelectedFiles([]);
   };
 
-  window.onclick = (event) => {
-    if (
-      event.target !== document.querySelector("em-emoji-picker") &&
-      !emojiPickerOpenerIconRef.current?.contains(event.target)
-    ) {
-      setShowEmojiPicker(false);
-    }
-  };
+  useEffect(() => {
+    const handleClick = (event: WindowEventMap["click"]) => {
+      const target = event.target as HTMLElement;
+      if (
+        target !== document.querySelector("em-emoji-picker") &&
+        !emojiPickerOpenerIconRef.current?.contains(target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+    window.addEventListener("click", handleClick);
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, []);
 
   return (
     <div>
@@ -151,7 +162,7 @@ export const OrderMessageInput = ({ orderDetail, handleSubmissionOfForm, placeho
           value={message}
           placeholder={placeholder || defaultPlaceholder}
           spellCheck={false}
-          onBlur={(e) => (e.target.parentElement.style.borderColor = "#a6a5a5")}
+          onBlur={(e) => (e.target.parentElement!.style.borderColor = "#a6a5a5")}
         />
 
         <div className="relative w-full flex items-center justify-between mt-4">

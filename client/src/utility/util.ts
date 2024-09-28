@@ -29,7 +29,7 @@ export const getPosterForVideo = (url: string | undefined) => {
   const index = url.lastIndexOf(".");
 
   let newUrl = url.slice(0, index);
-  newUrl += ".jpg";
+  newUrl += ".webp";
   return newUrl;
 };
 

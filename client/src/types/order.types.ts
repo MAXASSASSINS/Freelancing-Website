@@ -13,7 +13,7 @@ export interface IOrderRequirement {
     title: string;
     selected: boolean;
   }[];
-  files?: IFile[];
+  files: IFile[];
 }
 
 export interface IPackageDetails {
@@ -27,12 +27,14 @@ export interface IPackageDetails {
 }
 
 export interface IDelivery {
+  _id: string;
   message?: string;
   files: IFile[];
   deliveredAt: Date;
 }
 
 export interface IRevision {
+  _id: string;
   message?: string;
   files: IFile[];
   requestedAt: Date;
@@ -43,13 +45,13 @@ export interface IBuyerFeedback {
   service: number;
   recommend: number;
   comment?: string;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export interface ISellerFeedback {
   rating: number;
   comment?: string;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export interface IOrder {
@@ -68,7 +70,7 @@ export interface IOrder {
     | "Cancelled"
     | "Delivered"
     | "In Revision";
-  createdAt?: Date;
+  createdAt: Date;
   requirements: IOrderRequirement[];
   requirementsSubmitted: boolean;
   requirementsSubmittedAt: Date;
@@ -78,11 +80,7 @@ export interface IOrder {
     razorpay_order_id?: string;
     razorpay_signature?: string;
   };
-  image: {
-    publicId: string;
-    url: string;
-    blurhash: string;
-  };
+  image: IFile;
   gigTitle: string;
   deliveries: IDelivery[];
   revisions: IRevision[];

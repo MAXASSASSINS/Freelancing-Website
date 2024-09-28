@@ -1,5 +1,6 @@
-import {
+import React, {
   createRef,
+  RefObject,
   useEffect,
   useRef,
   useState
@@ -16,38 +17,58 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getOrderDetail } from "../../actions/orderAction";
 import { FREE_TEXT } from "../../constants/globalConstants";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import { AppDispatch, RootState } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 import { getFileSize, numberToCurrency } from "../../utility/util";
 import { CheckInput } from "../CheckInput/CheckInput";
-import { MultipleOptionSelect } from "../MultipleOptionSelect/MultipleOptionSelect";
-import { TextArea } from "../TextArea/TextArea";
+import {
+  MultipleOptionSelect,
+  MultipleOptionSelectRef,
+} from "../MultipleOptionSelect/MultipleOptionSelect";
+import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+
+type Answer = {
+  answer: string;
+  files: File[];
+};
+
+type AnswerRef = React.RefObject<TextAreaRef | MultipleOptionSelectRef>;
 
 export const SubmitRequirements = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const navigate = useNavigate();
   const updateGlobalLoading = useUpdateGlobalLoading();
 
-  const answersRef = useRef([]);
-  const [answers, setAnswers] = useState([]);
-  const [approval, setApproval] = useState(false);
+  const answersRef = useRef<AnswerRef[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [approval, setApproval] = useState<boolean>(false);
 
-  const [answerRequiredError, setAnswerRequiredError] = useState(false);
-  const [fileSizeErrors, setFileSizeErrors] = useState([]);
+  const [answerRequiredError, setAnswerRequiredError] =
+    useState<boolean>(false);
+  const [fileSizeErrors, setFileSizeErrors] = useState<boolean[]>([]);
 
   useEffect(() => {
-    dispatch(getOrderDetail(params.orderId));
+    if (params.orderId) {
+      dispatch(getOrderDetail(params.orderId));
+    }
   }, [dispatch, params.orderId]);
 
-  const { orderDetail } = useSelector((state) => state.orderDetail);
+  const { orderDetail } = useSelector((state: RootState) => state.orderDetail);
 
-  const packageDetail = orderDetail?.packageDetails;
+  const packageDetail = orderDetail?.packageDetails!;
 
   if (orderDetail) {
-    answersRef.current = orderDetail.requirements.map(
-      (question, index) => answersRef.current[index] || createRef()
-    );
+    answersRef.current = orderDetail.requirements.map((question, index) => {
+      if(answersRef.current[index]) {
+        return answersRef.current[index];
+      }
+      if (question.questionType === FREE_TEXT) {
+        return createRef<TextAreaRef>();
+      }
+      return createRef<MultipleOptionSelectRef>();
+    });
   }
 
   useEffect(() => {
@@ -68,8 +89,11 @@ export const SubmitRequirements = () => {
     }
   }, [orderDetail]);
 
-  const handleAnswerFile = (e, index) => {
-    const files = Array.from(e.target.files);
+  const handleAnswerFile = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const files = Array.from(e.target.files || []);
     setAnswers((prevState) => {
       const newState = [...prevState];
       newState[index].files = [...newState[index].files, ...files];
@@ -77,7 +101,7 @@ export const SubmitRequirements = () => {
     });
   };
 
-  const handleAnswerFileRemoval = (index, fileIndex) => {
+  const handleAnswerFileRemoval = (index: number, fileIndex: number) => {
     setAnswers((prevState) => {
       const newState = [...prevState];
       newState[index].files.splice(fileIndex, 1);
@@ -85,7 +109,7 @@ export const SubmitRequirements = () => {
     });
   };
 
-  const getApprovalState = (val) => {
+  const getApprovalState = (val: boolean) => {
     setApproval(val);
   };
 
@@ -96,7 +120,7 @@ export const SubmitRequirements = () => {
       if (item.answerRequired) {
         if (item.questionType === FREE_TEXT) {
           if (
-            answersRef.current[index].current.currValue === "" &&
+            answersRef.current[index].current?.currValue === "" &&
             answers[index].files.length === 0
           ) {
             setAnswerRequiredError(true);
@@ -104,10 +128,10 @@ export const SubmitRequirements = () => {
             return;
           }
         } else {
-          //
           let flag = false;
-          //
-          answersRef.current[index].current.currValue.forEach((val, index) => {
+          (
+            answersRef.current[index].current as MultipleOptionSelectRef
+          ).currValue.forEach((val, index) => {
             if (val) {
               flag = true;
               return;
@@ -135,23 +159,23 @@ export const SubmitRequirements = () => {
     }
 
     updateGlobalLoading(true, "Submitting your answers");
-    let filesData = [];
+    let filesData: File[] = [];
     let filesCountPerEachAnswer = [];
     for (let i = 0; i < answers.length; i++) {
       filesCountPerEachAnswer.push(answers[i].files.length);
       filesData = [...filesData, ...answers[i].files];
     }
 
+    const filesDataUrls: any[] = [];
     try {
       const fileUrls = await uploadToCloudinaryV2(
         filesData,
         5 * 1024 * 1024 * 1024
       );
-      filesData = [];
       let i = 0;
       while (fileUrls.length > 0) {
         let chunkSize = filesCountPerEachAnswer[i];
-        filesData.push(fileUrls.splice(0, chunkSize));
+        filesDataUrls.push(fileUrls.splice(0, chunkSize));
         i++;
       }
     } catch (error) {
@@ -162,8 +186,8 @@ export const SubmitRequirements = () => {
 
     const payload = answersRef.current.map((answer, index) => {
       return {
-        answer: answer.current.currValue,
-        files: filesData[index],
+        answer: answer.current?.currValue,
+        files: filesDataUrls[index],
       };
     });
 
@@ -181,9 +205,9 @@ export const SubmitRequirements = () => {
     }
 
     setFileSizeErrors(
-      orderDetail.requirements.map((question, index) => {
+      orderDetail?.requirements.map((question, index) => {
         return false;
-      })
+      }) || []
     );
     setAnswerRequiredError(false);
     updateGlobalLoading(false);
@@ -192,7 +216,8 @@ export const SubmitRequirements = () => {
 
   // after any change in files check for errors
   useEffect(() => {
-    const newFileSizeErrors = orderDetail?.requirements.map(
+    if (!orderDetail) return;
+    const newFileSizeErrors = orderDetail.requirements.map(
       (question, index) => {
         return false;
       }
@@ -200,12 +225,12 @@ export const SubmitRequirements = () => {
     answers.forEach((answer, index) => {
       answer.files.forEach((file, fileIndex) => {
         if (file.size > 5 * 1024 * 1024 * 1024) {
-          newFileSizeErrors[index] = true;
+          newFileSizeErrors![index] = true;
         }
       });
     });
     setFileSizeErrors(newFileSizeErrors);
-  }, [answers]);
+  }, [answers, orderDetail]);
 
   return (
     <div className="px-8 md:px-20 xl:px-48 py-8 text-dark_grey">
@@ -261,7 +286,7 @@ export const SubmitRequirements = () => {
                     <TextArea
                       maxLength={2500}
                       style={{ borderRadius: "0px", height: "100px" }}
-                      ref={answersRef.current[index]}
+                      ref={answersRef.current[index] as  RefObject<TextAreaRef>}
                     />
                     <div className="">
                       <label
@@ -274,7 +299,7 @@ export const SubmitRequirements = () => {
                           type="file"
                           hidden
                           multiple
-                          onClick={(e) => (e.target.value = "")}
+                          // onClick={(e) => (e.target.value = "")}
                           onChange={(e) => handleAnswerFile(e, index)}
                         />
                         <IoMdAttach className="hover: text-dark_grey" />
@@ -322,7 +347,7 @@ export const SubmitRequirements = () => {
                     <MultipleOptionSelect
                       options={question.options}
                       multiple={question.multipleOptionSelect}
-                      ref={answersRef.current[index]}
+                      ref={answersRef.current[index] as RefObject<MultipleOptionSelectRef>}
                     />
                   </div>
                 )}
@@ -341,7 +366,9 @@ export const SubmitRequirements = () => {
                     <li className="grid grid-cols-[30px_auto] items-center">
                       <FiCheck className="text-primary font-bold text-xl" />
                       <span>
-                        {packageDetail.revisions < 1e6 ? packageDetail.revisions : 'Unlimited'}{" "}
+                        {packageDetail.revisions < 1e6
+                          ? packageDetail.revisions
+                          : "Unlimited"}{" "}
                         {packageDetail.revisions === 1
                           ? "revision"
                           : "revisions"}

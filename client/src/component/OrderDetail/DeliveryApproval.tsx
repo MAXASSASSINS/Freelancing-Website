@@ -1,43 +1,52 @@
-import React, { useState } from "react";
-import { FaRobot } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { OrderMessageInput } from "./OrderMessageInput";
-import { ChatBox } from "./ChatBox";
+import { useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
+import { FaRobot } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { axiosInstance } from "../../utility/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { updateOrderDetail } from "../../actions/orderAction";
-import { ToastContainer, toast } from "react-toastify";
+import { axiosInstance } from "../../utility/axiosInstance";
+import { ChatBox } from "./ChatBox";
+// @ts-ignore
+import { toast } from "react-toastify";
+import { AppDispatch, RootState } from "../../store";
+import { IUser } from "../../types/user.types";
 
-const DeliveryApproval = ({ setFileLoading }) => {
+type DeliveryApprovalProps = {
+  setFileLoading: (val: boolean) => void;
+};
+
+const DeliveryApproval = ({ setFileLoading }: DeliveryApprovalProps) => {
   const params = useParams();
-  const dispatch = useDispatch();
-  const { orderDetail } = useSelector((state) => state.orderDetail);
-
+  const dispatch = useDispatch<AppDispatch>();
   const [showRevision, setShowRevision] = useState(false);
   const [showFinalDeliveryConfirmation, setShowFinalDeliveryConfirmation] =
     useState(false);
 
-  const handleCompletedRevisionRequest = (val) => {
+  const { orderDetail } = useSelector((state: RootState) => state.orderDetail);
+  if (!orderDetail) return null;
+
+  const handleCompletedRevisionRequest = (val: boolean) => {
     setShowRevision(false);
     setFileLoading(val);
   };
 
   const handleOrderCompletion = async () => {
     const { data } = await axiosInstance.post(`/order/completed/${params.id}`);
-    
+
     dispatch(updateOrderDetail(data.order));
     setShowFinalDeliveryConfirmation(false);
   };
 
   const handleShowRevisionBox = () => {
-    if (orderDetail.packageDetails.revisions.length >= orderDetail.revisions.length) {
+    if (orderDetail.packageDetails.revisions >= orderDetail.revisions.length) {
       toast.error("You have exceeded you maximum revision requests");
       return;
     }
     setShowRevision(true);
   };
+
+  orderDetail.seller = orderDetail.seller as IUser;
 
   return (
     <section className="flex ml-6  pb-4 mb-12 border-b gap-4 items-start">

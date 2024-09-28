@@ -10,21 +10,21 @@ import { DeliveryTimer } from "./DeliveryTimer";
 import { Details } from "./Details";
 import { OrderDetailSideModal } from "./OrderDetailSideModal";
 import { Requirements } from "./Requirements";
+import { AppDispatch, RootState } from "../../store";
+import { IUser } from "../../types/user.types";
 
 export const OrderDetail = () => {
-  const { windowWidth, windowHeight } = useContext(windowContext);
+  const { windowWidth } = useContext(windowContext);
   const params = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  // const [orderDetail, setOrderDetail] = useState({});
-
-  const { user, isAuthenticated, userLoading, userError } = useSelector(
-    (state) => state.user
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
   );
 
-  const { orderDetail, orderLoading, orderError } = useSelector(
-    (state) => state.orderDetail
+  const { orderDetail, orderError } = useSelector(
+    (state: RootState) => state.orderDetail
   );
 
   const [activeTab, setActiveTab] = useState(0);
@@ -32,12 +32,10 @@ export const OrderDetail = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
-    } else {
+    } else if(params.id){
       dispatch(getOrderDetail(params.id));
     }
-  }, [user]);
-
-  //
+  }, [isAuthenticated, user]);
 
   if (orderError) {
     navigate("/404");
@@ -85,7 +83,7 @@ export const OrderDetail = () => {
                 <li
                   key={tab.id}
                   className="pb-2 -m-0.5 hover:cursor-pointer"
-                  style={activeTab === tab.id ? styleActiveTab : null}
+                  style={activeTab === tab.id ? styleActiveTab : undefined}
                   onClick={tab.handleClick}
                 >
                   {tab.name}
@@ -95,11 +93,11 @@ export const OrderDetail = () => {
           </nav>
         </header>
 
-        {orderDetail && Date.now() > new Date(orderDetail.deliveryDate) && (
+        {orderDetail && Date.now() > new Date(orderDetail.deliveryDate).getTime() && (
           <div className="p-8 my-8 bg-red-100 rounded">
             <p>
               <span className="text-red-600">
-                {user._id === orderDetail.seller._id
+                {user!._id === (orderDetail.seller as IUser)._id
                   ? "This order is marked as late but you can still deliver it."
                   : "This order is marked as late."}
               </span>
@@ -125,7 +123,7 @@ export const OrderDetail = () => {
             </div>
 
             <div className="flex flex-col gap-8">
-              {orderDetail.seller._id === user._id &&
+              {(orderDetail.seller as IUser)._id === user!._id &&
                 (orderDetail.status === "In Progress" ||
                   orderDetail.status === "In Revision" ||
                   orderDetail.status === "Delivered") &&

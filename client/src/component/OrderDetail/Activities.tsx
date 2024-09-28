@@ -9,11 +9,15 @@ import { IoDocumentOutline } from "react-icons/io5";
 import { RiRocket2Line } from "react-icons/ri";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { updateOrderDetail } from "../../actions/orderAction";
 import { windowContext } from "../../App";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 import { SocketContext } from "../../context/socket/socket";
+import { AppDispatch, RootState } from "../../store";
+import { IMessage } from "../../types/message.types";
+import { IOrder } from "../../types/order.types";
+import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { downloadFile, getFileSize } from "../../utility/util";
 import { Avatar } from "../Avatar/Avatar";
@@ -25,18 +29,30 @@ import { ChatBox } from "./ChatBox";
 import DeliveryApproval from "./DeliveryApproval";
 import { DeliveryTimer } from "./DeliveryTimer";
 
-export const Activities = ({ orderDetail }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+type ActivitiesProps = {
+  orderDetail: IOrder;
+};
+
+type GroupedMessage = IMessage & {
+  forDelivery: boolean;
+  forRevision: boolean;
+  deliveryNumber?: number;
+};
+
+type DateWiseMessage = {
+  date: string;
+  dateWiseMessages: GroupedMessage[];
+};
+
+export const Activities = ({ orderDetail }: ActivitiesProps) => {
+  const seller = orderDetail.seller as IUser;
+  const buyer = orderDetail.buyer as IUser;
+  const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
 
-  const { user, isAuthenticated, userLoading, userError } = useSelector(
-    (state) => state.user
-  );
+  const { user } = useSelector((state: RootState) => state.user);
 
   const updateGlobalLoading = useUpdateGlobalLoading();
-
-  // const {orderDetail} = useSelector((state) => state.orderDetail);
 
   const [online, setOnline] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
@@ -44,10 +60,7 @@ export const Activities = ({ orderDetail }) => {
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
 
-  //
-  const [orderMessages, setOrderMessages] = useState([]);
-
-  //
+  const [orderMessages, setOrderMessages] = useState<DateWiseMessage[]>([]);
 
   useEffect(() => {
     getOrderMessages();
@@ -56,20 +69,15 @@ export const Activities = ({ orderDetail }) => {
   // online status of seller or buyer
   useEffect(() => {
     const userToCheck =
-      user._id.toString() === orderDetail.buyer._id.toString()
-        ? orderDetail.seller._id
-        : orderDetail.buyer._id;
+      user!._id.toString() === buyer._id.toString() ? seller._id : buyer._id;
     socket.emit("is_online", userToCheck);
   }, [orderDetail, socket]);
 
   useEffect(() => {
     socket.on("is_online_from_server", (data) => {
-      //
       const onlineClientId = data.id.toString();
       const userToCheck =
-        user._id.toString() === orderDetail.buyer._id.toString()
-          ? orderDetail.seller._id
-          : orderDetail.buyer._id;
+        user!._id.toString() === buyer._id.toString() ? seller._id : buyer._id;
       if (onlineClientId === userToCheck) {
         setOnline(data.online);
       }
@@ -78,9 +86,7 @@ export const Activities = ({ orderDetail }) => {
     socket.on("online_from_server", (data) => {
       const onlineClientId = data.toString();
       const userToCheck =
-        user._id.toString() === orderDetail.buyer._id.toString()
-          ? orderDetail.seller._id
-          : orderDetail.buyer._id;
+        user!._id.toString() === buyer._id.toString() ? seller._id : buyer._id;
       if (onlineClientId === userToCheck) {
         setOnline(true);
       }
@@ -90,9 +96,7 @@ export const Activities = ({ orderDetail }) => {
       const onlineClientId = data?.toString();
 
       const userToCheck =
-        user._id.toString() === orderDetail.buyer._id.toString()
-          ? orderDetail.seller._id
-          : orderDetail.buyer._id;
+        user!._id.toString() === buyer._id.toString() ? seller._id : buyer._id;
       if (onlineClientId.toString() === userToCheck?.toString()) {
         setOnline(false);
       }
@@ -103,7 +107,7 @@ export const Activities = ({ orderDetail }) => {
       socket.off("online_from_server");
       socket.off("offline_from_server");
     };
-  }, [orderDetail.id, socket]);
+  }, [orderDetail._id, socket]);
 
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
@@ -144,39 +148,35 @@ export const Activities = ({ orderDetail }) => {
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
-    socket.on(
-      "receive_message_self",
-      async (data) => {
-        if (data.orderId !== params.id) {
-          return;
-        }
+    socket.on("receive_message_self", async (data) => {
+      if (data.orderId !== params.id) {
+        return;
+      }
 
-        if (data.forDelivery) {
-          data = { ...data, deliveryNumber: orderDetail.deliveries.length };
-        }
+      if (data.forDelivery) {
+        data = { ...data, deliveryNumber: orderDetail.deliveries.length };
+      }
 
-        setOrderMessages((prev) => {
-          const date = new Date(data.createdAt)
-            .toLocaleDateString()
-            .substring(0, 10);
-          let found = false;
-          prev.forEach((message) => {
-            if (message.date === date) {
-              found = true;
-              message.dateWiseMessages.push(data);
-            }
-          });
-          if (!found) {
-            prev.push({
-              date,
-              dateWiseMessages: [data],
-            });
+      setOrderMessages((prev) => {
+        const date = new Date(data.createdAt)
+          .toLocaleDateString()
+          .substring(0, 10);
+        let found = false;
+        prev.forEach((message) => {
+          if (message.date === date) {
+            found = true;
+            message.dateWiseMessages.push(data);
           }
-          return [...prev];
         });
-      },
-      [fileLoading, socket]
-    );
+        if (!found) {
+          prev.push({
+            date,
+            dateWiseMessages: [data],
+          });
+        }
+        return [...prev];
+      });
+    });
 
     return () => {
       socket.off("receive_message_self");
@@ -215,31 +215,42 @@ export const Activities = ({ orderDetail }) => {
     }
   };
 
-  const pushMessage = (map, message) => {
-    const date = new Date(message.createdAt)
-      .toLocaleDateString()
-      .substring(0, 10);
+  console.log(orderMessages);
+
+  const pushMessage = (
+    map: Map<string, GroupedMessage[]>,
+    message: GroupedMessage
+  ) => {
+    const date = new Date(message.createdAt).getDate().toString();
     if (map.has(date)) {
-      map.get(date).push(message);
+      map.get(date)!.push(message);
     } else {
       map.set(date, [message]);
     }
   };
 
-  const buildDateWiseMessages = (messages, deliveries, revisions) => {
-    let map = new Map();
+  const buildDateWiseMessages = (
+    messages: IMessage[],
+    deliveries: IOrder["deliveries"],
+    revisions: IOrder["revisions"]
+  ) => {
+    let map = new Map<string, GroupedMessage[]>();
 
     for (let message of messages) {
-      message = { ...message, forDelivery: false, forRevision: false };
-      pushMessage(map, message);
+      const newMessage: GroupedMessage = {
+        ...message,
+        forDelivery: false,
+        forRevision: false,
+      };
+      pushMessage(map, newMessage);
     }
 
     if (deliveries) {
       deliveries.forEach((delivery, index) => {
         const message = {
           _id: delivery._id,
-          sender: orderDetail.seller,
-          receiver: orderDetail.buyer,
+          sender: seller,
+          receiver: buyer,
           files: delivery.files,
           message: {
             text: delivery.message,
@@ -258,8 +269,8 @@ export const Activities = ({ orderDetail }) => {
       for (const revision of revisions) {
         const message = {
           _id: revision._id,
-          sender: orderDetail.buyer,
-          receiver: orderDetail.seller,
+          sender: buyer,
+          receiver: seller,
           files: revision.files,
           message: {
             text: revision.message,
@@ -277,23 +288,24 @@ export const Activities = ({ orderDetail }) => {
 
     map = new Map(
       [...map.entries()].map(([key, value]) => {
-        const newEntry = value.sort((a, b) => {
-          return new Date(a.createdAt) - new Date(b.createdAt);
+        const newEntry = value.sort((a: GroupedMessage, b: GroupedMessage) => {
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
         });
         return [key, newEntry];
       })
     );
 
-    map = Array.from(map, ([date, dateWiseMessages]) => ({
-      date,
-      dateWiseMessages,
-    }));
+    const arr: DateWiseMessage[] = Array.from(
+      map,
+      ([date, dateWiseMessages]) => ({
+        date,
+        dateWiseMessages,
+      })
+    );
 
-    map.map((dateWiseMessage) => {});
-
-    setOrderMessages(map);
-    //
-    return map;
+    return arr;
   };
 
   const buyerFeedback = [
@@ -316,7 +328,7 @@ export const Activities = ({ orderDetail }) => {
 
   return (
     <>
-      {orderDetail.seller._id === user._id &&
+      {seller._id === user!._id &&
         (orderDetail.status === "In Progress" ||
           orderDetail.status === "In Revision") && (
           <div className="mb-8 min-[900px]:hidden">
@@ -343,14 +355,14 @@ export const Activities = ({ orderDetail }) => {
               </div>
               <div className="[&>*]:leading-5 py-2 pr-6 border-b flex-grow border-b-dark_separator">
                 <span className="mr-2">
-                  {orderDetail.buyer._id === user._id ? (
+                  {buyer._id === user!._id ? (
                     "You"
                   ) : (
                     <Link
-                      to={`/user/${orderDetail.buyer._id}`}
+                      to={`/user/${buyer._id}`}
                       className="text-primary hover:underline"
                     >
-                      {orderDetail.buyer.name}
+                      {buyer.name}
                     </Link>
                   )}
                   &nbsp; placed the order
@@ -363,8 +375,8 @@ export const Activities = ({ orderDetail }) => {
               </div>
             </div>
 
-            {Date.now(orderDetail.requirementsSubmittedAt).toString() ===
-              Date.now(orderDetail.createdAt).toString() && (
+            {new Date(orderDetail.requirementsSubmittedAt).toString() ===
+              new Date(orderDetail.createdAt).toString() && (
               <>
                 <div className="flex items-center gap-4 font-semibold text-light_heading">
                   <div className="p-2 aspect-square bg-blue-200 text-blue-600  rounded-full">
@@ -372,14 +384,14 @@ export const Activities = ({ orderDetail }) => {
                   </div>
                   <div className="[&>*]:leading-5 pr-6 flex-grow py-2 border-b border-b-dark_separator">
                     <span className="mr-2">
-                      {orderDetail.buyer._id === user._id ? (
+                      {buyer._id === user!._id ? (
                         "You "
                       ) : (
                         <Link
-                          to={`/user/${orderDetail.buyer._id}`}
+                          to={`/user/${buyer._id}`}
                           className="text-primary hover:underline"
                         >
-                          {orderDetail.buyer.name}
+                          {buyer.name}
                         </Link>
                       )}
                       &nbsp; sent the requirements
@@ -428,8 +440,8 @@ export const Activities = ({ orderDetail }) => {
             )}
           </section>
 
-          {Date.now(orderDetail.requirementsSubmittedAt).toString() !==
-            Date.now(orderDetail.createdAt).toString() && (
+          {new Date(orderDetail.requirementsSubmittedAt).toString() !==
+            new Date(orderDetail.createdAt).toString() && (
             <section className="relative pl-6 flex flex-col gap-4 pb-12">
               <DateTag
                 left={"-1.5rem"}
@@ -443,14 +455,14 @@ export const Activities = ({ orderDetail }) => {
                 </div>
                 <div className="pr-6 [&>*]:leading-5 py-2 border-b flex-grow border-b-dark_separator">
                   <span className="mr-2">
-                    {orderDetail.buyer._id === user._id ? (
+                    {buyer._id === user!._id ? (
                       "You "
                     ) : (
                       <Link
-                        to={`/user/${orderDetail.buyer._id}`}
+                        to={`/user/${buyer._id}`}
                         className="text-primary hover:underline"
                       >
-                        {orderDetail.buyer.name}
+                        {buyer.name}
                       </Link>
                     )}
                     &nbsp; sent the requirements
@@ -519,8 +531,10 @@ export const Activities = ({ orderDetail }) => {
                 )}
 
                 {obj.dateWiseMessages.length > 0 &&
-                  obj.dateWiseMessages.map((message) =>
-                    message.forDelivery ? (
+                  obj.dateWiseMessages.map((message) => {
+                    message.sender = message.sender as IUser;
+                    message.receiver = message.receiver as IUser;
+                    return message.forDelivery ? (
                       <div className="">
                         <div
                           key={message._id}
@@ -531,7 +545,7 @@ export const Activities = ({ orderDetail }) => {
                           </div>
                           <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                             <span className="mr-2">
-                              {message.sender._id === user._id ? (
+                              {(message.sender as IUser)._id === user!._id ? (
                                 "You delivered the order"
                               ) : (
                                 <>
@@ -572,7 +586,7 @@ export const Activities = ({ orderDetail }) => {
                               </div>
                               <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                                 <span className="mr-2">
-                                  {message.sender._id === user._id ? (
+                                  {message.sender._id === user!._id ? (
                                     "Me"
                                   ) : (
                                     <>
@@ -604,9 +618,6 @@ export const Activities = ({ orderDetail }) => {
                                         >
                                           <LazyVideo
                                             file={file}
-                                            maxWidth={
-                                              windowWidth > 1024 ? 240 : 160
-                                            }
                                             aspectRatio="16/9"
                                           />
                                         </a>
@@ -618,9 +629,6 @@ export const Activities = ({ orderDetail }) => {
                                         >
                                           <LazyImage
                                             file={file}
-                                            maxWidth={
-                                              windowWidth > 1024 ? 240 : 160
-                                            }
                                             aspectRatio="16/9"
                                           />
                                         </a>
@@ -680,7 +688,7 @@ export const Activities = ({ orderDetail }) => {
                           </div>
                           <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                             <span className="mr-2">
-                              {message.sender._id === user._id ? (
+                              {message.sender._id === user!._id ? (
                                 "You requested a revision"
                               ) : (
                                 <>
@@ -721,7 +729,7 @@ export const Activities = ({ orderDetail }) => {
                               </div>
                               <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                                 <span className="mr-2">
-                                  {message.sender._id === user._id ? (
+                                  {message.sender._id === user!._id ? (
                                     "Me"
                                   ) : (
                                     <>
@@ -753,9 +761,6 @@ export const Activities = ({ orderDetail }) => {
                                         >
                                           <LazyVideo
                                             file={file}
-                                            maxWidth={
-                                              windowWidth > 1024 ? 240 : 160
-                                            }
                                             aspectRatio="16/9"
                                           />
                                         </a>
@@ -767,9 +772,6 @@ export const Activities = ({ orderDetail }) => {
                                         >
                                           <LazyImage
                                             file={file}
-                                            maxWidth={
-                                              windowWidth > 1024 ? 240 : 160
-                                            }
                                             aspectRatio="16/9"
                                           />
                                         </a>
@@ -835,7 +837,7 @@ export const Activities = ({ orderDetail }) => {
                           </div>
                           <div className="[&>*]:leading-5 flex-grow pr-6 py-2 border-b border-b-dark_separator">
                             <span className="mr-2">
-                              {message.sender._id === user._id ? (
+                              {message.sender._id === user!._id ? (
                                 "You"
                               ) : (
                                 <Link
@@ -846,7 +848,7 @@ export const Activities = ({ orderDetail }) => {
                                 </Link>
                               )}
                               &nbsp; sent &nbsp;
-                              {message.receiver._id === user._id ? (
+                              {message.receiver._id === user!._id ? (
                                 "You "
                               ) : (
                                 <Link
@@ -881,9 +883,6 @@ export const Activities = ({ orderDetail }) => {
                                     >
                                       <LazyVideo
                                         file={file}
-                                        maxWidth={
-                                          windowWidth > 1024 ? 240 : 160
-                                        }
                                         aspectRatio="16/9"
                                       />
                                     </a>
@@ -895,9 +894,6 @@ export const Activities = ({ orderDetail }) => {
                                     >
                                       <LazyImage
                                         file={file}
-                                        maxWidth={
-                                          windowWidth > 1024 ? 240 : 160
-                                        }
                                         aspectRatio="16/9"
                                       />
                                     </a>
@@ -942,15 +938,14 @@ export const Activities = ({ orderDetail }) => {
                           </div>
                         </div>
                       </div>
-                    )
-                  )}
+                    );
+                  })}
               </section>
             ))}
 
-          {orderDetail.buyer._id === user._id &&
-            orderDetail.status === "Delivered" && (
-              <DeliveryApproval setFileLoading={setFileLoading} />
-            )}
+          {buyer._id === user!._id && orderDetail.status === "Delivered" && (
+            <DeliveryApproval setFileLoading={setFileLoading} />
+          )}
 
           {orderDetail.status !== "Completed" &&
             orderDetail.status !== "Cancelled" && (
@@ -959,21 +954,21 @@ export const Activities = ({ orderDetail }) => {
                   <div className="flex items-center gap-4 text-light_heading">
                     <div className="aspect-square rounded-full">
                       <Avatar
-                        avatarUrl={user.avatar.url}
-                        userName={user.name}
+                        avatarUrl={user!.avatar.url}
+                        userName={user!.name}
                         width="2rem"
                         fontSize="1rem"
-                        alt={user.name}
+                        alt={user!.name}
                       />
                     </div>
                     <div className="[&>*]:leading-5 py-2 pr-6 flex-grow  flex justify-between items-center">
                       <span className="mr-2 font-semibold text-primary">
                         Have something to share with &nbsp;
                         <Link
-                          to={`/user/${orderDetail.seller._id}`}
+                          to={`/user/${seller._id}`}
                           className="text-primary hover:underline"
                         >
-                          {orderDetail.seller.name}
+                          {seller.name}
                         </Link>
                         ?
                       </span>
@@ -1003,7 +998,7 @@ export const Activities = ({ orderDetail }) => {
                   marginTop: orderMessages.some((message) => {
                     return (
                       message.date ===
-                      new Date(orderDetail.completedAt).toLocaleDateString()
+                      new Date(orderDetail.completedAt!).toLocaleDateString()
                     );
                   })
                     ? "-3rem"
@@ -1013,13 +1008,13 @@ export const Activities = ({ orderDetail }) => {
                 {!orderMessages.some((message) => {
                   return (
                     message.date ===
-                    new Date(orderDetail.completedAt).toLocaleDateString()
+                    new Date(orderDetail.completedAt!).toLocaleDateString()
                   );
                 }) && (
                   <DateTag
                     left={"-1.5rem"}
                     date={new Date(
-                      orderDetail.completedAt
+                      orderDetail.completedAt!
                     ).toLocaleDateString()}
                   />
                 )}
@@ -1039,7 +1034,7 @@ export const Activities = ({ orderDetail }) => {
                 </div>
               </section>
 
-              {orderDetail.buyer._id === user._id &&
+              {buyer._id === user!._id &&
                 !orderDetail.buyerFeedbackSubmitted && (
                   <Link to={`/orders/${orderDetail._id}/feedback`}>
                     <div className="flex justify-end mx-6">
@@ -1051,31 +1046,31 @@ export const Activities = ({ orderDetail }) => {
                 )}
 
               {orderDetail.buyerFeedbackSubmitted &&
-                (user._id === orderDetail.buyer._id ||
-                  (user._id === orderDetail.seller_id &&
+                (user!._id === buyer._id ||
+                  (user!._id === (orderDetail.seller as IUser)._id &&
                     orderDetail.sellerFeedbackSubmitted)) && (
                   <section
                     className="relative pl-6 flex flex-col gap-4 pb-16"
                     style={{
                       marginTop:
                         new Date(
-                          orderDetail.completedAt
+                          orderDetail.completedAt!
                         ).toLocaleDateString() ===
                         new Date(
-                          orderDetail.buyerFeedback.createdAt
+                          orderDetail.buyerFeedback!.createdAt
                         ).toLocaleDateString()
                           ? "-2rem"
                           : "0rem",
                     }}
                   >
-                    {new Date(orderDetail.completedAt).toLocaleDateString() !==
+                    {new Date(orderDetail.completedAt!).toLocaleDateString() !==
                       new Date(
-                        orderDetail.buyerFeedback.createdAt
+                        orderDetail.buyerFeedback!.createdAt
                       ).toLocaleDateString() && (
                       <DateTag
                         left={"-1.5rem"}
                         date={new Date(
-                          orderDetail.buyerFeedback.createdAt
+                          orderDetail.buyerFeedback!.createdAt
                         ).toLocaleDateString()}
                       />
                     )}
@@ -1086,15 +1081,15 @@ export const Activities = ({ orderDetail }) => {
                         </div>
                         <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                           <span className="mr-2">
-                            {orderDetail.buyer._id === user._id ? (
+                            {buyer._id === user!._id ? (
                               "You left a review"
                             ) : (
                               <>
                                 <Link
-                                  to={`/user/${orderDetail.buyer._id}`}
+                                  to={`/user/${buyer._id}`}
                                   className="text-primary hover:underline"
                                 >
-                                  {orderDetail.buyer.name}
+                                  {buyer.name}
                                 </Link>
                                 &nbsp; gave you a review
                               </>
@@ -1102,22 +1097,22 @@ export const Activities = ({ orderDetail }) => {
                           </span>
                           <span className="text-icons font-normal text-xs">
                             <Moment format="MMM DD, H:mm A">
-                              {orderDetail.buyerFeedback.createdAt}
+                              {orderDetail.buyerFeedback!.createdAt}
                             </Moment>
                           </span>
                         </div>
                       </div>
                       <div className="border mr-6 rounded mt-4">
                         <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
-                          {orderDetail.buyer._id === user._id ? (
+                          {buyer._id === user!._id ? (
                             "Your review"
                           ) : (
                             <>
                               <Link
-                                to={`/user/${orderDetail.buyer._id}`}
+                                to={`/user/${buyer._id}`}
                                 className="text-primary hover:underline"
                               >
-                                {orderDetail.buyer.name}
+                                {buyer.name}
                               </Link>
                               's review
                             </>
@@ -1127,24 +1122,24 @@ export const Activities = ({ orderDetail }) => {
                           <div className="flex items-center gap-4 font-semibold text-light_heading">
                             <div className="aspect-square rounded-full">
                               <Avatar
-                                avatarUrl={orderDetail.seller.avatar.url}
-                                userName={orderDetail.seller.name}
+                                avatarUrl={seller.avatar.url}
+                                userName={seller.name}
                                 width="2rem"
                                 fontSize="1rem"
-                                alt={orderDetail.seller.name}
+                                alt={seller.name}
                               />
                             </div>
                             <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                               <span className="mr-2">
-                                {orderDetail.buyer._id === user._id ? (
+                                {buyer._id === user!._id ? (
                                   "Me"
                                 ) : (
                                   <>
                                     <Link
-                                      to={`/user/${orderDetail.buyer._id}`}
+                                      to={`/user/${buyer._id}`}
                                       className="text-primary hover:underline"
                                     >
-                                      {orderDetail.buyer.name}
+                                      {buyer.name}
                                     </Link>
                                     's message
                                   </>
@@ -1154,7 +1149,7 @@ export const Activities = ({ orderDetail }) => {
                           </div>
                           <div className="ml-12 pb-4">
                             <p className="leading-5 whitespace-pre-wrap pr-6 text-dark_grey max-w-2xl">
-                              {orderDetail.buyerFeedback.comment}
+                              {orderDetail.buyerFeedback!.comment}
                             </p>
                             <div className="pt-6 max-w-max">
                               {buyerFeedback.map((feedback, index) => (
@@ -1190,25 +1185,25 @@ export const Activities = ({ orderDetail }) => {
                   style={{
                     marginTop:
                       new Date(
-                        orderDetail.sellerFeedback.createdAt
+                        orderDetail.sellerFeedback!.createdAt!
                       ).toLocaleDateString() ===
                       new Date(
-                        orderDetail.buyerFeedback.createdAt
+                        orderDetail.buyerFeedback!.createdAt!
                       ).toLocaleDateString()
                         ? "-2rem"
                         : "0rem",
                   }}
                 >
                   {new Date(
-                    orderDetail.sellerFeedback.createdAt
+                    orderDetail.sellerFeedback!.createdAt
                   ).toLocaleDateString() !==
                     new Date(
-                      orderDetail.buyerFeedback.createdAt
+                      orderDetail.buyerFeedback!.createdAt
                     ).toLocaleDateString() && (
                     <DateTag
                       left={"-1.5rem"}
                       date={new Date(
-                        orderDetail.buyerFeedback.createdAt
+                        orderDetail.buyerFeedback!.createdAt
                       ).toLocaleDateString()}
                     />
                   )}
@@ -1219,15 +1214,15 @@ export const Activities = ({ orderDetail }) => {
                       </div>
                       <div className="[&>*]:leading-5 flex-grow pr-6 py-2">
                         <span className="mr-2">
-                          {orderDetail.seller._id === user._id ? (
+                          {seller._id === user!._id ? (
                             "You left a review"
                           ) : (
                             <>
                               <Link
-                                to={`/user/${orderDetail.seller._id}`}
+                                to={`/user/${seller._id}`}
                                 className="text-primary hover:underline"
                               >
-                                {orderDetail.seller.name}
+                                {seller.name}
                               </Link>
                               &nbsp; gave you a review
                             </>
@@ -1235,22 +1230,22 @@ export const Activities = ({ orderDetail }) => {
                         </span>
                         <span className="text-icons font-normal text-xs">
                           <Moment format="MMM DD, H:mm A">
-                            {orderDetail.sellerFeedback.createdAt}
+                            {orderDetail.sellerFeedback!.createdAt}
                           </Moment>
                         </span>
                       </div>
                     </div>
                     <div className="border mr-6 rounded mt-4">
                       <div className="uppercase py-3 px-4 bg-separator text-light_heading font-semibold">
-                        {orderDetail.seller._id === user._id ? (
+                        {seller._id === user!._id ? (
                           "Your review"
                         ) : (
                           <>
                             <Link
-                              to={`/user/${orderDetail.seller._id}`}
+                              to={`/user/${seller._id}`}
                               className="text-primary hover:underline"
                             >
-                              {orderDetail.seller.name}
+                              {seller.name}
                             </Link>
                             's review
                           </>
@@ -1260,24 +1255,24 @@ export const Activities = ({ orderDetail }) => {
                         <div className="flex items-center gap-4 font-semibold text-light_heading">
                           <div className="aspect-square rounded-full">
                             <Avatar
-                              avatarUrl={orderDetail.seller.avatar.url}
-                              userName={orderDetail.seller.name}
+                              avatarUrl={seller.avatar.url}
+                              userName={seller.name}
                               width="2rem"
                               fontSize="1rem"
-                              alt={orderDetail.seller.name}
+                              alt={seller.name}
                             />
                           </div>
                           <div className="[&>*]:leading-5 flex items-center flex-grow pr-6 py-2">
                             <span className="mr-2">
-                              {orderDetail.seller._id === user._id ? (
+                              {seller._id === user!._id ? (
                                 "Me"
                               ) : (
                                 <>
                                   <Link
-                                    to={`/user/${orderDetail.seller._id}`}
+                                    to={`/user/${seller._id}`}
                                     className="text-primary hover:underline"
                                   >
-                                    {orderDetail.seller.name}
+                                    {seller.name}
                                   </Link>
                                   's message
                                 </>
@@ -1285,7 +1280,7 @@ export const Activities = ({ orderDetail }) => {
                             </span>
                             <Rating
                               size="small"
-                              value={orderDetail.sellerFeedback.rating}
+                              value={orderDetail.sellerFeedback!.rating}
                               icon={<FaStar className="text-gold" />}
                               emptyIcon={<FaRegStar className="text-gold" />}
                               readOnly
@@ -1294,7 +1289,7 @@ export const Activities = ({ orderDetail }) => {
                         </div>
                         <div className="ml-12 pb-4">
                           <p className="leading-5 pr-6 whitespace-pre-wrap text-dark_grey max-w-2xl">
-                            {orderDetail.sellerFeedback.comment}
+                            {orderDetail.sellerFeedback!.comment}
                           </p>
                         </div>
                       </div>
@@ -1303,7 +1298,7 @@ export const Activities = ({ orderDetail }) => {
                 </section>
               )}
 
-              {orderDetail.seller._id === user._id &&
+              {seller._id === user!._id &&
                 orderDetail.buyerFeedbackSubmitted &&
                 !orderDetail.sellerFeedbackSubmitted && (
                   <section className="relative px-6 flex flex-col gap-4 pb-12">

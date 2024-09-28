@@ -5,7 +5,7 @@ import App from "./App";
 import { GlobalLoadingProvider } from "./context/globalLoadingContext";
 import "./index.css";
 import store from "./store";
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 
 root.render(
   <BrowserRouter>

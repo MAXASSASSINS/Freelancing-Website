@@ -1,15 +1,35 @@
-import React, { useState, useRef } from "react";
-import { io } from "socket.io-client";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, Navigate, Link } from "react-router-dom";
-import { axiosInstance } from "../../utility/axiosInstance";
-import Moment from "react-moment";
-import moment from "moment";
-import "moment-timezone";
+// @ts-ignore
 import Picker from "@emoji-mart/react";
-import data from "@emoji-mart/data";
-import { ToastContainer, toast } from "react-toastify";
+import "moment-timezone";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import Moment from "react-moment";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { SocketContext } from "../../context/socket/socket";
+import { IMessage } from "../../types/message.types";
+import { IUser } from "../../types/user.types";
+import { axiosInstance } from "../../utility/axiosInstance";
+
+type CurrentlySelectedClientChatProps = {
+  user: IUser;
+  hideMessageListOnSmallDevices: boolean;
+  setHideMessageListOnSmallDevices: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  currentSelectedClient: IUser;
+  handleAllClientUserLastMessage: () => void;
+};
+
+type SelectedFile = {
+  selectedFile: File;
+  id: number;
+};
 
 export const CurrentlySelectedClientChat = ({
   user,
@@ -17,53 +37,40 @@ export const CurrentlySelectedClientChat = ({
   setHideMessageListOnSmallDevices,
   currentSelectedClient,
   handleAllClientUserLastMessage,
-}) => {
-  const socket = io.connect("http://localhost:4000");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [inboxMessages, setInboxMessages] = useState(null);
+}: CurrentlySelectedClientChatProps) => {
+  const [inboxMessages, setInboxMessages] = useState<IMessage[]>([]);
 
   const [message, setMessage] = useState("");
   const [isFilePicked, setIsFilePicked] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const chatTextAreaRef = useRef(null);
-  const scrollToBottomDivRefInbox = useRef(null);
+  const chatTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const scrollToBottomDivRefInbox = useRef<HTMLDivElement>(null);
 
-  const handleEmojiClick = (emoji) => {
+  const handleEmojiClick = (emoji: any) => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user]);
 
   const handleEmojiPickerHideOrShow = () => {
     setShowEmojiPicker(!showEmojiPicker);
   };
 
-  const sendChat = (e) => {
+  const sendChat = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (message.length > 0) {
-      // const formattedMessage = message.replace(/\n/g, "<br>\n");
-      // 
-      // 
       handleSendMessage(message);
       setMessage("");
     }
     if (isFilePicked) {
       setIsFilePicked(false);
-      setSelectedFiles(null);
+      setSelectedFiles([]);
     }
   };
 
-  const handleSendMessage = async (message) => {
+  const handleSendMessage = async (message: string) => {
     const dataToPost = {
       from: user._id,
       to: currentSelectedClient._id,
@@ -76,14 +83,11 @@ export const CurrentlySelectedClientChat = ({
       },
     };
     const { data } = await axiosInstance.post(url, dataToPost, config);
-    // 
-    await getAllMessagesBetweenTwoUser(currentSelectedClient._id);
-    await handleSendMessageSocket(message);
+    await getAllMessagesBetweenTwoUser();
+    // await handleSendMessageSocket(message);
     await handleAllClientUserLastMessage();
   };
 
-  // 
-  // 
   const getAllMessagesBetweenTwoUser = async () => {
     const clientId = currentSelectedClient._id;
     const postData = {
@@ -109,26 +113,23 @@ export const CurrentlySelectedClientChat = ({
     getAllMessagesBetweenTwoUser();
   }, []);
 
-  const handleSendMessageSocket = async (message) => {
-    const messageData = {
-      room: "12345",
-      author: user.name,
-      message: message,
-    };
+  // const handleSendMessageSocket = async (message) => {
+  //   const messageData = {
+  //     room: "12345",
+  //     author: user.name,
+  //     message: message,
+  //   };
 
-    await socket.emit("send_message", messageData);
-  };
+  //   await socket.emit("send_message", messageData);
+  // };
 
-  const handleSelectionOfFiles = (event) => {
-    
-    const files = event.target.files;
-    let arr = [];
-    if (selectedFiles) {
-      for (let i = 0; i < selectedFiles.length; i++) {
-        arr.push(selectedFiles[i]);
-      }
+  const handleSelectionOfFiles = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files || [];
+    let arr: SelectedFile[] = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      arr.push(selectedFiles[i]);
     }
-    // 
     for (let i = 0; i < files.length; i++) {
       let index = 0;
       if (selectedFiles != null) {
@@ -140,33 +141,34 @@ export const CurrentlySelectedClientChat = ({
         selectedFile: files[i],
         id: index,
       };
-      // 
-      // 
       arr.push(file);
     }
-    document.getElementById("chat-inbox-input-file").value = "";
+    (
+      document.getElementById("chat-inbox-input-file") as HTMLInputElement
+    ).value = "";
     if (arr.length === 0) {
-      setSelectedFiles(null);
+      setSelectedFiles([]);
       setIsFilePicked(false);
 
       return;
     }
-    // 
     setIsFilePicked(true);
     setSelectedFiles(arr);
-    
+
     scrollToBottomDivRefInbox.current?.scrollIntoView();
   };
 
-  const handleFileClickedRemoval = (id) => () => {
+  const handleFileClickedRemoval = (id: number) => () => {
     let arr = selectedFiles;
     arr = arr.filter((file) => {
       return file.id !== id;
     });
     if (arr.length === 0) {
       setIsFilePicked(false);
-      setSelectedFiles(null);
-      document.getElementById("chat-inbox-input-file").value = "";
+      setSelectedFiles([]);
+      (
+        document.getElementById("chat-inbox-input-file") as HTMLInputElement
+      ).value = "";
       return;
     }
     setSelectedFiles(arr);
@@ -238,7 +240,7 @@ export const CurrentlySelectedClientChat = ({
                 className="inbox-message-list-header-icon"
                 onClick={() => setHideMessageListOnSmallDevices(true)}
               >
-                <i class="fa-solid fa-chevron-left"></i>
+                <i className="fa-solid fa-chevron-left"></i>
               </div>
               <h2>
                 <Link to={`/user/${currentSelectedClient._id}`}>
@@ -246,40 +248,45 @@ export const CurrentlySelectedClientChat = ({
                 </Link>
               </h2>
               <div className="inbox-message-list-header-icon">
-                <i class="fa-solid fa-ellipsis"></i>
+                <i className="fa-solid fa-ellipsis"></i>
               </div>
             </header>
           </div>
           <div className="inbox-message-list-section-2">
             <ul>
-              {inboxMessages.map((item, index) => (
-                <li key={index + item.message}>
-                  {item.sender.avatar.url ? (
-                    <img src={item.sender.avatar.url}></img>
-                  ) : (
-                    <div>
-                      <i
-                        className={
-                          "fa-solid fa-" + item.sender.name[0].toLowerCase()
-                        }
-                      ></i>
+              {inboxMessages.map((item, index) => {
+                item.sender = item.sender as IUser;
+                return (
+                  <li key={item._id}>
+                    {item.sender.avatar.url ? (
+                      <img src={item.sender.avatar.url}></img>
+                    ) : (
+                      <div>
+                        <i
+                          className={
+                            "fa-solid fa-" + item.sender.name[0].toLowerCase()
+                          }
+                        ></i>
+                      </div>
+                    )}
+                    <div className="inbox-messages-list-sender-info">
+                      <div className="inbox-messages-list-sender-name">
+                        {item.sender.name === user.name
+                          ? "Me"
+                          : item.sender.name}
+                      </div>
+                      <p className="inbox-messages-list-sender-date">
+                        <Moment format="DD MMM YYYY, HH:mm">
+                          {item.createdAt}
+                        </Moment>
+                      </p>
+                      <p className="inbox-messages-list-sender-text">
+                        {item.message.text}
+                      </p>
                     </div>
-                  )}
-                  <div className="inbox-messages-list-sender-info">
-                    <div className="inbox-messages-list-sender-name">
-                      {item.sender.name === user.name ? "Me" : item.sender.name}
-                    </div>
-                    <p className="inbox-messages-list-sender-date">
-                      <Moment format="DD MMM YYYY, HH:mm">
-                        {item.createdAt}
-                      </Moment>
-                    </p>
-                    <p className="inbox-messages-list-sender-text">
-                      {item.message.text}
-                    </p>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
               <div ref={scrollToBottomDivRefInbox}></div>
             </ul>
             <form id="inbox-chat-form" onSubmit={(e) => sendChat(e)}>
@@ -313,7 +320,7 @@ export const CurrentlySelectedClientChat = ({
                 ref={chatTextAreaRef}
                 rows={1}
                 onFocus={(e) =>
-                  (e.target.parentElement.style.borderColor = "#222831")
+                  (e.target!.parentElement!.style.borderColor = "#222831")
                 }
                 maxLength={2500}
                 onChange={(e) => setMessage(e.target.value)}
@@ -321,7 +328,7 @@ export const CurrentlySelectedClientChat = ({
                 placeholder="Type your message here..."
                 spellCheck={false}
                 onBlur={(e) =>
-                  (e.target.parentElement.style.borderColor = "#a6a5a5")
+                  (e.target!.parentElement!.style.borderColor = "#a6a5a5")
                 }
               />
             </form>

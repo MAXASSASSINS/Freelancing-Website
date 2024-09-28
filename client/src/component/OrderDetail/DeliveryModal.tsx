@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { OrderMessageInput } from "./OrderMessageInput";
+import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import { ChatBox } from "./ChatBox";
 
-export const DeliveryModal = ({ closeDeliveryModal, orderDetail }) => {
+type DeliveryModalProps = {
+  closeDeliveryModal: () => void;
+};
+
+export const DeliveryModal = ({ closeDeliveryModal }: DeliveryModalProps) => {
   const [fileLoading, setFileLoading] = useState(false);
 
-  const handleFileLoading = (val) => {
+  const handleFileLoading = (val: boolean) => {
     setFileLoading(val);
     if (!val) {
       closeDeliveryModal();

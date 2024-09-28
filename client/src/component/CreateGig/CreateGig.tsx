@@ -1,7 +1,7 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import { AiFillExclamationCircle, AiOutlineEllipsis } from "react-icons/ai";
+import { AiOutlineEllipsis } from "react-icons/ai";
 import { IoIosClose } from "react-icons/io";
 import { TbGridDots } from "react-icons/tb";
 import { TfiText } from "react-icons/tfi";
@@ -23,11 +23,11 @@ import {
   QUESTION_DETAILS_INITIAL_STATE,
 } from "../../reducers/createGigQuestionReducer";
 import { AppDispatch, RootState } from "../../store";
-import { IGigRequirement, IImage, IVideo } from "../../types/gig.types";
+import { IGigRequirement } from "../../types/gig.types";
 import { IPackageDetails } from "../../types/order.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-import { CheckInput } from "../CheckInput/CheckInput";
+import { CheckInput, CheckInputRef } from "../CheckInput/CheckInput";
 import { FileDropIcon, FileDropIconRef } from "../FileDropIcon/FileDropIcon";
 import { RoundNumberIcon } from "../RoundNumberIcon/RoundNumberIcon";
 import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
@@ -48,6 +48,7 @@ import {
   subCategoriesData,
 } from "./createGigData";
 import { TagOption, tagOptions } from "./tagsData";
+import { IFile } from "../../types/file.types";
 
 export const CreateGig = () => {
   const navigate = useNavigate();
@@ -99,19 +100,19 @@ export const CreateGig = () => {
   const packageDescriptionRefs = useRef<React.RefObject<TextAreaRef>[]>(
     packagesData.map(() => React.createRef<TextAreaRef>())
   );
-  const deliveryTimeRefs = useRef<React.RefObject<any>[]>(
+  const deliveryTimeRefs = useRef<React.RefObject<SelectInput2Ref>[]>(
     packagesData.map(() => React.createRef())
   );
-  const deliveryRevisionsRefs = useRef<React.RefObject<any>[]>(
+  const deliveryRevisionsRefs = useRef<React.RefObject<SelectInput2Ref>[]>(
     packagesData.map(() => React.createRef())
   );
-  const packagePriceRefs = useRef<React.RefObject<any>[]>(
+  const packagePriceRefs = useRef<React.RefObject<HTMLInputElement>[]>(
     packagesData.map(() => React.createRef())
   );
-  const sourceFileRefs = useRef<React.RefObject<any>[]>(
+  const sourceFileRefs = useRef<React.RefObject<CheckInputRef>[]>(
     packagesData.map(() => React.createRef())
   );
-  const commercialUseRefs = useRef<React.RefObject<any>[]>(
+  const commercialUseRefs = useRef<React.RefObject<CheckInputRef>[]>(
     packagesData.map(() => React.createRef())
   );
   const [packagesWarning, setPackagesWarning] = useState<string[]>([]);
@@ -147,9 +148,9 @@ export const CreateGig = () => {
 
   // STEP 5 STATES
   const [sellerShowcaseImages, setSellerShowcaseImages] = useState<
-    (IImage | null)[]
+    (IFile | null)[]
   >([null, null, null]);
-  const [sellerShowcaseVideo, setSellerShowcaseVideo] = useState<IVideo | null>(
+  const [sellerShowcaseVideo, setSellerShowcaseVideo] = useState<IFile | null>(
     null
   );
   const sellerShowcaseImagesRefs = useRef<React.RefObject<FileDropIconRef>[]>(
@@ -232,16 +233,18 @@ export const CreateGig = () => {
         );
         deliveryTimeRefs.current[
           index
-        ]?.current.setChoosedOptionComingFromParent(item.packageDeliveryTime);
+        ]?.current?.setChoosedOptionComingFromParent(item.packageDeliveryTime);
         deliveryRevisionsRefs.current[
           index
-        ].current.setChoosedOptionComingFromParent(item.revisions.toString());
-        packagePriceRefs.current[index].current.value =
-          item.packagePrice.toString();
-        sourceFileRefs.current[index].current.setIsCheckedComingFromParent(
+        ].current?.setChoosedOptionComingFromParent(item.revisions.toString());
+        if (packagePriceRefs.current[index].current) {
+          packagePriceRefs.current[index].current.value =
+            item.packagePrice.toString();
+        }
+        sourceFileRefs.current[index].current?.setIsCheckedComingFromParent(
           item.sourceFile
         );
-        commercialUseRefs.current[index].current.setIsCheckedComingFromParent(
+        commercialUseRefs.current[index].current?.setIsCheckedComingFromParent(
           item.commercialUse
         );
       });
@@ -438,8 +441,6 @@ export const CreateGig = () => {
             return true;
           }
         });
-        // console.log("dsffd1");
-        // if (warning) return true;
 
         packageDescriptionRefs.current.forEach((item, index) => {
           if ((item.current?.currValue.trim().length || 0) < 2) {
@@ -451,11 +452,12 @@ export const CreateGig = () => {
             return true;
           }
         });
-        // console.log("dsffd2");
-        // if (warning) return true;
 
         deliveryTimeRefs.current.forEach((item, index) => {
-          if (item.current.currValue === CHOOSE_A_DELIVERY_TIME) {
+          if (
+            !item.current?.currValue ||
+            item.current?.currValue === CHOOSE_A_DELIVERY_TIME
+          ) {
             warning = true;
             setPackagesWarning((prev) => [
               ...prev,
@@ -464,12 +466,12 @@ export const CreateGig = () => {
             return true;
           }
         });
-        // console.log("dsffd3");
-        // if (warning) return true;
 
         deliveryRevisionsRefs.current.forEach((item, index) => {
-          if (item.current.currValue === "Select no. of revisions") {
-            // setPackagesWarning(true);
+          if (
+            !item.current?.currValue ||
+            item.current?.currValue === "Select no. of revisions"
+          ) {
             setPackagesWarning((prev) => [
               ...prev,
               "Please provide number of revisions for each package.",
@@ -478,20 +480,17 @@ export const CreateGig = () => {
             return true;
           }
         });
-        console.log("dsffd4");
         if (warning) return true;
 
         packagePriceRefs.current.forEach((item, index) => {
-          if (!item.current.value) {
+          if (!item.current?.value) {
             warning = true;
-            console.log("dsffd5");
             setPackagesWarning((prev) => [
               ...prev,
               "Please provide price for each package.",
             ]);
-          } else if (Number(item.current.value) < 5) {
+          } else if (Number(item.current?.value) < 5) {
             warning = true;
-            console.log("dsffd5");
             setPackagesWarning((prev) => [
               ...prev,
               "Package price should be more than 5.",
@@ -499,7 +498,6 @@ export const CreateGig = () => {
             return true;
           } else if (Number(item.current.value) > 10000) {
             warning = true;
-            console.log("dsffd5");
             setPackagesWarning((prev) => [
               ...prev,
               "Package price should be less than 10000.",
@@ -507,7 +505,6 @@ export const CreateGig = () => {
             return true;
           }
         });
-        console.log("dsffd6");
         if (warning) return true;
         setPackagesWarning([]);
         break;
@@ -554,11 +551,11 @@ export const CreateGig = () => {
         const packagesData: IPackageDetails[] = [];
         packageNameRefs.current.forEach((item, index) => {
           const data = {
-            packageTitle: item.current?.currValue || "",
+            packageTitle: item.current?.currValue!,
             packageDescription:
-              packageDescriptionRefs.current[index].current?.currValue || "",
+              packageDescriptionRefs.current[index].current?.currValue!,
             packageDeliveryTime:
-              deliveryTimeRefs.current[index].current?.currValue,
+              deliveryTimeRefs.current[index].current?.currValue!,
             revisions:
               deliveryRevisionsRefs.current[index].current?.currValue ===
               "unlimited"
@@ -566,10 +563,10 @@ export const CreateGig = () => {
                 : Number(
                     deliveryRevisionsRefs.current[index].current?.currValue
                   ),
-            sourceFile: sourceFileRefs.current[index].current?.currValue,
-            commercialUse: commercialUseRefs.current[index].current?.currValue,
+            sourceFile: sourceFileRefs.current[index].current?.currValue!,
+            commercialUse: commercialUseRefs.current[index].current?.currValue!,
             packagePrice: Number(
-              packagePriceRefs.current[index].current?.value
+              packagePriceRefs.current[index].current?.value!
             ),
           };
           packagesData.push(data);
@@ -597,7 +594,7 @@ export const CreateGig = () => {
         console.log(requirements);
         return { data: requirements, step: 4 };
       case 5:
-        const images: IImage[] = [];
+        const images: IFile[] = [];
         sellerShowcaseImages.forEach((item, index) => {
           if (item) {
             images.push(item);
@@ -805,12 +802,12 @@ export const CreateGig = () => {
     }
   };
 
-  const getSellerShowcaseVideo = (val: IVideo) => {
+  const getSellerShowcaseVideo = (val: IFile) => {
     setSellerShowcaseVideoError("");
     setSellerShowcaseVideo(val);
   };
 
-  const getSellerShowcaseImages = (val: IImage, index?: number) => {
+  const getSellerShowcaseImages = (val: IFile, index?: number) => {
     const newSellerShowcaseImages = sellerShowcaseImages.map((item, i) => {
       if (i === index) {
         return val;
@@ -981,22 +978,6 @@ export const CreateGig = () => {
     });
   };
 
-  //
-  // const newTagsList = tagOptions.map((tag) => {
-  //   return tag.toLowerCase();
-  // })
-
-  //
-
-  // const set = new Set(newTagsList);
-  // const newarr = [...set];
-  // const ul = newarr.map((item) => {
-  //   return {
-  //     label: item,
-  //     value: item
-  //   }
-  // })
-  //
   return (
     <div className="create-gig-main">
       <nav>
@@ -1132,11 +1113,6 @@ export const CreateGig = () => {
         className="overview"
         style={{ display: currentStep === 1 ? "" : "none" }}
       >
-        {/* <DataSendingLoading
-          show={showDataSendingLoadingScreen}
-          finishedLoading={!showDataSendingLoadingScreen}
-          loadingText={"Saving Gig"}
-        /> */}
         <div className="overview-wrapper">
           <div className="left-side">
             <div>
@@ -1237,11 +1213,6 @@ export const CreateGig = () => {
         className="pricing"
         style={{ display: currentStep === 2 ? "" : "none" }}
       >
-        {/* <DataSendingLoading
-          show={showDataSendingLoadingScreen}
-          finishedLoading={!showDataSendingLoadingScreen}
-          loadingText={"Saving Gig"}
-        /> */}
         <div className="pricing-wrapper">
           <h2>Scope & Pricing</h2>
           <h3>Packages</h3>
@@ -1270,7 +1241,6 @@ export const CreateGig = () => {
                       placeholder="Enter your package description"
                       defaultText=""
                       style={{ fontSize: "14px", borderRadius: "0" }}
-                      // reference={packageDescriptionRefs.current[index]}
                       ref={packageDescriptionRefs.current[index]}
                     />
                   </div>
@@ -1337,11 +1307,6 @@ export const CreateGig = () => {
         className="description"
         style={{ display: currentStep === 3 ? "" : "none" }}
       >
-        {/* <DataSendingLoading
-          show={showDataSendingLoadingScreen}
-          finishedLoading={!showDataSendingLoadingScreen}
-          loadingText={"Saving Gig"}
-        /> */}
         <div className="description-wrapper">
           <h1>Description</h1>
           <h3>Briefly Describe Your Gig</h3>
@@ -1358,11 +1323,6 @@ export const CreateGig = () => {
         className="requirements"
         style={{ display: currentStep === 4 ? "" : "none" }}
       >
-        {/* <DataSendingLoading
-          show={showDataSendingLoadingScreen}
-          finishedLoading={!showDataSendingLoadingScreen}
-          loadingText={"Saving Gig"}
-        /> */}
         <div className="requirements-wrapper">
           <header>
             Get all the information you need from buyers to get started
@@ -1495,12 +1455,6 @@ export const CreateGig = () => {
         className="gallery"
         style={{ display: currentStep === 5 ? "" : "none" }}
       >
-        {/* <DataSendingLoading
-          show={showDataSendingLoadingScreen}
-          finishedLoading={!showDataSendingLoadingScreen}
-          loadingText={"Saving Gig"}
-        /> */}
-
         <div className="gallery-wrapper">
           <h3>Showcase Your Services In A Gig Gallery</h3>
           <p className="heading-para">

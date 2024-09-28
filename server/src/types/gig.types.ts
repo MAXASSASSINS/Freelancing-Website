@@ -1,28 +1,12 @@
 import { Document, PopulatedDoc, Schema } from 'mongoose';
 import { IUser } from './user.types';
 import { QuestionType } from '../constants/globalConstants';
-
-export interface IImage {
-  publicId: string;
-  url: string;
-  blurhash: string;
-}
-
-export interface IVideo {
-  publicId?: string;
-  url?: string;
-  blurhash?: string;
-  name?: string;
-  type?: string;
-}
+import { IFile } from './file.types';
 
 export interface IReview {
   user: PopulatedDoc<IUser & Document>;
   name: string;
-  avatar: {
-    public_id: string;
-    url: string;
-  };
+  avatar: IFile,
   country: string;
   rating: number;
   comment: string;
@@ -54,8 +38,8 @@ export interface IGig extends Document {
   searchTags: string[];
   pricing: IPricing[];
   description?: string;
-  images: IImage[];
-  video?: IVideo;
+  images: IFile[];
+  video?: IFile;
   ratings: number;
   numOfRatings: number;
   numOfReviews: number;

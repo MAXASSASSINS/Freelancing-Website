@@ -23,11 +23,11 @@ const upload = multer({ storage: storage }).single("file");
 export const addMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
 
-  if(!from || !to) {
+  if (!from || !to) {
     return next(new ErrorHandler("Please provide all the fields", 400));
   }
 
-  if(!message && !files) {
+  if (!message && !files) {
     return next(new ErrorHandler("Please provide a message or a file", 400));
   }
 
@@ -61,11 +61,11 @@ export const addMessage = catchAsyncErrors(async (req, res, next) => {
 export const addOrderMessage = catchAsyncErrors(async (req, res, next) => {
   const { from, to, message, files, orderId } = req.body;
 
-  if(!from || !to || !orderId) {
+  if (!from || !to || !orderId) {
     return next(new ErrorHandler("Please provide all the fields", 400));
   }
 
-  if(!message && !files) {
+  if (!message && !files) {
     return next(new ErrorHandler("Please provide a message or a file", 400));
   }
 
@@ -119,7 +119,7 @@ export const getAllMessagesBetweenTwoUsers = catchAsyncErrors(
   async (req, res, next) => {
     const { from, to } = req.body;
 
-    if(!from || !to) {
+    if (!from || !to) {
       return next(new ErrorHandler("Please provide both from and to", 400));
     }
 
@@ -225,7 +225,7 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
   async (req, res, next) => {
     const { from, to } = req.body;
 
-    if(!from || !to) {
+    if (!from || !to) {
       return next(new ErrorHandler("Please provide both from and to", 400));
     }
 
@@ -249,48 +249,60 @@ export const getLastMessageBetweenTwoUser = catchAsyncErrors(
   }
 );
 
-export const getInitialMessagesForInbox = catchAsyncErrors(async (req, res, next) => {
-  const userId = req.user?.id;
+export const getInitialMessagesForInbox = catchAsyncErrors(
+  async (req, res, next) => {
+    const userId = req.user?.id;
 
-  let list = await Message.find()
+    let list = await Message.find()
       .or([{ sender: userId }, { receiver: userId }])
       .and([{ orderId: null }])
-      .populate("sender receiver", "name avatar lastSeen")
-  
-  let set = new Set<string>();
-  list.forEach((message) => {
-    set.add(message.sender._id.toString());
-    set.add(message.receiver._id.toString());
-  });
-  set.delete(userId);
+      .populate("sender receiver", "name avatar lastSeen");
 
-  const lastMessages: Record<string, IMessage> = {};
-  for (let clientId of set) {
-    for (let message of list) {
-      if(message.sender._id.toString() !== clientId && message.receiver._id.toString() !== clientId) continue;
-      if(!lastMessages[clientId] || message.createdAt > lastMessages[clientId].createdAt) {
-        lastMessages[clientId] = message;
+    let set = new Set<string>();
+    list.forEach((message) => {
+      set.add(message.sender._id.toString());
+      set.add(message.receiver._id.toString());
+    });
+    set.delete(userId);
+
+    const lastMessages: Map<string, IMessage> = new Map();
+    for (let clientId of set) {
+      for (let message of list) {
+        if (
+          message.sender._id.toString() !== clientId &&
+          message.receiver._id.toString() !== clientId
+        )
+          continue;
+        if (
+          !lastMessages.has(clientId) ||
+          message.createdAt > lastMessages.get(clientId)!.createdAt
+        ) {
+          lastMessages.set(clientId, message);
+        }
       }
     }
-  }
-  const inboxClientsDetails: Record<string, IUser> = {};
-  Object.keys(lastMessages).forEach((key) => {
-    const message = lastMessages[key];
-    if(message.sender._id.toString() === key) {
-      inboxClientsDetails[key] = message.sender;
-    } else {
-      inboxClientsDetails[key] = message.receiver;
-    }
-  });
 
-  res.status(200).json({
-    success: true,
-    inboxClients: [...set],
-    lastMessages,
-    inboxClientsDetails,
-    // list,
-  });
-})
+    const inboxClientsDetails: Map<string, IUser> = new Map();
+    for (const clientId of lastMessages.keys()) {
+      const message = lastMessages.get(clientId)!;
+      
+      // Determine whether to use sender or receiver
+      if (message.sender._id.toString() === clientId) {
+        inboxClientsDetails.set(clientId, message.sender);
+      } else {
+        inboxClientsDetails.set(clientId, message.receiver);
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      inboxClients: [...set],
+      lastMessages: [...lastMessages],
+      inboxClientsDetails: [...inboxClientsDetails],
+      // list,
+    });
+  }
+);
 
 export const sendFileUpload = catchAsyncErrors(async (req, res, next) => {
   const file = req.file;

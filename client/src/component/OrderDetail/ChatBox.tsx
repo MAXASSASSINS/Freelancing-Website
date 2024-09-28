@@ -1,41 +1,52 @@
-import React, { useContext } from "react";
-import { OrderMessageInput } from "./OrderMessageInput";
-import { IoClose } from "react-icons/io5";
-import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-import { axiosInstance } from "../../utility/axiosInstance";
+import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SocketContext } from "../../context/socket/socket";
 import { updateOrderDetail } from "../../actions/orderAction";
+import { SocketContext } from "../../context/socket/socket";
+import { AppDispatch, RootState } from "../../store";
+import { IFile } from "../../types/file.types";
+import { IMessage } from "../../types/message.types";
+import { IUser } from "../../types/user.types";
+import { axiosInstance } from "../../utility/axiosInstance";
+import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
+import { OrderMessageInput } from "./OrderMessageInput";
+
+type ChatBoxProps = {
+  setFileLoading: (loading: boolean) => void;
+  isDeliveryMessage?: boolean;
+  isRevisionMessage?: boolean;
+};
+
+type GroupedMessage = IMessage & {
+  forDelivery?: boolean;
+  forRevision?: boolean;
+};
 
 export const ChatBox = ({
   setFileLoading,
   isDeliveryMessage = false,
   isRevisionMessage = false,
-}) => {
-  const dispatch = useDispatch();
-
-  const { user, isAuthenticated, userLoading, userError } = useSelector(
-    (state) => state.user
-  );
-
-  const { orderDetail } = useSelector((state) => state.orderDetail);
-
+}: ChatBoxProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const socket = useContext(SocketContext);
 
-  const sendChat = async (message, selectedFiles) => {
+  const { user } = useSelector((state: RootState) => state.user);
+
+  const { orderDetail } = useSelector((state: RootState) => state.orderDetail);
+  if (!orderDetail) return null;
+
+  const sendChat = async (message: string, selectedFiles: File[]) => {
     setFileLoading(true);
-    let files = [];
+    let files: IFile[] = [];
     try {
       // upload files to cloudinary
       files = await sendFileClientCloudinary(selectedFiles);
-      // 
 
       let res;
       if (isDeliveryMessage) {
         res = await addDeliveryToOrder(message, files);
         dispatch(updateOrderDetail(res.order));
         const delivery = res.order.deliveries[res.order.deliveries.length - 1];
-        const deliveryMessage = {
+        const deliveryMessage: GroupedMessage = {
           _id: delivery._id,
           sender: orderDetail.seller,
           receiver: orderDetail.buyer,
@@ -53,7 +64,7 @@ export const ChatBox = ({
         res = await addRevisionToOrder(message, files);
         dispatch(updateOrderDetail(res.order));
         const revision = res.order.revisions[res.order.revisions.length - 1];
-        const revisionMessage = {
+        const revisionMessage: GroupedMessage = {
           _id: revision._id,
           sender: orderDetail.buyer,
           receiver: orderDetail.seller,
@@ -81,9 +92,7 @@ export const ChatBox = ({
   };
 
   // client side uploading to cloudinary
-  const sendFileClientCloudinary = async (files) => {
-    
-
+  const sendFileClientCloudinary = async (files: File[]) => {
     try {
       const res = await uploadToCloudinaryV2(files, 5 * 1024 * 1024 * 1024);
       return res;
@@ -94,13 +103,15 @@ export const ChatBox = ({
   };
 
   // add message to database
-  const addMessageToDatabase = async (message, files = []) => {
+  const addMessageToDatabase = async (message: string, files: IFile[] = []) => {
     try {
+      orderDetail.seller = orderDetail.seller as IUser;
+      orderDetail.buyer = orderDetail.buyer as IUser;
       const messageData = {
         message,
-        from: user._id,
+        from: user!._id,
         to:
-          user._id === orderDetail.buyer._id
+          user!._id === orderDetail.buyer._id
             ? orderDetail.seller._id
             : orderDetail.buyer._id,
         files,
@@ -118,7 +129,7 @@ export const ChatBox = ({
   };
 
   // add delivery to order
-  const addDeliveryToOrder = async (message, files = []) => {
+  const addDeliveryToOrder = async (message: string, files: IFile[] = []) => {
     try {
       const deliveryData = {
         message,
@@ -128,7 +139,7 @@ export const ChatBox = ({
         `/order/add/delivery/${orderDetail._id}`,
         deliveryData
       );
-      // 
+      //
       return data;
     } catch (error) {
       throw error;
@@ -136,7 +147,7 @@ export const ChatBox = ({
   };
 
   // add revision to order
-  const addRevisionToOrder = async (message, files = []) => {
+  const addRevisionToOrder = async (message: string, files: IFile[] = []) => {
     try {
       const deliveryData = {
         message,
@@ -146,23 +157,28 @@ export const ChatBox = ({
         `/order/add/revision/${orderDetail._id}`,
         deliveryData
       );
-      // 
+      //
       return data;
     } catch (error) {
       throw error;
     }
   };
 
-  const handleSendMessageSocket = async (message, files) => {
+  const handleSendMessageSocket = async (
+    message: GroupedMessage,
+    files: IFile[]
+  ) => {
+    orderDetail.buyer = orderDetail.buyer as IUser;
+    orderDetail.seller = orderDetail.seller as IUser;
     const rec =
-      user._id === orderDetail.buyer._id
+      user!._id === orderDetail.buyer._id
         ? orderDetail.seller
         : orderDetail.buyer;
-    
+
     const sender = {
-      avatar: user.avatar,
-      name: user.name,
-      _id: user._id,
+      avatar: user!.avatar,
+      name: user!.name,
+      _id: user!._id,
     };
     const receiver = {
       avatar: rec.avatar,
@@ -188,7 +204,7 @@ export const ChatBox = ({
         placeholder={
           isRevisionMessage
             ? "Specifying what you'de like to change will help the seller perfect your project."
-            : null
+            : undefined
         }
       />
     </div>

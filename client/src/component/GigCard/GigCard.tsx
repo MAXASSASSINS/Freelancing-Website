@@ -69,7 +69,7 @@ export const GigCard = ({ gig, lazyLoad = false }: GigCardProps) => {
     <div className="gig-card">
       <div className="container-wrapper">
         <Link to={`/gig/details/${gig._id}`}>
-          <MyCarousel lazyLoad={lazyLoad} gig={gig} />
+          <MyCarousel useWebp={true}  lazyLoad={lazyLoad} gig={gig} />
         </Link>
         <div className="user-details-container">
           <Avatar

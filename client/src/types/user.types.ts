@@ -1,13 +1,9 @@
+import { IFile } from "./file.types";
 import { IGig } from "./gig.types";
 
 export interface IPhone {
   code?: string;
   number?: string;
-}
-
-export interface IAvatar {
-  public_id: string;
-  url: string;
 }
 
 export interface ILanguage {
@@ -18,7 +14,7 @@ export interface ILanguage {
 export interface IReview {
   user: IUser | string;
   name: string;
-  avatar: IAvatar;
+  avatar: IFile;
   country: string;
   rating: number;
   comment: string;
@@ -63,7 +59,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  avatar: IAvatar;
+  avatar: IFile;
   phone?: IPhone;
   ratings: number;
   numOfRatings: number;
