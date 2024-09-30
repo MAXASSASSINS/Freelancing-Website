@@ -48,7 +48,7 @@ import {
   useGlobalLoadingText,
 } from "./context/globalLoadingContext";
 
-export const windowContext = createContext({ windowWidth: 0, windowHeight: 0 });
+export const windowContext = createContext({ windowWidth: 0 });
 
 const App = () => {
   const navigate = useNavigate();
@@ -62,7 +62,6 @@ const App = () => {
   const globalLoadingText = useGlobalLoadingText();
 
   const [windowWidth, setWindowWidth] = useState(0);
-  const [windowHeight, setWindowHeight] = useState(0);
 
   const dimBackground = useSelector((state: RootState) => state.dimBackground);
   let height = document.documentElement.offsetHeight;
@@ -83,16 +82,14 @@ const App = () => {
   useEffect(() => {
     let resizeWindow = () => {
       setWindowWidth(window.innerWidth);
-      setWindowHeight(window.innerHeight);
     };
-    resizeWindow();
     window.addEventListener("resize", resizeWindow);
     return () => window.removeEventListener("resize", resizeWindow);
   }, []);
 
   useEffect(() => {
     const handleNewUser = () => {
-      console.log("handle new user is called");
+      // console.log("handle new user is called");
       if (isAuthenticated && user?._id) {
         socket.emit("new_user", user._id.toString());
       }
@@ -122,26 +119,13 @@ const App = () => {
     };
   }, [user, isAuthenticated]);
 
-  // List of paths where footer will be hidden
-  const pathsWithoutFooter = [
-    "/get/all/messages/for/current/user",
-    "/gig/create/new/gig",
-    "/login",
-    "/signUp",
-    "/orders/",
-    "/update/profile",
-    "/reset/password/",
-  ]; // Add any other paths here
 
-  // Checking if the current location matches any path in pathsWithoutFooter
-  const hideFooter = pathsWithoutFooter.some((path) =>
-    location.pathname.startsWith(path)
-  );
+  
 
   return (
     <>
       <ScrollToTop>
-        <windowContext.Provider value={{ windowWidth, windowHeight }}>
+        <windowContext.Provider value={{ windowWidth }}>
           <CloudinaryContext cloudName="dyod45bn8" uploadPreset="syxrot1t">
             <SocketContext.Provider value={socket}>
               <DataSendingLoading
@@ -256,14 +240,7 @@ const App = () => {
                   }
                 />
               </Routes>
-              <div
-                style={{ height: height - (width > 600 ? 81 : 143) }}
-                className={
-                  "search-bar-dim-background " +
-                  (dimBackground ? "visible" : null)
-                }
-              ></div>
-              {!hideFooter && <Footer />}
+              <Footer />
             </SocketContext.Provider>
           </CloudinaryContext>
         </windowContext.Provider>

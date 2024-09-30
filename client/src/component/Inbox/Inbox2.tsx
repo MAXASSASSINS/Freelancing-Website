@@ -108,8 +108,6 @@ export const Inbox = () => {
 
   const [hideMessageListOnSmallDevices, setHideMessageListOnSmallDevices] =
     useState(true);
-  const [showMessageListOnDevices, setShowMessageListOnDevices] =
-    useState(true);
 
   const [currentSelectedClient, setCurrentSelectedClient] =
     useState<IUser | null>(null);
@@ -547,11 +545,6 @@ export const Inbox = () => {
     }
     setSelectedFiles(arr);
   };
-
-  useEffect(() => {
-    if (windowWidth < 600) setShowMessageListOnDevices(false);
-    else setShowMessageListOnDevices(true);
-  }, [windowWidth]);
 
   const handleClientSelectionClick = async (detail: IUser) => {
     if (currentSelectedClient?._id.toString() !== detail._id.toString()) {
