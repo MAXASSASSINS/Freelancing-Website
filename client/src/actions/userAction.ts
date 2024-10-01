@@ -24,8 +24,7 @@ import { IUser } from "../types/user.types";
 import { AppDispatch } from "../store";
 
 export const getUser =
-  (id: string)  =>
-  async (dispatch: Dispatch<AnyAction>) => {
+  (id: string) => async (dispatch: Dispatch<AnyAction>) => {
     try {
       dispatch({ type: USER_REQUEST });
       const { data } = await axiosInstance.get(`/user/${id}`);
@@ -49,8 +48,7 @@ export const getUser =
   };
 
 export const getGigUser =
-  (id: string)  =>
-  async (dispatch: Dispatch<AnyAction>) => {
+  (id: string) => async (dispatch: Dispatch<AnyAction>) => {
     try {
       dispatch({ type: GIG_USER_REQUEST });
       const { data } = await axiosInstance.get(`/user/${id}`);
@@ -74,7 +72,7 @@ export const getGigUser =
   };
 
 export const loggedUser =
-  (email: string, password: string)  =>
+  (email: string, password: string) =>
   async (dispatch: Dispatch<AnyAction>) => {
     try {
       dispatch({ type: USER_REQUEST });
@@ -99,7 +97,7 @@ export const loggedUser =
         type: USER_FAIL,
         payload: error.response.data,
       });
-      console.log(window.location.pathname);
+
       toast.error(
         error.response?.data?.message
           ? error.response.data.message
@@ -145,52 +143,56 @@ export const signUpUser = (
   };
 };
 
-export const loadUser =
-  ()  => async (dispatch: Dispatch<AnyAction>) => {
-    try {
+export const loadUser = () => async (dispatch: Dispatch<AnyAction>) => {
+  try {
+    let user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (document.cookie.includes("token") && user && user._id) {
+    } else {
       dispatch({ type: LOAD_USER_REQUEST });
       const { data } = await axiosInstance.get("/me");
-
-      dispatch({
-        type: LOAD_USER_SUCCESS,
-        payload: data.user,
-      });
-    } catch (error: any) {
-      dispatch({
-        type: LOAD_USER_FAIL,
-        payload: error.response.data,
-      });
+      user = data.user;
     }
-  };
+    localStorage.setItem("user", JSON.stringify(user));
+    dispatch({
+      type: LOAD_USER_SUCCESS,
+      payload: user,
+    });
+  } catch (error: any) {
+    dispatch({
+      type: LOAD_USER_FAIL,
+      payload: error,
+    });
+  }
+};
 
-export const logoutUser =
-  ()  => async (dispatch: Dispatch<AnyAction>) => {
-    try {
-      dispatch({ type: LOGOUT_USER_REQUEST });
+export const logoutUser = () => async (dispatch: Dispatch<AnyAction>) => {
+  try {
+    dispatch({ type: LOGOUT_USER_REQUEST });
 
-      const { data } = await axiosInstance.get("/logout");
+    const { data } = await axiosInstance.get("/logout");
 
-      dispatch({
-        type: LOGOUT_USER_SUCCESS,
-        payload: data.success,
-      });
-      localStorage.setItem("redirectUrl", "/");
-    } catch (error: any) {
-      dispatch({
-        type: LOGOUT_USER_FAIL,
-        payload: error.response.data,
-      });
-      toast.error(
-        error.response.data.message
-          ? error.response.data.message
-          : "Oops something went wrong"
-      );
-    }
-  };
+    dispatch({
+      type: LOGOUT_USER_SUCCESS,
+      payload: data.success,
+    });
+    localStorage.removeItem("user");
+    localStorage.setItem("redirectUrl", "/");
+  } catch (error: any) {
+    dispatch({
+      type: LOGOUT_USER_FAIL,
+      payload: error.response.data,
+    });
+    toast.error(
+      error.response.data.message
+        ? error.response.data.message
+        : "Oops something went wrong"
+    );
+  }
+};
 
 export const updateUser =
-  (user: IUser)  =>
-  async (dispatch: Dispatch<AnyAction>) => {
+  (user: IUser) => async (dispatch: Dispatch<AnyAction>) => {
+    localStorage.setItem("user", JSON.stringify(user));
     dispatch({
       type: UPDATE_USER_SUCCESS,
       payload: user,
