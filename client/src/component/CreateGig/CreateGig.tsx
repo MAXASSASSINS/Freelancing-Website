@@ -609,7 +609,7 @@ export const CreateGig = () => {
 
         const media = {
           images: res1,
-          video: res2[0] ? res2[0] : {},
+          video: res2[0] ? res2[0] : null,
         };
 
         setSellerShowcaseImages(res1);
