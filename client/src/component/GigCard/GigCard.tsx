@@ -18,9 +18,12 @@ import { debounce } from "@mui/material";
 type GigCardProps = {
   gig: IGig;
   lazyLoad?: boolean;
+  online?: boolean;
 };
 
-export const GigCard = ({ gig, lazyLoad = false }: GigCardProps) => {
+export const GigCard = ({ gig, lazyLoad = false, online }: GigCardProps) => {
+  // console.log(online);
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector(
@@ -77,6 +80,7 @@ export const GigCard = ({ gig, lazyLoad = false }: GigCardProps) => {
             alt="user avatar"
             width="2rem"
             userName={gig.user.name}
+            onlineStatus={online}
           />
           <Link to={`/user/${gig.user._id}`}>
             <div className="gig-user-name">{gig.user.name}</div>
