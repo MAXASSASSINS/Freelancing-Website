@@ -7,7 +7,7 @@ import { useUpdateGlobalLoading } from "../context/globalLoadingContext";
 import { razorpaySupportedCountries } from "../data/razorpaySupportedCountries";
 import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
-import SelectInput2 from "./SelectInput/SelectInput2";
+import SelectInput2 from "../component/SelectInput/SelectInput2";
 
 type AccountDetails = {
   panNumber: string;

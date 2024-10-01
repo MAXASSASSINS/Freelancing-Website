@@ -1,8 +1,8 @@
-import { FormEventHandler, useState } from "react";
+import { useState } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { signUpUser } from "../actions/userAction";
 import { AppDispatch } from "../store";
 
