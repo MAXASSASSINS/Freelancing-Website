@@ -1,0 +1,120 @@
+import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { getAllGig } from "../actions/gigAction";
+import { GigCard } from "../component/GigCard/GigCard";
+import { SearchTagsBar } from "../component/SearchTagsBar";
+import { SocketContext } from "../context/socket/socket";
+import useLazyLoading from "../hooks/useLazyLoading";
+import { AppDispatch, RootState } from "../store";
+import { IUser } from "../types/user.types";
+
+export const Home = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  let location = useLocation();
+  let { gigLoading, gigs } = useSelector((state: RootState) => state.gigs);
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.user
+  );
+  const socket = useContext(SocketContext);
+  const [gigUserOnline, setGigUserOnline] = useState<Map<string, boolean>>(
+    new Map()
+  );
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setGigUserOnline((prev) => prev.set(user._id, true));
+    }
+  }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    let path = location.pathname;
+    let params = new URLSearchParams(location.search);
+    let category = "";
+    let keywords = "";
+    if (params) {
+      category = params.get("category") || "";
+      keywords = params.get("keywords") || "";
+    }
+    if (category) category = encodeURIComponent(category);
+    if (keywords) keywords = encodeURIComponent(keywords);
+
+    if (path === "/") {
+      dispatch(getAllGig());
+    } else if (path === "/search" && category) {
+      dispatch(getAllGig(undefined, category));
+    } else if (path === "/search" && keywords) {
+      dispatch(getAllGig(keywords));
+    } else {
+      dispatch(getAllGig());
+    }
+  }, [location.pathname, location.search]);
+
+  useEffect(() => {
+    dispatch(getAllGig());
+  }, [dispatch]);
+
+  // Tracking the online status of the gigs listed in the home page
+  useEffect(() => {
+    socket.on("online_from_server", (userId) => {
+      console.log("online_from_server", userId);
+      const map = new Map(gigUserOnline);
+      map.set(userId, true);
+      setGigUserOnline(map);
+    });
+
+    socket.on("offline_from_server", (userId) => {
+      console.log("offline_from_server", userId);
+      const map = new Map(gigUserOnline);
+      map.set(userId, false);
+      setGigUserOnline(map);
+    });
+
+    return () => {
+      socket.off("online_from_server");
+      socket.off("offline_from_server");
+    };
+  }, [socket, gigs, dispatch, gigUserOnline]);
+
+  // LAZY LOADING THE IMAGES AND VIDEOS
+  useLazyLoading({ dependencies: [gigs] });
+
+  return (
+    <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
+      <SearchTagsBar />
+      {gigs?.length && gigs.length > 0 ? (
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 min-[900px]:grid-cols-4  min-[1100px]:mx-5 min-[1100px]:py-8 min-[1240px]:grid-cols-5 pt-8 px-6 pb-0 gap-5">
+          {gigs &&
+            gigs.map((gig) => {
+              gig.user = gig.user as IUser;
+              return (
+                <GigCard
+                  online={gigUserOnline.get(gig.user._id) || false}
+                  lazyLoad={true}
+                  gig={gig}
+                  key={gig._id}
+                />
+              );
+            })}
+        </div>
+      ) : (
+        !gigLoading && (
+          <div className="h-[calc(100vh-146.5px)] sm:h-[calc(100vh-81px)] mx-6 text-dark_grey flex flex-col items-center justify-center">
+            <img
+              className="max-w-sm sm:max-w-lg object-contain"
+              src="/images/confused-man-with-question-mark-concept-flat-illustration-free-vector.jpg"
+              alt="confused man with question mark"
+            ></img>
+            <h1 className="text-center text-xl sm:text-3xl capitalize font-semibold">
+              No Services Found For Your Search
+            </h1>
+            <p className="max-w-[40ch] text-center mt-2 leading-5 sm:leading-normal sm:text-lg text-light_heading">
+              Try a new search or select from the categories above for better
+              results.
+            </p>
+          </div>
+        )
+      )}
+    </div>
+  );
+};

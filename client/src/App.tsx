@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { createContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 // @ts-ignore
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,7 +11,7 @@ import { CreateGig } from "./component/CreateGig/CreateGig";
 import { Footer } from "./component/Footer/Footer";
 import { GigDetail } from "./component/GigDetail.js/GigDetail";
 import { Header } from "./component/Header/Header";
-import { Home } from "./component/Home/Home";
+import { Home } from "./Pages/Home";
 import { Inbox } from "./component/Inbox/Inbox2";
 import { Login } from "./component/Login/Login";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
@@ -21,6 +21,7 @@ import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequire
 import { Test } from "./component/Test/Test";
 import { UserDetail } from "./component/UserDetail/UserDetail";
 import { AppDispatch, RootState } from "./store";
+import "../src/component/common.css";
 
 import { SocketContext, socket } from "./context/socket/socket";
 // @ts-ignore
@@ -52,7 +53,6 @@ export const windowContext = createContext({ windowWidth: 0 });
 
 const App = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
   const { user, isAuthenticated, userLoading } = useSelector(
     (state: RootState) => state.user
@@ -63,20 +63,11 @@ const App = () => {
 
   const [windowWidth, setWindowWidth] = useState(0);
 
-  const dimBackground = useSelector((state: RootState) => state.dimBackground);
-  let height = document.documentElement.offsetHeight;
-  let width = document.documentElement.offsetWidth;
-  const pageheight = window.innerHeight;
-  height = Math.max(pageheight, height);
-
   useEffect(() => {
     const fetchUser = async () => {
       await dispatch(loadUser());
-      navigate("/");
     };
-
     fetchUser();
-    localStorage.setItem("redirectUrl", "/");
   }, []);
 
   useEffect(() => {
@@ -89,7 +80,6 @@ const App = () => {
 
   useEffect(() => {
     const handleNewUser = () => {
-      // console.log("handle new user is called");
       if (isAuthenticated && user?._id) {
         socket.emit("new_user", user._id.toString());
       }
@@ -118,9 +108,6 @@ const App = () => {
       clearInterval(interval);
     };
   }, [user, isAuthenticated]);
-
-
-  
 
   return (
     <>

@@ -28,10 +28,10 @@ export const FavouriteGigs = () => {
 
   return (
     <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
-      <h1 className="all-gigs-container text-2xl font-semibold text-dark_grey underline pt-4 pb-0">
+      <h1 className="px-6 min-[1100px]:mx-5 text-2xl font-semibold text-dark_grey underline pt-4 pb-0">
         Favourite Gigs
       </h1>
-      <div className="all-gigs-container">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 min-[900px]:grid-cols-4  min-[1100px]:mx-5 min-[1100px]:py-8 min-[1240px]:grid-cols-5 pt-8 px-6 pb-0 gap-5">
         {gigs &&
           !gigLoading &&
           gigs.length > 0 &&
