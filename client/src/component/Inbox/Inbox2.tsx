@@ -51,6 +51,7 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { RootState } from "../../store";
 import { IUser } from "../../types/user.types";
 import { IFile } from "../../types/file.types";
+import useLazyLoading from "../../hooks/useLazyLoading";
 
 type SelectedFile = {
   selectedFile: File;
@@ -153,42 +154,7 @@ export const Inbox = () => {
   };
 
   // LAZY LOADING THE IMAGES AND VIDEOS
-  useEffect(() => {
-    const images = document.querySelectorAll("img[data-src]");
-    const videoImages = document.querySelectorAll("video[data-poster]");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          if (entry.target.attributes.getNamedItem("poster")) {
-            entry.target.attributes.getNamedItem("poster")!.value =
-              entry.target.attributes.getNamedItem("data-poster")!.value;
-          } else {
-            entry.target.attributes.getNamedItem("src")!.value =
-              entry.target.attributes.getNamedItem("data-src")!.value;
-          }
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        root: document.getElementById("inbox-message-ul-id"),
-        rootMargin: "300px",
-      }
-    );
-
-    images.forEach((image) => {
-      observer.observe(image);
-    });
-
-    videoImages.forEach((image) => {
-      observer.observe(image);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [fileLoading, inboxMessages]);
+  useLazyLoading({ dependencies: [fileLoading, inboxMessages] });
 
   const getAllMessagesBetweenTwoUser = async (clientId: string) => {
     const postData = {

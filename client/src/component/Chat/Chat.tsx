@@ -38,6 +38,7 @@ import { LazyVideo } from "../LazyVideo.js/LazyVideo";
 import { IMessage } from "../../types/message.types";
 import { IFile } from "../../types/file.types";
 import { IUser } from "../../types/user.types";
+import useLazyLoading from "../../hooks/useLazyLoading";
 
 type ChatProps = {
   gigDetail: any;
@@ -119,38 +120,7 @@ export const Chat = ({ gigDetail, showChatBox, setShowChatBox }: ChatProps) => {
   }, [allMessages?.length]);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
-  useEffect(() => {
-    const images = document.querySelectorAll("img[data-src]");
-    const videoImages = document.querySelectorAll("video[data-poster]");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          if (entry.target.attributes.getNamedItem("poster")) {
-            entry.target.attributes.getNamedItem("poster")!.value =
-              entry.target.attributes.getNamedItem("data-poster")!.value;
-          } else {
-            entry.target.attributes.getNamedItem("src")!.value =
-              entry.target.attributes.getNamedItem("data-src")!.value;
-          }
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        root: document.getElementById("inbox-message-ul-id"),
-        rootMargin: "300px",
-      }
-    );
-
-    images.forEach((image) => {
-      observer.observe(image);
-    });
-
-    videoImages.forEach((image) => {
-      observer.observe(image);
-    });
-  }, [fileLoading, allMessages]);
+  useLazyLoading({ dependencies: [fileLoading, allMessages] });
 
   // CHECKING FOR ONLINE STATUS OF GIG SELLER
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getFavoriteGigs } from "../actions/gigAction";
 import { AppDispatch, RootState } from "../store";
 import { GigCard } from "./GigCard/GigCard";
+import useLazyLoading from "../hooks/useLazyLoading";
 
 export const FavouriteGigs = () => {
   const navigate = useNavigate();
@@ -23,42 +24,7 @@ export const FavouriteGigs = () => {
   }, []);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
-  useEffect(() => {
-    const images = document.querySelectorAll("img[data-src]");
-    const videoImages = document.querySelectorAll("video[data-poster]");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const posterAttr = entry.target.attributes.getNamedItem("poster");
-          const dataPosterAttr =
-            entry.target.attributes.getNamedItem("data-poster");
-          const srcAttr = entry.target.attributes.getNamedItem("src");
-          const dataSrcAttr = entry.target.attributes.getNamedItem("data-src");
-
-          if (posterAttr && dataPosterAttr) {
-            posterAttr.value = dataPosterAttr.value;
-          } else if (srcAttr && dataSrcAttr) {
-            srcAttr.value = dataSrcAttr.value;
-          }
-          observer.unobserve(entry.target);
-        });
-      },
-      {
-        rootMargin: "300px",
-      }
-    );
-
-    images.forEach((image) => {
-      observer.observe(image);
-    });
-
-    videoImages.forEach((image) => {
-      observer.observe(image);
-    });
-  }, [gigs]);
+  useLazyLoading({ dependencies: [gigs] });
 
   return (
     <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
