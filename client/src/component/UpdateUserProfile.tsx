@@ -377,6 +377,7 @@ export const UpdateUserProfile = () => {
                 <img
                   className="object-cover w-full h-full rounded-full"
                   src="/images/avatar.avif"
+                  alt=""
                 />
               )}
               {imageLoading && (
@@ -621,7 +622,7 @@ export const UpdateUserProfile = () => {
               </p>
             </div>
 
-            {formData.certificates.length == 0 && !openCertificationAdder && (
+            {formData.certificates.length === 0 && !openCertificationAdder && (
               <p className="text-light_heading">Add your certification</p>
             )}
 
@@ -705,7 +706,7 @@ export const UpdateUserProfile = () => {
               </p>
             </div>
 
-            {formData.skills.length == 0 && !openSkillsAdder && (
+            {formData.skills.length === 0 && !openSkillsAdder && (
               <p className="text-light_heading">Add your skill</p>
             )}
 
