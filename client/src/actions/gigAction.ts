@@ -69,7 +69,7 @@ export const getUserGigs = (id: string) => async (dispatch: Dispatch<AnyAction>)
 };
 
 export const getGigDetail = (id: string) => async (dispatch: Dispatch<AnyAction>) => {
-  //
+  if(id === "null") return;
   try {
     dispatch({ type: GIG_DETAIL_REQUEST });
 
