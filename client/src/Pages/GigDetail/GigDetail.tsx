@@ -1,7 +1,7 @@
 import CreateIcon from "@mui/icons-material/Create";
 import { Editor, EditorState, convertFromRaw } from "draft-js";
 import "moment-timezone";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HiStar } from "react-icons/hi";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import { MyCarousel } from "../../component/Carousel/MyCarousel";
 import { Chat } from "../../component/Chat/Chat";
 import PackageSelector from "../../component/GigDetail.js/PackageSelector";
 import RatingSelector from "../../component/GigDetail.js/RatingSelector";
-import ReviewsList from "../../component/GigDetail.js/ReviewsList";
+import ReviewsList, { ReviewsListRef } from "../../component/ReviewsList/ReviewsList";
 import { RatingStars } from "../../component/RatingStars/RatingStars";
 import { AppDispatch, RootState } from "../../store";
 import { IReview } from "../../types/gig.types";
@@ -37,8 +37,8 @@ export const GigDetail = () => {
     },
   };
 
+  const reviewsListRef = useRef<ReviewsListRef>(null);
   const [gigReviews, setGigReviews] = useState<IReview[]>([]);
-  const [reviewCount, setReviewCount] = useState<number>(5);
   const [pricePackageInfo, setPricePackageInfo] =
     useState<IPackageDetails | null>(null);
   const [currentlySelectedPackageNumber, setCurrentlySelectedPackageNumber] =
@@ -68,10 +68,6 @@ export const GigDetail = () => {
     setEditorState(editorState);
   }, [gigDetail]);
 
-  const increaseReviewCount = () => {
-    setReviewCount((prev) => prev + 5);
-  };
-
   const handleClickOnRating = (rating: number) => () => {
     if (selectedRating === rating) {
       setGigReviews(gigDetail?.reviews || []);
@@ -82,7 +78,7 @@ export const GigDetail = () => {
       (review) => review.rating === rating
     );
     setGigReviews(temp || []);
-    setReviewCount(5);
+    reviewsListRef.current?.updateReviewCount(5);
     setSelectedRating(rating);
   };
 
@@ -298,10 +294,8 @@ export const GigDetail = () => {
                 />
                 {gigReviews && gigReviews.length > 0 && (
                   <ReviewsList
-                    gigReviews={gigReviews}
-                    reviewCount={reviewCount}
-                    setReviewCount={setReviewCount}
-                    increaseReviewCount={increaseReviewCount}
+                    reviews={gigReviews}
+                    ref={reviewsListRef}
                   />
                 )}
               </div>
