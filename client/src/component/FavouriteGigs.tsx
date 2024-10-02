@@ -18,8 +18,6 @@ export const FavouriteGigs = () => {
     // fetch favourite gigs
     if (isAuthenticated) {
       dispatch(getFavoriteGigs());
-    } else {
-      navigate("/login", { replace: true });
     }
   }, []);
 
