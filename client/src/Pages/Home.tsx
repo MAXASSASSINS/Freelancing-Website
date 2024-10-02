@@ -83,7 +83,7 @@ export const Home = () => {
     <div className="min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)] mb-8">
       <SearchTagsBar />
       {gigs?.length && gigs.length > 0 ? (
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 min-[900px]:grid-cols-4  min-[1100px]:mx-5 min-[1100px]:py-8 min-[1240px]:grid-cols-5 pt-8 px-6 pb-0 gap-5">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 900:grid-cols-4  1100:mx-5 1100:py-8 1240:grid-cols-5 pt-8 px-6 pb-0 gap-5">
           {gigs &&
             gigs.map((gig) => {
               gig.user = gig.user as IUser;
