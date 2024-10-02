@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOrderDetail } from "../../actions/orderAction";
-import { AppDispatch, RootState } from "../../store";
-import { axiosInstance } from "../../utility/axiosInstance";
-import { OrderDetailSideModal } from "../OrderDetail/OrderDetailSideModal";
-import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+import { getOrderDetail } from "../actions/orderAction";
+import { AppDispatch, RootState } from "../store";
+import { axiosInstance } from "../utility/axiosInstance";
+import { OrderDetailSideModal } from "../component/OrderDetail/OrderDetailSideModal";
+import { TextArea, TextAreaRef } from "../component/TextArea/TextArea";
 // @ts-ignore
 import { toast } from "react-toastify";
 
