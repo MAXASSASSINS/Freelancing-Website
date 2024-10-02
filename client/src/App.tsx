@@ -19,7 +19,7 @@ import { PlaceOrder } from "./component/PlaceOrder/PlaceOrder";
 import { Sidebar } from "./component/Sidebar/Sidebar";
 import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequirements";
 import { Test } from "./component/Test/Test";
-import { UserDetail } from "./component/UserDetail/UserDetail";
+import { UserDetail } from "./Pages/UserDetail/UserDetail";
 import { AppDispatch, RootState } from "./store";
 import "../src/component/common.css";
 
@@ -31,7 +31,7 @@ import "./utility/color";
 
 import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./Pages/BalanceDetail";
-import { BuyerFeedback } from "./component/Feedback/BuyerFeedback";
+import { BuyerFeedback } from "./Pages/BuyerFeedback";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
 import { Orders } from "./component/Orders/Orders";
 import { SignUp } from "./Pages/SignUp";
