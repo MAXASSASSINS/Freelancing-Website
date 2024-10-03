@@ -64,7 +64,7 @@ export const TextArea = forwardRef(
           onChange={handleChange}
           style={style}
           value={text}
-          className="textarea"
+          className="textarea leading-5"
         ></textarea>
         <div className="textarea-footer">
           <div className="warning">{warning}</div>
