@@ -26,7 +26,7 @@ export const MultipleOptionSelect = forwardRef(({ options, multiple }: MultipleO
 
   useImperativeHandle(ref, () => ({
     currValue: selectedOptions,
-  }));
+  }), [selectedOptions]);
 
   const handleChange = (index: number) => {
     const currentRef = optionsRefs.current[index].current;
