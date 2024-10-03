@@ -3,16 +3,18 @@ import { IFile } from "./file.types";
 import { IGig } from "./gig.types";
 import { IUser } from "./user.types";
 
+export type Option = {
+  title: string;
+  selected: boolean;
+};
+
 export interface IOrderRequirement {
   questionTitle: string;
   questionType: QuestionType;
   answerRequired: boolean;
   multipleOptionSelect: boolean;
   answerText?: string;
-  options: {
-    title: string;
-    selected: boolean;
-  }[];
+  options: Option[];
   files: IFile[];
 }
 
