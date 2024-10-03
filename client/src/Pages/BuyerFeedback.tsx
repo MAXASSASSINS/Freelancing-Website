@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getOrderDetail } from "../actions/orderAction";
 import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
-import { OrderDetailSideModal } from "../component/OrderDetail/OrderDetailSideModal";
+import OrderedGigCard from "../component/OrderedGigCard";
 import { TextArea, TextAreaRef } from "../component/TextArea/TextArea";
 // @ts-ignore
 import { toast } from "react-toastify";
@@ -142,7 +142,7 @@ export const BuyerFeedback = () => {
           </div>
         </div>
         <div>
-          <OrderDetailSideModal orderDetail={orderDetail} />
+          <OrderedGigCard orderDetail={orderDetail} />
         </div>
       </div>
     </div>

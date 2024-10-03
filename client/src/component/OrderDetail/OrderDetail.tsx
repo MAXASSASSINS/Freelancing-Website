@@ -8,7 +8,7 @@ import { Activities } from "./Activities";
 import { Delivery } from "./Delivery";
 import { DeliveryTimer } from "./DeliveryTimer";
 import { Details } from "./Details";
-import { OrderDetailSideModal } from "./OrderDetailSideModal";
+import OrderedGigCard from "../OrderedGigCard";
 import { Requirements } from "./Requirements";
 import { AppDispatch, RootState } from "../../store";
 import { IUser } from "../../types/user.types";
@@ -32,7 +32,7 @@ export const OrderDetail = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
-    } else if(params.id){
+    } else if (params.id) {
       dispatch(getOrderDetail(params.id));
     }
   }, [isAuthenticated, user]);
@@ -93,17 +93,18 @@ export const OrderDetail = () => {
           </nav>
         </header>
 
-        {orderDetail && Date.now() > new Date(orderDetail.deliveryDate).getTime() && (
-          <div className="p-8 my-8 bg-red-100 rounded">
-            <p>
-              <span className="text-red-600">
-                {user!._id === (orderDetail.seller as IUser)._id
-                  ? "This order is marked as late but you can still deliver it."
-                  : "This order is marked as late."}
-              </span>
-            </p>
-          </div>
-        )}
+        {orderDetail &&
+          Date.now() > new Date(orderDetail.deliveryDate).getTime() && (
+            <div className="p-8 my-8 bg-red-100 rounded">
+              <p>
+                <span className="text-red-600">
+                  {user!._id === (orderDetail.seller as IUser)._id
+                    ? "This order is marked as late but you can still deliver it."
+                    : "This order is marked as late."}
+                </span>
+              </p>
+            </div>
+          )}
 
         {orderDetail && (
           <main className="rounded flex flex-col-reverse min-[900px]:flex-row justify-between gap-8 lg:gap-16">
@@ -130,7 +131,9 @@ export const OrderDetail = () => {
                 windowWidth > 900 && (
                   <DeliveryTimer orderDetail={orderDetail} />
                 )}
-              <OrderDetailSideModal orderDetail={orderDetail} />
+              <div className="hidden min-[900px]:block max-w-[20rem] order-2 col-span-6 sm:col-start-2 sm:col-span-4  md:order-3 md:col-span-4 lg:col-span-3">
+                <OrderedGigCard orderDetail={orderDetail} />
+              </div>
             </div>
           </main>
         )}
