@@ -1,16 +1,15 @@
-import { loadStripe } from "@stripe/stripe-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getGigDetail } from "../../actions/gigAction";
+import { AppDispatch, RootState } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { numberToCurrency } from "../../utility/util";
-import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
-import { AppDispatch, RootState } from "../../store";
-import { NotFoundPage } from "../NotFoundPage/NotFoundPage";
+// @ts-ignore
+import { toast } from "react-toastify";
 
 type RazorPayResponse = {
   razorpay_payment_id: string;
@@ -45,6 +44,8 @@ export const PlaceOrder = () => {
       ...orderData,
     });
 
+    console.log(order);
+
     const options = {
       key: "rzp_test_voPXCfG7Iw6NH7",
       amount: order.amount,
@@ -57,9 +58,9 @@ export const PlaceOrder = () => {
         handlePaymentVerification(response, orderData);
       },
       prefill: {
-        name: user?.name, //your customer's name
-        email: user?.email,
-        contact: "8900000000", //Provide the customer's phone number for better conversion rates
+        name: user!.name,
+        email: user!.email,
+        contact: user!.phone!.code!.toString() +  user!.phone!.number!.toString()
       },
       notes: {
         address: "Razorpay Corporate Office",
@@ -84,6 +85,9 @@ export const PlaceOrder = () => {
     };
 
     const { data } = await axiosInstance.post("/payment/verification", payload);
+    if (!data.order._id) {
+      toast.error("Something went wrong. Please try again later.");
+    }
     navigate(`/gig/place/order/submit/requirements/${data.order._id}`);
   };
 
@@ -158,7 +162,8 @@ export const PlaceOrder = () => {
                   />
                 </div>
                 <div>
-                  ₹{numberToCurrency(Number(packageDetail!.packagePrice) * 0.21)}
+                  ₹
+                  {numberToCurrency(Number(packageDetail!.packagePrice) * 0.21)}
                 </div>
               </div>
             </div>
