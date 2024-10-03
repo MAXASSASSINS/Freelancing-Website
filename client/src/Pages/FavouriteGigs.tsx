@@ -3,23 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getFavoriteGigs } from "../actions/gigAction";
 import { AppDispatch, RootState } from "../store";
-import { GigCard } from "./GigCard/GigCard";
+import { GigCard } from "../component/GigCard/GigCard";
 import useLazyLoading from "../hooks/useLazyLoading";
 
 export const FavouriteGigs = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const { isAuthenticated } = useSelector((state: RootState) => state.user);
-
   let { gigLoading, gigs } = useSelector((state: RootState) => state.gigs);
 
   useEffect(() => {
-    // fetch favourite gigs
     if (isAuthenticated) {
       dispatch(getFavoriteGigs());
     }
-  }, []);
+  }, [isAuthenticated]);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
   useLazyLoading({ dependencies: [gigs] });
