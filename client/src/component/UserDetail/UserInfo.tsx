@@ -119,11 +119,11 @@ const UserInfo = ({ setShowChatBox }: UserInfoProps) => {
               <ul className="flex flex-col gap-2">
                 {gigUser.languages.map((language, index) => (
                   <li key={index}>
-                    <span className="user-detail-language-name">
+                    <span className="user-detail-language-name capitalize">
                       {language.name}
                     </span>
                     &nbsp;&nbsp;–
-                    <span className="user-detail-language-fluency">
+                    <span className="user-detail-language-fluency capitalize">
                       {" "}
                       {language.level}
                     </span>
