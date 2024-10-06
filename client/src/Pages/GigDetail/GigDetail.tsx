@@ -138,11 +138,8 @@ export const GigDetail = () => {
           <div>
             {checkUserOpenItsOwnGig() && (
               <Link
-                to={{
-                  pathname: "/gig/create/new/gig",
-                  search: `?id=${gigDetail._id}`,
-                }}
-                className="user-detail-edit-gig"
+                to={`/gig/create/new/gig/${gigDetail._id}`}
+                className="user-detail-edit-gig inline-flex"
               >
                 <div className="edit-icon">
                   <CreateIcon></CreateIcon>
