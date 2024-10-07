@@ -12,7 +12,7 @@ import {
   CountryWithPhoneCodes,
   countryWithPhoneCodesData,
 } from "./CountryPhoneCode";
-import { StepProps, StepRef } from "./CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 // @ts-ignore
 import { toast } from "react-toastify";
 import { IoIosClose } from "react-icons/io";

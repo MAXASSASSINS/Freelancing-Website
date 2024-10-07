@@ -11,7 +11,7 @@ import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
 import { CheckInput, CheckInputRef } from "../CheckInput/CheckInput";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-import { StepProps, StepRef } from "./CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { IPackageDetails } from "../../types/order.types";
 import {
   CHOOSE_A_DELIVERY_TIME,

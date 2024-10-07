@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loadUser } from "./actions/userAction";
 import "./app.css";
-import { CreateGig } from "./component/CreateGig/CreateGig";
+import { CreateGig } from "./Pages/CreateGig/CreateGig";
 import { Footer } from "./component/Footer/Footer";
 import { GigDetail } from "./Pages/GigDetail/GigDetail";
 import { Header } from "./component/Header/Header";
@@ -17,7 +17,7 @@ import { Login } from "./Pages/Login";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { PlaceOrder } from "./component/PlaceOrder/PlaceOrder";
 import { Sidebar } from "./component/Sidebar/Sidebar";
-import { SubmitRequirements } from "./component/SubmitRequirements/SubmitRequirements";
+import { SubmitRequirements } from "./Pages/SubmitRequirements";
 import { Test } from "./component/Test/Test";
 import { UserDetail } from "./Pages/UserDetail/UserDetail";
 import { AppDispatch, RootState } from "./store";
@@ -33,17 +33,17 @@ import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./Pages/BalanceDetail";
 import { BuyerFeedback } from "./Pages/BuyerFeedback";
 import { OrderDetail } from "./component/OrderDetail/OrderDetail";
-import { Orders } from "./component/Orders/Orders";
+import { Orders } from "./Pages/Orders";
 import { SignUp } from "./Pages/SignUp";
 
 import { useDispatch } from "react-redux";
 import { BankAccountForm } from "./Pages/BankAccountForm";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
-import { FavouriteGigs } from "./component/FavouriteGigs";
+import { FavouriteGigs } from "./Pages/FavouriteGigs";
 import ProtectedRoute from "./component/ProtectedRoute";
 import { ResetPassword } from "./component/ResetPassword";
 import ScrollToTop from "./component/ScrollToTop";
-import { UpdateUserProfile } from "./component/UpdateUserProfile";
+import { UpdateUserProfile } from "./Pages/UpdateUserProfile";
 import {
   useGlobalLoading,
   useGlobalLoadingText,
@@ -146,7 +146,7 @@ const App = () => {
                 <Route path="/gig/details/:id" element={<GigDetail />} />
                 <Route path="*" element={<NotFoundPage />} />
                 <Route
-                  path="/gig/create/new/gig"
+                  path="/gig/create/new/gig/:id"
                   element={
                     <ProtectedRoute>
                       <CreateGig />

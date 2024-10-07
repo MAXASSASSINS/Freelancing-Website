@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { StepProps, StepRef } from "./CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { IFile } from "../../types/file.types";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";

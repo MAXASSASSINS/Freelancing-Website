@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StepProps, StepRef } from "./CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { TextEditor, TextEditorRef } from "../TextEditor/TextEditor";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";

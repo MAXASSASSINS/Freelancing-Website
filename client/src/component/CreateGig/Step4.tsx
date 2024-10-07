@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StepProps, StepRef } from "./CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { AppDispatch, RootState } from "../../store";
 import { useSelector } from "react-redux";
 import {

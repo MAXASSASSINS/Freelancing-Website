@@ -5,13 +5,13 @@ import { getGigDetail, resetGigDetail } from "../../actions/gigAction";
 import { AppDispatch } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
 import "./CreateGig.css";
-import Step1 from "./Step1";
-import Step2 from "./Step2";
-import Step3 from "./Step3";
-import Step4 from "./Step4";
-import Step5 from "./Step5";
-import Step6 from "./Step6";
-import StepIndicator, { StepIndicatorRef } from "./StepIndicator";
+import Step1 from "../../component/CreateGig/Step1";
+import Step2 from "../../component/CreateGig/Step2";
+import Step3 from "../../component/CreateGig/Step3";
+import Step4 from "../../component/CreateGig/Step4";
+import Step5 from "../../component/CreateGig/Step5";
+import Step6 from "../../component/CreateGig/Step6";
+import StepIndicator, { StepIndicatorRef } from "../../component/CreateGig/StepIndicator";
 
 export type StepProps = {
   handleSendData: (payload: any) => Promise<boolean>;
