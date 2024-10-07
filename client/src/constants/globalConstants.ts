@@ -2,7 +2,8 @@ export const FREE_TEXT = "free text";
 export const MULTIPLE_CHOICE = "multiple choice";
 export type QuestionType = typeof FREE_TEXT | typeof MULTIPLE_CHOICE;
 
-export const CHOOSE_A_DELIVERY_TIME = "choose a delivery time";
+export const CHOOSE_A_DELIVERY_TIME = "Choose a delivery time";
+export const SELECT_NUMBER_OF_REVISIONS = "Select no. of revisions";
 
 export const KB = 1024;
 export const MB = 1024 * 1024;
