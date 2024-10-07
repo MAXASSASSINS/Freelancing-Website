@@ -57,10 +57,7 @@ const UserGigs = () => {
             {user?._id === gigUser._id && (
               <div
                 onClick={() =>
-                  navigate({
-                    pathname: "/gig/create/new/gig",
-                    search: "?id=null",
-                  })
+                  navigate("/gig/create/new/gig/null")
                 }
                 className="user-detail-create-new-gig-card"
               >
