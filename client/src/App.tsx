@@ -15,7 +15,7 @@ import { Home } from "./Pages/Home";
 import { Inbox } from "./component/Inbox/Inbox2";
 import { Login } from "./Pages/Login";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
-import { PlaceOrder } from "./component/PlaceOrder/PlaceOrder";
+import { PlaceOrder } from "./Pages/PlaceOrder";
 import { Sidebar } from "./component/Sidebar/Sidebar";
 import { SubmitRequirements } from "./Pages/SubmitRequirements";
 import { Test } from "./component/Test/Test";
