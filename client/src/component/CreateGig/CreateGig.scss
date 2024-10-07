@@ -40,12 +40,12 @@
       justify-content: center;
       gap: 1rem;
 
-      li {
+      button {
         color: var(--link);
         margin-right: 0;
       }
 
-      li:hover {
+      button:hover {
         cursor: pointer;
         text-decoration: underline;
       }
