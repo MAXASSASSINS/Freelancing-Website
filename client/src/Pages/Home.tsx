@@ -57,7 +57,6 @@ export const Home = () => {
   // Tracking the online status of the gigs listed in the home page
   useEffect(() => {
     socket.on("online_from_server", (userId) => {
-      console.log("online_from_server", userId);
       const map = new Map(gigUserOnline);
       map.set(userId, true);
       setGigUserOnline(map);
