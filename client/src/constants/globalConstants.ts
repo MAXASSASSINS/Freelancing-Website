@@ -20,3 +20,10 @@ export const YEARS_LIST: string[] = [];
 for (let i = new Date().getFullYear(); i >= 1960; i--) {
   YEARS_LIST.push(i.toString());
 }
+
+export const PENDING = "Pending";
+export const IN_PROGRESS = "In Progress"
+export const COMPLETED = "Completed"
+export const CANCELLED = "Cancelled"
+export const DELIVERED = "Delivered"
+export const IN_REVISION = "In Revision"

@@ -24,7 +24,6 @@ export const OrderMessageInput = ({
 
   const inputFileRef = useRef<HTMLInputElement>(null);
   const emojiPickerOpenerIconRef = useRef<HTMLDivElement>(null);
-  const scrollToBottomDivRefInbox = useRef<HTMLDivElement>(null);
 
   const [message, setMessage] = useState("");
   const [isFilePicked, setIsFilePicked] = useState(false);
@@ -67,7 +66,6 @@ export const OrderMessageInput = ({
     }
     setIsFilePicked(true);
     setSelectedFiles(arr);
-    scrollToBottomDivRefInbox.current?.scrollIntoView();
   };
 
   const handleFileClickedRemoval = (id: number) => () => {

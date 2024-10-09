@@ -32,7 +32,7 @@ import "./utility/color";
 import "react-tooltip/dist/react-tooltip.css";
 import { BalanceDetail } from "./Pages/BalanceDetail";
 import { BuyerFeedback } from "./Pages/BuyerFeedback";
-import { OrderDetail } from "./component/OrderDetail/OrderDetail";
+import { OrderDetail } from "./Pages/OrderDetail";
 import { Orders } from "./Pages/Orders";
 import { SignUp } from "./Pages/SignUp";
 

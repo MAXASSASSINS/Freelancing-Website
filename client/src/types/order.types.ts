@@ -1,4 +1,12 @@
-import { QuestionType } from "../constants/globalConstants";
+import {
+  CANCELLED,
+  COMPLETED,
+  DELIVERED,
+  IN_PROGRESS,
+  IN_REVISION,
+  PENDING,
+  QuestionType,
+} from "../constants/globalConstants";
 import { IFile } from "./file.types";
 import { IGig } from "./gig.types";
 import { IUser } from "./user.types";
@@ -66,12 +74,12 @@ export interface IOrder {
   seller: IUser | string;
   buyer: IUser | string;
   status:
-    | "Pending"
-    | "In Progress"
-    | "Completed"
-    | "Cancelled"
-    | "Delivered"
-    | "In Revision";
+    | typeof PENDING
+    | typeof IN_PROGRESS
+    | typeof COMPLETED
+    | typeof CANCELLED
+    | typeof DELIVERED
+    | typeof IN_REVISION;
   createdAt: Date;
   requirements: IOrderRequirement[];
   requirementsSubmitted: boolean;
