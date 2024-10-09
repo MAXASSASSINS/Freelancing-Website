@@ -418,7 +418,7 @@ export const Inbox = () => {
       const clientId = sender._id.toString();
 
       if (listOfAllClients.includes(clientId)) {
-        const map = { ...allClientUserLastMessage };
+        const map = new Map(allClientUserLastMessage);
         map.set(clientId, messageData);
         dispatch({ type: UPDATE_CLIENT_LAST_MESSAGE, payload: map });
       }
@@ -435,7 +435,14 @@ export const Inbox = () => {
     return () => {
       socket.off("receive_message");
     };
-  }, [socket, listOfAllClients, currentSelectedClientOnline]);
+  }, [
+    socket,
+    listOfAllClients,
+    currentSelectedClientOnline,
+    allClientUserLastMessage,
+    currentSelectedClient,
+    inboxMessages,
+  ]);
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
@@ -539,7 +546,7 @@ export const Inbox = () => {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, []);  
+  }, []);
 
   return (
     <div className="inbox-main">
