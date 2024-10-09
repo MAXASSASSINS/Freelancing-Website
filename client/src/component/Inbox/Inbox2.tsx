@@ -69,25 +69,6 @@ export const Inbox = () => {
   const [search, setSearch] = useState("");
   const [searchList, setSearchList] = useState<string[]>([]);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!search) {
-        setSearchList([]);
-        return;
-      }
-      const list = allClientsDetails.keys()
-        ? Object.keys(allClientsDetails).filter((key) => {
-            const client = allClientsDetails.get(key);
-            return client?.name.startsWith(search);
-          })
-        : [];
-      console.log(list);
-      setSearchList(list);
-    }, 300);
-
-    return () => clearTimeout(timeout);
-  }, [search]);
-
   const [inboxDetails, dispatch] = useReducer(
     inboxReducer,
     INBOX_DETAILS_INITIAL_STATE
@@ -133,6 +114,26 @@ export const Inbox = () => {
     setShowEmojiPicker(false);
     setMessage(message + emoji.native);
   };
+
+  // SEARCH FUNCTIONALITY
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!search) {
+        setSearchList([]);
+        return;
+      }
+      const list = allClientsDetails.keys()
+        ? Object.keys(allClientsDetails).filter((key) => {
+            const client = allClientsDetails.get(key);
+            return client?.name.startsWith(search);
+          })
+        : [];
+      console.log(list);
+      setSearchList(list);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [search, allClientsDetails]);
 
   // GET LOGGED IN USER AND FETCH LIST OF ALL CLIENTS IF LOGGED IN
   useEffect(() => {
@@ -538,9 +539,7 @@ export const Inbox = () => {
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, []);
-
-  console.log('render');
+  }, []);  
 
   return (
     <div className="inbox-main">

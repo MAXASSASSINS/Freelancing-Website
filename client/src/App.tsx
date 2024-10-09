@@ -75,6 +75,7 @@ const App = () => {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener("resize", resizeWindow);
+    resizeWindow();
     return () => window.removeEventListener("resize", resizeWindow);
   }, []);
 
