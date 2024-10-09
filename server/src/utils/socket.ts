@@ -2,11 +2,11 @@ import { Server as SocketIOServer } from "socket.io";
 import User from "../models/userModel";
 import ErrorHandler from "./errorHandler";
 import { Server as HTTPServer } from 'http';
-import { log } from "console";
 
 const runSocket = (server: HTTPServer) => {
   const io = new SocketIOServer(server, {
-    // pingTimeout: 60000,
+    pingTimeout: 60000,
+    pingInterval: 25000,
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -37,7 +37,7 @@ const runSocket = (server: HTTPServer) => {
       });
 
       senderSocketIds?.forEach((senderSocketId: string) => {
-        log('senderSocketId', senderSocketId);
+        console.log('senderSocketId', senderSocketId);
         io.to(senderSocketId).emit("receive_message_self", data);
       });
     });
