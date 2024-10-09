@@ -122,12 +122,14 @@ export const Inbox = () => {
         setSearchList([]);
         return;
       }
-      const list = allClientsDetails.keys()
-        ? Object.keys(allClientsDetails).filter((key) => {
-            const client = allClientsDetails.get(key);
-            return client?.name.startsWith(search);
-          })
-        : [];
+      const keysArray = Array.from(allClientsDetails.keys());
+      const list =
+        keysArray.length > 0
+          ? keysArray.filter((key) => {
+              const client = allClientsDetails.get(key);
+              return client?.name.startsWith(search);
+            })
+          : [];
       console.log(list);
       setSearchList(list);
     }, 300);
@@ -561,6 +563,7 @@ export const Inbox = () => {
       >
         <div className="inbox-search">
           <input
+            className="pr-8"
             type="text"
             spellCheck={false}
             value={search}
