@@ -82,16 +82,14 @@ const App = () => {
   useEffect(() => {
     const handleNewUser = () => {
       if (isAuthenticated && user?._id) {
+        console.log("new user");
         socket.emit("new_user", user._id.toString());
       }
     };
 
     // Emit on connect
     socket.on("connect", handleNewUser);
-
-    if (isAuthenticated && user?._id) {
-      socket.emit("new_user", user._id.toString());
-    }
+    if (socket.connected) handleNewUser();
 
     // Clean up
     return () => {
