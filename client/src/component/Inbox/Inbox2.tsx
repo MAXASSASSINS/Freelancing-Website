@@ -52,6 +52,7 @@ import { RootState } from "../../store";
 import { IUser } from "../../types/user.types";
 import { IFile } from "../../types/file.types";
 import useLazyLoading from "../../hooks/useLazyLoading";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 type SelectedFile = {
   selectedFile: File;
@@ -61,6 +62,7 @@ type SelectedFile = {
 export const Inbox = () => {
   const { windowWidth } = useContext(windowContext);
   const socket = useContext(SocketContext);
+  const updateGlobalLoading = useUpdateGlobalLoading();
 
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.user
@@ -143,17 +145,25 @@ export const Inbox = () => {
   }, [isAuthenticated, user]);
 
   const getInitialInboxMessages = async () => {
-    const { data } = await axiosInstance.get("/get/initial/messages");
-    console.log(data);
-    dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: data.inboxClients });
-    dispatch({
-      type: FETCH_ALL_CLIENTS_DETAILS,
-      payload: data.inboxClientsDetails,
-    });
-    dispatch({
-      type: FETCH_ALL_CLIENTS_LAST_MESSAGE,
-      payload: data.lastMessages,
-    });
+    updateGlobalLoading(true);
+    try {
+      const { data } = await axiosInstance.get("/get/initial/messages");
+      console.log(data);
+      dispatch({ type: FETCH_ALL_CLIENTS_LIST, payload: data.inboxClients });
+      dispatch({
+        type: FETCH_ALL_CLIENTS_DETAILS,
+        payload: data.inboxClientsDetails,
+      });
+      dispatch({
+        type: FETCH_ALL_CLIENTS_LAST_MESSAGE,
+        payload: data.lastMessages,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    finally {
+      updateGlobalLoading(false);
+    }
   };
 
   // LAZY LOADING THE IMAGES AND VIDEOS
@@ -592,6 +602,7 @@ export const Inbox = () => {
                       alt={client.name}
                       width="1.5rem"
                       fontSize="0.75rem"
+                      useWebp={true}
                     />
                     {client.name}
                   </div>
@@ -616,6 +627,7 @@ export const Inbox = () => {
                     avatarUrl={detail.avatar.url}
                     width="2.75rem"
                     onlineStatusWidth="1rem"
+                    useWebp={true}
                   />
                 </div>
                 <div className="client-list-detail-plus-last-message">
@@ -777,6 +789,7 @@ export const Inbox = () => {
                               avatarUrl={item.sender.avatar.url}
                               userName={item.sender.name}
                               width="2rem"
+                              useWebp={true}
                             />
                           </div>
                           <div className="inbox-messages-list-sender-info">
@@ -866,6 +879,7 @@ export const Inbox = () => {
                           avatarUrl={user!.avatar.url}
                           userName={user!.name}
                           width="2rem"
+                          useWebp={true}
                         />
                         <div className="inbox-messages-list-sender-info">
                           <div className="inbox-messages-list-sender-details">
