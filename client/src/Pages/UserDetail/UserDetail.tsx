@@ -30,15 +30,9 @@ export const UserDetail = () => {
   return (
     userGigs && (
       <div className="min-h-screen">
-        {showChatBox && (
+        {showChatBox && gigUser && (
           <Chat
-            gigDetail={{
-              user: {
-                _id: gigUser!._id,
-                name: gigUser!.name,
-                avatar: gigUser!.avatar,
-              },
-            }}
+            chatUser={gigUser}
             showChatBox={showChatBox}
             setShowChatBox={setShowChatBox}
           ></Chat>

@@ -1,9 +1,17 @@
-import { Server as SocketIOServer } from "socket.io";
+import { Server as HTTPServer } from "http";
+import jwt from "jsonwebtoken";
+import { Socket, Server as SocketIOServer } from "socket.io";
 import User from "../models/userModel";
 import ErrorHandler from "./errorHandler";
-import { Server as HTTPServer } from 'http';
+
+type CustomSocket = Socket & { user?: { id: string } };
 
 const runSocket = (server: HTTPServer) => {
+  // console.log("server", server);
+
+  let onlineUserList = new Map<string, Set<string>>();
+  let socketIdtoUserIdMapping = new Map<string, string>();
+
   const io = new SocketIOServer(server, {
     pingTimeout: 60000,
     pingInterval: 25000,
@@ -13,13 +21,28 @@ const runSocket = (server: HTTPServer) => {
     },
   });
 
-  let onlineUserList = new Map();
+  io.use((socket: CustomSocket, next) => {
+    const token = socket.handshake.auth.token;
 
-  io.on("connection", (socket) => {
-    console.log(onlineUserList);
-    socket.on("new_user", (userId) => {
-      console.log('new user connected', userId, socket.id);
+    try {
+      if (!process.env.JWT_SECRET) {
+        throw new ErrorHandler("JWT_SECRET not defined in env", 500);
+      }
+      const user = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
+      socket.user = user;
+      next();
+    } catch (error) {
+      next(new Error("Authentication error")); // Deny connection
+    }
+  });
+
+  io.on("connection", (socket: CustomSocket) => {
+    socket.on("new_user", () => {
+      const userId = socket.user?.id;
+      if (!userId) return;
       addNewUser(userId, socket.id);
+      socketIdtoUserIdMapping.set(socket.id, userId);
+      console.log(onlineUserList);
     });
 
     socket.on("join_room", (data) => {
@@ -28,7 +51,7 @@ const runSocket = (server: HTTPServer) => {
 
     socket.on("send_message", async (data) => {
       const { sender, receiver } = data;
-      
+
       const receiverSocketIds = onlineUserList.get(receiver._id.toString());
       const senderSocketIds = onlineUserList.get(sender._id.toString());
 
@@ -37,12 +60,13 @@ const runSocket = (server: HTTPServer) => {
       });
 
       senderSocketIds?.forEach((senderSocketId: string) => {
-        console.log('senderSocketId', senderSocketId);
+        console.log("senderSocketId", senderSocketId);
         io.to(senderSocketId).emit("receive_message_self", data);
       });
     });
 
     socket.on("typing_started", (data) => {
+      console.log("typing_started");
       const receiverSocketIds = onlineUserList.get(data.receiverId);
 
       receiverSocketIds?.forEach((receiverSocketId: string) => {
@@ -82,12 +106,10 @@ const runSocket = (server: HTTPServer) => {
           online,
         });
       }
-
       socket.emit("online_status_of_all_clients_from_server", onlineStatusList);
     });
 
     socket.on("update_order_detail", async (data) => {
-
       const receiverSocketIds = onlineUserList.get(data.seller._id.toString());
       const senderSocketIds = onlineUserList.get(data.buyer._id.toString());
 
@@ -101,10 +123,10 @@ const runSocket = (server: HTTPServer) => {
     });
 
     socket.on("disconnect", () => {
-      const userId = getUserBySocketId(socket.id);
-      console.log('user disconnected', userId, socket.id);
+      const userId = socketIdtoUserIdMapping.get(socket.id);
+      if (!userId) return;
+      console.log("user disconnected", userId, socket.id);
       removeUser(socket.id, userId);
-
       if (!onlineUserList.has(userId)) {
         Promise.resolve(updateUserLastSeen(userId)).then(() => {
           io.emit("offline_from_server", userId);
@@ -115,19 +137,19 @@ const runSocket = (server: HTTPServer) => {
 
   const addNewUser = (userId: string, socketId: string) => {
     if (!onlineUserList.has(userId)) {
-      const set = new Set();
+      const set = new Set<string>();
       set.add(socketId);
       onlineUserList.set(userId, set);
     } else {
-      const set = onlineUserList.get(userId);
+      const set = onlineUserList.get(userId)!;
       set.add(socketId);
       onlineUserList.set(userId, set);
     }
   };
 
   const removeUser = async (socketId: string, userId: string) => {
+    socketIdtoUserIdMapping.delete(socketId);
     const set = onlineUserList.get(userId);
-    
     if (!set) return;
     set.delete(socketId);
     if (set.size === 0) {
@@ -137,18 +159,17 @@ const runSocket = (server: HTTPServer) => {
     }
   };
 
-  const getUserBySocketId = (socketId: string) => {
-    for (let [key, value] of onlineUserList.entries()) {
-      if (value.has(socketId)) {
-        return key;
-      }
-    }
-  };
+  // const getUserBySocketId = (socketId: string) => {
+  //   for (let [key, value] of onlineUserList.entries()) {
+  //     if (value.has(socketId)) {
+  //       return key;
+  //     }
+  //   }
+  // };
 
   const updateUserLastSeen = async (userId: string) => {
     try {
       let user = await User.findById(userId);
-      // 
       if (!user) {
         return new ErrorHandler("User not found", 404);
       }

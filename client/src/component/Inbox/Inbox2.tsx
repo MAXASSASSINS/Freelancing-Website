@@ -15,7 +15,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../../utility/axiosInstance";
 import "./inbox.css";
-// import '../Chat/chat.css'
 import PermMediaIcon from "@mui/icons-material/PermMedia";
 import { windowContext } from "../../App";
 import { Loader } from "../Loader/Loader";

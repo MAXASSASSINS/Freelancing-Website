@@ -128,7 +128,8 @@ export const GigDetail = () => {
     <>
       {showChatBox && (
         <Chat
-          gigDetail={gigDetail}
+          // gigDetail={gigDetail}
+          chatUser={gigDetail.user}
           showChatBox={showChatBox}
           setShowChatBox={setShowChatBox}
         ></Chat>
