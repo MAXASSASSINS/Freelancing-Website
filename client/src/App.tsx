@@ -12,7 +12,7 @@ import { Footer } from "./component/Footer/Footer";
 import { GigDetail } from "./Pages/GigDetail/GigDetail";
 import { Header } from "./component/Header/Header";
 import { Home } from "./Pages/Home";
-import { Inbox } from "./component/Inbox/Inbox";
+import { Inbox } from "./Pages/Inbox";
 import { Login } from "./Pages/Login";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { PlaceOrder } from "./Pages/PlaceOrder";

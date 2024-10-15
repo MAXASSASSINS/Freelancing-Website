@@ -1,4 +1,3 @@
-import data from "@emoji-mart/data";
 import React, {
   ChangeEvent,
   FormEvent,
@@ -36,7 +35,7 @@ type ChatFormProps = {
   setFileLoading: React.Dispatch<React.SetStateAction<boolean>>;
   chatUser: IUser;
   scrollToBottomDivRef: React.RefObject<HTMLDivElement>;
-  showSuggestion: () => void;
+  showSuggestion?: () => void;
 };
 
 export type ChatFormRef = {
@@ -54,8 +53,6 @@ const ChatForm = (
 ) => {
   const socket = useContext(SocketContext);
   const { windowWidth } = useContext(windowContext);
-
-  new Picker({ data });
 
   const { user } = useSelector((state: RootState) => state.user);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -239,7 +236,7 @@ const ChatForm = (
         Math.min(scrollHeight, maxHeight) + "px";
     }
 
-    if (message.length === 0) {
+    if (message.length === 0 && showSuggestion) {
       showSuggestion();
     }
   }, [message]);
@@ -283,7 +280,7 @@ const ChatForm = (
   return (
     <form
       id="chat-form"
-      className="w-full border-t border-t-dark_separator flex flex-col gap-4 p-6"
+      className="w-full border-t border-t-dark_separator flex flex-col gap-4 p-4 pt-6"
       onSubmit={(e) => sendChat(e)}
     >
       {selectedFiles && isFilePicked && (

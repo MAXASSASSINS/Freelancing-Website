@@ -7,7 +7,7 @@ type ChatMessageListProps = {
 
 const ChatMessageList = ({ chatMessages }: ChatMessageListProps) => {
   return (
-    <ul className="pt-4 px-6 scroll-smooth overflow-hidden overflow-y-auto">
+    <ul className="scroll-smooth overflow-hidden overflow-y-auto">
       {chatMessages &&
         chatMessages.map((message) => (
           <li className="mb-8 last:mb-4">

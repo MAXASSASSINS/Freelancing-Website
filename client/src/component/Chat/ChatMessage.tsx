@@ -28,8 +28,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
         <Avatar
           avatarUrl={message.sender.avatar.url}
           userName={message.sender.name}
-          width="2.5rem"
-          fontSize="1.3rem"
+          width="2rem"
         />
       </div>
       <div>
@@ -68,13 +67,13 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
                     </a>
                   ) : file.type.includes("audio") ? (
                     <audio
-                      className="max-w-[12rem]"
+                      className="max-w-[10rem]"
                       preload="none"
                       controls
                       src={file.url}
                     />
                   ) : (
-                    <div className="max-w-[12rem] bg-separator w-48 h-24 flex justify-center items-center text-5xl rounded">
+                    <div className="max-w-[10rem] bg-separator w-48 h-24 flex justify-center items-center text-5xl rounded">
                       <div>
                         <IoDocumentOutline />
                       </div>

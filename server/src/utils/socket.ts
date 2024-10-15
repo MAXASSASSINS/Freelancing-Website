@@ -66,7 +66,6 @@ const runSocket = (server: HTTPServer) => {
     });
 
     socket.on("typing_started", (data) => {
-      console.log("typing_started");
       const receiverSocketIds = onlineUserList.get(data.receiverId);
 
       receiverSocketIds?.forEach((receiverSocketId: string) => {

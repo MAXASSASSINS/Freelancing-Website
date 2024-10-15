@@ -1,4 +1,4 @@
-import data from "@emoji-mart/data";
+import "moment-timezone";
 import {
   Dispatch,
   MouseEvent,
@@ -8,19 +8,15 @@ import {
   useRef,
   useState,
 } from "react";
-// @ts-ignore
-import Picker from "@emoji-mart/react";
-import "moment-timezone";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../utility/axiosInstance";
-// @ts-ignore
 import { SocketContext } from "../../context/socket/socket";
 import useLazyLoading from "../../hooks/useLazyLoading";
 import { RootState } from "../../store";
 import { IMessage } from "../../types/message.types";
 import { IUser } from "../../types/user.types";
+import { axiosInstance } from "../../utility/axiosInstance";
 import { Avatar } from "../Avatar/Avatar";
 import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
 import ChatForm, { ChatFormRef } from "./ChatForm";
@@ -40,7 +36,6 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
     (state: RootState) => state.user
   );
 
-  new Picker({ data });
   // All States
   const chatFormRef = useRef<ChatFormRef>(null);
   const [allMessages, setAllMessages] = useState<IMessage[]>([]);
@@ -278,7 +273,7 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
               </ul>
             </div>
           ) : (
-            <div className="overflow-scroll">
+            <div className="overflow-scroll pt-4 px-4">
               <ChatMessageList chatMessages={allMessages} />
               <div ref={scrollToBottomDivRef}></div>
             </div>
