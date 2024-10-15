@@ -1,4 +1,3 @@
-// @ts-ignore
 import { toast } from "react-toastify";
 import {
   GIG_USER_FAIL,
@@ -125,9 +124,7 @@ export const signUpUser = (
       dispatch({
         type: SIGNUP_USER_SUCCESS,
       });
-      toast.success(data.message, {
-        timeout: 10000,
-      });
+      toast.success(data.message);
     } catch (error: any) {
       dispatch({
         type: SIGNUP_USER_FAIL,

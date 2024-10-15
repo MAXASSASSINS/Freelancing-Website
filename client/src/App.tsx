@@ -2,31 +2,29 @@ import "bootstrap/dist/css/bootstrap.css";
 import { createContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router-dom";
-// @ts-ignore
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../src/component/common.css";
 import { loadUser } from "./actions/userAction";
 import "./app.css";
-import { CreateGig } from "./Pages/CreateGig/CreateGig";
 import { Footer } from "./component/Footer/Footer";
-import { GigDetail } from "./Pages/GigDetail/GigDetail";
 import { Header } from "./component/Header/Header";
+import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
+import { Sidebar } from "./component/Sidebar/Sidebar";
+import { Test } from "./component/Test/Test";
+import { CreateGig } from "./Pages/CreateGig/CreateGig";
+import { GigDetail } from "./Pages/GigDetail/GigDetail";
 import { Home } from "./Pages/Home";
 import { Inbox } from "./Pages/Inbox";
 import { Login } from "./Pages/Login";
-import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { PlaceOrder } from "./Pages/PlaceOrder";
-import { Sidebar } from "./component/Sidebar/Sidebar";
 import { SubmitRequirements } from "./Pages/SubmitRequirements";
-import { Test } from "./component/Test/Test";
 import { UserDetail } from "./Pages/UserDetail/UserDetail";
 import { AppDispatch, RootState } from "./store";
-import "../src/component/common.css";
-
-import { SocketContext, socket } from "./context/socket/socket";
-// @ts-ignore
+// @ts-ignore 
 import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
+import { SocketContext, socket } from "./context/socket/socket";
 import "./utility/color";
 
 import "react-tooltip/dist/react-tooltip.css";
@@ -37,17 +35,17 @@ import { Orders } from "./Pages/Orders";
 import { SignUp } from "./Pages/SignUp";
 
 import { useDispatch } from "react-redux";
-import { BankAccountForm } from "./Pages/BankAccountForm";
 import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
-import { FavouriteGigs } from "./Pages/FavouriteGigs";
 import ProtectedRoute from "./component/ProtectedRoute";
 import { ResetPassword } from "./component/ResetPassword";
 import ScrollToTop from "./component/ScrollToTop";
-import { UpdateUserProfile } from "./Pages/UpdateUserProfile";
 import {
   useGlobalLoading,
   useGlobalLoadingText,
 } from "./context/globalLoadingContext";
+import { BankAccountForm } from "./Pages/BankAccountForm";
+import { FavouriteGigs } from "./Pages/FavouriteGigs";
+import { UpdateUserProfile } from "./Pages/UpdateUserProfile";
 
 export const windowContext = createContext({ windowWidth: 0 });
 

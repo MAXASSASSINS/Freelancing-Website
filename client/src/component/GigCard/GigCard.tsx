@@ -1,19 +1,18 @@
+import { debounce } from "@mui/material";
 import { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { HiStar } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UPDATE_USER_SUCCESS } from "../../constants/userConstants";
+import { RootState } from "../../store";
+import { IGig } from "../../types/gig.types";
+import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { Avatar } from "../Avatar/Avatar";
 import { MyCarousel } from "../Carousel/MyCarousel";
 import "./gigCard.css";
-// @ts-ignore
-import { toast } from "react-toastify";
-import { RootState } from "../../store";
-import { IGig } from "../../types/gig.types";
-import { IUser } from "../../types/user.types";
-import { debounce } from "@mui/material";
 
 type GigCardProps = {
   gig: IGig;

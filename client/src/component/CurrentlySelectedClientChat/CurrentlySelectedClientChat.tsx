@@ -1,17 +1,13 @@
-// @ts-ignore
 import Picker from "@emoji-mart/react";
 import "moment-timezone";
 import React, {
   ChangeEvent,
-  useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import Moment from "react-moment";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { SocketContext } from "../../context/socket/socket";
+import { Link } from "react-router-dom";
 import { IMessage } from "../../types/message.types";
 import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";

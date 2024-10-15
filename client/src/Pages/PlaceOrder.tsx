@@ -4,12 +4,11 @@ import { FiCheck } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getGigDetail } from "../actions/gigAction";
 import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
 import { numberToCurrency } from "../utility/util";
-// @ts-ignore
-import { toast } from "react-toastify";
 
 type RazorPayResponse = {
   razorpay_payment_id: string;

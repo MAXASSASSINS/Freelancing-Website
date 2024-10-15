@@ -1,4 +1,3 @@
-// @ts-ignore
 import Picker from "@emoji-mart/react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";

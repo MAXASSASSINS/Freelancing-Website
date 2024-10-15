@@ -1,3 +1,4 @@
+import Picker from "@emoji-mart/react";
 import React, {
   ChangeEvent,
   FormEvent,
@@ -9,11 +10,11 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { BsEmojiSmile } from "react-icons/bs";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { FiPaperclip } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
-// @ts-ignore
 import { toast } from "react-toastify";
 import { windowContext } from "../../App";
 import { SocketContext } from "../../context/socket/socket";
@@ -22,9 +23,6 @@ import { IFile } from "../../types/file.types";
 import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
-// @ts-ignore
-import Picker from "@emoji-mart/react";
-import { BsEmojiSmile } from "react-icons/bs";
 
 type SelectedFile = {
   selectedFile: File;

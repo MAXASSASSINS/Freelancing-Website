@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { loggedUser } from "../actions/userAction";
-// @ts-ignore
 import { toast } from "react-toastify";
+import { loggedUser } from "../actions/userAction";
 import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
 import { getRedirectUrl } from "../utility/util";

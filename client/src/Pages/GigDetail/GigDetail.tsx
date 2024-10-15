@@ -6,7 +6,6 @@ import { HiStar } from "react-icons/hi";
 import Moment from "react-moment";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-// @ts-ignore
 import { toast } from "react-toastify";
 import { getGigDetail } from "../../actions/gigAction";
 import { Avatar } from "../../component/Avatar/Avatar";
@@ -14,8 +13,8 @@ import { MyCarousel } from "../../component/Carousel/MyCarousel";
 import { Chat } from "../../component/Chat/Chat";
 import PackageSelector from "../../component/GigDetail.js/PackageSelector";
 import RatingSelector from "../../component/GigDetail.js/RatingSelector";
-import ReviewsList, { ReviewsListRef } from "../../component/ReviewsList/ReviewsList";
 import { RatingStars } from "../../component/RatingStars/RatingStars";
+import ReviewsList, { ReviewsListRef } from "../../component/ReviewsList/ReviewsList";
 import { AppDispatch, RootState } from "../../store";
 import { IReview } from "../../types/gig.types";
 import { IPackageDetails } from "../../types/order.types";

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// @ts-ignore
 import { toast } from "react-toastify";
 import { updateUser } from "../actions/userAction";
 import ConfirmWithdrawModal from "../component/BalanceDetail/ConfirmWithdrawModal";

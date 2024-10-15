@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-// @ts-ignore
 import { toast } from "react-toastify";
+import { RootState } from "../../store";
 
 type WithdrawModalProps = {
   setOpenWithdrawModal: (open: boolean) => void;

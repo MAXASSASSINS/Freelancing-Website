@@ -5,18 +5,17 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { IoIosClose } from "react-icons/io";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { RootState } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
 import {
   CountryWithPhoneCodes,
   countryWithPhoneCodesData,
 } from "./CountryPhoneCode";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
-// @ts-ignore
-import { toast } from "react-toastify";
-import { IoIosClose } from "react-icons/io";
-import { useNavigate, useParams } from "react-router-dom";
 
 type Step6Props = {};
 
