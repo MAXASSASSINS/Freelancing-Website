@@ -42,8 +42,8 @@ const OrderCard = ({ order }: OrderCardProps) => {
           <Avatar
             avatarUrl={
               user?._id === order.seller._id
-                ? order.buyer.avatar.url
-                : order.seller.avatar.url
+                ? order.buyer.avatar?.url
+                : order.seller.avatar?.url
             }
             userName={
               user!._id === order.seller._id

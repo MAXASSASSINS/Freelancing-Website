@@ -7,14 +7,14 @@ import { RootState } from "../../store";
 type ProfilePictureSectionProps = {};
 
 export type ProfilePictureSectionRef = {
-  getAvatar: () => IFile;
+  getAvatar: () => IFile | undefined;
 };
 
 const ProfilePictureSection = (props: ProfilePictureSectionProps, ref: React.Ref<ProfilePictureSectionRef>) => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
-  const [avatar, setAvatar] = useState<IFile>({
+  const [avatar, setAvatar] = useState<IFile | undefined>({
     publicId: "",
     url: "",
     name: "",
@@ -46,7 +46,7 @@ const ProfilePictureSection = (props: ProfilePictureSectionProps, ref: React.Ref
   return (
     <section className="flex gap-8 items-center">
       <div className="w-32 h-32 relative">
-        {avatar.url ? (
+        {avatar?.url ? (
           <img
             className="rounded-full w-full h-full object-cover"
             src={avatar.url}

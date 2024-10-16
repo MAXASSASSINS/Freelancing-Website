@@ -2,12 +2,13 @@ import { useState } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import { FaEyeSlash, FaRegEye } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpUser } from "../actions/userAction";
 import { AppDispatch } from "../store";
 
 export const SignUp = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [signUpEmail, setSignUpEmail] = useState<string>("");
   const [signUpPassword, setSignUpPassword] = useState<string>("");
   const [signUpConfirmPassword, setSignUpConfirmPassword] = useState<string>("");
@@ -55,7 +56,7 @@ export const SignUp = () => {
       setErrors(error);
       return;
     }
-    dispatch(
+    await dispatch(
       signUpUser(
         signUpUsername,
         signUpEmail,
@@ -63,6 +64,11 @@ export const SignUp = () => {
         signUpConfirmPassword
       )
     )
+    setSignUpUsername("");
+    setSignUpEmail("");
+    setSignUpPassword("");
+    setSignUpConfirmPassword("");
+    navigate("/login");
   };
 
   return (
@@ -88,6 +94,7 @@ export const SignUp = () => {
               setErrors({ ...errors, signUpUsernameError: false });
             }}
             id="username"
+            value={signUpUsername}
             type="text"
             className={`form-control ${
               errors.signUpUsernameError ? "border border-warning" : ""
@@ -103,6 +110,7 @@ export const SignUp = () => {
               setSignUpEmail(e.target.value);
               setErrors({ ...errors, signUpEmailError: false });
             }}
+            value={signUpEmail}
             id="email"
             type="email"
             className={`form-control ${
@@ -128,6 +136,7 @@ export const SignUp = () => {
                 setErrors({ ...errors, signUpPasswordError: false });
               }}
               id="password"
+              value={signUpPassword}
               type={showPassword ? "text" : "password"}
               className={`form-control pr-10 ${
                 errors.signUpPasswordError ? "border border-warning" : ""
@@ -167,6 +176,7 @@ export const SignUp = () => {
                 setErrors({ ...errors, signUpConfirmPasswordError: false });
               }}
               id="confirm_password"
+              value={signUpConfirmPassword}
               type={showConfirmPassword ? "text" : "password"}
               className={`form-control ${
                 errors.signUpConfirmPasswordError ? "border border-warning" : ""

@@ -75,7 +75,7 @@ export const GigCard = ({ gig, lazyLoad = false, online }: GigCardProps) => {
         </Link>
         <div className="user-details-container">
           <Avatar
-            avatarUrl={gig.user.avatar.url}
+            avatarUrl={gig.user.avatar?.url}
             alt="user avatar"
             width="2rem"
             userName={gig.user.name}

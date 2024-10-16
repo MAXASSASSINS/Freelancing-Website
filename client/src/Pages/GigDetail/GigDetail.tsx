@@ -16,9 +16,8 @@ import RatingSelector from "../../component/GigDetail.js/RatingSelector";
 import { RatingStars } from "../../component/RatingStars/RatingStars";
 import ReviewsList, { ReviewsListRef } from "../../component/ReviewsList/ReviewsList";
 import { AppDispatch, RootState } from "../../store";
-import { IReview } from "../../types/gig.types";
 import { IPackageDetails } from "../../types/order.types";
-import { IUser } from "../../types/user.types";
+import { IReview, IUser } from "../../types/user.types";
 import "./gigDetail.css";
 
 export const GigDetail = () => {
@@ -152,7 +151,7 @@ export const GigDetail = () => {
             <h1 className="gig-details-gig-title">{gigDetail.title}</h1>
             <div className="gig-seller-overview">
               <Avatar
-                avatarUrl={gigDetail.user.avatar.url}
+                avatarUrl={gigDetail.user.avatar?.url}
                 userName={gigDetail.user.name}
                 width="1.875rem"
                 alt={gigDetail.user.name}
@@ -208,7 +207,7 @@ export const GigDetail = () => {
             </header>
             <div className="gig-owner-profile-info-wrapper">
               <Avatar
-                avatarUrl={gigDetail.user.avatar.url}
+                avatarUrl={gigDetail.user.avatar?.url}
                 userName={gigDetail.user.name}
                 width="3rem"
                 alt={gigDetail.user.name}

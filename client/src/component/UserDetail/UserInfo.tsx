@@ -33,7 +33,7 @@ const UserInfo = ({ setShowChatBox }: UserInfoProps) => {
             )}
             <div className="user-detail user-profile-pic">
               <Avatar
-                avatarUrl={gigUser.avatar.url}
+                avatarUrl={gigUser.avatar?.url}
                 userName={gigUser.name}
                 width={"8rem"}
                 alt={"gig profile"}

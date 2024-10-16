@@ -254,7 +254,7 @@ export const CurrentlySelectedClientChat = ({
                 item.sender = item.sender as IUser;
                 return (
                   <li key={item._id}>
-                    {item.sender.avatar.url ? (
+                    {item.sender.avatar?.url ? (
                       <img src={item.sender.avatar.url}></img>
                     ) : (
                       <div>

@@ -26,7 +26,7 @@ const ChatMessage = ({ message }: ChatMessageProps) => {
     >
       <div className="w-8 rounded-full">
         <Avatar
-          avatarUrl={message.sender.avatar.url}
+          avatarUrl={message.sender.avatar?.url}
           userName={message.sender.name}
           width="2rem"
         />

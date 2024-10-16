@@ -218,7 +218,7 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
         <section className="flex items-center py-8 px-6 h-[113px]">
           <div className="w-12 rounded-full mr-4">
             <Avatar
-              avatarUrl={chatUser.avatar.url}
+              avatarUrl={chatUser.avatar?.url}
               userName={chatUser.name}
               width="3rem"
               fontSize="1.3rem"

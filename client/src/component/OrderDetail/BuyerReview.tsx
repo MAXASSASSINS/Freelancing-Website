@@ -102,7 +102,7 @@ const BuyerReview = () => {
             <div className="flex items-center gap-4 font-semibold text-light_heading">
               <div className="aspect-square rounded-full">
                 <Avatar
-                  avatarUrl={seller.avatar.url}
+                  avatarUrl={seller.avatar?.url}
                   userName={seller.name}
                   width="2rem"
                   fontSize="1rem"

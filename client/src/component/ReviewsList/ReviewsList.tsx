@@ -1,9 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { IReview } from "../../types/gig.types";
 import { Avatar } from "../Avatar/Avatar";
 import { RatingStars } from "../RatingStars/RatingStars";
 import { flags } from "../../data/country-flags";
 import Moment from "react-moment";
+import { IReview } from "../../types/user.types";
 
 type ReviewsListProps = {
   reviews: IReview[];
@@ -48,7 +48,7 @@ const ReviewsList = (
               <div className="flex items-center [&>*]:mr-2.5">
                 <div className="-ml-11">
                   <Avatar
-                    avatarUrl={review.avatar.url}
+                    avatarUrl={review.avatar?.url}
                     userName={review.name}
                     width="2rem"
                     alt={review.name}

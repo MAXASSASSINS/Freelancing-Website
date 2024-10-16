@@ -39,7 +39,7 @@ export const Sidebar = () => {
           <section className="sidebar-title">
             {isAuthenticated ? (
               <Avatar
-                avatarUrl={user?.avatar.url}
+                avatarUrl={user?.avatar?.url}
                 userName={user?.name || "Guest"}
                 width="2.5rem"
                 alt="user profile"

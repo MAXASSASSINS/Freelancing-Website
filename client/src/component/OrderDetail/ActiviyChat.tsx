@@ -27,7 +27,7 @@ const ActiviyChat = ({ online, setFileLoading }: ActiviyChatProps) => {
         <div className="flex items-center gap-4 text-light_heading">
           <div className="aspect-square rounded-full">
             <Avatar
-              avatarUrl={user!.avatar.url}
+              avatarUrl={user!.avatar?.url}
               userName={user!.name}
               width="2rem"
               fontSize="1rem"

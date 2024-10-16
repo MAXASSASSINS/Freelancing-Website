@@ -384,7 +384,7 @@ export const Inbox = () => {
                     }}
                   >
                     <Avatar
-                      avatarUrl={client.avatar.url}
+                      avatarUrl={client.avatar?.url}
                       userName={client.name}
                       alt={client.name}
                       width="1.5rem"
@@ -411,7 +411,7 @@ export const Inbox = () => {
                   <Avatar
                     userName={detail.name}
                     onlineStatus={onlineStatusOfClients.get(key) || false}
-                    avatarUrl={detail.avatar.url}
+                    avatarUrl={detail.avatar?.url}
                     width="2.75rem"
                     onlineStatusWidth="1rem"
                     useWebp={true}

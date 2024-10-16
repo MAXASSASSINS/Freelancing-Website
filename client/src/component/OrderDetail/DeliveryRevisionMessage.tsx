@@ -66,7 +66,7 @@ const DeliveryRevisionMessage = ({ message }: DeliveryRevisionMessageProps) => {
           >
             <div className="aspect-square rounded-full">
               <Avatar
-                avatarUrl={message.sender.avatar.url}
+                avatarUrl={message.sender.avatar?.url}
                 userName={message.sender.name}
                 width="2rem"
                 fontSize="1rem"

@@ -67,7 +67,7 @@ const NavigationIcons = (
             className="relative profile-icon"
           >
             <Avatar
-              avatarUrl={user!.avatar.url}
+              avatarUrl={user!.avatar?.url}
               userName={user!.name}
               onlineStatus={true}
               width="2rem"
