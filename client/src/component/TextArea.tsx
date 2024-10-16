@@ -1,10 +1,9 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import "./textArea.css";
 
 type TextAreaProps = {
   maxLength: number;
   minLength?: number;
-  style?: React.CSSProperties;
+  className?: string;
   placeholder?: string;
   defaultText?: string;
   warning?: string;
@@ -21,10 +20,10 @@ export const TextArea = forwardRef(
     {
       maxLength = Number.MAX_SAFE_INTEGER,
       minLength = 0,
-      style,
-      placeholder = '',
-      defaultText = '',
-      warning = '',
+      className,
+      placeholder = "",
+      defaultText = "",
+      warning = "",
       getText,
     }: TextAreaProps,
     ref: React.Ref<TextAreaRef>
@@ -35,7 +34,7 @@ export const TextArea = forwardRef(
     const [text, setText] = useState<string>(defaultText ? defaultText : "");
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setCurrentTextLength(e.target.value.trim().length);
+      setCurrentTextLength(e.target.value.length);
       setText(e.target.value);
       getText && getText(e.target.value);
     };
@@ -53,7 +52,7 @@ export const TextArea = forwardRef(
     );
 
     return (
-      <div className="textarea-main">
+      <div className="w-full">
         <textarea
           maxLength={maxLength}
           minLength={minLength}
@@ -62,13 +61,19 @@ export const TextArea = forwardRef(
           autoComplete="off"
           autoCapitalize="off"
           onChange={handleChange}
-          style={style}
           value={text}
-          className="textarea leading-5"
+          className={`w-full resize-none h-20 rounded-[5px] py-2.5 px-4 text-inherit leading-5 outline-none border ${className?.replace(
+            " ",
+            " !"
+          )} ${
+            warning
+              ? "border-warning"
+              : "border-no_focus focus:border-dark_grey"
+          }`}
         ></textarea>
-        <div className="textarea-footer">
-          <div className="warning">{warning}</div>
-          <div className="textarea-label">
+        <div className="flex items-center justify-end text-xs mt-1">
+          <div className="w-[70%] leading-[1.6] text-warning">{warning}</div>
+          <div className="relative text-no_focus">
             {currentTextLength} / {maxLength} max
           </div>
         </div>

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { deliveryTimeData, packagesData, revisionsData } from "./createGigData";
-import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../TextArea";
 import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
 import { CheckInput, CheckInputRef } from "../CheckInput/CheckInput";
 import { RootState } from "../../store";
@@ -78,7 +78,7 @@ const Step2 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
     packageNameRefs.current.forEach((item, index) => {
       if ((item.current?.currValue.trim().length || 0) < 1) {
         warning = true;
-        errors.push("Please provide packages name");
+        errors.push(`Please provide package name for ${packagesData[index]} package`);
         return true;
       }
     });
@@ -180,11 +180,7 @@ const Step2 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                     maxLength={40}
                     minLength={0}
                     placeholder="Enter your package name"
-                    style={{
-                      fontSize: "14px",
-                      height: "40px",
-                      borderRadius: "0px",
-                    }}
+                    className="text-sm h-10 rounded-none"
                     ref={packageNameRefs.current[index]}
                   />
                 </div>
@@ -192,9 +188,10 @@ const Step2 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   <TextArea
                     maxLength={100}
                     minLength={0}
+                    warning="Please provide description"
                     placeholder="Enter your package description"
                     defaultText=""
-                    style={{ fontSize: "14px", borderRadius: "0" }}
+                    className="text-sm rounded-none"
                     ref={packageDescriptionRefs.current[index]}
                   />
                 </div>
@@ -219,7 +216,7 @@ const Step2 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   <div className="price-details">
                     <input
                       ref={packagePriceRefs.current[index]}
-                      className="price-value"
+                      className="price-value focus:outline-none focus:border-light_heading"
                       step="5"
                       placeholder="Price"
                       type="number"

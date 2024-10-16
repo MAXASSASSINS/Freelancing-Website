@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../TextArea";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 
@@ -29,7 +29,7 @@ const DescriptionSection = (props: DescriptionSectionProps, ref: React.Ref<Descr
       <TextArea
         maxLength={600}
         placeholder="Enter your description"
-        style={{ height: "200px", lineHeight: "1.5", color: "#4B5563" }}
+        className="h-[200px] leading-[1.5] text-light_heading"
         defaultText={user?.description}
         getText={(txt) => setDescription(txt)}
       />

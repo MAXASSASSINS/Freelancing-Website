@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getOrderDetail } from "../actions/orderAction";
 import OrderedGigCard from "../component/OrderedGigCard";
-import { TextArea, TextAreaRef } from "../component/TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../component/TextArea";
 import { AppDispatch, RootState } from "../store";
 import { axiosInstance } from "../utility/axiosInstance";
 
@@ -121,7 +121,7 @@ export const BuyerFeedback = () => {
             <TextArea
               maxLength={700}
               placeholder="What did you like or didn't like about this Seller? Share as many details as you can to help other buyers make the right decision for their needs."
-              style={{ height: "12rem", lineHeight: "1.4rem" }}
+              className="h-48 leading-[1.4]"
               ref={commentRef}
             />
           </div>

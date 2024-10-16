@@ -11,7 +11,7 @@ import ReactSelect, { ActionMeta, MultiValue } from "react-select";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 import { AppDispatch, RootState } from "../../store";
 import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
-import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../TextArea";
 import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { categoriesData, subCategoriesData } from "./createGigData";
 import { TagOption, tagOptions } from "./tagsData";
@@ -188,7 +188,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               minLength={0}
               placeholder="I will do something I'm really good at"
               defaultText={"I will "}
-              style={{ fontSize: "18px" }}
+              className="text-lg"
               getText={getGigTitleInput}
               ref={gigTitleInputRef}
             />

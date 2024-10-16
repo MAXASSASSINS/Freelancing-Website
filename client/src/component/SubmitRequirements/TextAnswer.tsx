@@ -4,7 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { TextArea, TextAreaRef } from "../TextArea/TextArea";
+import { TextArea, TextAreaRef } from "../TextArea";
 import { getFileSize } from "../../utility/util";
 import { IoMdAttach } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
@@ -55,7 +55,7 @@ const TextAnswer = (props: TextAnswerProps, ref: React.Ref<TextAnswerRef>) => {
     <div className="mt-4 rounded-none">
       <TextArea
         maxLength={2500}
-        style={{ borderRadius: "0px", height: "100px" }}
+        className="rounded-none h-[100px]"
         ref={textRef}
         getText={(text) => setAnswerText(text)}
       />
