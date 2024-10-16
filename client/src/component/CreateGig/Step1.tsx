@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactSelect, { ActionMeta, MultiValue } from "react-select";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 import { AppDispatch, RootState } from "../../store";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
+import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import { TextArea, TextAreaRef } from "../TextArea";
 import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { categoriesData, subCategoriesData } from "./createGigData";

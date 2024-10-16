@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
+import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import {
   YEAR_OF_CERTIFICATION,
   YEARS_LIST,

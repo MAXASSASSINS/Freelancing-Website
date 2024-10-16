@@ -129,73 +129,73 @@
   color: var(--warning);
   font-size: 0.8rem;
 }
-.create-gig-main .pricing {
+/* .create-gig-main .pricing {
   margin: 4rem 18% 1rem;
   position: relative;
-}
-.create-gig-main .pricing .pricing-wrapper {
+} */
+/* .create-gig-main .pricing .pricing-wrapper {
   padding: 2rem;
-}
-.create-gig-main .pricing .pricing-wrapper h2 {
+} */
+/* .create-gig-main .pricing .pricing-wrapper h2 {
   font-size: 1.75rem;
   margin: 0 0 1rem;
   border-bottom: 1px solid var(--no-focus);
   padding-bottom: 1rem;
-}
-.create-gig-main .pricing .pricing-wrapper h3 {
+} */
+/* .create-gig-main .pricing .pricing-wrapper h3 {
   font-size: 1rem;
   font-weight: 600;
   color: var(--light-grey);
   margin-bottom: 0.75rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr 1fr 1fr;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package {
   display: grid;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package h4 {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package h4 {
   font-size: 1rem;
   font-weight: bold;
   color: var(--light-grey);
   background-color: var(--dark-separator);
   padding: 1rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .textarea-main {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .textarea-main {
   margin-bottom: 1rem;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .select-input-main {
   margin-bottom: 1rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   position: relative;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value {
   border: 1px solid var(--no-focus);
   width: 100%;
   padding: 0.5rem 0.75rem;
   padding-right: 2rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value::placeholder {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details .price-value::placeholder {
   font-size: 0.9rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details span {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .price-details span {
   position: absolute;
   right: 4rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .source,
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .source,
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .source input,
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .source input,
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial input {
   width: 1rem;
   height: 1rem;
@@ -210,8 +210,8 @@
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .commercial {
   margin-bottom: 1rem;
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-name {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-name {
   position: relative;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-name .package-name-required-icon {
@@ -219,8 +219,8 @@
   right: 0.5rem;
   top: 0.7rem;
   color: var(--no-focus);
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-description {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-description {
   position: relative;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-description .package-description-required-icon {
@@ -228,8 +228,8 @@
   right: 0.5rem;
   top: 0.7rem;
   color: var(--no-focus);
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-price {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-price {
   position: relative;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-price .package-price-required-icon {
@@ -237,8 +237,8 @@
   right: 0.5rem;
   top: 0.5rem;
   color: var(--no-focus);
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-delivery-time {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-delivery-time {
   position: relative;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-delivery-time .package-delivery-time-required-icon {
@@ -246,8 +246,8 @@
   right: 1rem;
   top: 0.5rem;
   color: var(--no-focus);
-}
-.create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-revisions-required {
+} */
+/* .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-revisions-required {
   position: relative;
 }
 .create-gig-main .pricing .pricing-wrapper .pricing-section .package .package-revisions-required .package-revisions-required-icon {
@@ -255,7 +255,7 @@
   right: 1rem;
   top: 0.5rem;
   color: var(--no-focus);
-}
+} */
 .create-gig-main .pricing .pricing-section-warning {
   display: flex;
   align-items: center;

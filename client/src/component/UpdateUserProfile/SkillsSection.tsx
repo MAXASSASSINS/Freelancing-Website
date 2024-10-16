@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { SELECT_SKILL_LEVEL } from "../../constants/globalConstants";
 import { skillLevels } from "../../data/skills";
 import { RootState } from "../../store";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
+import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 
 type Skill = {
   name: string;

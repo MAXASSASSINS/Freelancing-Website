@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
+import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import { languageFluencyLevelData, languagesData } from "../../data/languages";
 import { BiTrash } from "react-icons/bi";
 import {

@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, forwardRef, useState } from "react";
-import "./selectInput.css";
+// import "./selectInput.css";
 
 type SelectInput2Props = {
   data: string[];
@@ -7,6 +7,7 @@ type SelectInput2Props = {
   style?: React.CSSProperties;
   getChoosenOption?: (option: string) => void;
   disabled?: boolean;
+  warning?: string;
 };
 
 export type SelectInput2Ref = {
@@ -21,6 +22,7 @@ const SelectInput2 = (
     style,
     getChoosenOption,
     disabled = false,
+    warning = "",
   }: SelectInput2Props,
   ref: React.Ref<SelectInput2Ref>
 ) => {
@@ -43,13 +45,18 @@ const SelectInput2 = (
     setChoosedOption(e.target.value.toLowerCase());
     getChoosenOption && getChoosenOption(e.target.value.toLowerCase());
   };
-  
 
   return (
-    <div className="select-input-main">
+    <div className="select-input-main w-full relative">
       <select
         disabled={disabled}
-        className="disabled:bg-separator disabled:cursor-not-allowed"
+        className={`w-full p-2 rounded-none border  text-sm disabled:bg-separator disabled:cursor-not-allowed ${
+          warning ? "border-warning" : "border-no_focus"
+        } ${
+          choosedOption === defaultOption.toLowerCase()
+            ? "text-no_focus"
+            : "text-dark_grey"
+        }`}
         style={style}
         value={choosedOption}
         onChange={handleChange}
@@ -72,6 +79,7 @@ const SelectInput2 = (
           }
         })}
       </select>
+      <p className="text-sm absolute -bottom-5 text-warning leading-[1.4]">{warning}</p>
     </div>
   );
 };

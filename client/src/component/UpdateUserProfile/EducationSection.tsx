@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput/SelectInput2";
+import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import {
   SELECT_COUNTRY,
   YEAR_OF_GRADUATION,

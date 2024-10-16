@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import SelectInput2 from "../component/SelectInput/SelectInput2";
+import SelectInput2 from "../component/SelectInput2";
 import { useUpdateGlobalLoading } from "../context/globalLoadingContext";
 import { razorpaySupportedCountries } from "../data/razorpaySupportedCountries";
 import { AppDispatch, RootState } from "../store";
