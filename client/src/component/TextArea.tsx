@@ -71,9 +71,9 @@ export const TextArea = forwardRef(
               : "border-no_focus focus:border-dark_grey"
           }`}
         ></textarea>
-        <div className="flex items-center justify-end text-xs mt-1">
-          <div className="w-[70%] leading-[1.6] text-warning">{warning}</div>
-          <div className="relative text-no_focus">
+        <div className="flex items-start [&>*]:leading-[1.4] justify-between text-sm">
+          <div className="w-2/3 text-warning">{warning}</div>
+          <div className="relative text-no_focus text-xs">
             {currentTextLength} / {maxLength} max
           </div>
         </div>
