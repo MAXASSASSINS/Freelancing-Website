@@ -1,4 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 
 type TextAreaProps = {
   maxLength: number;
@@ -7,7 +12,8 @@ type TextAreaProps = {
   placeholder?: string;
   defaultText?: string;
   warning?: string;
-  getText?: (text: string) => void;
+  onChange?: (text: string) => void;
+  value?: string;
 };
 
 export type TextAreaRef = {
@@ -24,20 +30,31 @@ export const TextArea = forwardRef(
       placeholder = "",
       defaultText = "",
       warning = "",
-      getText,
+      onChange,
+      value,
     }: TextAreaProps,
     ref: React.Ref<TextAreaRef>
   ) => {
+    const isControlled = value !== undefined;
     const [currentTextLength, setCurrentTextLength] = useState<number>(
-      defaultText ? defaultText.length : 0
+      defaultText.length
     );
-    const [text, setText] = useState<string>(defaultText ? defaultText : "");
+    const [text, setText] = useState<string>(defaultText);
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setCurrentTextLength(e.target.value.length);
-      setText(e.target.value);
-      getText && getText(e.target.value);
+      onChange && onChange(e.target.value);
+      if (!isControlled) {
+        setCurrentTextLength(e.target.value.length);
+        setText(e.target.value);
+      }
     };
+    
+    useEffect(() => {
+      if (isControlled) {
+        setText(value);
+        setCurrentTextLength(value.length);
+      }
+    }, [value, isControlled]);
 
     useImperativeHandle(
       ref,
@@ -52,7 +69,7 @@ export const TextArea = forwardRef(
     );
 
     return (
-      <div className="w-full">
+      <div className="w-full relative">
         <textarea
           maxLength={maxLength}
           minLength={minLength}
@@ -61,10 +78,10 @@ export const TextArea = forwardRef(
           autoComplete="off"
           autoCapitalize="off"
           onChange={handleChange}
-          value={text}
-          className={`w-full resize-none h-20 rounded-[5px] py-2.5 px-4 text-inherit leading-5 outline-none border ${className?.replace(
+          value={isControlled ? value : text}
+          className={`w-full resize-none h-20 rounded-[5px] py-2.5 px-4 text-inherit leading-5 outline-none placeholder:text-no_focus border ${className?.replaceAll(
             " ",
-            " !"
+            " [&&]:"
           )} ${
             warning
               ? "border-warning"
@@ -72,8 +89,8 @@ export const TextArea = forwardRef(
           }`}
         ></textarea>
         <div className="flex items-start [&>*]:leading-[1.4] justify-between text-sm">
-          <div className="w-2/3 text-warning">{warning}</div>
-          <div className="relative text-no_focus text-xs">
+          <div className="w-2/3 text-warning absolute -bottom-0">{warning}</div>
+          <div className="relative text-no_focus text-right w-full text-xs">
             {currentTextLength} / {maxLength} max
           </div>
         </div>
