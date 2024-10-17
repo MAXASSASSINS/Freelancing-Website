@@ -31,7 +31,7 @@ const DescriptionSection = (props: DescriptionSectionProps, ref: React.Ref<Descr
         placeholder="Enter your description"
         className="h-[200px] leading-[1.5] text-light_heading"
         defaultText={user?.description}
-        getText={(txt) => setDescription(txt)}
+        onChange={(txt) => setDescription(txt)}
       />
     </section>
   );

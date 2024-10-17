@@ -71,7 +71,7 @@ export const AddorUpdateQuestion = ({
             "Request necessary details such as dimensions, brand guidelines, and more"
           }
           className="h-32"
-          getText={getQuestionTitle}
+          onChange={getQuestionTitle}
           defaultText={questionTitle}
         />
         <div

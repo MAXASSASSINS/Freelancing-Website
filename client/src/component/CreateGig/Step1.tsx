@@ -189,7 +189,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               placeholder="I will do something I'm really good at"
               defaultText={"I will "}
               className="text-lg"
-              getText={getGigTitleInput}
+              onChange={getGigTitleInput}
               ref={gigTitleInputRef}
             />
             {enalbeGigTitleInputWarning && (

@@ -57,7 +57,7 @@ const TextAnswer = (props: TextAnswerProps, ref: React.Ref<TextAnswerRef>) => {
         maxLength={2500}
         className="rounded-none h-[100px]"
         ref={textRef}
-        getText={(text) => setAnswerText(text)}
+        onChange={(text) => setAnswerText(text)}
       />
       <div className="">
         <label
