@@ -1,7 +1,6 @@
-import React, { useState, forwardRef, useImperativeHandle } from "react";
-import "./checkInput.css";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { GoCheck } from "react-icons/go";
-import "../../utility/color";
+import "../utility/color";
 
 type CheckInputProps = {
   label?: string;
@@ -44,10 +43,17 @@ export const CheckInput = forwardRef(
     );
 
     return (
-      <label className="check-input-main noSelect">
-        <input type="checkbox" onChange={handleChange} checked={isChecked} />
+      <label className="check-input-main noSelect flex items-center">
+        <input
+          type="checkbox"
+          className="[clip:rect(0_0_0_0)] [-webkit-clip-path:inset(50%)] [clip-path:inset(50%)] h-[1px] overflow-hidden absolute whitespace-nowrap w-[1px]"
+          onChange={handleChange}
+          checked={isChecked}
+        />
         <span
-          className={`checkbox ${isChecked ? "checkbox--active" : ""}`}
+          className={`checkbox cursor-pointer w-[1.125rem] h-[1.125rem] min-w-[1.125rem] min-h-[1.125rem] rounded-sm bg-white border border-no_focus mr-3 flex items-center justify-center ease-in-out duration-150 ${
+            isChecked ? "checkbox--active" : ""
+          }`}
           aria-hidden="true"
         >
           {isChecked && (
