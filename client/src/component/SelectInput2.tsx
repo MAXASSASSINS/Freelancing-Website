@@ -1,5 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useState } from "react";
-// import "./selectInput.css";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 
 type SelectInput2Props = {
   data: string[];
@@ -79,7 +78,9 @@ const SelectInput2 = (
           }
         })}
       </select>
-      <p className="text-sm absolute -bottom-5 text-warning leading-[1.4]">{warning}</p>
+      <p className="text-sm absolute -bottom-5 text-warning leading-[1.4]">
+        {warning}
+      </p>
     </div>
   );
 };

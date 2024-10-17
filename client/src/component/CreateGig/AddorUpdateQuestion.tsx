@@ -1,7 +1,7 @@
 import React from "react";
 import { TextArea } from "../TextArea";
 import SelectInput2 from "../SelectInput2";
-import { CheckInput } from "../CheckInput/CheckInput";
+import { CheckInput } from "../CheckInput";
 import { IoClose } from "react-icons/io5";
 import { MULTIPLE_CHOICE } from "../../constants/globalConstants";
 

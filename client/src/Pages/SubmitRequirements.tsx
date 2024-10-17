@@ -17,7 +17,7 @@ import { IFile } from "../types/file.types";
 import { Option } from "../types/order.types";
 import { axiosInstance } from "../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../utility/cloudinary";
-import { CheckInput } from "../component/CheckInput/CheckInput";
+import { CheckInput } from "../component/CheckInput";
 import {
   MultipleOptionSelect,
   MultipleOptionSelectRef,

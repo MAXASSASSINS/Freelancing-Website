@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { RoundNumberIcon } from "../RoundNumberIcon/RoundNumberIcon";
+import { RoundNumberIcon } from "../RoundNumberIcon";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useNavigate, useParams } from "react-router-dom";

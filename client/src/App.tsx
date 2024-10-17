@@ -35,7 +35,7 @@ import { Orders } from "./Pages/Orders";
 import { SignUp } from "./Pages/SignUp";
 
 import { useDispatch } from "react-redux";
-import { DataSendingLoading } from "./component/DataSendingLoading/DataSendingLoading";
+import { DataSendingLoading } from "./component/DataSendingLoading";
 import ProtectedRoute from "./component/ProtectedRoute";
 import { ResetPassword } from "./component/ResetPassword";
 import ScrollToTop from "./component/ScrollToTop";

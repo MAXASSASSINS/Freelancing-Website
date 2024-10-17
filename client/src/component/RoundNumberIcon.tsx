@@ -1,5 +1,4 @@
 import React from "react";
-import "./roundNumberIcon.css";
 
 type RoundNumberIconProps = {
   number: number;

@@ -18,7 +18,7 @@ import { IMessage } from "../../types/message.types";
 import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { Avatar } from "../Avatar/Avatar";
-import { DataSendingLoading } from "../DataSendingLoading/DataSendingLoading";
+import { DataSendingLoading } from "../DataSendingLoading";
 import ChatForm, { ChatFormRef } from "./ChatForm";
 import ChatMessageList from "./ChatMessageList";
 

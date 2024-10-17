@@ -6,7 +6,7 @@ import {
   useState,
   Ref
 } from "react";
-import { CheckInput, CheckInputRef } from "../CheckInput/CheckInput";
+import { CheckInput, CheckInputRef } from "../CheckInput";
 
 
 type MultipleOptionSelectProps = {

@@ -33,7 +33,7 @@ import { IUser } from "../types/user.types";
 import { Avatar } from "../component/Avatar/Avatar";
 import ChatForm, { ChatFormRef } from "../component/Chat/ChatForm";
 import ChatMessageList from "../component/Chat/ChatMessageList";
-import { DataSendingLoading } from "../component/DataSendingLoading/DataSendingLoading";
+import { DataSendingLoading } from "../component/DataSendingLoading";
 
 export const Inbox = () => {
   const { windowWidth } = useContext(windowContext);

@@ -3,7 +3,7 @@ import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { IFile } from "../../types/file.types";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-import { FileDropIcon, FileDropIconRef } from "../FileDropIcon/FileDropIcon";
+import { FileDropIcon, FileDropIconRef } from "../FileDropIcon";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
 
 const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
