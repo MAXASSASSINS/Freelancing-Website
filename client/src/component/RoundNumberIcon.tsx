@@ -9,10 +9,10 @@ type RoundNumberIconProps = {
 export const RoundNumberIcon = ({ number, bcgColor }: RoundNumberIconProps) => {
   return (
     <div
-      className="round-number-icon-main"
+      className="flex items-center justify-center w-6 h-6 rounded-full text-white font-semibold text-[0.8rem]"
       style={{ backgroundColor: bcgColor }}
     >
-      <div className="round-number">{number}</div>
+      <div className="p-4">{number}</div>
     </div>
   );
 };
