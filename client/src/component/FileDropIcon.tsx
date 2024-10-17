@@ -4,8 +4,7 @@ import { BsTrash } from "react-icons/bs";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { RiImage2Line } from "react-icons/ri";
 import { VscFilePdf } from "react-icons/vsc";
-import { IFile } from "../../types/file.types";
-import "./fileDropIcon.css";
+import { IFile } from "../types/file.types";
 
 type FileDropIconProps = {
   type: "image" | "video";
@@ -34,9 +33,7 @@ export const FileDropIcon = forwardRef(
     }: FileDropIconProps,
     ref: React.Ref<FileDropIconRef>
   ) => {
-    const [selectedFile, setSelectedFile] = useState<
-      IFile | File | null
-    >(null);
+    const [selectedFile, setSelectedFile] = useState<IFile | File | null>(null);
     const [previewUrl, setPreviewUrL] = useState<string>("");
 
     const preveiwImageHandler = (file: File | null) => {
@@ -106,44 +103,54 @@ export const FileDropIcon = forwardRef(
     return (
       <>
         {selectedFile ? (
-          <div className="selected-file-wrapper file-drop">
+          <div className="relative bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-center w-60 h-40 gap-1 text-[0.9rem] text-light_heading">
             {type === "image" ? (
-              <img src={previewUrl} alt={previewUrl}></img>
+              <img
+                className="w-full h-full"
+                src={previewUrl}
+                alt={previewUrl}
+              ></img>
             ) : (
-              <div className="tick-mark-icon">
-                <IoCheckmarkCircleOutline className="check-mark-icon" />
-                <div className="selected-file-name">{(selectedFile as any).name}</div>
+              <div className="flex flex-col items-center justify-center">
+                <IoCheckmarkCircleOutline className="text-[3.5rem] text-primary mb-4" />
+                <div className="w-40 text-ellipsis overflow-hidden">
+                  {(selectedFile as any).name}
+                </div>
               </div>
             )}
-            <div onClick={handleRemoveSelectedFile} className="trash-icon">
+            <div
+              onClick={handleRemoveSelectedFile}
+              className="absolute top-4 right-4 p-2 bg-light_heading rounded-lg text-white hover:cursor-pointer hover:bg-dark_grey"
+            >
               <BsTrash />
             </div>
           </div>
         ) : (
-          <div className="file-drop">
+          <div className="relative bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-no_focus text-center w-60 h-40 gap-1">
             {type === "image" ? (
               <>
-                <RiImage2Line className="file-drop-icons" />
+                <RiImage2Line className="text-5xl" />
                 <div>Drag & drop a Photo or</div>
               </>
             ) : type === "video" ? (
               <>
-                <AiOutlineVideoCamera className="file-drop-icons" />
+                <AiOutlineVideoCamera className="text-5xl" />
                 <div>Drag & drop a Video or</div>
               </>
             ) : (
               <>
-                <VscFilePdf className="file-drop-icons" />
+                <VscFilePdf className="text-5xl" />
                 <div>Drag & drop a Pdf or</div>
               </>
             )}
-            <div className="file-input-wrapper">
-              <label>
+            <div className="text-[0.9rem] leading-8">
+              <label className="cursor-pointer block text-link">
                 Browse
                 <input
                   onChange={changeHandler}
                   accept={fileAcceptType}
                   type="file"
+                  className="hidden"
                 />
               </label>
             </div>
