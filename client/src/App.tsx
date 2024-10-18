@@ -12,7 +12,7 @@ import { Header } from "./component/Header/Header";
 import { NotFoundPage } from "./component/NotFoundPage/NotFoundPage";
 import { Sidebar } from "./component/Sidebar/Sidebar";
 import { Test } from "./component/Test/Test";
-import { CreateGig } from "./Pages/CreateGig/CreateGig";
+import { CreateGig } from "./Pages/CreateGig";
 import { GigDetail } from "./Pages/GigDetail/GigDetail";
 import { Home } from "./Pages/Home";
 import { Inbox } from "./Pages/Inbox";

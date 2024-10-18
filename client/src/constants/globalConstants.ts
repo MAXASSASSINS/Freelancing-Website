@@ -5,6 +5,9 @@ export type QuestionType = typeof FREE_TEXT | typeof MULTIPLE_CHOICE;
 export const CHOOSE_A_DELIVERY_TIME = "Choose a delivery time";
 export const SELECT_NUMBER_OF_REVISIONS = "Select no. of revisions";
 
+export const SELECT_A_CATEGORY = "Select a category";
+export const SELECT_A_SUB_CATEGORY = "Select a sub-category";
+
 export const KB = 1024;
 export const MB = 1024 * 1024;
 export const GB = 1024 * 1024 * 1024;

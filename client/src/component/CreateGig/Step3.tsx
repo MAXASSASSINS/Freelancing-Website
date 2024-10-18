@@ -5,28 +5,30 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
-import { TextEditor, TextEditorRef } from "../TextEditor/TextEditor";
-import { RootState } from "../../store";
 import { useSelector } from "react-redux";
+import { StepProps, StepRef } from "../../Pages/CreateGig";
+import { RootState } from "../../store";
+import { TextEditor, TextEditorRef } from "../TextEditor/TextEditor";
 
 const Step3 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
   const gigDescriptionRef = useRef<TextEditorRef>(null);
-  const [minLengthError, setMinLengthError] = useState<boolean>(false);
-  const [maxLengthError, setMaxLengthError] = useState<boolean>(false);
+  const [descriptionError, setDescriptionError] = useState<string>("");
 
   const checkForWarnings = () => {
     if (gigDescriptionRef.current?.getDescriptionLength()! < 120) {
-      setMinLengthError(true);
+      setDescriptionError(
+        "Description should be at least 120 characters long."
+      );
       return true;
     }
     if (gigDescriptionRef.current?.getDescriptionLength()! > 1200) {
-      setMaxLengthError(true);
+      setDescriptionError(
+        "Description should be at most 1200 characters long."
+      );
       return true;
     }
-    setMinLengthError(false);
-    setMaxLengthError(false);
+    setDescriptionError("");
   };
 
   const handleSubmit = async () => {
@@ -53,20 +55,17 @@ const Step3 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="description">
-      <div className="description-wrapper pr-0">
-        <h1>Description</h1>
-        <h3>Briefly Describe Your Gig</h3>
+    <div className="mt-16 mx-[18%] mb-4">
+      <div className="p-8 pr-0">
+        <h1 className="pb-4 text-[2rem] text-light_heading border-b border-b-no_focus mb-12">
+          Description
+        </h1>
+        <h3 className="text-base text-light_heading mb-6 capitalize">
+          Briefly Describe Your Gig
+        </h3>
         <TextEditor maxLength={1200} ref={gigDescriptionRef} />
-        {minLengthError && (
-          <p className="gig-description-error">
-            Description should be at least 120 chars long.
-          </p>
-        )}
-        {maxLengthError && (
-          <p className="gig-description-error">
-            Description should be at most 1200 chars long.
-          </p>
+        {descriptionError && (
+          <p className="text-warning text-sm -mt-6">{descriptionError}</p>
         )}
       </div>
     </div>

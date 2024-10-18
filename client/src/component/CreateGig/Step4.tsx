@@ -6,22 +6,21 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
-import { AppDispatch, RootState } from "../../store";
-import { useSelector } from "react-redux";
+import { AiOutlineEllipsis } from "react-icons/ai";
+import { TbGridDots } from "react-icons/tb";
+import { TfiText } from "react-icons/tfi";
+import { useDispatch, useSelector } from "react-redux";
+import { RESET_ALL } from "../../constants/createGigQuestionConstants";
+import { FREE_TEXT, MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { StepProps, StepRef } from "../../Pages/CreateGig";
 import {
   createGigQuestionReducer,
   QUESTION_DETAILS_INITIAL_STATE,
 } from "../../reducers/createGigQuestionReducer";
-import { FREE_TEXT, MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { AppDispatch, RootState } from "../../store";
 import { IGigRequirement } from "../../types/gig.types";
-import { TbGridDots } from "react-icons/tb";
-import { TfiText } from "react-icons/tfi";
 import { AddorUpdateQuestion } from "./AddorUpdateQuestion";
 import { questionTypeData } from "./createGigData";
-import { useDispatch } from "react-redux";
-import { AiOutlineEllipsis } from "react-icons/ai";
-import { RESET_ALL } from "../../constants/createGigQuestionConstants";
 
 const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -277,18 +276,20 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }, [gigDetail]);
 
   return (
-    <div className="requirements pb-8">
-      <div className="requirements-wrapper">
-        <header>
+    <div className="mt-16 mb-4 mx-[18%] pb-8">
+      <div className="rounded-[5px] border border-dark_separator p-8 bg-white">
+        <header className="text-lg font-semibold text-light_grey mb-4">
           Get all the information you need from buyers to get started
         </header>
-        <p className="requirements-message">
+        <p className="text-no_focus text-sm mb-4">
           Add questions to help buyers provide you with exactly what you need to
           start working on their order.
         </p>
-        <div className="your-questions">
-          <hr />
-          <strong>Your Questions</strong>
+        <div className="text-center flex items-center justify-between uppercase text-[0.8rem] text-light_heading relative mb-4">
+          <hr className="text-no_focus w-full" />
+          <strong className="absolute translate-x-1/2 leading-4 right-1/2 z-[1] bg-white px-8 text-xs">
+            Your Questions
+          </strong>
         </div>
 
         {showEditQuestion ? (
@@ -335,9 +336,9 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           />
         ) : (
           questionsDetails.map((question, index) => (
-            <div className="question-details-section">
-              <div className="question-type">
-                <div className="text-or-multiple-choice">
+            <div className=" border border-dark_separator rounded-[3px] p-5 my-4 shadow-[0_0_3px_0] shadow-dark_separator">
+              <div className=" flex items-center justify-between text-icons mb-4">
+                <div className=" flex items-center gap-2 text-xs">
                   {question.type === FREE_TEXT ? (
                     <span>
                       <TfiText />
@@ -350,24 +351,30 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   <span className="capitalize">{question.type}</span>
                 </div>
                 <div
-                  className="edit-and-remove"
+                  className="relative"
                   // ref={hideEditRemoveOptionRefs[index]}
                   ref={hideEditRemoveOptionRefs.current[index]}
                 >
                   <div
-                    className="ellipsis-icon"
+                    className=" text-icons p-[0.2rem] hover:cursor-pointer hover:bg-separator hover:rounded-full"
                     onClick={() => handleShowEditQuestion(index)}
                   >
                     <AiOutlineEllipsis />
                   </div>
                   {question.showEditQuestion && (
-                    <div className="edit-modal">
+                    <div>
                       {
-                        <div className="edit-and-remove-options">
-                          <div onClick={() => handleEditQuestion(index)}>
+                        <div className="border border-dark_separator absolute -left-12 top-6 minw-[7rem] z-[5] bg-white shadow-[0_0_3px_0] shadow-dark_separator">
+                          <div
+                            className="p-3 text-light_heading cursor-pointer hover:bg-separator "
+                            onClick={() => handleEditQuestion(index)}
+                          >
                             Edit
                           </div>
-                          <div onClick={() => handleRemoveQuestion(index)}>
+                          <div
+                            className="p-3 text-light_heading cursor-pointer hover:bg-separator "
+                            onClick={() => handleRemoveQuestion(index)}
+                          >
                             Remove
                           </div>
                         </div>
@@ -376,10 +383,12 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   )}
                 </div>
               </div>
-              <div className="question">{question.question}</div>
+              <div className="font-bold text-light_grey text-sm mb-3">
+                {question.question}
+              </div>
 
               {question.type === MULTIPLE_CHOICE && (
-                <div className="options">
+                <div className="text-sm">
                   {getQuestionOptions(question.options)}
                 </div>
               )}
@@ -387,15 +396,18 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           ))
         )}
         {showQuestions && (
-          <div className="add-question-button">
-            <button onClick={() => setShowQuestions(false)}>
+          <div className="mt-4">
+            <button
+              className="bg-white py-3 px-6 rounded text-link border border-link transition-all duration-200 hover:bg-link hover:text-white hover:cursor-pointer"
+              onClick={() => setShowQuestions(false)}
+            >
               {" "}
               + Add New Question
             </button>
           </div>
         )}
         {requirementsShortageWarning && (
-          <p className="requirements-shortage-warning">
+          <p className="text-warning text-sm mt-4">
             You must add at least 1 requirement
           </p>
         )}

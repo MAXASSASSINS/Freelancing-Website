@@ -9,20 +9,20 @@ import { IoIosClose } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
+import { StepProps, StepRef } from "../../Pages/CreateGig";
 import { RootState } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
 import {
   CountryWithPhoneCodes,
   countryWithPhoneCodesData,
 } from "./CountryPhoneCode";
+import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
 
 type Step6Props = {};
 
 const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
+  const updateGlobalLoading = useUpdateGlobalLoading();
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
-  const params = useParams();
-  const navigate = useNavigate();
   const [showVerifyPhoneNumberModal, setShowVerifyPhoneNumberModal] =
     useState(false);
   const [country, setCountry] = useState("");
@@ -68,6 +68,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const handleClickOnCountryListItem = (item: CountryWithPhoneCodes) => {
     setCountry(item.name);
     setDialCode(item.dial_code);
+    setShowCountryDropdown(false);
   };
 
   const handleVerificationCodeChange = (
@@ -117,6 +118,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   };
 
   const handleVerifyCode = async () => {
+    updateGlobalLoading(true, "Verifying code...");
     const phone = {
       code: dialCode,
       number: phoneNumber,
@@ -125,19 +127,25 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
       code: verificationCode,
       phone: phone,
     };
-    const { data } = await axiosInstance.post("/verify/code", body);
-
-    if (data.success) {
-      if (verificationCodeErrorRef.current)
-        verificationCodeErrorRef.current.style.display = "none";
-      setShowVerifyPhoneNumberModal(false);
-      setShowVerifyCodeInput(false);
-      setVerificationCode("");
-      setShowGigPublishFinalModal(true);
-      setVerifiedStatusOfSeller(true);
-    } else {
-      if (verificationCodeErrorRef.current)
-        verificationCodeErrorRef.current.style.display = "block";
+    try {
+      const { data } = await axiosInstance.post("/verify/code", body);
+      if (data.success) {
+        if (verificationCodeErrorRef.current)
+          verificationCodeErrorRef.current.style.display = "none";
+        setShowVerifyPhoneNumberModal(false);
+        setShowVerifyCodeInput(false);
+        setVerificationCode("");
+        setShowGigPublishFinalModal(true);
+        setVerifiedStatusOfSeller(true);
+      } else {
+        if (verificationCodeErrorRef.current)
+          verificationCodeErrorRef.current.style.display = "block";
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong. Please try again later.");
+    } finally {
+      updateGlobalLoading(false);
     }
   };
 
@@ -165,28 +173,32 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   return (
     <>
-      <div className="publish mb-12">
-        <div className="publish-wrapper">
+      <div className="mb-12 mt-16 mx-[18%] bg-white">
+        <div className="py-20 px-12">
           {showGigPublishFinalModal && verifiedStatusOfSeller ? (
             <>
-              <div className="gig-publish-final-modal">
-                <h3>Almost there...</h3>
-                <p>
+              <div className="text-center">
+                <h3 className="text-4xl text-primary">Almost there...</h3>
+                <p className="text-xl text-light_heading mt-4 font-bold">
                   Let's publish your Gig and get <br /> some buyers rolling in.
                 </p>
               </div>
             </>
           ) : (
             <>
-              <div className="publish-image-wrapper"></div>
-              <div className="publish-text-wrapper">
-                <h3>Congratulations!</h3>
-                <p className="main-para">
+              <img
+                className="h-40 flex justify-center w-full"
+                src="/images/publish_gig.svg"
+                alt=""
+              />
+              <div className="border border-no_focus p-8 mt-8 text-light_grey">
+                <h3 className="font-bold text-[2rem] mb-4">Congratulations!</h3>
+                <p className="leading-6 font-bold mb-4">
                   You're almost done with your first Gig.
                 </p>
-                <p>
+                <p className="leading-6">
                   Before you start selling on FreelanceMe, there is one last
-                  thing we need you to do: The security of your account is
+                  thing we need you to do. The security of your account is
                   important to us. Therefore, we require all our sellers to
                   verify their phone number before we can publish their Gig.
                 </p>
@@ -195,33 +207,34 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           )}
 
           {showVerifyPhoneNumberModal && (
-            <div className="verify-phone-number-modal-wrapper">
-              <div className="verify-phone-number-modal">
+            <div className="fixed z-[99] w-full h-full overflow-auto bg-[rgba(0,0,0,0.4)] left-0 top-0">
+              <div className="rounded-[5px] relative bg-[#fefefe] w-[30rem] my-40 mx-auto p-10 border ">
                 <div
-                  className="close-icon"
+                  className="absolute right-4 top-4 text-icons text-2xl hover:cursor-pointer"
                   onClick={handleCloseVerifyPhoneNumberModal}
                 >
                   <IoIosClose />
                 </div>
-                <h5>Verify Phone Number</h5>
+                <h5 className="mb-4 font-bold text-xl">Verify Phone Number</h5>
 
                 {showVerifyCodeInput ? (
                   <>
-                    <p className="verfication-code-sent-notification">
+                    <p className="text-[0.9rem] text-icons mb-6">
                       A verification code has been sent to:
                     </p>
 
-                    <div className="verification-code-recipent-number">
+                    <div className="text-light_heading flex gap-1 justify-center font-bold">
                       <span>{dialCode}</span>
                       <span>-</span>
                       <span>{phoneNumber}</span>
                     </div>
 
-                    <div className="verification-code-wrapper">
-                      <p className="enter-verification-code-message">
+                    <div className="flex items-center flex-col gap-4 relative">
+                      <p className="text-center text-2xl mt-4 mx-8 text-light_grey">
                         Please enter the Verification code
                       </p>
                       <input
+                        className="h-8 py-2 px-4 w-24 border border-no_focus outline-none focus:border-dark_grey"
                         type="text"
                         inputMode="numeric"
                         maxLength={6}
@@ -230,29 +243,25 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                       />
                       <p
                         ref={verificationCodeErrorRef}
-                        className="invalid-code-message"
+                        className="text-warning text-center absolute top-[7rem] hidden text-sm leading-5"
                       >
                         Oops... that code is wrong..
                         <br />
                         Please verify your code and try again.
                       </p>
                       <button
-                        className={
-                          verificationCode.length === 6 ? "active" : ""
-                        }
+                        className={`px-8 py-3 mt-16 border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
+                        disabled={verificationCode.length !== 6}
                         onClick={handleVerifyCode}
                       >
                         Submit Code
                       </button>
                     </div>
 
-                    <p className="verification-code-not-receive-message">
+                    <p className="text-sm text-icons mt-4 text-center mx-2">
                       If you did not receive the code, please click
                       <span
-                        // onClick={() => {
-                        //   setShowVerifyCodeInput(false);
-                        //   setVerificationCode("");
-                        // }}
+                        className="text-link cursor-pointer hover:underline"
                         onClick={handleGoBackToEnterPhoneNumber}
                       >
                         {" "}
@@ -264,14 +273,17 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   </>
                 ) : (
                   <>
-                    <p className="thanks-para">
+                    <p className=" text-light_heading text-[0.9rem] mb-6">
                       Thank you for taking a moment to verify your phone number.{" "}
                     </p>
 
-                    <div className="modal-inputs-wrapper">
-                      <div className="modal-input">
-                        <h6>Enter Country</h6>
+                    <div className="flex flex-col gap-10 mb-16">
+                      <div className="relative">
+                        <h6 className="text-[0.9rem] mb-2 font-bold">
+                          Enter Country
+                        </h6>
                         <input
+                          className="py-[0.4rem] px-2 border border-no_focus text-[0.9rem] w-full focus:outline-none focus:border-dark_grey"
                           type="text"
                           value={country}
                           onChange={handleCountryChange}
@@ -281,11 +293,11 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                         {showCountryDropdown &&
                           country &&
                           filteredCountries.length > 0 && (
-                            <ul className="country-code-wrapper">
+                            <ul className="country-code-wrapper bg-white border border-no_focus border-t-0 hover:cursor-pointer absolute z-10 w-full">
                               {filteredCountries.map((countryData, index) => {
                                 return (
                                   <li
-                                    className="country-code"
+                                    className="country-code p-[0.4rem] list-none block hover:bg-dark_separator"
                                     onClick={() =>
                                       handleClickOnCountryListItem(countryData)
                                     }
@@ -297,30 +309,37 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                             </ul>
                           )}
                       </div>
-                      <div className="modal-input">
-                        <h6>Enter Phone Number</h6>
-                        {dialCode && <p className="dial-code">{dialCode} - </p>}
+                      <div className="relative">
+                        <h6 className="text-[0.9rem] mb-2 font-bold">
+                          Enter Phone Number
+                        </h6>
+                        {dialCode && (
+                          <p className="absolute text-no_focus text-[0.9rem] bottom-2 left-2 z-[1]">
+                            {dialCode} -{" "}
+                          </p>
+                        )}
                         <input
+                          className="py-[0.4rem] pl-16 px-2 border border-no_focus text-[0.9rem] w-full focus:outline-none focus:border-dark_grey"
                           type="tel"
                           value={phoneNumber}
+                          maxLength={20}
                           onChange={handlePhoneNumberChange}
                           onFocus={() => setShowCountryDropdown(false)}
                         />
                       </div>
                       <div
                         ref={invalidPhoneNumberRef}
-                        className="wrong-phone-number-warning"
+                        className="text-warning text-sm -mt-8 leading-5"
                       >
                         Please enter a valid number
                       </div>
                     </div>
 
-                    <div className="verify-buttons">
+                    <div className="flex justify-end">
                       <button
-                        className={
-                          phoneNumber.length >= 5 && country && dialCode
-                            ? "button-active"
-                            : ""
+                        className={`px-8 py-3 border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
+                        disabled={
+                          phoneNumber.length < 5 || !country || !dialCode
                         }
                         onClick={handleVerifyPhoneNumber}
                       >
@@ -334,11 +353,21 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           )}
         </div>
       </div>
-      <div className="save-and-verify">
+      <div className="save-and-verify text-right mx-[18%] pb-4">
         {showGigPublishFinalModal && verifiedStatusOfSeller ? (
-          <button onClick={handleSubmit}>Publish Gig</button>
+          <button
+            className="py-3 px-4 capitalize bg-primary border-none text-white rounded-[3px] hover:cursor-pointer hover:bg-primary_hover"
+            onClick={handleSubmit}
+          >
+            Publish Gig
+          </button>
         ) : (
-          <button onClick={handleShowVerifyPhoneNumberModal}>Verify Now</button>
+          <button
+            className="py-3 px-4 capitalize bg-primary border-none text-white rounded-[3px] hover:cursor-pointer hover:bg-primary_hover"
+            onClick={handleShowVerifyPhoneNumberModal}
+          >
+            Verify Now
+          </button>
         )}
       </div>
     </>

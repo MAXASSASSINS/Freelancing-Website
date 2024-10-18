@@ -1,10 +1,16 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
-import { IFile } from "../../types/file.types";
-import { RootState } from "../../store";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
-import { FileDropIcon, FileDropIconRef } from "../FileDropIcon";
+import { StepProps, StepRef } from "../../Pages/CreateGig";
+import { RootState } from "../../store";
+import { IFile } from "../../types/file.types";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
+import { FileDropIcon, FileDropIconRef } from "../FileDropIcon";
 
 const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
@@ -47,8 +53,6 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
         images.push(item);
       }
     });
-    console.log(images);
-    console.log(sellerShowcaseVideo);
     const res1 = await uploadToCloudinaryV2(images);
     const res2 = await uploadToCloudinaryV2(
       sellerShowcaseVideo ? [sellerShowcaseVideo] : []
@@ -118,22 +122,23 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="gallery">
-      <div className="gallery-wrapper pr-0">
-        <h3>Showcase Your Services In A Gig Gallery</h3>
-        <p className="heading-para">
+    <div className="mt-16 mb-4 mx-[18%] relative">
+      <div className="p-8 pr-0">
+        <h3 className="text-[2rem] font-semibold mb-4">
+          Showcase Your Services In A Gig Gallery
+        </h3>
+        <p className="text-light_heading">
           Encourage buyers to choose your Gig by featuring a variety of your
           work.
         </p>
-
-        <div className="gallery-file-formats-wrapper">
-          <section>
-            <h4 className="gallery-heading">Images(up to 3)</h4>
-            <p className="gallery-heading-para">
+        <div className="flex flex-col">
+          <section className="border-b border-b-no_focus py-8">
+            <h4 className="text-xl font-bold">Images(up to 3)</h4>
+            <p className="text-[0.9rem] text-icons my-1">
               Get noticed by the right buyers with visual examples of your
               services.
             </p>
-            <div className="custom-file-input-wrapper">
+            <div className="mt-8 flex gap-4">
               {[1, 2, 3].map((num, index) => {
                 return (
                   <FileDropIcon
@@ -149,20 +154,22 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               })}
             </div>
             {sellerShowcaseImagesError && (
-              <p className="gallery-input-error">{sellerShowcaseImagesError}</p>
+              <p className="text-warning relative text-sm top-2">
+                {sellerShowcaseImagesError}
+              </p>
             )}
           </section>
-          <section className="video">
-            <h4 className="gallery-heading">Video (one only)</h4>
-            <p className="gallery-heading-para">
+          <section className="video py-8">
+            <h4 className="text-xl font-bold">Video (one only)</h4>
+            <p className="text-[0.9rem] text-icons my-1">
               Capture buyers' attention with a video that showcases your
               service.
             </p>
-            <p className="size-limit-warning">
+            <p className="text-xs text-icons mt-2">
               Please choose a video shorter than 75 seconds and smaller than
               50MB
             </p>
-            <div className="custom-file-input-wrapper">
+            <div className="mt-8 flex gap-4">
               <FileDropIcon
                 fileAcceptType="video/*"
                 type="video"
@@ -174,7 +181,9 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               />
             </div>
             {sellerShowcaseVideoError && (
-              <p className="gallery-input-error">{sellerShowcaseVideoError}</p>
+              <p className="text-warning relative text-sm top-2">
+                {sellerShowcaseVideoError}
+              </p>
             )}
           </section>
         </div>

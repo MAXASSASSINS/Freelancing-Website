@@ -5,27 +5,17 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import ReactSelect, { ActionMeta, MultiValue } from "react-select";
-import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
-import { AppDispatch, RootState } from "../../store";
+import { StepProps, StepRef } from "../../Pages/CreateGig";
+import { RootState } from "../../store";
 import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import { TextArea, TextAreaRef } from "../TextArea";
-import { StepProps, StepRef } from "../../Pages/CreateGig/CreateGig";
 import { categoriesData, subCategoriesData } from "./createGigData";
 import { TagOption, tagOptions } from "./tagsData";
 
-// export type Step1Ref = {
-//   handleSubmit: () => Promise<boolean>
-// };
-
 const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
-  const navigate = useNavigate();
-  const params = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
-  const updateGlobalLoading = useUpdateGlobalLoading();
   const gigTitleInputRef = useRef<TextAreaRef>(null);
   const [gigTitleInput, setGigTitleInput] = useState<string>("I will ");
   const [enalbeGigTitleInputWarning, setEnalbeGigTitleInputWarning] =
@@ -156,33 +146,19 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="overview pb-8">
-      <div className="overview-wrapper">
-        <div className="left-side">
-          <div>
-            <h3>Gig title</h3>
-            <p>
+    <div className="overview mt-16 mx-[18%] mb-4 text-dark_grey">
+      <div className="overview-wrapper flex flex-col gap-8 bg-white border border-no_focus rounded-md p-8">
+        {/* TITLE SECTION */}
+        <section className="flex gap-16">
+          <div className="max-w-[24ch]">
+            <h3 className="text-base font-semibold mb-3">Gig title</h3>
+            <p className="text-[0.9rem] leading-[1.4] text-no_focus">
               As your Gig storefront, your title is the most important place to
               include keywords that buyers would likely use to search for a
               service like yours.
             </p>
           </div>
-          <div>
-            <h3>Category</h3>
-            <p>
-              Choose the category and sub-category most suitable for your Gig.
-            </p>
-          </div>
-          <div>
-            <h3>Search tags</h3>
-            <p>
-              Tag your Gig with buzz words that are relevant to the services you
-              offer. Use all 5 tags to get found.
-            </p>
-          </div>
-        </div>
-        <div className="right-side">
-          <div>
+          <div className="flex-grow">
             <TextArea
               maxLength={100}
               minLength={0}
@@ -193,13 +169,23 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               ref={gigTitleInputRef}
             />
             {enalbeGigTitleInputWarning && (
-              <div className="gig-title-input-warning">
+              <div className="text-warning text-sm -mt-5">
                 15 characters minimum
               </div>
             )}
           </div>
-          <div className="category-section">
-            <div>
+        </section>
+
+        {/* CATEGORY SECTION */}
+        <section className="flex gap-16">
+          <div className="max-w-[24ch]">
+            <h3 className="text-base font-semibold mb-3">Category</h3>
+            <p className="text-[0.9rem] leading-[1.4] text-no_focus">
+              Choose the category and sub-category most suitable for your Gig.
+            </p>
+          </div>
+          <div className="category-section flex-grow">
+            <div className="flex justify-between gap-8">
               <SelectInput2
                 defaultOption={"Select a category"}
                 data={categoriesData}
@@ -218,13 +204,25 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               />
             </div>
             {categoryWarning !== "" && (
-              <div className="category-warning">{categoryWarning}</div>
+              <div className="category-warning text-warning text-sm">
+                {categoryWarning}
+              </div>
             )}
           </div>
+        </section>
 
-          <div className="keyword-section">
-            <h6>Positive keywords</h6>
-            <p>
+        {/* TAGS SECTION */}
+        <section className="flex gap-16">
+          <div className="max-w-[24ch]">
+            <h3 className="text-base font-semibold mb-3">Search tags</h3>
+            <p className="text-[0.9rem] leading-[1.4] text-no_focus">
+              Tag your Gig with buzz words that are relevant to the services you
+              offer. Use all 5 tags to get found.
+            </p>
+          </div>
+          <div className="keyword-section flex flex-col gap-2 text-[0.9rem] flex-grow">
+            <h6 className="font-semibold">Positive keywords</h6>
+            <p className="leading-4 text-no_focus">
               Enter search terms you feel your buyers will use when looking for
               your service.
             </p>
@@ -232,23 +230,24 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               ref={tagListRef}
               options={tagOptions}
               isMulti
+              className="[&>input]:w-full [&>input]:border [&>input]:border-no_focus [&>input]:rounded-none [&>input]:p-2 [&>input]:mt-4 [&>input]:mb-2"
               maxMenuHeight={150}
               placeholder="Enter your tags"
               onChange={handleTagsChange}
               value={tags}
               menuPlacement="top"
             />
-            <p className="recommend">
+            <p className="recommend text-[0.8rem] leading-4 text-no_focus">
               5 tags maximum. Use letters and numbers only. <br />
               Tags should be comma seprated.
             </p>
             {tagListWarning && (
-              <p className="tag-list-warning">
+              <p className="tag-list-warning text-warning text-sm">
                 Number of tags is not in range of 1 to 5
               </p>
             )}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -16,7 +16,10 @@ type AddorUpdateQuestionProps = {
   questionType: string;
   options: string[];
   questionTypeData: string[];
-  handleOptionChange: (e: React.ChangeEvent<HTMLInputElement>, index: number) => void;
+  handleOptionChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => void;
   handleRemoveOption: (index: number) => void;
   getRequiredStatusOfQuestion: (val: boolean) => void;
   getMultipleOptionSelectionStatus: (val: boolean) => void;
@@ -48,14 +51,12 @@ export const AddorUpdateQuestion = ({
   handleUpdateQuestion,
   indexOfQuestionToEdit,
 }: AddorUpdateQuestionProps) => {
-
   console.log("questionType", questionType, questionType === MULTIPLE_CHOICE);
-  
 
   return (
-    <div className="add-question-wrapper">
-      <header>
-        <h6>Add a question</h6>
+    <div className="bg-separator border border-dark_separator p-6 text-light_heading">
+      <header className="font-normal flex justify-between text-base mb-3">
+        <h6 className="text-light_grey font-semibold">Add a question</h6>
         <CheckInput
           label="Required"
           getInputCheckedVal={getRequiredStatusOfQuestion}
@@ -63,7 +64,7 @@ export const AddorUpdateQuestion = ({
         />
       </header>
 
-      <div className="question-box">
+      <div className="mb-4 relative">
         <TextArea
           maxLength={400}
           minLength={2}
@@ -75,7 +76,7 @@ export const AddorUpdateQuestion = ({
           defaultText={questionTitle}
         />
         <div
-          className="question-description-warning"
+          className="absolute text-warning text-sm bottom-0"
           style={{
             display:
               questionTitle.trim().length < 2 && warningEnabled
@@ -87,9 +88,11 @@ export const AddorUpdateQuestion = ({
         </div>
       </div>
 
-      <div className="question-form-and-options">
-        <h6>Get it in a form of:</h6>
-        <div className="question-type-wrapper">
+      <div>
+        <h6 className="font-semibold text-light_heading mb-4">
+          Get it in a form of:
+        </h6>
+        <div className="flex justify-between">
           <div>
             <SelectInput2
               data={questionTypeData}
@@ -100,7 +103,7 @@ export const AddorUpdateQuestion = ({
           </div>
 
           {questionType === MULTIPLE_CHOICE && (
-            <div className="">
+            <div>
               <CheckInput
                 label="Enable to choose more than 1 option"
                 getInputCheckedVal={getMultipleOptionSelectionStatus}
@@ -112,25 +115,26 @@ export const AddorUpdateQuestion = ({
       </div>
 
       {questionType === MULTIPLE_CHOICE && (
-        <div className="add-options-wrapper">
+        <div className="mt-5">
           {options.map((option, index) => (
             <div className="option" key={"option" + index}>
-              <div className="option-wrapper">
+              <div className="relative w-full flex items-center">
                 <input
+                  className="block w-full my-2 p-2 border border-no_focus rounded placeholder:text-no_focus hover:border-light_heading focus:outline-none"
                   placeholder="Add Option"
                   onChange={(e) => handleOptionChange(e, index)}
                   value={option}
                 />
                 <span
                   style={{ display: options.length <= 2 ? "none" : "block" }}
-                  className="close-icon"
+                  className="absolute right-4 text-dark_grey hover:cursor-pointer"
                   onClick={() => handleRemoveOption(index)}
                 >
                   <IoClose />
                 </span>
               </div>
               <div
-                className="option-warning"
+                className="text-warning text-sm -mt-2 mb-4"
                 style={{
                   display:
                     options[index].trim().length === 0 && warningEnabled
@@ -142,26 +146,34 @@ export const AddorUpdateQuestion = ({
               </div>
             </div>
           ))}
-          <button onClick={handleAddNewOption}>+ Add New Option</button>
+          <button
+            onClick={handleAddNewOption}
+            className="px-8 py-3 rounded border border-link text-link mt-2 hover:bg-link hover:cursor-pointer hover:text-white"
+          >
+            + Add New Option
+          </button>
         </div>
       )}
 
-      <div className="add-cancel-buttons-wrapper">
-        <button className="cancel-add" onClick={handleCancelAdd}>
+      <div className="flex mt-4 justify-end">
+        <button
+          className="px-8 py-3 rounded transition-all duration-200 hover:cursor-pointer border border-light_heading text-light_heading mr-4 hover:bg-light_heading hover:text-white"
+          onClick={handleCancelAdd}
+        >
           Cancel
         </button>
         <button
-          className="add-question"
+          className="text-white rounded transition-all duration-200  px-8 py-3 bg-primary border-none hover:bg-primary_hover hover:cursor-pointer"
           style={{ display: !edit ? "block" : "none" }}
           onClick={handleAddQuestion}
         >
           Add
         </button>
         <button
-          className="add-question"
+          className="text-white transition-all duration-200 hover:cursor-pointer rounded  px-8 py-3 bg-primary border-none hover:bg-primary_hover"
           style={{ display: edit ? "block" : "none" }}
           onClick={() =>
-            handleUpdateQuestion  && handleUpdateQuestion(indexOfQuestionToEdit!)
+            handleUpdateQuestion && handleUpdateQuestion(indexOfQuestionToEdit!)
           }
         >
           Update

@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getGigDetail, resetGigDetail } from "../../actions/gigAction";
-import { AppDispatch } from "../../store";
-import { axiosInstance } from "../../utility/axiosInstance";
-import "./CreateGig.css";
-import Step1 from "../../component/CreateGig/Step1";
-import Step2 from "../../component/CreateGig/Step2";
-import Step3 from "../../component/CreateGig/Step3";
-import Step4 from "../../component/CreateGig/Step4";
-import Step5 from "../../component/CreateGig/Step5";
-import Step6 from "../../component/CreateGig/Step6";
-import StepIndicator, { StepIndicatorRef } from "../../component/CreateGig/StepIndicator";
+import { getGigDetail, resetGigDetail } from "../actions/gigAction";
+import Step1 from "../component/CreateGig/Step1";
+import Step2 from "../component/CreateGig/Step2";
+import Step3 from "../component/CreateGig/Step3";
+import Step4 from "../component/CreateGig/Step4";
+import Step5 from "../component/CreateGig/Step5";
+import Step6 from "../component/CreateGig/Step6";
+import StepIndicator, {
+  StepIndicatorRef,
+} from "../component/CreateGig/StepIndicator";
+import { AppDispatch } from "../store";
+import { axiosInstance } from "../utility/axiosInstance";
 
 export type StepProps = {
   handleSendData: (payload: any) => Promise<boolean>;
@@ -93,7 +94,7 @@ export const CreateGig = () => {
   };
 
   return (
-    <div className="create-gig-main">
+    <div className="create-gig-main min-h-[calc(100vh-81px)] bg-separator text-light_grey">
       <StepIndicator
         ref={stepIndicatorRef}
         currentStep={currentStep}
@@ -119,8 +120,9 @@ export const CreateGig = () => {
         <Step6 handleSendData={handleSendData} ref={step6Ref} />
       )}
       {currentStep < 6 && (
-        <div className="save-and-verify">
+        <div className="text-right mx-[18%] pb-4">
           <button
+            className="py-3 px-4 capitalize bg-primary border-none text-white rounded-[3px] hover:cursor-pointer hover:bg-primary_hover"
             onClick={() => stepIndicatorRef.current?.handleSaveAndContinue()}
           >
             Save & Continue
@@ -129,9 +131,9 @@ export const CreateGig = () => {
       )}
 
       {currentStep > 1 && (
-        <div className="back-button">
+        <div className="back-button text-right mx-[18%] pb-4">
           <button
-            className="cursor-pointer"
+            className="py-3 px-4 text-primary border-none capitalize cursor-pointer hover:underline"
             onClick={() => stepIndicatorRef.current?.handleStepBack()}
           >
             back
