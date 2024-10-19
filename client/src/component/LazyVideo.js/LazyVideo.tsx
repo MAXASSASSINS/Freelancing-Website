@@ -24,7 +24,7 @@ export const LazyVideo = ({
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <video
         data-poster={getPosterForVideo(file.url)}
         poster={lazyLoad ? "" : getPosterForVideo(file.url)}
@@ -35,7 +35,7 @@ export const LazyVideo = ({
         preload="none"
       ></video>
       <Blurhash
-        className="absolute z-20 top-0 left-0"
+        className="!absolute z-20 top-0 left-0"
         hash={blurhash ? blurhash : defaultBlurhash}
         width="100%"
         height="100%"
