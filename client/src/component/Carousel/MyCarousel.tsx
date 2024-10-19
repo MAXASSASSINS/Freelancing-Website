@@ -36,8 +36,6 @@ const MyCarousel: React.FC<PropType> = (props) => {
     ? "contain"
     : "cover";
 
-  console.log(gig.video);
-
   return (
     <section className="embla group relative">
       <div className="embla__viewport aspect-[16/10]" ref={emblaRef}>
