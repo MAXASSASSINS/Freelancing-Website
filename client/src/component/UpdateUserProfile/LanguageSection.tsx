@@ -119,7 +119,7 @@ const LanguageSection = (
               <SelectInput2
                 data={languagesData}
                 defaultOption={SELECT_LANGUAGE}
-                getChoosenOption={handleCurrLanguageChange}
+                onChange={handleCurrLanguageChange}
                 ref={currLanguageRef}
                 style={{ borderRadius: "2px" }}
               />

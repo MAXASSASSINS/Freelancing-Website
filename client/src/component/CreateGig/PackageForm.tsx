@@ -152,7 +152,7 @@ const PackageForm = (
           defaultOption={CHOOSE_A_DELIVERY_TIME}
           ref={deliveryTimeRef}
           warning={deliveryTimeWarning}
-          getChoosenOption={(option) => {
+          onChange={(option) => {
             setPackageDeliveryTime(option);
             setDeliveryTimeWarning(getDeliveryTimeWarning(option));
           }}
@@ -164,7 +164,7 @@ const PackageForm = (
           defaultOption={SELECT_NUMBER_OF_REVISIONS}
           ref={revisionRef}
           warning={revisionsWarning}
-          getChoosenOption={(option) => {
+          onChange={(option) => {
             setRevisions(option);
             setRevisionsWarning(getRevisionsWarning(option));
           }}

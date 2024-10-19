@@ -97,7 +97,7 @@ export const AddorUpdateQuestion = ({
             <SelectInput2
               data={questionTypeData}
               defaultOption={questionType}
-              getChoosenOption={getQuestionType}
+              onChange={getQuestionType}
               style={{ width: "15rem", textTransform: "capitalize" }}
             />
           </div>

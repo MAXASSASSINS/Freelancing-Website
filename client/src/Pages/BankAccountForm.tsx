@@ -430,7 +430,7 @@ export const BankAccountForm = () => {
                   border: "1px solid #e4e5e7",
                   textTransform: "capitalize",
                 }}
-                getChoosenOption={(option: string) => {
+                onChange={(option: string) => {
                   setAccountDetails({
                     ...accountDetails,
                     country: option,
