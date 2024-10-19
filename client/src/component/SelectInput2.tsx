@@ -1,12 +1,18 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 
 type SelectInput2Props = {
   data: string[];
   defaultOption: string;
   style?: React.CSSProperties;
-  getChoosenOption?: (option: string) => void;
+  onChange?: (option: string) => void;
   disabled?: boolean;
   warning?: string;
+  value?: string;
 };
 
 export type SelectInput2Ref = {
@@ -19,12 +25,14 @@ const SelectInput2 = (
     data,
     defaultOption,
     style,
-    getChoosenOption,
+    onChange,
     disabled = false,
     warning = "",
+    value,
   }: SelectInput2Props,
   ref: React.Ref<SelectInput2Ref>
 ) => {
+  const isControlled = value !== undefined;
   const [choosedOption, setChoosedOption] = useState<string>(
     defaultOption.toLowerCase()
   );
@@ -41,9 +49,20 @@ const SelectInput2 = (
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setChoosedOption(e.target.value.toLowerCase());
-    getChoosenOption && getChoosenOption(e.target.value.toLowerCase());
+    onChange && onChange(e.target.value.toLowerCase());
+    if (!isControlled) {
+      setChoosedOption(e.target.value.toLowerCase());
+    }
   };
+
+  console.log('value', value);
+  
+
+  useEffect(() => {
+    if (isControlled) {
+      setChoosedOption(value.toLowerCase());
+    }
+  }, [value, isControlled]);
 
   return (
     <div className="select-input-main w-full relative">
@@ -53,11 +72,11 @@ const SelectInput2 = (
           warning ? "border-warning" : "border-no_focus"
         } ${
           choosedOption.toLowerCase() === defaultOption.toLowerCase()
-            ? "text-no_focus"
+            ? "text-icons"
             : "text-dark_grey"
         }`}
         style={style}
-        value={choosedOption}
+        value={isControlled ? value : choosedOption}
         onChange={handleChange}
       >
         <option
