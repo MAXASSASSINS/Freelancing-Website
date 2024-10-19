@@ -11,8 +11,8 @@ import { IGig } from "../../types/gig.types";
 import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { Avatar } from "../Avatar/Avatar";
-import { MyCarousel } from "../Carousel/MyCarousel";
 import "./gigCard.css";
+import MyCarousel from "../Carousel/MyCarousel";
 
 type GigCardProps = {
   gig: IGig;
@@ -22,7 +22,7 @@ type GigCardProps = {
 
 export const GigCard = ({ gig, lazyLoad = false, online }: GigCardProps) => {
   // console.log(online);
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector(
@@ -70,9 +70,7 @@ export const GigCard = ({ gig, lazyLoad = false, online }: GigCardProps) => {
   return (
     <div className="gig-card">
       <div className="container-wrapper">
-        <Link to={`/gig/details/${gig._id}`}>
-          <MyCarousel useWebp={true}  lazyLoad={lazyLoad} gig={gig} />
-        </Link>
+        <MyCarousel useWebp={true} lazyLoad={lazyLoad} gig={gig} />
         <div className="user-details-container">
           <Avatar
             avatarUrl={gig.user.avatar?.url}

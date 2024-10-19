@@ -9,12 +9,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getGigDetail } from "../../actions/gigAction";
 import { Avatar } from "../../component/Avatar/Avatar";
-import { MyCarousel } from "../../component/Carousel/MyCarousel";
+import MyCarousel from "../../component/Carousel/MyCarousel";
 import { Chat } from "../../component/Chat/Chat";
 import PackageSelector from "../../component/GigDetail.js/PackageSelector";
 import RatingSelector from "../../component/GigDetail.js/RatingSelector";
 import { RatingStars } from "../../component/RatingStars/RatingStars";
-import ReviewsList, { ReviewsListRef } from "../../component/ReviewsList/ReviewsList";
+import ReviewsList, {
+  ReviewsListRef,
+} from "../../component/ReviewsList/ReviewsList";
 import { AppDispatch, RootState } from "../../store";
 import { IPackageDetails } from "../../types/order.types";
 import { IReview, IUser } from "../../types/user.types";
@@ -126,7 +128,6 @@ export const GigDetail = () => {
     <>
       {showChatBox && (
         <Chat
-          // gigDetail={gigDetail}
           chatUser={gigDetail.user}
           showChatBox={showChatBox}
           setShowChatBox={setShowChatBox}
@@ -289,10 +290,7 @@ export const GigDetail = () => {
                   selectedRating={selectedRating}
                 />
                 {gigReviews && gigReviews.length > 0 && (
-                  <ReviewsList
-                    reviews={gigReviews}
-                    ref={reviewsListRef}
-                  />
+                  <ReviewsList reviews={gigReviews} ref={reviewsListRef} />
                 )}
               </div>
             </div>

@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.css";
 import { createContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router-dom";
@@ -21,7 +20,7 @@ import { PlaceOrder } from "./Pages/PlaceOrder";
 import { SubmitRequirements } from "./Pages/SubmitRequirements";
 import { UserDetail } from "./Pages/UserDetail/UserDetail";
 import { AppDispatch, RootState } from "./store";
-// @ts-ignore 
+// @ts-ignore
 import { CloudinaryContext } from "cloudinary-react";
 import { Tooltip } from "./component/Tooltip/Tooltip";
 import { SocketContext, socket } from "./context/socket/socket";
