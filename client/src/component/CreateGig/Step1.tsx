@@ -13,6 +13,10 @@ import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
 import { TextArea, TextAreaRef } from "../TextArea";
 import { categoriesData, subCategoriesData } from "./createGigData";
 import { TagOption, tagOptions } from "./tagsData";
+import {
+  SELECT_A_CATEGORY,
+  SELECT_A_SUB_CATEGORY,
+} from "../../constants/globalConstants";
 
 const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
@@ -25,9 +29,9 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const selectedCategoryRef = useRef<SelectInput2Ref>(null);
   const selectedSubCategoryRef = useRef<SelectInput2Ref>(null);
   const [selectedCategory, setSelectedCategory] =
-    useState<string>("Select a category");
+    useState<string>(SELECT_A_CATEGORY);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>(
-    "Select a sub-category"
+    SELECT_A_SUB_CATEGORY
   );
   const [categoryWarning, setCategoryWarning] = useState<string>("");
   const tagListRef = useRef(null);
@@ -51,7 +55,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   };
 
   const getSubCategoryList = (val: string) => {
-    if (val !== "Select a category") {
+    if (val !== SELECT_A_CATEGORY.toLowerCase()) {
       const index = Object.keys(subCategoriesData).findIndex((item) => {
         return item.toLowerCase() === val.toLowerCase();
       });
@@ -80,11 +84,13 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
       setEnalbeGigTitleInputWarning(true);
       return true;
     }
-    if (selectedCategory === "Select a category") {
+    if (selectedCategory.toLowerCase() === SELECT_A_CATEGORY.toLowerCase()) {
       setCategoryWarning("Please select a category and sub-category");
       return true;
     }
-    if (selectedSubCategory === "Select a sub-category") {
+    if (
+      selectedSubCategory.toLowerCase() === SELECT_A_SUB_CATEGORY.toLowerCase()
+    ) {
       setCategoryWarning("Please select a sub-category");
       return true;
     }
@@ -187,20 +193,24 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           <div className="category-section flex-grow">
             <div className="flex justify-between gap-8">
               <SelectInput2
-                defaultOption={"Select a category"}
+                defaultOption={SELECT_A_CATEGORY.toLowerCase()}
                 data={categoriesData}
                 style={{ textTransform: "uppercase" }}
-                getChoosenOption={getSelectedCategory}
+                onChange={getSelectedCategory}
                 ref={selectedCategoryRef}
               />
               <SelectInput2
-                defaultOption={"Select a sub-category"}
+                defaultOption={SELECT_A_SUB_CATEGORY.toLowerCase()}
                 data={
                   selectedCategory ? getSubCategoryList(selectedCategory) : []
                 }
                 style={{ textTransform: "uppercase" }}
-                getChoosenOption={getSelectedSubCategory}
+                onChange={getSelectedSubCategory}
                 ref={selectedSubCategoryRef}
+                disabled={
+                  selectedCategory.toLowerCase() ===
+                  SELECT_A_CATEGORY.toLowerCase()
+                }
               />
             </div>
             {categoryWarning !== "" && (
