@@ -52,7 +52,7 @@ const SelectInput2 = (
         className={`w-full p-2 rounded-none border  text-sm disabled:bg-separator disabled:cursor-not-allowed ${
           warning ? "border-warning" : "border-no_focus"
         } ${
-          choosedOption === defaultOption.toLowerCase()
+          choosedOption.toLowerCase() === defaultOption.toLowerCase()
             ? "text-no_focus"
             : "text-dark_grey"
         }`}
