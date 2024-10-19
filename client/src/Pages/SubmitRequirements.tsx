@@ -252,7 +252,7 @@ export const SubmitRequirements = () => {
         )}
 
         <div className="order-5 col-span-6 md:col-span-10  max-w-xl flex items-start text-light_heading">
-          <CheckInput getInputCheckedVal={getApprovalState} />
+          <CheckInput onChange={getApprovalState} />
           <p className="leading-5">
             The information I provided is <b>accurate and complete</b>. Any{" "}
             <b>changes</b> will require the seller's approval and may be subject

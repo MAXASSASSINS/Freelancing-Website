@@ -59,7 +59,7 @@ export const AddorUpdateQuestion = ({
         <h6 className="text-light_grey font-semibold">Add a question</h6>
         <CheckInput
           label="Required"
-          getInputCheckedVal={getRequiredStatusOfQuestion}
+          onChange={getRequiredStatusOfQuestion}
           defaultValue={questionRequiredInput}
         />
       </header>
@@ -106,7 +106,7 @@ export const AddorUpdateQuestion = ({
             <div>
               <CheckInput
                 label="Enable to choose more than 1 option"
-                getInputCheckedVal={getMultipleOptionSelectionStatus}
+                onChange={getMultipleOptionSelectionStatus}
                 defaultValue={enableMultipleOptionsInput}
               />
             </div>
