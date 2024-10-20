@@ -18,7 +18,7 @@ import { sendSendGridEmail } from "../utils/sendEmail";
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  if(!name || !email || !password || !confirmPassword) {
+  if (!name || !email || !password || !confirmPassword) {
     return next(new ErrorHandler("Please provide all the details", 400));
   }
 
@@ -81,7 +81,9 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Please enter email and password", 400));
   }
 
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }).select(
+    "+email +password +role +phone.code +phone.number +balance +withdrawEligibility +razorPayAccountDetails.status +razorPayAccountDetails.accountHolderName +favouriteGigs +resetPasswordToken +resetPasswordExpire +emailVerificationToken +emailVerificationExpire +isEmailVerified"
+  );
 
   if (!user) {
     return next(new ErrorHandler("Invalid email or password", 401));
@@ -117,7 +119,7 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
 
 // Forgot Password
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
-  if(!req.body.email) {
+  if (!req.body.email) {
     return next(new ErrorHandler("Please provide your email", 400));
   }
   const user = await User.findOne({ email: req.body.email });
@@ -163,7 +165,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
 // Reset Password
 export const resetPassword = catchAsyncErrors(async (req, res, next) => {
-  if(!req.body.password || !req.body.confirm_password) {
+  if (!req.body.password || !req.body.confirm_password) {
     return res.render("error", {
       error: "Please provide password and confirm password",
     });
@@ -178,7 +180,6 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
     resetPasswordToken,
     resetPasswordExpire: { $gt: Date.now() },
   });
-  
 
   if (!user) {
     return res.render("error", {
@@ -187,7 +188,6 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
   }
 
   console.log(user);
-  
 
   if (req.body.password != req.body.confirm_password) {
     return res.render("error", {
@@ -275,7 +275,7 @@ export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-// Get single user -- admin
+// Get single user
 export const getUser = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
@@ -284,6 +284,7 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler(`user does not exist with id: ${req.params.id}`, 400)
     );
   }
+
   res.status(200).json({
     success: true,
     message: "Successfully fetched user",
@@ -297,10 +298,14 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHandler(`user does not exist with id: ${req.params.id}`, 400))}
+      new ErrorHandler(`user does not exist with id: ${req.params.id}`, 400)
+    );
+  }
 
   if (user._id != req.user?.id) {
-    return next(new ErrorHandler(`You are not authorized to update this user`, 401));
+    return next(
+      new ErrorHandler(`You are not authorized to update this user`, 401)
+    );
   }
 
   user = await User.findByIdAndUpdate(req.user?.id, req.body, {
@@ -319,7 +324,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
 export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   const { amount } = req.body;
 
-  if(!amount) {
+  if (!amount) {
     return next(new ErrorHandler("Please provide amount", 400));
   }
 
@@ -341,7 +346,7 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
   for (let i = 0; i < orders.length && transferAmount < amount; i++) {
     const order = orders[i];
     const paymentId = order.paymentDetails.razorpay_payment_id;
-    if(!paymentId) {
+    if (!paymentId) {
       return next(new ErrorHandler("Payment id is not found", 400));
     }
     if (order.transferredAmount < order.amount && transferAmount < amount) {
@@ -395,7 +400,7 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
 
   let isFavourite = false;
   const gigObjectId = new mongoose.Types.ObjectId(gigId);
-  
+
   if (user?.favouriteGigs.includes(gigObjectId)) {
     user.favouriteGigs.splice(user.favouriteGigs.indexOf(gigObjectId), 1);
   } else {
@@ -451,7 +456,6 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
   if (user.razorPayAccountDetails.accountId) {
     return next(new ErrorHandler("You have already added your account", 400));
   }
-  
 
   // const email = "a43433342f31332234434493343444343354@gmail.com";
 
@@ -493,16 +497,17 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
 
   // creating stakeholder account
   try {
-    const createStackholderPayload: Stakeholders.RazorpayStakeholderCreateRequestBody = {
-      email: req.user?.email!,
-      name: accountHolderName.to_string(),
-      phone: {
-        primary: user.phone!.number!,
-      },
-      kyc: {
-        pan: panNumber,
-      },
-    };
+    const createStackholderPayload: Stakeholders.RazorpayStakeholderCreateRequestBody =
+      {
+        email: req.user?.email!,
+        name: accountHolderName.to_string(),
+        phone: {
+          primary: user.phone!.number!,
+        },
+        kyc: {
+          pan: panNumber,
+        },
+      };
     const stakeholder = await razorpayInstance.stakeholders.create(
       user.razorPayAccountDetails.accountId,
       createStackholderPayload
@@ -521,7 +526,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
     const requestProductPayload: Products.RazorpayProductCreateRequestBody = {
       product_name: "route",
       tnc_accepted: true,
-      ip: req.socket.remoteAddress!
+      ip: req.socket.remoteAddress!,
     };
     const product = await razorpayInstance.products.requestProductConfiguration(
       user.razorPayAccountDetails.accountId,
@@ -549,7 +554,8 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
       user.razorPayAccountDetails.productId,
       updateProductPayload
     );
-    user.razorPayAccountDetails.status = productAfter.activation_status as IRazorPayAccountDetails["status"];
+    user.razorPayAccountDetails.status =
+      productAfter.activation_status as IRazorPayAccountDetails["status"];
     await user.save({
       validateBeforeSave: false,
     });
@@ -754,7 +760,7 @@ export const verifyEmail = catchAsyncErrors(async (req, res, next) => {
 
   const emailVerificationToken = user.emailVerificationToken?.toString();
 
-  if(!emailVerificationToken) {
+  if (!emailVerificationToken) {
     return res.render("error", {
       error: "No email verification token found",
     });

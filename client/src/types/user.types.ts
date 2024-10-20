@@ -76,7 +76,6 @@ export interface IUser {
   userSince: Date;
   lastSeen: Date;
   balance: number;
-  stripeAccountId: string;
   withdrawEligibility: boolean;
   razorPayAccountDetails: IRazorPayAccountDetails;
   lastDelivery?: Date;
