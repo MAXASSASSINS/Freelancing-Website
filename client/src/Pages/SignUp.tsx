@@ -11,10 +11,12 @@ export const SignUp = () => {
   const navigate = useNavigate();
   const [signUpEmail, setSignUpEmail] = useState<string>("");
   const [signUpPassword, setSignUpPassword] = useState<string>("");
-  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState<string>("");
+  const [signUpConfirmPassword, setSignUpConfirmPassword] =
+    useState<string>("");
   const [signUpUsername, setSignUpUsername] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   const [errors, setErrors] = useState({
     signUpEmailError: false,
@@ -63,7 +65,7 @@ export const SignUp = () => {
         signUpPassword,
         signUpConfirmPassword
       )
-    )
+    );
     setSignUpUsername("");
     setSignUpEmail("");
     setSignUpPassword("");
@@ -72,13 +74,13 @@ export const SignUp = () => {
   };
 
   return (
-    <div className="p-8 mt-20 md:mt-[10vh] col-md-4 offset-md-4">
+    <div className="flex flex-col text-dark_grey justify-center items-center min-h-[calc(100vh-146.5px)] sm:min-h-[calc(100vh-81px)]">
       <div className="text-center">
         <h2 className="text-5xl">Welcome</h2>
       </div>
       <form className="mt-8 flex flex-col gap-4" onSubmit={handleSignUpSubmit}>
-        <div className="form-group">
-          <label className="mb-2 flex gap-2 items-center" htmlFor="email">
+        <div className="inline-flex flex-col">
+          <label className="mb-1 flex gap-2 items-center" htmlFor="email">
             Username
             <span
               data-tooltip-id="my-tooltip"
@@ -96,13 +98,14 @@ export const SignUp = () => {
             id="username"
             value={signUpUsername}
             type="text"
-            className={`form-control ${
+            className={`border border-no_focus px-4 py-2 rounded-sm w-[20rem] placeholder:text-no_focus focus:outline-none focus:border-dark_grey ${
               errors.signUpUsernameError ? "border border-warning" : ""
             }`}
+            placeholder="shadab"
           />
         </div>
-        <div className="form-group">
-          <label className="mb-2" htmlFor="email">
+        <div className="inline-flex flex-col">
+          <label className="mb-1" htmlFor="email">
             Email
           </label>
           <input
@@ -113,13 +116,14 @@ export const SignUp = () => {
             value={signUpEmail}
             id="email"
             type="email"
-            className={`form-control ${
+            className={`border border-no_focus px-4 py-2 rounded-sm w-[20rem] placeholder:text-no_focus focus:outline-none focus:border-dark_grey ${
               errors.signUpEmailError ? "border border-warning" : ""
             }`}
+            placeholder="shadab@gmail.com"
           />
         </div>
-        <div className="form-group">
-          <label className="mb-2 flex items-center gap-2" htmlFor="password">
+        <div className="inline-flex flex-col">
+          <label className="mb-1 flex items-center gap-2" htmlFor="password">
             Password
             <span
               data-tooltip-id="my-tooltip"
@@ -138,9 +142,10 @@ export const SignUp = () => {
               id="password"
               value={signUpPassword}
               type={showPassword ? "text" : "password"}
-              className={`form-control pr-10 ${
+              className={`border border-no_focus px-4 py-2 rounded-sm w-[20rem] placeholder:text-no_focus focus:outline-none focus:border-dark_grey pr-10 ${
                 errors.signUpPasswordError ? "border border-warning" : ""
               }`}
+              placeholder="••••••••"
             />
             {showPassword ? (
               <FaEyeSlash
@@ -155,9 +160,9 @@ export const SignUp = () => {
             )}
           </div>
         </div>
-        <div className="form-group">
+        <div className="inline-flex flex-col">
           <label
-            className="mb-2 flex items-center gap-2"
+            className="mb-1 flex items-center gap-2"
             htmlFor="confirm_password"
           >
             Confirm Password
@@ -178,9 +183,10 @@ export const SignUp = () => {
               id="confirm_password"
               value={signUpConfirmPassword}
               type={showConfirmPassword ? "text" : "password"}
-              className={`form-control ${
+              className={`border border-no_focus px-4 py-2 rounded-sm w-[20rem] placeholder:text-no_focus focus:outline-none focus:border-dark_grey ${
                 errors.signUpConfirmPasswordError ? "border border-warning" : ""
               }`}
+              placeholder="••••••••"
             />
             {showConfirmPassword ? (
               <FaEyeSlash
@@ -198,14 +204,14 @@ export const SignUp = () => {
         <p className="text-light_heading">
           Already have an account?{" "}
           <Link
-            className="underline text-primary hover:cursor-pointer"
+            className="underline text-primary hover:cursor-pointer hover:text-primary_hover"
             to={"/login"}
           >
             Sign In
           </Link>
         </p>
-        <div className="form-group">
-          <button className="btn bg-primary text-white hover:bg-primary_hover hover:cursor-pointer">
+        <div className="text-right mt-4">
+          <button className=" bg-primary px-8 py-3 rounded text-white hover:bg-primary_hover hover:cursor-pointer">
             Submit
           </button>
         </div>
