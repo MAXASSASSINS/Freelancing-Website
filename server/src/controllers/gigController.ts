@@ -23,11 +23,11 @@ const checkForErrors = (body: CheckForErrorsBody, currentStep: number) => {
         error = "Please enter your gig title";
         return error;
       }
-      if (!category || category === "Select a category") {
+      if (!category || category.toLowerCase() === "Select a category".toLowerCase()) {
         error = "Please enter your gig category";
         return error;
       }
-      if (!subCategory || subCategory === "Select a sub-category") {
+      if (!subCategory || subCategory.toLowerCase() === "Select a sub-category".toLowerCase()) {
         error = "Please enter your gig sub category";
         return error;
       }
