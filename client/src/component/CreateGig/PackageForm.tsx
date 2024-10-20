@@ -3,19 +3,19 @@ import {
   Ref,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import {
   CHOOSE_A_DELIVERY_TIME,
   SELECT_NUMBER_OF_REVISIONS,
 } from "../../constants/globalConstants";
-import { CheckInput, CheckInputRef } from "../CheckInput";
-import SelectInput2, { SelectInput2Ref } from "../SelectInput2";
-import { TextArea, TextAreaRef } from "../TextArea";
-import { deliveryTimeData, packagesData, revisionsData } from "./createGigData";
-import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+import { IPackageDetails } from "../../types/order.types";
+import { CheckInput } from "../CheckInput";
+import SelectInput2 from "../SelectInput2";
+import { TextArea } from "../TextArea";
+import { deliveryTimeData, packagesData, revisionsData } from "./createGigData";
 
 type PackageFormProps = {
   categoryId: number;
@@ -30,13 +30,6 @@ const PackageForm = (
   ref: Ref<PackageFormRef>
 ) => {
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
-  const nameRef = useRef<TextAreaRef>(null);
-  const descriptionRef = useRef<TextAreaRef>(null);
-  const deliveryTimeRef = useRef<SelectInput2Ref>(null);
-  const revisionRef = useRef<SelectInput2Ref>(null);
-  const priceRef = useRef<HTMLInputElement>(null);
-  const sourceFileRef = useRef<CheckInputRef>(null);
-  const commercialUseRef = useRef<CheckInputRef>(null);
 
   const [packageTitle, setPackageTitle] = useState<string>("");
   const [packageDescription, setPackageDescription] = useState<string>("");
@@ -76,39 +69,50 @@ const PackageForm = (
     setPackageDeliveryTime(packageDeliveryTime);
     setCommercialUse(commercialUse);
     setPackagePrice(packagePrice.toString());
-    setRevisions(revisions.toString());
-    setSourceFile(sourceFile);
-    nameRef.current?.setTextComingFromParent(packageTitle);
-    descriptionRef.current?.setTextComingFromParent(packageDescription);
-    deliveryTimeRef.current?.setChoosedOptionComingFromParent(
-      packageDeliveryTime
+    setRevisions(
+      revisions === Number.MAX_VALUE ? "unlimited" : revisions.toString()
     );
-    revisionRef.current?.setChoosedOptionComingFromParent(revisions.toString());
-    if (priceRef.current)
-      priceRef.current.value = packagePrice.toString() || "";
-
-    sourceFileRef.current?.setIsCheckedComingFromParent(sourceFile);
-    commercialUseRef.current?.setIsCheckedComingFromParent(commercialUse);
+    setSourceFile(sourceFile);
   }, [gigDetail, categoryId]);
 
   const handlePackageSubmit = () => {
-    setPackageTitleWarning(getPackageTitleWarning(packageTitle));
-    setPackageDescriptionWarning(
-      getPackageDescriptionWarning(packageDescription)
-    );
-    setDeliveryTimeWarning(getDeliveryTimeWarning(packageDeliveryTime));
-    setRevisionsWarning(getRevisionsWarning(revisions));
-    setPriceWarning(getPriceWarning(packagePrice));
+    const packageTitleWarning = getPackageTitleWarning(packageTitle);
+    const packageDescriptionWarning =
+      getPackageDescriptionWarning(packageDescription);
+    const deliveryTimeWarning = getDeliveryTimeWarning(packageDeliveryTime);
+    const revisionsWarning = getRevisionsWarning(revisions);
+    const priceWarning = getPriceWarning(packagePrice);
 
-    console.log({
+    setPackageTitleWarning(packageTitleWarning);
+    setPackageDescriptionWarning(packageDescriptionWarning);
+    setDeliveryTimeWarning(deliveryTimeWarning);
+    setRevisionsWarning(revisionsWarning);
+    setPriceWarning(priceWarning);
+
+    if (
+      packageTitleWarning ||
+      packageDescriptionWarning ||
+      deliveryTimeWarning ||
+      revisionsWarning ||
+      priceWarning
+    ) {
+      return null;
+    }
+
+    const packageData: IPackageDetails = {
       packageTitle,
       packageDescription,
       packageDeliveryTime,
-      revisions,
-      packagePrice,
+      revisions:
+        revisions.toLowerCase() === "unlimited"
+          ? Number.MAX_VALUE
+          : parseInt(revisions),
+      packagePrice: parseInt(packagePrice),
       sourceFile,
       commercialUse,
-    });
+    };
+
+    return packageData;
   };
 
   useImperativeHandle(ref, () => ({
@@ -125,7 +129,6 @@ const PackageForm = (
         minLength={0}
         placeholder="Enter your package name"
         className="text-sm h-10 rounded-none"
-        // ref={nameRef}
         warning={packageTitleWarning}
         onChange={(text) => {
           setPackageTitle(text);
@@ -138,7 +141,6 @@ const PackageForm = (
         minLength={0}
         placeholder="Enter your package description"
         className="text-sm rounded-none"
-        // ref={descriptionRef}
         warning={packageDescriptionWarning}
         onChange={(text) => {
           setPackageDescription(text);
@@ -150,30 +152,29 @@ const PackageForm = (
         <SelectInput2
           data={deliveryTimeData}
           defaultOption={CHOOSE_A_DELIVERY_TIME}
-          ref={deliveryTimeRef}
           warning={deliveryTimeWarning}
           onChange={(option) => {
             setPackageDeliveryTime(option);
             setDeliveryTimeWarning(getDeliveryTimeWarning(option));
           }}
+          value={packageDeliveryTime}
         />
       </div>
       <div className="mb-4">
         <SelectInput2
           data={revisionsData}
           defaultOption={SELECT_NUMBER_OF_REVISIONS}
-          ref={revisionRef}
           warning={revisionsWarning}
           onChange={(option) => {
             setRevisions(option);
             setRevisionsWarning(getRevisionsWarning(option));
           }}
+          value={revisions}
         />
       </div>
       <div className="relative">
         <div className="flex items-center mb-2">
           <input
-            ref={priceRef}
             className="border border-no_focus focus:outline-none focus:border-dark_grey w-full py-2 px-3 pr-8 placeholder:text-[0.9rem]"
             step="5"
             placeholder="Price"
@@ -184,6 +185,7 @@ const PackageForm = (
               setPackagePrice(e.target.value);
               setPriceWarning(getPriceWarning(e.target.value));
             }}
+            value={packagePrice}
           ></input>
           <span className="right-4 absolute">₹</span>
         </div>
@@ -192,10 +194,18 @@ const PackageForm = (
         </p>
       </div>
       <div className=" flex items-center gap-2">
-        <CheckInput label="Source File" ref={sourceFileRef} />
+        <CheckInput
+          label="Source File"
+          value={sourceFile}
+          onChange={(checked) => setSourceFile(checked)}
+        />
       </div>
       <div className=" flex items-center gap-2">
-        <CheckInput label="Commercial Use" ref={commercialUseRef} />
+        <CheckInput
+          label="Commercial Use"
+          value={commercialUse}
+          onChange={(checked) => setCommercialUse(checked)}
+        />
       </div>
     </div>
   );

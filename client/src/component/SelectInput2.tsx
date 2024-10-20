@@ -55,9 +55,6 @@ const SelectInput2 = (
     }
   };
 
-  console.log('value', value);
-  
-
   useEffect(() => {
     if (isControlled) {
       setChoosedOption(value.toLowerCase());
