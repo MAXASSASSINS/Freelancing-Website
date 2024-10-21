@@ -134,7 +134,7 @@ export const getAllGigs = catchAsyncErrors(async (req, res, next) => {
 
 // Get Favorite gigs
 export const getFavoriteGigs = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user?.id);
+  const user = req.user;
 
   if (!user) {
     return next(new ErrorHandler("User not found", 404));

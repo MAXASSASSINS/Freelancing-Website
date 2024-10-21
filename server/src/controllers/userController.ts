@@ -228,8 +228,11 @@ export const resetPasswordForm = catchAsyncErrors(async (req, res, next) => {
 
 // Get my details
 export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
-  const userId = await req.user?.id;
-  const user = await User.findById(userId);
+  const user = req.user;
+
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
 
   res.status(200).json({
     success: true,
@@ -240,8 +243,7 @@ export const getMyDetails = catchAsyncErrors(async (req, res, next) => {
 
 // Change password
 export const changePassword = catchAsyncErrors(async (req, res, next) => {
-  const userId = req.user?.id;
-  const user = await User.findById(userId).select("+password");
+  const user = req.user;
   if (!user) {
     return next(new ErrorHandler("User not found", 404));
   }
@@ -294,7 +296,7 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
 
 // Update user data
 export const updateUser = catchAsyncErrors(async (req, res, next) => {
-  let user = await User.findById(req.user?.id);
+  let user = req.user;
 
   if (!user) {
     return next(
@@ -302,13 +304,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-  if (user._id != req.user?.id) {
-    return next(
-      new ErrorHandler(`You are not authorized to update this user`, 401)
-    );
-  }
-
-  user = await User.findByIdAndUpdate(req.user?.id, req.body, {
+  let updatedUser = await User.findByIdAndUpdate(req.user?.id, req.body, {
     new: true,
     runValidators: true,
     useFindandModify: false,
@@ -317,7 +313,7 @@ export const updateUser = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "User details updated sucessfully",
-    user,
+    user: updatedUser,
   });
 });
 
@@ -388,7 +384,6 @@ export const withdrawl = catchAsyncErrors(async (req, res, next) => {
 
 export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
   const gigId = req.params.id;
-  const userId = req.user?.id;
 
   const gig = await Gig.findById(gigId);
 
@@ -396,7 +391,11 @@ export const updateFavouriteList = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Gig does not exist", 404));
   }
 
-  const user = await User.findById(userId);
+  const user = req.user;
+
+  if (!user) {
+    return next(new ErrorHandler("User does not exist", 404));
+  }
 
   let isFavourite = false;
   const gigObjectId = new mongoose.Types.ObjectId(gigId);
@@ -448,7 +447,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please provide all the details", 400));
   }
-  const user = await User.findById(req.user?.id);
+  const user = req.user;
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -571,7 +570,7 @@ export const addAccount = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getAccount = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user?.id);
+  const user = req.user;
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -626,7 +625,7 @@ export const getAccount = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getProductConfig = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user?.id);
+  const user = req.user;
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
@@ -677,7 +676,7 @@ export const updateAccount = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("Please provide all the details", 400));
   }
-  const user = await User.findById(req.user?.id);
+  const user = req.user;
   if (!user) {
     return next(new ErrorHandler("User does not exist", 404));
   }
