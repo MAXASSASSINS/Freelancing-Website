@@ -52,11 +52,12 @@ const MyCarousel: React.FC<PropType> = (props) => {
             </div>
           ))}
           {gig.video && (
-            <div className="embla__slide">
+            <div className="embla__slide aspect-[16/10]">
               <LazyVideo
                 file={gig.video}
                 lazyLoad={lazyLoad}
                 aspectRatio={16 / 10}
+                objectFit={objectFit}
               />
             </div>
           )}
