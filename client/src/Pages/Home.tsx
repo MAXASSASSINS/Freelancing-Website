@@ -4,10 +4,10 @@ import { useLocation } from "react-router-dom";
 import { getAllGig } from "../actions/gigAction";
 import { GigCard } from "../component/GigCard/GigCard";
 import { SearchTagsBar } from "../component/SearchTagsBar";
-import { SocketContext } from "../context/socket/socket";
 import useLazyLoading from "../hooks/useLazyLoading";
 import { AppDispatch, RootState } from "../store";
 import { IUser } from "../types/user.types";
+import { useSocket } from "../context/socketContext";
 
 export const Home = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,16 +16,34 @@ export const Home = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
-  const socket = useContext(SocketContext);
+  const socket = useSocket();
   const [gigUserOnline, setGigUserOnline] = useState<Map<string, boolean>>(
     new Map()
   );
 
+  // useEffect(() => {
+  //   if (isAuthenticated && user) {
+  //     setGigUserOnline((prev) => prev.set(user._id, true));
+  //   }
+  // }, [isAuthenticated, user]);
+
   useEffect(() => {
-    if (isAuthenticated && user) {
-      setGigUserOnline((prev) => prev.set(user._id, true));
-    }
-  }, [isAuthenticated, user]);
+    const ids = gigs?.map((gig) => (gig.user as IUser)._id) || [];
+    socket.emit("get_users_online_status", ids);
+
+    socket.on("users_online_status_from_server", (data) => {
+      console.log("users_online_status_from_server", data);
+      const map = new Map<string, boolean>();
+      data.forEach((item: { id: string; online: boolean }) => {
+        map.set(item.id, item.online);
+      });
+      setGigUserOnline(map);
+    });
+
+    return () => {
+      socket.off("users_online_status_from_server");
+    };
+  }, [gigs, socket]);
 
   useEffect(() => {
     let path = location.pathname;
@@ -73,7 +91,7 @@ export const Home = () => {
       socket.off("online_from_server");
       socket.off("offline_from_server");
     };
-  }, [socket, gigs, dispatch, gigUserOnline]);
+  }, [socket, dispatch, gigUserOnline]);
 
   // LAZY LOADING THE IMAGES AND VIDEOS
   useLazyLoading({ dependencies: [gigs] });

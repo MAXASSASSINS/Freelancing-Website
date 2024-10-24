@@ -3,15 +3,14 @@ import {
   Dispatch,
   MouseEvent,
   SetStateAction,
-  useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../../context/socket/socket";
+import { useSocket } from "../../context/socketContext";
 import useLazyLoading from "../../hooks/useLazyLoading";
 import { RootState } from "../../store";
 import { IMessage } from "../../types/message.types";
@@ -30,7 +29,7 @@ type ChatProps = {
 
 export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
   const navigate = useNavigate();
-  const socket = useContext(SocketContext);
+  const socket = useSocket();
 
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.user
@@ -55,7 +54,7 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
     } else {
       socket.emit("is_online", chatUser._id.toString());
     }
-  }, [user, isAuthenticated]);
+  }, [user, isAuthenticated, socket, chatUser._id, navigate]);
 
   useEffect(() => {
     user && getAllMessagesBetweenTwoUser();
@@ -95,7 +94,7 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
       socket.off("is_online_from_server");
       // setCurrentSelectedClientOnline(false);
     };
-  }, [socket, online]);
+  }, [socket, online, chatUser._id]);
 
   useEffect(() => {
     socket.on("online_from_server", async (userId) => {
@@ -112,7 +111,7 @@ export const Chat = ({ chatUser, showChatBox, setShowChatBox }: ChatProps) => {
       socket.off("online_from_server");
       socket.off("offline_from_server");
     };
-  }, [socket]);
+  }, [socket, chatUser._id]);
 
   useEffect(() => {
     socket.on("receive_message", async (data) => {

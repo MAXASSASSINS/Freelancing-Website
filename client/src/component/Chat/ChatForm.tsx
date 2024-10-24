@@ -17,12 +17,12 @@ import { IoClose } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { windowContext } from "../../App";
-import { SocketContext } from "../../context/socket/socket";
 import { RootState } from "../../store";
 import { IFile } from "../../types/file.types";
 import { IUser } from "../../types/user.types";
 import { axiosInstance } from "../../utility/axiosInstance";
 import { uploadToCloudinaryV2 } from "../../utility/cloudinary";
+import { useSocket } from "../../context/socketContext";
 
 type SelectedFile = {
   selectedFile: File;
@@ -49,7 +49,7 @@ const ChatForm = (
   }: ChatFormProps,
   ref: Ref<ChatFormRef>
 ) => {
-  const socket = useContext(SocketContext);
+  const socket = useSocket();
   const { windowWidth } = useContext(windowContext);
 
   const { user } = useSelector((state: RootState) => state.user);

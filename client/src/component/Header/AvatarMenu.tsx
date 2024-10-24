@@ -1,17 +1,20 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "../../store";
-import { useDispatch } from "react-redux";
 import { logoutUser } from "../../actions/userAction";
+import { useSocket } from "../../context/socketContext";
+import { AppDispatch, RootState } from "../../store";
 
 const AvatarMenu = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const socket = useSocket();
   const navigate = useNavigate();
   const {user, userError} = useSelector((state: RootState) => state.user);
 
   const handleLogOut = async () => {
-    dispatch(logoutUser());
+    await dispatch(logoutUser());
+    console.log('initiating socket disconnect');
+    socket.disconnect();
+    console.log('socket disconnected');
     if (!userError) navigate("/");
   };
 

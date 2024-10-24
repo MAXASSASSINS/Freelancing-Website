@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { updateOrderDetail } from "../../actions/orderAction";
 import { IN_PROGRESS, IN_REVISION } from "../../constants/globalConstants";
 import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
-import { SocketContext } from "../../context/socket/socket";
+import { useSocket } from "../../context/socketContext";
 import { AppDispatch, RootState } from "../../store";
 import { IMessage } from "../../types/message.types";
 import { IOrder } from "../../types/order.types";
@@ -47,7 +47,7 @@ export const Activities = ({ orderDetail }: ActivitiesProps) => {
   const [online, setOnline] = useState(false);
   const [fileLoading, setFileLoading] = useState(false);
 
-  const socket = useContext(SocketContext);
+  const socket = useSocket();
 
   const [orderMessages, setOrderMessages] = useState<DateWiseMessage[]>([]);
 
@@ -60,7 +60,7 @@ export const Activities = ({ orderDetail }: ActivitiesProps) => {
     const userToCheck =
       user!._id.toString() === buyer._id.toString() ? seller._id : buyer._id;
     socket.emit("is_online", userToCheck);
-  }, [orderDetail, socket]);
+  }, [orderDetail, socket, buyer, seller, user]);
 
   useEffect(() => {
     socket.on("is_online_from_server", (data) => {
@@ -96,7 +96,7 @@ export const Activities = ({ orderDetail }: ActivitiesProps) => {
       socket.off("online_from_server");
       socket.off("offline_from_server");
     };
-  }, [orderDetail._id, socket]);
+  }, [orderDetail._id, socket, buyer, seller, user]);
 
   // CHECKING FOR RECEIVING MESSAGES
   useEffect(() => {
@@ -133,7 +133,7 @@ export const Activities = ({ orderDetail }: ActivitiesProps) => {
     return () => {
       socket.off("receive_message");
     };
-  }, [fileLoading, socket, orderDetail]);
+  }, [fileLoading, socket, orderDetail, params.id]);
 
   // CHECKING FOR RECEIVING MESSAGES SELF
   useEffect(() => {
@@ -170,14 +170,14 @@ export const Activities = ({ orderDetail }: ActivitiesProps) => {
     return () => {
       socket.off("receive_message_self");
     };
-  }, [fileLoading, socket, orderDetail]);
+  }, [fileLoading, socket, orderDetail, params.id]);
 
   // CHECKING FOR UPDATES ON ORDER DETAIL
   useEffect(() => {
     socket.on("update_order_detail_server", (data) => {
       dispatch(updateOrderDetail(data));
     });
-  }, [fileLoading, socket]);
+  }, [fileLoading, socket, dispatch]);
 
   // set global loading to true if file loading is true
   useEffect(() => {

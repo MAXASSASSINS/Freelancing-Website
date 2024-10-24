@@ -25,7 +25,6 @@ import {
 import { BiChevronLeft } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { useUpdateGlobalLoading } from "../context/globalLoadingContext";
-import { SocketContext } from "../context/socket/socket";
 import useLazyLoading from "../hooks/useLazyLoading";
 import { RootState } from "../store";
 import { IMessage } from "../types/message.types";
@@ -34,10 +33,11 @@ import { Avatar } from "../component/Avatar/Avatar";
 import ChatForm, { ChatFormRef } from "../component/Chat/ChatForm";
 import ChatMessageList from "../component/Chat/ChatMessageList";
 import { DataSendingLoading } from "../component/DataSendingLoading";
+import { useSocket } from "../context/socketContext";
 
 export const Inbox = () => {
   const { windowWidth } = useContext(windowContext);
-  const socket = useContext(SocketContext);
+  const socket = useSocket();
   const updateGlobalLoading = useUpdateGlobalLoading();
 
   const { user, isAuthenticated } = useSelector(
