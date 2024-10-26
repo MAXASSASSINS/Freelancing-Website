@@ -31,8 +31,8 @@ export const Sidebar = () => {
 
   return (
     <>
-      <div onClick={showSidebar}>
-        <FaBars className="hamburger-icon" />
+      <div className="900:hidden absolute top-8 left-4 z-[99]" onClick={showSidebar}>
+        <FaBars className="text-xl" />
       </div>
       <div className="sidebar">
         <div className={"site-sidebar " + (sidebar ? "menu-shown" : null)}>
@@ -53,7 +53,7 @@ export const Sidebar = () => {
               </div>
             )}
 
-            <div className="user-name">{user?.name || "Profile"}</div>
+            <div className="user-name break-all">{user?.name || "Profile"}</div>
           </section>
           <section onClick={hideSidebar} className="sidebar-menu">
             <Link to="/" className="sidebar-menu-item">
