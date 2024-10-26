@@ -10,6 +10,7 @@ import "./embla.css";
 import { IGig } from "../../types/gig.types";
 import { LazyImage } from "../LazyImage/LazyImage";
 import { LazyVideo } from "../LazyVideo.js/LazyVideo";
+import { RiImage2Line } from "react-icons/ri";
 
 type PropType = {
   gig: IGig;
@@ -59,6 +60,11 @@ const MyCarousel: React.FC<PropType> = (props) => {
                 aspectRatio={16 / 10}
                 objectFit={objectFit}
               />
+            </div>
+          )}
+          {gig.images.length === 0 && !gig.video && (
+            <div className="embla__slide">
+              <RiImage2Line className="text-no_focus w-full h-full" />
             </div>
           )}
         </div>
