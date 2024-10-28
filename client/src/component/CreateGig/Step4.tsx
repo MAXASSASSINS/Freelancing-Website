@@ -10,17 +10,22 @@ import { AiOutlineEllipsis } from "react-icons/ai";
 import { TbGridDots } from "react-icons/tb";
 import { TfiText } from "react-icons/tfi";
 import { useDispatch, useSelector } from "react-redux";
-import { RESET_ALL } from "../../constants/createGigQuestionConstants";
-import { FREE_TEXT, MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { AnyAction } from "redux";
+import { REMOVE_QUESTION, RESET_ALL, UPDATE_QUESTION, UPDATE_SHOW_EDIT_QUESTION } from "../../constants/createGigQuestionConstants";
+import {
+  FREE_TEXT,
+  MULTIPLE_CHOICE,
+  QuestionType,
+} from "../../constants/globalConstants";
 import { StepProps, StepRef } from "../../Pages/CreateGig";
 import {
   createGigQuestionReducer,
   QUESTION_DETAILS_INITIAL_STATE,
+  QuestionState,
 } from "../../reducers/createGigQuestionReducer";
 import { AppDispatch, RootState } from "../../store";
 import { IGigRequirement } from "../../types/gig.types";
 import { AddorUpdateQuestion } from "./AddorUpdateQuestion";
-import { questionTypeData } from "./createGigData";
 
 const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,20 +33,11 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const [questionsDetails, questionDispatch] = useReducer(
     createGigQuestionReducer,
     QUESTION_DETAILS_INITIAL_STATE
-  );
+  ) as [QuestionState[], React.Dispatch<AnyAction>];
   const [showQuestions, setShowQuestions] = useState<boolean>(true);
-  const [questionType, setQuestionType] = useState<string>(FREE_TEXT);
-  const [questionTitle, setQuestionTitle] = useState<string>("");
-  const [questionRequiredInput, setQuestionRequiredInput] =
-    useState<boolean>(false);
-  const [enableMultipleOptionsInput, setEnableMultipleOptionsInput] =
-    useState<boolean>(false);
   const [indexOfQuestionToEdit, setIndexOfQuestionToEdit] =
     useState<number>(-1);
-  const [options, setOptions] = useState<string[]>(["", ""]);
-  const [warnings, setWarnings] = useState<string[]>(["", ""]);
   const [showEditQuestion, setShowEditQuestion] = useState<boolean>(false);
-  const [warningEnabled, setWarningEnabled] = useState<boolean>(false);
   const hideEditRemoveOptionRefs = useRef<React.RefObject<HTMLDivElement>[]>(
     []
   );
@@ -63,7 +59,7 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
     questionsDetails.forEach((item, index) => {
       const questionData = {
         questionTitle: item.question,
-        questionType: item.type.toString().toLowerCase(),
+        questionType: item.type.toString().toLowerCase() as QuestionType,
         options: item.options,
         answerRequired: item.requiredStatus,
         multipleOptionSelect: item.multipleOptionSelectionStatus,
@@ -85,93 +81,40 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
     handleSubmit,
   }));
 
-  const checkForAnyEmptyFieldsForQuestion = () => {
-    let error = false;
-
-    if (questionTitle.toString().trim().length < 2) {
-      error = true;
-      setWarningEnabled(true);
-    }
-    if (questionType === MULTIPLE_CHOICE) {
-      options.forEach((item, index) => {
-        if (item.toString().trim().length === 0) {
-          error = true;
-          setWarningEnabled(true);
-        }
-      });
-    }
-    return error;
-  };
-
-  const commonForEditAddCancelQuestion = () => {
-    setOptions(["", ""]);
-    setQuestionType(FREE_TEXT);
-    setWarningEnabled(false);
-    setQuestionTitle("");
-    setShowEditQuestion(false);
-    setEnableMultipleOptionsInput(false);
-    setQuestionRequiredInput(false);
-  };
-
   const handleCancelAdd = () => {
     setShowQuestions(true);
-    commonForEditAddCancelQuestion();
+    setShowEditQuestion(false);
   };
 
-  const handleAddQuestion = () => {
-    let error = checkForAnyEmptyFieldsForQuestion();
-
-    if (error) return;
-
-    const payload = {
-      question: questionTitle.trim(),
-      type: questionType,
-      requiredStatus: questionRequiredInput,
-      multipleOptionSelectionStatus: enableMultipleOptionsInput,
-      options: options,
-    };
+  const handleAddQuestion = (payload: QuestionState) => {
     questionDispatch({ type: "ADD_NEW_QUESTION", payload: payload });
     setShowQuestions(true);
     setShowEditQuestion(false);
-    commonForEditAddCancelQuestion();
     setRequirementsShortageWarning(false);
   };
 
   const handleRemoveQuestion = (index: number) => {
+    handleShowEditQuestion(index);
     const payload = {
       questionIndex: index,
     };
-    questionDispatch({ type: "REMOVE_QUESTION", payload: payload });
+    questionDispatch({ type: REMOVE_QUESTION, payload: payload });
   };
 
   const handleEditQuestion = (index: number) => {
+    handleShowEditQuestion(index);
     setIndexOfQuestionToEdit(index);
-    setEnableMultipleOptionsInput(
-      questionsDetails[index].multipleOptionSelectionStatus
-    );
-    setQuestionRequiredInput(questionsDetails[index].requiredStatus);
-    setQuestionTitle(questionsDetails[index].question);
-    setQuestionType(questionsDetails[index].type);
-    setOptions(questionsDetails[index].options);
     setShowQuestions(false);
     setShowEditQuestion(true);
   };
 
-  const handleUpdateQuestion = (index: number) => {
-    let error = checkForAnyEmptyFieldsForQuestion();
-    if (error) return;
-
+  const handleUpdateQuestion = (index: number, data: QuestionState) => {
     const payload = {
+      ...data,
       questionIndex: index,
-      question: questionTitle,
-      type: questionType,
-      requiredStatus: questionRequiredInput,
-      multipleOptionSelectionStatus: enableMultipleOptionsInput,
-      options: options,
-    };
+    }
 
-    questionDispatch({ type: "UPDATE_QUESTION", payload: payload });
-    commonForEditAddCancelQuestion();
+    questionDispatch({ type: UPDATE_QUESTION, payload: payload });
     setShowQuestions(true);
     setShowEditQuestion(false);
     setIndexOfQuestionToEdit(-1);
@@ -187,85 +130,21 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
       questionIndex: index,
       showEditQuestion: questionsDetails[index].showEditQuestion,
     };
-    questionDispatch({ type: "UPDATE_SHOW_EDIT_QUESTION", payload: payload });
+    questionDispatch({ type: UPDATE_SHOW_EDIT_QUESTION, payload: payload });
   };
-
-  const getQuestionType = (val: string) => {
-    console.log(val);
-    setQuestionType(val);
-  };
-
-  const handleAddNewOption = () => {
-    setOptions([...options, ""]);
-    setWarnings([...warnings, ""]);
-  };
-
-  const handleRemoveOption = (index: number) => {
-    const newOptions = options.filter((item, i) => i !== index);
-    setOptions(newOptions);
-  };
-
-  const handleOptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const newOptions = options.map((item, i) => {
-      if (i === index) {
-        return e.target.value;
-      } else {
-        return item;
-      }
-    });
-    setOptions(newOptions);
-  };
-
-  const getQuestionTitle = (val: string) => {
-    setQuestionTitle(val);
-  };
-
-  const getRequiredStatusOfQuestion = (val: boolean) => {
-    setQuestionRequiredInput(val);
-  };
-
-  const getMultipleOptionSelectionStatus = (val: boolean) => {
-    setEnableMultipleOptionsInput(val);
-  };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    let check = true;
-    for (let i = 0; i < hideEditRemoveOptionRefs?.current?.length; i++) {
-      if (
-        hideEditRemoveOptionRefs?.current[i]?.current?.contains(
-          event.target as Node
-        )
-      ) {
-        check = false;
-        break;
-      }
-    }
-    if (check) {
-      dispatch({ type: "HIDE_ALL_EDIT_QUESTION" });
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, []);
 
   useEffect(() => {
     if (!gigDetail) return;
     const { requirements } = gigDetail;
     console.log(requirements);
     requirements?.forEach((item, index) => {
-      const data = {
+      const data: QuestionState = {
         type: item.questionType,
         question: item.questionTitle,
         requiredStatus: item.answerRequired,
         options: item.options,
         multipleOptionSelectionStatus: item.multipleOptionSelect,
+        showEditQuestion: false,
       };
       questionDispatch({ type: "ADD_NEW_QUESTION", payload: data });
     });
@@ -294,44 +173,16 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
         {showEditQuestion ? (
           <AddorUpdateQuestion
-            getRequiredStatusOfQuestion={getRequiredStatusOfQuestion}
-            getMultipleOptionSelectionStatus={getMultipleOptionSelectionStatus}
-            questionTitle={questionTitle}
-            getQuestionTitle={getQuestionTitle}
-            questionTypeData={questionTypeData}
-            questionType={questionType}
-            getQuestionType={getQuestionType}
-            options={options}
-            handleOptionChange={handleOptionChange}
-            handleRemoveOption={handleRemoveOption}
-            handleAddNewOption={handleAddNewOption}
             handleCancelAdd={handleCancelAdd}
-            handleAddQuestion={handleAddQuestion}
-            warningEnabled={warningEnabled}
-            questionRequiredInput={questionRequiredInput}
-            enableMultipleOptionsInput={enableMultipleOptionsInput}
             edit={true}
             handleUpdateQuestion={handleUpdateQuestion}
             indexOfQuestionToEdit={indexOfQuestionToEdit}
+            questionDetail={questionsDetails[indexOfQuestionToEdit]}
           />
         ) : !showQuestions ? (
           <AddorUpdateQuestion
-            getRequiredStatusOfQuestion={getRequiredStatusOfQuestion}
-            getMultipleOptionSelectionStatus={getMultipleOptionSelectionStatus}
-            questionTitle={questionTitle}
-            getQuestionTitle={getQuestionTitle}
-            questionTypeData={questionTypeData}
-            questionType={questionType}
-            getQuestionType={getQuestionType}
-            options={options}
-            handleOptionChange={handleOptionChange}
-            handleRemoveOption={handleRemoveOption}
-            handleAddNewOption={handleAddNewOption}
             handleCancelAdd={handleCancelAdd}
             handleAddQuestion={handleAddQuestion}
-            warningEnabled={warningEnabled}
-            questionRequiredInput={questionRequiredInput}
-            enableMultipleOptionsInput={enableMultipleOptionsInput}
             edit={false}
           />
         ) : (

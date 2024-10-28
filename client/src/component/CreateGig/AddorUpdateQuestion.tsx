@@ -1,57 +1,134 @@
-import React from "react";
-import { TextArea } from "../TextArea";
-import SelectInput2 from "../SelectInput2";
-import { CheckInput } from "../CheckInput";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import { MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { FREE_TEXT, MULTIPLE_CHOICE } from "../../constants/globalConstants";
+import { QuestionState } from "../../reducers/createGigQuestionReducer";
+import { CheckInput } from "../CheckInput";
+import SelectInput2 from "../SelectInput2";
+import { TextArea } from "../TextArea";
+import { questionTypeData } from "./createGigData";
 
 type AddorUpdateQuestionProps = {
-  getQuestionTitle: (text: string) => void;
-  questionTitle: string;
-  warningEnabled: boolean;
-  getQuestionType: (option: string) => void;
   handleCancelAdd: () => void;
-  handleAddNewOption: () => void;
-  handleAddQuestion: () => void;
-  questionType: string;
-  options: string[];
-  questionTypeData: string[];
-  handleOptionChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => void;
-  handleRemoveOption: (index: number) => void;
-  getRequiredStatusOfQuestion: (val: boolean) => void;
-  getMultipleOptionSelectionStatus: (val: boolean) => void;
-  questionRequiredInput: boolean;
-  enableMultipleOptionsInput: boolean;
+  handleAddQuestion?: (payload: QuestionState) => void;
   edit: boolean;
-  handleUpdateQuestion?: (index: number) => void;
+  handleUpdateQuestion?: (index: number, payload: QuestionState) => void;
   indexOfQuestionToEdit?: number;
+  questionDetail?: QuestionState;
 };
 
 export const AddorUpdateQuestion = ({
-  getQuestionTitle,
-  questionTitle,
-  warningEnabled,
-  getQuestionType,
+  questionDetail,
   handleCancelAdd,
-  handleAddNewOption,
   handleAddQuestion,
-  questionType,
-  options,
-  questionTypeData,
-  handleOptionChange,
-  handleRemoveOption,
-  getRequiredStatusOfQuestion,
-  getMultipleOptionSelectionStatus,
-  questionRequiredInput,
-  enableMultipleOptionsInput,
   edit,
   handleUpdateQuestion,
   indexOfQuestionToEdit,
 }: AddorUpdateQuestionProps) => {
-  console.log("questionType", questionType, questionType === MULTIPLE_CHOICE);
+  const [questionType, setQuestionType] = useState<string>(FREE_TEXT);
+  const [questionTitle, setQuestionTitle] = useState<string>("");
+  const [questionRequiredInput, setQuestionRequiredInput] =
+    useState<boolean>(false);
+  const [enableMultipleOptionsInput, setEnableMultipleOptionsInput] =
+    useState<boolean>(false);
+  const [options, setOptions] = useState<string[]>(["", ""]);
+  const [warnings, setWarnings] = useState<string[]>(["", ""]);
+  const [warningEnabled, setWarningEnabled] = useState<boolean>(false);
+
+  const getRequiredStatusOfQuestion = (val: boolean) => {
+    setQuestionRequiredInput(val);
+  };
+
+  const getQuestionTitle = (val: string) => {
+    setQuestionTitle(val);
+  };
+
+  const getQuestionType = (val: string) => {
+    setQuestionType(val);
+  };
+
+  const getMultipleOptionSelectionStatus = (val: boolean) => {
+    setEnableMultipleOptionsInput(val);
+  };
+
+  const handleAddNewOption = () => {
+    setOptions([...options, ""]);
+    setWarnings([...warnings, ""]);
+  };
+
+  const handleRemoveOption = (index: number) => {
+    const newOptions = options.filter((item, i) => i !== index);
+    setOptions(newOptions);
+  };
+
+  const handleOptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const newOptions = options.map((item, i) => {
+      if (i === index) {
+        return e.target.value;
+      } else {
+        return item;
+      }
+    });
+    setOptions(newOptions);
+  };
+
+  const checkForAnyEmptyFieldsForQuestion = () => {
+    let error = false;
+
+    if (questionTitle.toString().trim().length < 2) {
+      error = true;
+      setWarningEnabled(true);
+    }
+    if (questionType === MULTIPLE_CHOICE) {
+      options.forEach((item, index) => {
+        if (item.toString().trim().length === 0) {
+          error = true;
+          setWarningEnabled(true);
+        }
+      });
+    }
+    return error;
+  };
+
+  const handleSubmit = () => {
+    let error = checkForAnyEmptyFieldsForQuestion();
+    if (error) return;
+    const payload: QuestionState = {
+      question: questionTitle,
+      type: questionType,
+      requiredStatus: questionRequiredInput,
+      multipleOptionSelectionStatus: enableMultipleOptionsInput,
+      options: options,
+      showEditQuestion: false,
+    };
+    commonForEditAddCancelQuestion();
+    if(indexOfQuestionToEdit !== undefined && indexOfQuestionToEdit !== -1 && edit !== undefined){
+      handleUpdateQuestion!(indexOfQuestionToEdit, payload);
+    }
+    else{
+      handleAddQuestion!(payload);
+    }
+  }
+
+  const commonForEditAddCancelQuestion = () => {
+    setOptions(["", ""]);
+    setQuestionType(FREE_TEXT);
+    setWarningEnabled(false);
+    setQuestionTitle("");
+    setEnableMultipleOptionsInput(false);
+    setQuestionRequiredInput(false);
+  };
+
+  useEffect(() => {
+    if(indexOfQuestionToEdit === -1 || !questionDetail) return;
+    setEnableMultipleOptionsInput(questionDetail.multipleOptionSelectionStatus);
+    setQuestionTitle(questionDetail.question);
+    setQuestionType(questionDetail.type);
+    setQuestionRequiredInput(questionDetail.requiredStatus);
+    setOptions(questionDetail.options);
+  }, [indexOfQuestionToEdit, questionDetail])
 
   return (
     <div className="bg-separator border border-dark_separator p-6 text-light_heading">
@@ -61,6 +138,7 @@ export const AddorUpdateQuestion = ({
           label="Required"
           onChange={getRequiredStatusOfQuestion}
           defaultValue={questionRequiredInput}
+          value={questionRequiredInput}
         />
       </header>
 
@@ -73,7 +151,7 @@ export const AddorUpdateQuestion = ({
           }
           className="h-32"
           onChange={getQuestionTitle}
-          defaultText={questionTitle}
+          value={questionTitle}
         />
         <div
           className="absolute text-warning text-sm bottom-0"
@@ -99,6 +177,7 @@ export const AddorUpdateQuestion = ({
               defaultOption={questionType}
               onChange={getQuestionType}
               style={{ width: "15rem", textTransform: "capitalize" }}
+              value={questionType}
             />
           </div>
 
@@ -108,6 +187,7 @@ export const AddorUpdateQuestion = ({
                 label="Enable to choose more than 1 option"
                 onChange={getMultipleOptionSelectionStatus}
                 defaultValue={enableMultipleOptionsInput}
+                value={enableMultipleOptionsInput}
               />
             </div>
           )}
@@ -120,7 +200,7 @@ export const AddorUpdateQuestion = ({
             <div className="option" key={"option" + index}>
               <div className="relative w-full flex items-center">
                 <input
-                  className="block w-full my-2 p-2 border border-no_focus rounded placeholder:text-no_focus hover:border-light_heading focus:outline-none"
+                  className="block w-full my-2 p-2 pr-10 border border-no_focus rounded placeholder:text-no_focus hover:border-light_heading focus:outline-none"
                   placeholder="Add Option"
                   onChange={(e) => handleOptionChange(e, index)}
                   value={option}
@@ -164,20 +244,18 @@ export const AddorUpdateQuestion = ({
         </button>
         <button
           className="text-white rounded transition-all duration-200  px-8 py-3 bg-primary border-none hover:bg-primary_hover hover:cursor-pointer"
-          style={{ display: !edit ? "block" : "none" }}
-          onClick={handleAddQuestion}
+          // onClick={handleAddQuestion}
+          onClick={handleSubmit}
         >
-          Add
+          {edit ? "Update" : "Add"}
         </button>
-        <button
+        {/* <button
           className="text-white transition-all duration-200 hover:cursor-pointer rounded  px-8 py-3 bg-primary border-none hover:bg-primary_hover"
           style={{ display: edit ? "block" : "none" }}
-          onClick={() =>
-            handleUpdateQuestion && handleUpdateQuestion(indexOfQuestionToEdit!)
-          }
+          onClick={() => handleUpdateQuestion!(indexOfQuestionToEdit!)}
         >
           Update
-        </button>
+        </button> */}
       </div>
     </div>
   );
