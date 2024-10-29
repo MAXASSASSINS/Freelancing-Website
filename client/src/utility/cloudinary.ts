@@ -73,7 +73,9 @@ const processFile = async (file: File) => {
 
   let data;
 
-  let XUniqueUploadId = file.name + Math.random() * 100000000 + Date.now();
+  let XUniqueUploadId = (Math.random() * 100000000 + Date.now()).toString();
+  console.log("XUniqueUploadId", XUniqueUploadId);
+  
 
   for (let i = 0; i < numberOfSlices; i++) {
     try {
@@ -110,6 +112,7 @@ const send = async (piece: Blob, start: number, end: number, size: number, XUniq
     const res = await axios.post(POST_URL, formData, { headers });
     return res;
   } catch (error) {
+    console.log(error);
     return Promise.reject(error);
   }
 };
