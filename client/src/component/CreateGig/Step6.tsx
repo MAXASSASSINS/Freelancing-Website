@@ -297,6 +297,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                               {filteredCountries.map((countryData, index) => {
                                 return (
                                   <li
+                                    key={countryData.name}
                                     className="country-code p-[0.4rem] list-none block hover:bg-dark_separator"
                                     onClick={() =>
                                       handleClickOnCountryListItem(countryData)
