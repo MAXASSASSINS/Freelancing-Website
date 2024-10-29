@@ -16,11 +16,16 @@ import {
   CountryWithPhoneCodes,
   countryWithPhoneCodesData,
 } from "./CountryPhoneCode";
-import { useUpdateGlobalLoading } from "../../context/globalLoadingContext";
+import {
+  useGlobalLoading,
+  useUpdateGlobalLoading,
+} from "../../context/globalLoadingContext";
+import { DataSendingLoading } from "../DataSendingLoading";
 
 type Step6Props = {};
 
 const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
+  const globalLoading = useGlobalLoading();
   const updateGlobalLoading = useUpdateGlobalLoading();
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
   const [showVerifyPhoneNumberModal, setShowVerifyPhoneNumberModal] =
@@ -43,6 +48,10 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   const [verifiedStatusOfSeller, setVerifiedStatusOfSeller] = useState(false);
 
   const handleCloseVerifyPhoneNumberModal = () => {
+    setShowCountryDropdown(false);
+    setPhoneNumber("");
+    setCountry("");
+    setDialCode("");
     setShowVerifyPhoneNumberModal(false);
     setShowVerifyCodeInput(false);
     setVerificationCode("");
@@ -87,12 +96,14 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("phone number changes");
     setPhoneNumber(e.target.value);
     if (invalidPhoneNumberRef.current)
       invalidPhoneNumberRef.current.style.display = "none";
   };
 
   const handleVerifyPhoneNumber = async () => {
+    updateGlobalLoading(true, "Verifying phone number...");
     const phone = {
       code: dialCode,
       number: phoneNumber,
@@ -109,8 +120,10 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
         if (invalidPhoneNumberRef.current)
           invalidPhoneNumberRef.current.style.display = "block";
       }
-      toast.error("Something went wrong. Please try again later.");
+      // toast.error("Something went wrong. Please try again later.");
       console.log(err);
+    } finally {
+      updateGlobalLoading(false);
     }
     if (data?.success) {
       setShowVerifyCodeInput(true);
@@ -143,7 +156,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong. Please try again later.");
+      // toast.error("Something went wrong. Please try again later.");
     } finally {
       updateGlobalLoading(false);
     }
@@ -208,7 +221,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
           {showVerifyPhoneNumberModal && (
             <div className="fixed z-[99] w-full h-full overflow-auto bg-[rgba(0,0,0,0.4)] left-0 top-0">
-              <div className="rounded-[5px] relative bg-[#fefefe] w-[30rem] my-40 mx-auto p-10 border ">
+              <div className="rounded-[5px] relative bg-[#fefefe] w-11/12 max-w-[30rem] sm:w-[30rem] my-40 mx-auto p-10 border ">
                 <div
                   className="absolute right-4 top-4 text-icons text-2xl hover:cursor-pointer"
                   onClick={handleCloseVerifyPhoneNumberModal}
@@ -243,14 +256,14 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                       />
                       <p
                         ref={verificationCodeErrorRef}
-                        className="text-warning text-center absolute top-[7rem] hidden text-sm leading-5"
+                        className="text-warning text-center relative  hidden text-sm leading-5"
                       >
                         Oops... that code is wrong..
                         <br />
                         Please verify your code and try again.
                       </p>
                       <button
-                        className={`px-8 py-3 mt-16 border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
+                        className={`px-8 py-3 hover:cursor-pointer mt-8 border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
                         disabled={verificationCode.length !== 6}
                         onClick={handleVerifyCode}
                       >
@@ -330,7 +343,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                       </div>
                       <div
                         ref={invalidPhoneNumberRef}
-                        className="text-warning text-sm -mt-8 leading-5"
+                        className="text-warning text-sm -mt-8 leading-5 hidden"
                       >
                         Please enter a valid number
                       </div>
@@ -338,7 +351,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
                     <div className="flex justify-end">
                       <button
-                        className={`px-8 py-3 border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
+                        className={`px-8 py-3 hover:cursor-pointer border-none rounded bg-primary text-white disabled:text-no_focus disabled:bg-dark_separator  text-[0.9rem] font-bold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer hover:bg-primary_hover`}
                         disabled={
                           phoneNumber.length < 5 || !country || !dialCode
                         }

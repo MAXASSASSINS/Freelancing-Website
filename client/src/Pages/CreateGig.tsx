@@ -28,7 +28,7 @@ export const CreateGig = () => {
   const params = useParams();
   const gigId = params.id || "null";
 
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(6);
   const stepIndicatorRef = useRef<StepIndicatorRef>(null);
   const step1Ref = useRef<StepRef>(null);
   const step2Ref = useRef<StepRef>(null);
