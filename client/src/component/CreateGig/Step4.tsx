@@ -155,8 +155,8 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }, [gigDetail]);
 
   return (
-    <div className="pb-8">
-      <div className="rounded-[5px] border border-dark_separator p-8 bg-white">
+    <div className="">
+      <div className="rounded-[5px] border border-dark_separator p-4 sm:p-8 bg-white">
         <header className="text-lg font-semibold text-light_grey mb-4">
           Get all the information you need from buyers to get started
         </header>
@@ -164,9 +164,9 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           Add questions to help buyers provide you with exactly what you need to
           start working on their order.
         </p>
-        <div className="text-center flex items-center justify-between uppercase text-[0.8rem] text-light_heading relative mb-4">
+        <div className="text-center flex items-center mt-2 justify-between uppercase text-[0.8rem] text-light_heading relative mb-4">
           <hr className="text-no_focus w-full" />
-          <strong className="absolute translate-x-1/2 leading-4 right-1/2 z-[1] bg-white px-8 text-xs">
+          <strong className="absolute translate-x-1/2 leading-4 right-1/2 z-[1] bg-white min-w-max px-8 text-xs">
             Your Questions
           </strong>
         </div>
@@ -215,15 +215,15 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                   {question.showEditQuestion && (
                     <div>
                       {
-                        <div className="border border-dark_separator absolute -left-12 top-6 minw-[7rem] z-[5] bg-white shadow-[0_0_3px_0] shadow-dark_separator">
+                        <div className="border text-sm sm:text-base border-dark_separator absolute -left-12 top-6 minw-[7rem] z-[5] bg-white shadow-[0_0_3px_0] shadow-dark_separator">
                           <div
-                            className="p-3 text-light_heading cursor-pointer hover:bg-separator "
+                            className="p-2 sm:p-3 text-light_heading cursor-pointer hover:bg-separator "
                             onClick={() => handleEditQuestion(index)}
                           >
                             Edit
                           </div>
                           <div
-                            className="p-3 text-light_heading cursor-pointer hover:bg-separator "
+                            className="p-2 sm:p-3 text-light_heading cursor-pointer hover:bg-separator "
                             onClick={() => handleRemoveQuestion(index)}
                           >
                             Remove
@@ -249,7 +249,7 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
         {showQuestions && (
           <div className="mt-4">
             <button
-              className="bg-white py-3 px-6 rounded text-link border border-link transition-all duration-200 hover:bg-link hover:text-white hover:cursor-pointer"
+              className="bg-white py-2 px-4 text-sm md:text-base md:px-6 rounded text-link border border-link transition-all duration-200 hover:bg-link hover:text-white hover:cursor-pointer"
               onClick={() => setShowQuestions(false)}
             >
               {" "}

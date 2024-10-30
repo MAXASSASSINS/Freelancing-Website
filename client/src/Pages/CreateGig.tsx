@@ -94,14 +94,14 @@ export const CreateGig = () => {
   };
 
   return (
-    <div className="create-gig-main min-h-[calc(100vh-81px)] bg-separator text-light_grey">
+    <div className="create-gig-main min-h-[calc(100vh-81px)] bg-separator">
       <StepIndicator
         ref={stepIndicatorRef}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
         handleSubmission={handleSubmission}
       />
-      <div className="mt-16 mx-8 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] mb-4 text-dark_grey">
+      <div className="mt-16 mx-4 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] mb-4 text-dark_grey">
         {currentStep === 1 && (
           <Step1 handleSendData={handleSendData} ref={step1Ref} />
         )}
@@ -123,7 +123,7 @@ export const CreateGig = () => {
       </div>
 
       {currentStep < 6 && (
-        <div className="text-right mt-8 mx-8 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] pb-4">
+        <div className="text-right mt-8 mx-4 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] pb-4">
           <button
             className="py-3 px-4 capitalize bg-primary border-none text-white rounded-[3px] hover:cursor-pointer hover:bg-primary_hover"
             onClick={() => stepIndicatorRef.current?.handleSaveAndContinue()}
@@ -134,7 +134,7 @@ export const CreateGig = () => {
       )}
 
       {currentStep > 1 && (
-        <div className="text-right mx-8 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] pb-4">
+        <div className="text-right mx-4 md:mx-12 max-w-full lg:mx-auto lg:max-w-[55rem] pb-4">
           <button
             className="py-3 px-4 text-primary border-none capitalize cursor-pointer hover:underline"
             onClick={() => stepIndicatorRef.current?.handleStepBack()}

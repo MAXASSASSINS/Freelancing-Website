@@ -131,9 +131,9 @@ export const AddorUpdateQuestion = ({
   }, [indexOfQuestionToEdit, questionDetail])
 
   return (
-    <div className="bg-separator border border-dark_separator p-6 text-light_heading">
-      <header className="font-normal flex justify-between text-base mb-3">
-        <h6 className="text-light_grey font-semibold">Add a question</h6>
+    <div className="bg-separator border border-dark_separator p-3 text-sm sm:text-base sm:p-6 text-light_heading">
+      <header className="font-normal flex justify-between sm:text-base mb-3">
+        <h6 className="text-light_grey font-semibold text-base">Add a question</h6>
         <CheckInput
           label="Required"
           onChange={getRequiredStatusOfQuestion}
@@ -142,14 +142,14 @@ export const AddorUpdateQuestion = ({
         />
       </header>
 
-      <div className="mb-4 relative">
+      <div className="mb-4 relative text-sm sm:text-base">
         <TextArea
           maxLength={400}
           minLength={2}
           placeholder={
             "Request necessary details such as dimensions, brand guidelines, and more"
           }
-          className="h-32"
+          className="h-32 "
           onChange={getQuestionTitle}
           value={questionTitle}
         />
@@ -170,7 +170,7 @@ export const AddorUpdateQuestion = ({
         <h6 className="font-semibold text-light_heading mb-4">
           Get it in a form of:
         </h6>
-        <div className="flex justify-between">
+        <div className="flex flex-col gap-4 md:items-center md:flex-row justify-between">
           <div>
             <SelectInput2
               data={questionTypeData}
@@ -228,22 +228,22 @@ export const AddorUpdateQuestion = ({
           ))}
           <button
             onClick={handleAddNewOption}
-            className="px-8 py-3 rounded border border-link text-link mt-2 hover:bg-link hover:cursor-pointer hover:text-white"
-          >
+            className="bg-white py-2 px-4 text-sm md:text-base md:px-6 rounded text-link border border-link transition-all duration-200 hover:bg-link hover:text-white hover:cursor-pointer"
+            >
             + Add New Option
           </button>
         </div>
       )}
 
-      <div className="flex mt-4 justify-end">
+      <div className="flex mt-8 sm:mt-4 justify-end">
         <button
-          className="px-8 py-3 rounded transition-all duration-200 hover:cursor-pointer border border-light_heading text-light_heading mr-4 hover:bg-light_heading hover:text-white"
+          className="px-8 py-2 rounded transition-all duration-200 hover:cursor-pointer border border-light_heading text-light_heading mr-4 hover:bg-light_heading hover:text-white"
           onClick={handleCancelAdd}
         >
           Cancel
         </button>
         <button
-          className="text-white rounded transition-all duration-200  px-8 py-3 bg-primary border-none hover:bg-primary_hover hover:cursor-pointer"
+          className="text-white rounded transition-all duration-200  px-8 py-2 bg-primary border-none hover:bg-primary_hover hover:cursor-pointer"
           // onClick={handleAddQuestion}
           onClick={handleSubmit}
         >
