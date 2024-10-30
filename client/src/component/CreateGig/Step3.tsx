@@ -55,7 +55,7 @@ const Step3 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="mt-16 mx-[18%] mb-4">
+    <div>
       <div className="p-8 pr-0">
         <h1 className="pb-4 text-[2rem] text-light_heading border-b border-b-no_focus mb-12">
           Description

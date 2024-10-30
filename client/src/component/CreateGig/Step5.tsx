@@ -122,7 +122,7 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="mt-16 mb-4 mx-[18%] relative">
+    <div>
       <div className="p-8 pr-0">
         <h3 className="text-[2rem] font-semibold mb-4">
           Showcase Your Services In A Gig Gallery

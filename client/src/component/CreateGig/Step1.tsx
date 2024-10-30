@@ -152,8 +152,8 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }));
 
   return (
-    <div className="overview mt-16 mx-[18%] mb-4 text-dark_grey">
-      <div className="overview-wrapper flex flex-col gap-8 bg-white border border-no_focus rounded-md p-8">
+    <div>
+      <div className="flex flex-col gap-8 bg-white border border-no_focus rounded-md p-8">
         {/* TITLE SECTION */}
         <section className="flex gap-16">
           <div className="max-w-[24ch]">
@@ -190,7 +190,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               Choose the category and sub-category most suitable for your Gig.
             </p>
           </div>
-          <div className="category-section flex-grow">
+          <div className="flex-grow">
             <div className="flex justify-between gap-8">
               <SelectInput2
                 defaultOption={SELECT_A_CATEGORY.toLowerCase()}
@@ -214,7 +214,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               />
             </div>
             {categoryWarning !== "" && (
-              <div className="category-warning text-warning text-sm">
+              <div className="text-warning text-sm">
                 {categoryWarning}
               </div>
             )}
@@ -230,7 +230,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               offer. Use all 5 tags to get found.
             </p>
           </div>
-          <div className="keyword-section flex flex-col gap-2 text-[0.9rem] flex-grow">
+          <div className="flex flex-col gap-2 text-[0.9rem] flex-grow">
             <h6 className="font-semibold">Positive keywords</h6>
             <p className="leading-4 text-no_focus">
               Enter search terms you feel your buyers will use when looking for
@@ -247,12 +247,12 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               value={tags}
               menuPlacement="top"
             />
-            <p className="recommend text-[0.8rem] leading-4 text-no_focus">
+            <p className="text-[0.8rem] leading-4 text-no_focus">
               5 tags maximum. Use letters and numbers only. <br />
               Tags should be comma seprated.
             </p>
             {tagListWarning && (
-              <p className="tag-list-warning text-warning text-sm">
+              <p className="text-warning text-sm">
                 Number of tags is not in range of 1 to 5
               </p>
             )}

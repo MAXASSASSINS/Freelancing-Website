@@ -155,7 +155,7 @@ const Step4 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   }, [gigDetail]);
 
   return (
-    <div className="mt-16 mb-4 mx-[18%] pb-8">
+    <div className="pb-8">
       <div className="rounded-[5px] border border-dark_separator p-8 bg-white">
         <header className="text-lg font-semibold text-light_grey mb-4">
           Get all the information you need from buyers to get started

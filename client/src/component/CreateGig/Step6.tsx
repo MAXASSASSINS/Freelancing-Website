@@ -7,8 +7,10 @@ import React, {
 } from "react";
 import { IoIosClose } from "react-icons/io";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import {
+  useGlobalLoading,
+  useUpdateGlobalLoading,
+} from "../../context/globalLoadingContext";
 import { StepProps, StepRef } from "../../Pages/CreateGig";
 import { RootState } from "../../store";
 import { axiosInstance } from "../../utility/axiosInstance";
@@ -16,16 +18,10 @@ import {
   CountryWithPhoneCodes,
   countryWithPhoneCodesData,
 } from "./CountryPhoneCode";
-import {
-  useGlobalLoading,
-  useUpdateGlobalLoading,
-} from "../../context/globalLoadingContext";
-import { DataSendingLoading } from "../DataSendingLoading";
 
 type Step6Props = {};
 
 const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
-  const globalLoading = useGlobalLoading();
   const updateGlobalLoading = useUpdateGlobalLoading();
   const { gigDetail } = useSelector((state: RootState) => state.gigDetail);
   const [showVerifyPhoneNumberModal, setShowVerifyPhoneNumberModal] =
@@ -186,7 +182,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   return (
     <>
-      <div className="mb-12 mt-16 mx-[18%] bg-white">
+      <div className="mb-12 mt-16 bg-white">
         <div className="py-20 px-12">
           {showGigPublishFinalModal && verifiedStatusOfSeller ? (
             <>
@@ -367,7 +363,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
           )}
         </div>
       </div>
-      <div className="save-and-verify text-right mx-[18%] pb-4">
+      <div className="save-and-verify text-right pb-4">
         {showGigPublishFinalModal && verifiedStatusOfSeller ? (
           <button
             className="py-3 px-4 capitalize bg-primary border-none text-white rounded-[3px] hover:cursor-pointer hover:bg-primary_hover"

@@ -28,7 +28,7 @@ export const CreateGig = () => {
   const params = useParams();
   const gigId = params.id || "null";
 
-  const [currentStep, setCurrentStep] = useState<number>(6);
+  const [currentStep, setCurrentStep] = useState<number>(1);
   const stepIndicatorRef = useRef<StepIndicatorRef>(null);
   const step1Ref = useRef<StepRef>(null);
   const step2Ref = useRef<StepRef>(null);
@@ -101,24 +101,27 @@ export const CreateGig = () => {
         setCurrentStep={setCurrentStep}
         handleSubmission={handleSubmission}
       />
-      {currentStep === 1 && (
-        <Step1 handleSendData={handleSendData} ref={step1Ref} />
-      )}
-      {currentStep === 2 && (
-        <Step2 handleSendData={handleSendData} ref={step2Ref} />
-      )}
-      {currentStep === 3 && (
-        <Step3 handleSendData={handleSendData} ref={step3Ref} />
-      )}
-      {currentStep === 4 && (
-        <Step4 handleSendData={handleSendData} ref={step4Ref} />
-      )}
-      {currentStep === 5 && (
-        <Step5 handleSendData={handleSendData} ref={step5Ref} />
-      )}
-      {currentStep === 6 && (
-        <Step6 handleSendData={handleSendData} ref={step6Ref} />
-      )}
+      <div className="mt-16 mx-[18%] mb-4 text-dark_grey">
+        {currentStep === 1 && (
+          <Step1 handleSendData={handleSendData} ref={step1Ref} />
+        )}
+        {currentStep === 2 && (
+          <Step2 handleSendData={handleSendData} ref={step2Ref} />
+        )}
+        {currentStep === 3 && (
+          <Step3 handleSendData={handleSendData} ref={step3Ref} />
+        )}
+        {currentStep === 4 && (
+          <Step4 handleSendData={handleSendData} ref={step4Ref} />
+        )}
+        {currentStep === 5 && (
+          <Step5 handleSendData={handleSendData} ref={step5Ref} />
+        )}
+        {currentStep === 6 && (
+          <Step6 handleSendData={handleSendData} ref={step6Ref} />
+        )}
+      </div>
+
       {currentStep < 6 && (
         <div className="text-right mx-[18%] pb-4">
           <button
