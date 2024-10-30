@@ -26,8 +26,6 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
     useState<boolean>(false);
   const [tags, setTags] = useState<TagOption[]>([]);
   const [tagListWarning, setTagListWarning] = useState<boolean>(false);
-  const selectedCategoryRef = useRef<SelectInput2Ref>(null);
-  const selectedSubCategoryRef = useRef<SelectInput2Ref>(null);
   const [selectedCategory, setSelectedCategory] =
     useState<string>(SELECT_A_CATEGORY);
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>(
@@ -132,12 +130,6 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   useEffect(() => {
     const { title, category, subCategory, searchTags } = gigDetail || {};
     gigTitleInputRef.current?.setTextComingFromParent(title || "I will ");
-    selectedCategoryRef.current?.setChoosedOptionComingFromParent(
-      category || ""
-    );
-    selectedSubCategoryRef.current?.setChoosedOptionComingFromParent(
-      subCategory || ""
-    );
     setGigTitleInput(title || "");
     setSelectedCategory(category || "");
     setSelectedSubCategory(subCategory || "");
@@ -155,9 +147,9 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
     <div>
       <div className="flex flex-col gap-8 bg-white border border-no_focus rounded-md p-8">
         {/* TITLE SECTION */}
-        <section className="flex gap-16">
-          <div className="max-w-[24ch]">
-            <h3 className="text-base font-semibold mb-3">Gig title</h3>
+        <section className="flex flex-col gap-4 md:flex-row md:gap-8 900:gap-16">
+          <div className="max-w-full md:max-w-[24ch]">
+            <h3 className="text-base font-semibold md:mb-3">Gig title</h3>
             <p className="text-[0.9rem] leading-[1.4] text-no_focus">
               As your Gig storefront, your title is the most important place to
               include keywords that buyers would likely use to search for a
@@ -170,7 +162,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               minLength={0}
               placeholder="I will do something I'm really good at"
               defaultText={"I will "}
-              className="text-lg"
+              className="text-base md:text-lg"
               onChange={getGigTitleInput}
               ref={gigTitleInputRef}
             />
@@ -183,21 +175,21 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
         </section>
 
         {/* CATEGORY SECTION */}
-        <section className="flex gap-16">
-          <div className="max-w-[24ch]">
-            <h3 className="text-base font-semibold mb-3">Category</h3>
+        <section className="flex flex-col gap-4 md:flex-row md:gap-8 900:gap-16">
+          <div className="max-w-full md:max-w-[24ch]">
+            <h3 className="text-base font-semibold md:mb-3">Category</h3>
             <p className="text-[0.9rem] leading-[1.4] text-no_focus">
               Choose the category and sub-category most suitable for your Gig.
             </p>
           </div>
           <div className="flex-grow">
-            <div className="flex justify-between gap-8">
+            <div className="flex flex-col sm:flex-row md:flex-col gap-4 900:flex-row justify-between 900:gap-8">
               <SelectInput2
                 defaultOption={SELECT_A_CATEGORY.toLowerCase()}
                 data={categoriesData}
                 style={{ textTransform: "uppercase" }}
                 onChange={getSelectedCategory}
-                ref={selectedCategoryRef}
+                value={selectedCategory}
               />
               <SelectInput2
                 defaultOption={SELECT_A_SUB_CATEGORY.toLowerCase()}
@@ -206,7 +198,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                 }
                 style={{ textTransform: "uppercase" }}
                 onChange={getSelectedSubCategory}
-                ref={selectedSubCategoryRef}
+                value={selectedSubCategory}
                 disabled={
                   selectedCategory.toLowerCase() ===
                   SELECT_A_CATEGORY.toLowerCase()
@@ -214,25 +206,23 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               />
             </div>
             {categoryWarning !== "" && (
-              <div className="text-warning text-sm">
-                {categoryWarning}
-              </div>
+              <div className="text-warning text-sm">{categoryWarning}</div>
             )}
           </div>
         </section>
 
         {/* TAGS SECTION */}
-        <section className="flex gap-16">
-          <div className="max-w-[24ch]">
-            <h3 className="text-base font-semibold mb-3">Search tags</h3>
+        <section className="flex flex-col gap-4 md:flex-row md:gap-8 900:gap-16">
+          <div className="max-w-full md:max-w-[24ch]">
+            <h3 className="text-base font-semibold md:mb-3">Search tags</h3>
             <p className="text-[0.9rem] leading-[1.4] text-no_focus">
               Tag your Gig with buzz words that are relevant to the services you
               offer. Use all 5 tags to get found.
             </p>
           </div>
           <div className="flex flex-col gap-2 text-[0.9rem] flex-grow">
-            <h6 className="font-semibold">Positive keywords</h6>
-            <p className="leading-4 text-no_focus">
+            <h6 className="font-semibold text-icons md:text-dark_grey">Positive keywords</h6>
+            <p className="leading-4 text-no_focus -mt-2 md:mt-0">
               Enter search terms you feel your buyers will use when looking for
               your service.
             </p>
@@ -246,6 +236,7 @@ const Step1 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               onChange={handleTagsChange}
               value={tags}
               menuPlacement="top"
+              isClearable={false}
             />
             <p className="text-[0.8rem] leading-4 text-no_focus">
               5 tags maximum. Use letters and numbers only. <br />
