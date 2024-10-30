@@ -142,19 +142,19 @@ const StepIndicator = (
   );
 
   return (
-    <nav className="py-4 px-16 bg-white flex justify-around text-icons border-b border-b-dark_separator items-center">
-      <ul className="flex items-center">
+    <nav className="py-4 px-4 sm:px-8 xl:px-16 bg-white flex flex-col 1100:flex-row justify-around text-icons border-b border-b-dark_separator items-center">
+      <ul className="flex items-center justify-center gap-4 flex-wrap">
         {steps.map((step) => (
           <li
             key={step.id}
             onClick={() => handleNavigateToStep(step.id)}
-            className={`flex items-center list-none mr-4 ${
+            className={`flex items-center list-none ${
               step.id <= currentStep && "text-primary"
             } ${currentStep === step.id && "text-dark_grey"}`}
           >
             <div className="mr-2">
               {stepCompleted[step.id] && currentStep > step.id ? (
-                <CheckCircleIcon className="text-primary text-[28px]" />
+                <CheckCircleIcon className="text-primary" classes={{fontSizeLarge: "large"}} />
               ) : (
                 <RoundNumberIcon
                   number={step.id}
@@ -162,10 +162,18 @@ const StepIndicator = (
                 />
               )}
             </div>
-            <div className={`${step.id <= maxStep && "cursor-pointer"}`}>
+            <div
+              className={`${step.id <= maxStep && "cursor-pointer"}`
+            }
+            >
               {step.title}
             </div>
-            <div style={{ color: "#222831" }}>
+            <div
+              style={{
+                color: "#222831",
+                display: step.id === 6 ? "none" : "block",
+              }}
+            >
               <ChevronRightIcon
                 style={{ fontSize: "20", fontWeight: "light" }}
               />
@@ -173,7 +181,8 @@ const StepIndicator = (
           </li>
         ))}
       </ul>
-      <ul className="noSelect flex justify-center gap-4">
+      <hr className="my-4 w-full 1100:hidden border border-dark_separator"></hr>
+      <ul className="noSelect flex justify-center gap-4 ">
         <button
           className="text-link mr-0 hover:cursor-pointer hover:underline disabled:cursor-not-allowed disabled:text-no_focus disabled:no-underline"
           disabled={currentStep === 6}
