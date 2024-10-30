@@ -37,14 +37,14 @@ const Step2 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   return (
     <div>
-      <div className="p-8 pr-0">
+      <div className="pt-8">
         <h2 className="text-[1.75rem] mb-4 border-b border-b-no_focus pb-4">
           Scope & Pricing
         </h2>
         <h3 className="text-base font-semibold text-light_grey mb-3">
           Packages
         </h3>
-        <div className="grid gap-4 grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3">
           {packagesData.map((pack, index) => {
             return (
               <PackageForm

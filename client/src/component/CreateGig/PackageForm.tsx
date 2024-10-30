@@ -120,92 +120,98 @@ const PackageForm = (
   }));
 
   return (
-    <div className="flex flex-col gap-6">
-      <h4 className="text-base font-bold -mb-8 text-light_grey bg-dark_separator p-4">
+    <div className="bg-white">
+      <h4 className="text-base font-bold  text-light_grey bg-dark_separator p-4">
         {packagesData[categoryId]}
       </h4>
-      <TextArea
-        maxLength={40}
-        minLength={0}
-        placeholder="Enter your package name"
-        className="text-sm h-10 rounded-none"
-        warning={packageTitleWarning}
-        onChange={(text) => {
-          setPackageTitle(text);
-          setPackageTitleWarning(getPackageTitleWarning(text));
-        }}
-        value={packageTitle}
-      />
-      <TextArea
-        maxLength={100}
-        minLength={0}
-        placeholder="Enter your package description"
-        className="text-sm rounded-none"
-        warning={packageDescriptionWarning}
-        onChange={(text) => {
-          setPackageDescription(text);
-          setPackageDescriptionWarning(getPackageDescriptionWarning(text));
-        }}
-        value={packageDescription}
-      />
-      <div className="mb-4">
-        <SelectInput2
-          data={deliveryTimeData}
-          defaultOption={CHOOSE_A_DELIVERY_TIME}
-          warning={deliveryTimeWarning}
-          onChange={(option) => {
-            setPackageDeliveryTime(option);
-            setDeliveryTimeWarning(getDeliveryTimeWarning(option));
-          }}
-          value={packageDeliveryTime}
-        />
-      </div>
-      <div className="mb-4">
-        <SelectInput2
-          data={revisionsData}
-          defaultOption={SELECT_NUMBER_OF_REVISIONS}
-          warning={revisionsWarning}
-          onChange={(option) => {
-            setRevisions(option);
-            setRevisionsWarning(getRevisionsWarning(option));
-          }}
-          value={revisions}
-        />
-      </div>
-      <div className="relative">
-        <div className="flex items-center mb-2">
-          <input
-            className="border border-no_focus focus:outline-none focus:border-dark_grey w-full py-2 px-3 pr-8 placeholder:text-[0.9rem]"
-            step="5"
-            placeholder="Price"
-            type="number"
-            min={5}
-            max={10000}
-            onChange={(e) => {
-              setPackagePrice(e.target.value);
-              setPriceWarning(getPriceWarning(e.target.value));
+      <div className="grid grid-cols-1 sm:grid-cols-6 p-4 py-8 md:grid-cols-1 gap-4">
+        <div className="col-span-3">
+          <TextArea
+            maxLength={40}
+            minLength={0}
+            placeholder="Enter your package name"
+            className="text-sm h-10 rounded-none"
+            warning={packageTitleWarning}
+            onChange={(text) => {
+              setPackageTitle(text);
+              setPackageTitleWarning(getPackageTitleWarning(text));
             }}
-            value={packagePrice}
-          ></input>
-          <span className="right-4 absolute">₹</span>
+            value={packageTitle}
+          />
         </div>
-        <p className="text-sm absolute -bottom-3 text-warning leading-[1.4]">
-          {priceWarning}
-        </p>
-      </div>
-      <div className=" flex items-center gap-2">
-        <CheckInput
-          label="Source File"
-          value={sourceFile}
-          onChange={(checked) => setSourceFile(checked)}
-        />
-      </div>
-      <div className=" flex items-center gap-2">
-        <CheckInput
-          label="Commercial Use"
-          value={commercialUse}
-          onChange={(checked) => setCommercialUse(checked)}
-        />
+        <div className="col-span-3">
+          <TextArea
+            maxLength={100}
+            minLength={0}
+            placeholder="Enter your package description"
+            className="text-sm rounded-none col-span-3"
+            warning={packageDescriptionWarning}
+            onChange={(text) => {
+              setPackageDescription(text);
+              setPackageDescriptionWarning(getPackageDescriptionWarning(text));
+            }}
+            value={packageDescription}
+          />
+        </div>
+        <div className="mb-4 col-span-3">
+          <SelectInput2
+            data={deliveryTimeData}
+            defaultOption={CHOOSE_A_DELIVERY_TIME}
+            warning={deliveryTimeWarning}
+            onChange={(option) => {
+              setPackageDeliveryTime(option);
+              setDeliveryTimeWarning(getDeliveryTimeWarning(option));
+            }}
+            value={packageDeliveryTime}
+          />
+        </div>
+        <div className="mb-4 col-span-3">
+          <SelectInput2
+            data={revisionsData}
+            defaultOption={SELECT_NUMBER_OF_REVISIONS}
+            warning={revisionsWarning}
+            onChange={(option) => {
+              setRevisions(option);
+              setRevisionsWarning(getRevisionsWarning(option));
+            }}
+            value={revisions}
+          />
+        </div>
+        <div className="relative col-span-2">
+          <div className="flex items-center mb-2">
+            <input
+              className="border border-no_focus focus:outline-none focus:border-dark_grey w-full py-2 px-3 pr-8 placeholder:text-[0.9rem]"
+              step="5"
+              placeholder="Price"
+              type="number"
+              min={5}
+              max={10000}
+              onChange={(e) => {
+                setPackagePrice(e.target.value);
+                setPriceWarning(getPriceWarning(e.target.value));
+              }}
+              value={packagePrice}
+            ></input>
+            <span className="right-4 absolute">₹</span>
+          </div>
+          <p className="text-sm absolute -bottom-3 text-warning leading-[1.4]">
+            {priceWarning}
+          </p>
+        </div>
+        <div className="col-span-2 sm:justify-center md:justify-start flex items-center gap-2">
+          <CheckInput
+            label="Source File"
+            value={sourceFile}
+            onChange={(checked) => setSourceFile(checked)}
+          />
+        </div>
+        <div className="col-span-2 sm:justify-center md:justify-start flex items-center gap-2">
+          <CheckInput
+            label="Commercial Use"
+            value={commercialUse}
+            onChange={(checked) => setCommercialUse(checked)}
+          />
+        </div>
       </div>
     </div>
   );
