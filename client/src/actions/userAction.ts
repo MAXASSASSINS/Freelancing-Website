@@ -173,7 +173,6 @@ export const logoutUser = () => async (dispatch: Dispatch<AnyAction>) => {
       payload: data.success,
     });
     localStorage.removeItem("user");
-    localStorage.setItem("redirectUrl", "/");
   } catch (error: any) {
     dispatch({
       type: LOGOUT_USER_FAIL,

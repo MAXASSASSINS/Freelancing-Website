@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../actions/userAction";
 import { useSocket } from "../../context/socketContext";
 import { AppDispatch, RootState } from "../../store";
+import { setRedirectUrl } from "../../utility/util";
 
 const AvatarMenu = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,7 +16,10 @@ const AvatarMenu = () => {
     console.log('initiating socket disconnect');
     socket.disconnect();
     console.log('socket disconnected');
-    if (!userError) navigate("/");
+    if (!userError){
+      navigate("/");
+      setRedirectUrl("/");
+    } 
   };
 
   return (
