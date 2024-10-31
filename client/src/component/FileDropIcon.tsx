@@ -103,7 +103,7 @@ export const FileDropIcon = forwardRef(
     return (
       <>
         {selectedFile ? (
-          <div className="relative bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-center w-60 h-40 gap-1 text-[0.9rem] text-light_heading">
+          <div className="relative bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-center max-w-[15rem] h-40 w-full gap-1 text-[0.9rem] text-light_heading">
             {type === "image" ? (
               <img
                 className="w-full h-full"
@@ -113,7 +113,7 @@ export const FileDropIcon = forwardRef(
             ) : (
               <div className="flex flex-col items-center justify-center">
                 <IoCheckmarkCircleOutline className="text-[3.5rem] text-primary mb-4" />
-                <div className="w-40 text-ellipsis overflow-hidden">
+                <div className="w-full max-w-[10rem] leading-4 text-ellipsis overflow-hidden">
                   {(selectedFile as any).name}
                 </div>
               </div>
@@ -126,11 +126,11 @@ export const FileDropIcon = forwardRef(
             </div>
           </div>
         ) : (
-          <div className="relative bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-no_focus text-center w-60 h-40 gap-1">
+          <div className="relative text-sm sm:text-base bg-white border border-dashed border-no_focus flex flex-col items-center justify-center text-no_focus text-center max-w-[15rem] w-full h-40 gap-1">
             {type === "image" ? (
               <>
                 <RiImage2Line className="text-5xl" />
-                <div>Drag & drop a Photo or</div>
+                <div className="leading-4">Drag & drop a Photo or</div>
               </>
             ) : type === "video" ? (
               <>

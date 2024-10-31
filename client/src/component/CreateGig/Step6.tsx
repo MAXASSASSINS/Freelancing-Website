@@ -182,13 +182,13 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   return (
     <>
-      <div className="mb-12 mt-16 bg-white">
-        <div className="py-20 px-12">
+      <div className="mb-12 bg-white">
+        <div className="py-10 px-6 sm:py-20 sm:px-12">
           {showGigPublishFinalModal && verifiedStatusOfSeller ? (
             <>
               <div className="text-center">
-                <h3 className="text-4xl text-primary">Almost there...</h3>
-                <p className="text-xl text-light_heading mt-4 font-bold">
+                <h3 className="text-3xl sm:text-4xl text-primary">Almost there...</h3>
+                <p className="text-lg sm:text-xl text-light_heading mt-4 font-bold">
                   Let's publish your Gig and get <br /> some buyers rolling in.
                 </p>
               </div>
@@ -200,8 +200,8 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                 src="/images/publish_gig.svg"
                 alt=""
               />
-              <div className="border border-no_focus p-8 mt-8 text-light_grey">
-                <h3 className="font-bold text-[2rem] mb-4">Congratulations!</h3>
+              <div className="border border-no_focus p-6 sm:p-8 mt-8 text-light_grey">
+                <h3 className="font-bold text-2xl sm:text-[2rem] mb-4">Congratulations!</h3>
                 <p className="leading-6 font-bold mb-4">
                   You're almost done with your first Gig.
                 </p>
@@ -239,7 +239,7 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                     </div>
 
                     <div className="flex items-center flex-col gap-4 relative">
-                      <p className="text-center text-2xl mt-4 mx-8 text-light_grey">
+                      <p className="text-center text-xl sm:text-2xl mt-4 mx-8 text-light_grey">
                         Please enter the Verification code
                       </p>
                       <input

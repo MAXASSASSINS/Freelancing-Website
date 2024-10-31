@@ -123,8 +123,8 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   return (
     <div>
-      <div className="p-8 pr-0">
-        <h3 className="text-[2rem] font-semibold mb-4">
+      <div className="text-light_heading">
+        <h3 className="text-2xl sm:text-3xl text-light_heading font-semibold mb-4">
           Showcase Your Services In A Gig Gallery
         </h3>
         <p className="text-light_heading">
@@ -133,15 +133,16 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
         </p>
         <div className="flex flex-col">
           <section className="border-b border-b-no_focus py-8">
-            <h4 className="text-xl font-bold">Images(up to 3)</h4>
+            <h4 className="text-base sm:text-xl font-bold">Images(up to 3)</h4>
             <p className="text-[0.9rem] text-icons my-1">
               Get noticed by the right buyers with visual examples of your
               services.
             </p>
-            <div className="mt-8 flex gap-4">
+            <div className="mt-8 grid grid-cols-3 md:grid-cols-[repeat(3,15rem)] gap-4">
               {[1, 2, 3].map((num, index) => {
                 return (
                   <FileDropIcon
+                    key={index}
                     type="image"
                     fileAcceptType="image/*"
                     getSelectedFile={getSellerShowcaseImages}
@@ -159,8 +160,8 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               </p>
             )}
           </section>
-          <section className="video py-8">
-            <h4 className="text-xl font-bold">Video (one only)</h4>
+          <section className="py-8">
+            <h4 className="text-base sm:text-xl font-bold">Video (one only)</h4>
             <p className="text-[0.9rem] text-icons my-1">
               Capture buyers' attention with a video that showcases your
               service.
@@ -169,7 +170,7 @@ const Step5 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
               Please choose a video shorter than 75 seconds and smaller than
               50MB
             </p>
-            <div className="mt-8 flex gap-4">
+            <div className="mt-8 grid grid-cols-3 sm:flex gap-4">
               <FileDropIcon
                 fileAcceptType="video/*"
                 type="video"
