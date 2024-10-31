@@ -59,6 +59,8 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCountry(e.target.value);
+    setDialCode("");
+    setPhoneNumber("");
   };
 
   useEffect(() => {
@@ -92,7 +94,6 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("phone number changes");
     setPhoneNumber(e.target.value);
     if (invalidPhoneNumberRef.current)
       invalidPhoneNumberRef.current.style.display = "none";
@@ -329,9 +330,10 @@ const Step6 = ({ handleSendData }: StepProps, ref: React.Ref<StepRef>) => {
                           </p>
                         )}
                         <input
-                          className="py-[0.4rem] pl-16 px-2 border border-no_focus text-[0.9rem] w-full focus:outline-none focus:border-dark_grey"
+                          className="py-[0.4rem] disabled:bg-separator disabled:cursor-not-allowed pl-16 px-2 border border-no_focus text-[0.9rem] w-full focus:outline-none focus:border-dark_grey"
                           type="tel"
                           value={phoneNumber}
+                          disabled={!dialCode}
                           maxLength={20}
                           onChange={handlePhoneNumberChange}
                           onFocus={() => setShowCountryDropdown(false)}
